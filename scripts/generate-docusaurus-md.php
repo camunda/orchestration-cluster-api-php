@@ -31,7 +31,12 @@ $docsMdDir = $root . '/docs-md';
 $sectionDir = $docsMdDir . '/php-sdk';
 $apiRefDir = $sectionDir . '/api-reference';
 
-const GITHUB_BLOB = 'https://github.com/camunda/orchestration-cluster-api-php/blob/main';
+// The SDK ref the docs are generated from. Defaults to `main`, but the docs-sync
+// workflow sets `DOCS_SDK_REF` (e.g. `stable/8.10`) when generating versioned docs
+// so repository links point at the version whose README was copied, not `main`.
+define('GITHUB_REF', getenv('DOCS_SDK_REF') ?: 'main');
+define('GITHUB_BLOB', 'https://github.com/camunda/orchestration-cluster-api-php/blob/' . GITHUB_REF);
+define('GITHUB_TREE', 'https://github.com/camunda/orchestration-cluster-api-php/tree/' . GITHUB_REF);
 const API_REFERENCE_POSITION = 100;
 const LANDING_ID = 'php-sdk';
 const LANDING_TITLE = 'PHP SDK (Technical Preview)';
@@ -60,6 +65,13 @@ $validateLinks = in_array('--validate-links', $argv, true);
 function escape_yaml(string $s): string
 {
     return str_replace('"', '\\"', $s);
+}
+
+function escape_table_cell(string $s): string
+{
+    // A literal `|` (even inside a code span) is parsed as a column delimiter in a
+    // GFM table, so escape it before the value is placed into a cell.
+    return str_replace('|', '\\|', $s);
 }
 
 function clean_empty_lines(string $content): string
@@ -174,7 +186,14 @@ function rewrite_repo_links(string $content): string
             // Sibling generated page — leave alone.
             return $m[0];
         }
-        return "[{$m[1]}](" . GITHUB_BLOB . '/' . ltrim($target, './') . ')';
+        $clean = ltrim($target, './');
+        // Directory targets need GitHub's `/tree/` base; file targets need `/blob/`.
+        // A trailing slash, or a final path segment with no file extension, marks a directory.
+        $base = (str_ends_with($clean, '/') || !str_contains(basename($clean), '.'))
+            ? GITHUB_TREE
+            : GITHUB_BLOB;
+
+        return "[{$m[1]}]({$base}/{$clean})";
     }, $content) ?? $content;
 }
 
@@ -385,8 +404,10 @@ sort($semanticFiles);
 $sem = section_frontmatter('domain-type-system', 'Domain type system', $position);
 $sem .= "# Domain type system\n\n";
 $sem .= "Each identifier is a distinct, self-validating value object in the "
-    . "`Camunda\\Orchestration\\Semantic` namespace. All implement `Stringable` and "
-    . "`JsonSerializable` and expose `::of()`, `->value()`, and `->equals()`.\n\n";
+    . "`Camunda\\Orchestration\\Semantic` namespace. Concrete identifier types "
+    . "implement `Stringable` and `JsonSerializable` and expose `::of()`, `->value()`, "
+    . "and `->equals()`. `ResourceKey` and `ScopeKey` are factories that lift a raw "
+    . "string into the matching concrete type via `::of()`.\n\n";
 $sem .= "| Type | Pattern | Length | Description |\n| --- | --- | --- | --- |\n";
 foreach ($semanticFiles as $file) {
     $name = basename($file, '.php');
@@ -394,7 +415,7 @@ foreach ($semanticFiles as $file) {
         continue;
     }
     $text = (string) file_get_contents($file);
-    $pattern = preg_match("/public const PATTERN = '(.+?)';/", $text, $m) === 1 ? '`' . $m[1] . '`' : '—';
+    $pattern = preg_match("/public const PATTERN = '(.+?)';/", $text, $m) === 1 ? '`' . escape_table_cell($m[1]) . '`' : '—';
     $min = preg_match('/must be at least (\d+) character/', $text, $m) === 1 ? (int) $m[1] : null;
     $max = preg_match('/must be at most (\d+) character/', $text, $m) === 1 ? (int) $m[1] : null;
     $length = match (true) {
@@ -405,7 +426,7 @@ foreach ($semanticFiles as $file) {
     };
     $desc = '';
     if (preg_match('/\/\*\*\s*\n\s*\*\s*(.+?)\s*\n/', $text, $m) === 1) {
-        $desc = trim($m[1]);
+        $desc = escape_table_cell(trim($m[1]));
     }
     $sem .= "| `{$name}` | {$pattern} | {$length} | {$desc} |\n";
 }
