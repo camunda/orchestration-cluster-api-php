@@ -19,7 +19,7 @@ final class OperationHost
 
         if (!is_string($scheme) || !is_string($host) || $scheme === '' || $host === '') {
             throw new ConfigurationException(
-                "CAMUNDA_REST_ADDRESS must be an absolute URL to resolve operation-specific hosts: $restAddress",
+                'CAMUNDA_REST_ADDRESS must be an absolute URL with scheme and host to resolve operation-specific hosts.',
             );
         }
 
