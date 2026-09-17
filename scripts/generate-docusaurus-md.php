@@ -74,6 +74,18 @@ function escape_table_cell(string $s): string
     return str_replace('|', '\\|', $s);
 }
 
+function code_table_cell(string $s): string
+{
+    // Render a value as an inline-code table cell that survives a Prettier reformat of
+    // the Markdown table. A `\|` escaped inside a backtick code span is still treated
+    // as a column delimiter by Prettier (it re-splits the row and adds phantom
+    // columns), so emit an HTML <code> cell with |, <, > (and the & they rely on)
+    // entity-escaped instead — those entities are never parsed as delimiters.
+    $s = str_replace(['&', '<', '>', '|'], ['&amp;', '&lt;', '&gt;', '&#124;'], $s);
+
+    return '<code>' . $s . '</code>';
+}
+
 function clean_empty_lines(string $content): string
 {
     return preg_replace('/\n{4,}/', "\n\n\n", $content) ?? $content;
@@ -87,8 +99,9 @@ function strip_cut_sections(string $content): string
 function strip_html_comments(string $content): string
 {
     // Remove standalone HTML comment lines (docs warning, config-reference markers,
-    // snippet-source provenance). Multi-line comment blocks are handled separately.
-    return preg_replace('/^[ \t]*<!--.*?-->[ \t]*\n/m', '', $content) ?? $content;
+    // snippet-source provenance). The `s` flag makes `.` span newlines so a standalone
+    // comment block that wraps across multiple lines is stripped whole, not left behind.
+    return preg_replace('/^[ \t]*<!--.*?-->[ \t]*\n/ms', '', $content) ?? $content;
 }
 
 function strip_contributing(string $content): string
@@ -415,7 +428,7 @@ foreach ($semanticFiles as $file) {
         continue;
     }
     $text = (string) file_get_contents($file);
-    $pattern = preg_match("/public const PATTERN = '(.+?)';/", $text, $m) === 1 ? '`' . escape_table_cell($m[1]) . '`' : '—';
+    $pattern = preg_match("/public const PATTERN = '(.+?)';/", $text, $m) === 1 ? code_table_cell($m[1]) : '—';
     $min = preg_match('/must be at least (\d+) character/', $text, $m) === 1 ? (int) $m[1] : null;
     $max = preg_match('/must be at most (\d+) character/', $text, $m) === 1 ? (int) $m[1] : null;
     $length = match (true) {
