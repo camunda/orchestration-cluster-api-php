@@ -35,6 +35,7 @@ function run(): void
     ]);
     $instance = null;
     $completed = false;
+    $failure = null;
 
     try {
         ExampleSupport::deploy($client, $resource);
@@ -80,22 +81,40 @@ function run(): void
         }
         $completed = true;
         printf("Forked worker completed process instance %s (%s).\n", $instance, $result->getState()->value);
+    } catch (\Throwable $error) {
+        $failure = $error;
     } finally {
+        $cleanupErrors = [];
+
         if (!$completed && $instance instanceof ProcessInstanceKey) {
-            ExampleSupport::cancelIfActive($client, $instance);
+            try {
+                ExampleSupport::cancelIfActive($client, $instance);
+            } catch (\Throwable $error) {
+                $cleanupErrors[] = $error->getMessage();
+            }
         }
-        $cleanupErrors = array_values(array_filter([
+
+        foreach ([
             cleanupFile($handledByPidFile, 'worker PID marker'),
             cleanupFile($resource, 'BPMN resource'),
-        ]));
+        ] as $cleanupError) {
+            if ($cleanupError !== null) {
+                $cleanupErrors[] = $cleanupError;
+            }
+        }
+
         if ($cleanupErrors !== []) {
             $cleanupMessage = implode(' ', $cleanupErrors);
-            if ($completed) {
-                throw new \RuntimeException($cleanupMessage);
+            if ($failure !== null) {
+                throw new \RuntimeException($failure->getMessage() . ' Cleanup also failed: ' . $cleanupMessage, 0, $failure);
             }
 
-            fwrite(STDERR, "Forked-worker cleanup warning: $cleanupMessage\n");
+            throw new \RuntimeException($cleanupMessage);
         }
+    }
+
+    if ($failure !== null) {
+        throw $failure;
     }
 }
 
