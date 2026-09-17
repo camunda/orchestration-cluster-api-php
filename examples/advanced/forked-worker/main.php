@@ -36,6 +36,7 @@ function run(): void
     $instance = null;
     $completed = false;
     $failure = null;
+    $cleanupMessage = null;
 
     try {
         ExampleSupport::deploy($client, $resource);
@@ -105,15 +106,16 @@ function run(): void
 
         if ($cleanupErrors !== []) {
             $cleanupMessage = implode(' ', $cleanupErrors);
-            if ($failure !== null) {
-                throw new \RuntimeException($failure->getMessage() . ' Cleanup also failed: ' . $cleanupMessage, 0, $failure);
+            if ($failure === null) {
+                throw new \RuntimeException($cleanupMessage);
             }
-
-            throw new \RuntimeException($cleanupMessage);
         }
     }
 
     if ($failure !== null) {
+        if ($cleanupMessage !== null) {
+            fwrite(STDERR, "Forked-worker cleanup warning: $cleanupMessage\n");
+        }
         throw $failure;
     }
 }
