@@ -9,6 +9,7 @@ php examples/advanced/sdk-test-drive/main.php
 php examples/advanced/order-worker/main.php
 php examples/advanced/message-correlation/main.php
 php examples/advanced/forked-worker/main.php
+php examples/advanced/showcase/main.php
 ```
 
 `make advanced-examples` runs the same sequence. The default client uses
@@ -23,6 +24,10 @@ authentication variables for another cluster.
   process-start race and at-least-once producer redelivery are both safe.
 - **forked-worker** exercises PHP's optional `ext-pcntl` worker mode. It skips
   cleanly when the extension is unavailable.
+- **showcase** runs six live scenario groups and writes a searchable HTML proof
+  report that indexes every top-level source snippet by its demonstrated API
+  area. It deliberately exercises mutating and privileged operations, so use
+  only a disposable cluster. See its [detailed guide](showcase/README.md).
 
 The Go SDK's raw gRPC and stream-worker scenarios have no PHP equivalent: this
 SDK currently exposes REST APIs only. Its adaptive backpressure example depends

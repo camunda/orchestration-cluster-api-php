@@ -396,6 +396,28 @@ The [`examples/advanced/`](examples/advanced/) directory contains self-verifying
 local-cluster scenarios for a test drive, resilient worker behavior, idempotent
 message correlation, and PHP process-forking.
 
+## Live example showcase
+
+With a disposable Camunda cluster already running, execute the six scenario
+showcase and create its HTML proof report:
+
+```sh
+CAMUNDA_REST_ADDRESS=http://localhost:8080 \
+CAMUNDA_AUTH_STRATEGY=NONE \
+  make example-showcase
+```
+
+The showcase runs focused workflow scenarios for deployment, process lifecycle,
+job workers, user tasks, incidents, message correlation, and management
+operations. The report indexes every source-backed snippet alongside the live
+scenario that demonstrates its API area. It intentionally performs mutations
+and cluster-management requests; never run it against a shared, staging, or
+production cluster.
+
+Run one scenario with `make example-showcase SCENARIO=<name>`. Open
+[`docs/example-validation.html`](docs/example-validation.html) after a run for
+the six outcomes and a searchable gallery of all source-backed snippets.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) for the development workflow, the generation pipeline, and the semantic-type machinery.

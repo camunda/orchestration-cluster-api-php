@@ -1,0 +1,149 @@
+{
+    "schemaVersion": 1,
+    "run": {
+        "startedAt": "2026-09-17T15:42:04+00:00",
+        "finishedAt": "2026-09-17T15:43:01+00:00",
+        "cluster": {
+            "restAddress": "http://localhost:8080/v2",
+            "gatewayVersion": "8.10.0-alpha5"
+        }
+    },
+    "snippets": {
+        "status": "PASS",
+        "summary": "All source-backed snippets passed syntax and PHPStan validation; the gallery maps them to these six live proofs."
+    },
+    "scenarios": [
+        {
+            "id": "bootstrap-and-discovery",
+            "status": "PASS",
+            "durationMs": 955,
+            "summary": "1 PASS, 0 expected constraints, 0 failures.",
+            "results": [
+                {
+                    "source": "examples/advanced/sdk-test-drive/main.php",
+                    "function": "sdk-test-drive",
+                    "status": "PASS",
+                    "durationMs": 955,
+                    "evidence": "Connected to Camunda 8.10.0-alpha5 with 1 broker(s). Process instance 2251799813707027 reached COMPLETED."
+                }
+            ]
+        },
+        {
+            "id": "deployment-and-lifecycle",
+            "status": "PASS",
+            "durationMs": 28,
+            "summary": "1 PASS, 0 expected constraints, 0 failures.",
+            "results": [
+                {
+                    "source": "examples/advanced/showcase/main.php",
+                    "function": "deployment_showcase",
+                    "status": "PASS",
+                    "durationMs": 28,
+                    "evidence": "Deployed BPMN and DMN resources and evaluated the pricing decision."
+                }
+            ]
+        },
+        {
+            "id": "jobs-and-workers",
+            "status": "PASS",
+            "durationMs": 52141,
+            "summary": "7 PASS, 0 expected constraints, 0 failures.",
+            "results": [
+                {
+                    "source": "examples/advanced/order-worker/main.php",
+                    "function": "order-worker",
+                    "status": "PASS",
+                    "durationMs": 1211,
+                    "evidence": "Completed 3 orders: normal=1, out-of-stock=1, retry=2 attempts."
+                },
+                {
+                    "source": "examples/advanced/forked-worker/main.php",
+                    "function": "forked-worker",
+                    "status": "PASS",
+                    "durationMs": 925,
+                    "evidence": "Forked worker child PID 25802 completed process instance 2251799813707096 (COMPLETED)."
+                },
+                {
+                    "source": "examples/job.php",
+                    "function": "job_worker",
+                    "status": "PASS",
+                    "durationMs": 828,
+                    "evidence": "Completed process instance 2251799813707113 through its bounded worker loop."
+                },
+                {
+                    "source": "examples/readme.php",
+                    "function": "readme_job_worker",
+                    "status": "PASS",
+                    "durationMs": 626,
+                    "evidence": "Completed process instance 2251799813707204 through its bounded worker loop."
+                },
+                {
+                    "source": "examples/job.php",
+                    "function": "job_worker_with_error_handling",
+                    "status": "PASS",
+                    "durationMs": 1028,
+                    "evidence": "Completed process instance 2251799813707225 through its bounded worker loop."
+                },
+                {
+                    "source": "examples/job.php",
+                    "function": "forked_job_worker",
+                    "status": "PASS",
+                    "durationMs": 826,
+                    "evidence": "Completed process instance 2251799813707247 through its bounded worker loop."
+                },
+                {
+                    "source": "examples/readme.php",
+                    "function": "object_job_handler",
+                    "status": "PASS",
+                    "durationMs": 829,
+                    "evidence": "Completed process instance 2251799813707585 through its bounded worker loop."
+                }
+            ]
+        },
+        {
+            "id": "runtime-interaction",
+            "status": "PASS",
+            "durationMs": 2169,
+            "summary": "1 PASS, 0 expected constraints, 0 failures.",
+            "results": [
+                {
+                    "source": "examples/advanced/showcase/main.php",
+                    "function": "runtime_showcase",
+                    "status": "PASS",
+                    "durationMs": 2163,
+                    "evidence": "Assigned and completed a user task, then induced, resolved, and cleaned up an incident."
+                }
+            ]
+        },
+        {
+            "id": "message-correlation",
+            "status": "PASS",
+            "durationMs": 563,
+            "summary": "1 PASS, 0 expected constraints, 0 failures.",
+            "results": [
+                {
+                    "source": "examples/advanced/message-correlation/main.php",
+                    "function": "message-correlation",
+                    "status": "PASS",
+                    "durationMs": 563,
+                    "evidence": "Correlated and completed 3 payment processes."
+                }
+            ]
+        },
+        {
+            "id": "management-and-operations",
+            "status": "PASS",
+            "durationMs": 425,
+            "summary": "1 PASS, 0 expected constraints, 0 failures.",
+            "results": [
+                {
+                    "source": "examples/advanced/showcase/main.php",
+                    "function": "management_showcase",
+                    "status": "PASS",
+                    "durationMs": 425,
+                    "evidence": "Read system configuration and exporting status, then paused and resumed exporting on 1 broker(s)."
+                }
+            ]
+        }
+    ]
+}
