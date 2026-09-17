@@ -69,15 +69,19 @@ final class ResourceKeyTest extends TestCase
             'in' => ['2251799813685676', '2251799813685677'],
         ]);
 
-        self::assertContainsOnlyInstancesOf(ScopeKey::class, $scopeFilter->getIn());
+        $scopeKeys = $scopeFilter->getIn();
+        self::assertNotNull($scopeKeys);
+        self::assertContainsOnlyInstancesOf(ScopeKey::class, $scopeKeys);
         self::assertSame(
             ['2251799813685249', '2251799813685250'],
-            array_map(static fn (ScopeKey $key): string => $key->value(), $scopeFilter->getIn())
+            array_map(static fn (ScopeKey $key): string => $key->value(), $scopeKeys)
         );
-        self::assertContainsOnlyInstancesOf(ResourceKey::class, $resourceFilter->getIn());
+        $resourceKeys = $resourceFilter->getIn();
+        self::assertNotNull($resourceKeys);
+        self::assertContainsOnlyInstancesOf(ResourceKey::class, $resourceKeys);
         self::assertSame(
             ['2251799813685676', '2251799813685677'],
-            array_map(static fn (ResourceKey $key): string => $key->value(), $resourceFilter->getIn())
+            array_map(static fn (ResourceKey $key): string => $key->value(), $resourceKeys)
         );
     }
 

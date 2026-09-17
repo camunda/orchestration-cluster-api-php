@@ -131,6 +131,9 @@ PHP;
     }
 
     $patched = str_replace($plainNeedle, $replacement, $src, $plainCount);
+    if ($plainCount > 0) {
+        return [$patched, true];
+    }
 
-    return [$patched, $plainCount > 0];
+    return [$src, str_contains($src, $replacement)];
 }
