@@ -60,7 +60,7 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
     protected static array $openAPITypes = [
         'expression' => 'string',
         'tenantId' => 'string',
-        'scopeKey' => '\Camunda\Orchestration\Api\Model\ScopeKey',
+        'scopeKey' => '\Camunda\Orchestration\Semantic\ScopeKey',
         'variables' => 'array<string,mixed>'
     ];
 
@@ -262,7 +262,27 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
             $this->openAPINullablesSetToNull[] = $variableName;
         }
 
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $value = $fields[$variableName] ?? $defaultValue;
+        $semanticType = static::$openAPITypes[$variableName] ?? null;
+        if (is_string($semanticType)) {
+            $isArray = str_ends_with($semanticType, '[]');
+            $elementType = $isArray ? substr($semanticType, 0, -2) : $semanticType;
+            if (
+                is_string($elementType)
+                && is_subclass_of($elementType, \Camunda\Orchestration\Semantic\SemanticKey::class)
+            ) {
+                if (is_string($value)) {
+                    $value = new $elementType($value);
+                } elseif ($isArray && is_array($value)) {
+                    foreach ($value as $index => $item) {
+                        if (is_string($item)) {
+                            $value[$index] = new $elementType($item);
+                        }
+                    }
+                }
+            }
+        }
+        $this->container[$variableName] = $value;
     }
 
     /**
@@ -344,9 +364,9 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
     /**
      * Gets scopeKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ScopeKey|null
+     * @return \Camunda\Orchestration\Semantic\ScopeKey|null
      */
-    public function getScopeKey(): ?\Camunda\Orchestration\Api\Model\ScopeKey
+    public function getScopeKey(): ?\Camunda\Orchestration\Semantic\ScopeKey
     {
         return $this->container['scopeKey'];
     }
@@ -354,11 +374,11 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
     /**
      * Sets scopeKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ScopeKey|null $scopeKey Key of the process instance or element instance whose variables should be made visible to the expression. Use a process instance key to evaluate against the process instance scope, or an element instance key to evaluate against that element instance scope. If omitted, the expression is evaluated unscoped, using only cluster variables and request-body variables.
+     * @param \Camunda\Orchestration\Semantic\ScopeKey|null $scopeKey Key of the process instance or element instance whose variables should be made visible to the expression. Use a process instance key to evaluate against the process instance scope, or an element instance key to evaluate against that element instance scope. If omitted, the expression is evaluated unscoped, using only cluster variables and request-body variables.
      *
      * @return $this
      */
-    public function setScopeKey(?\Camunda\Orchestration\Api\Model\ScopeKey $scopeKey): static
+    public function setScopeKey(?\Camunda\Orchestration\Semantic\ScopeKey $scopeKey): static
     {
         if (is_null($scopeKey)) {
             throw new InvalidArgumentException('non-nullable scopeKey cannot be null');

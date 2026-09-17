@@ -482,7 +482,7 @@ class ResourceApi
      *
      * Delete resource
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
      * @param  \Camunda\Orchestration\Api\Model\DeleteResourceRequest|null $deleteResourceRequest deleteResourceRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteResource'] to see the possible values for this operation
      *
@@ -491,7 +491,7 @@ class ResourceApi
      * @return \Camunda\Orchestration\Api\Model\DeleteResourceResponse|\Camunda\Orchestration\Api\Model\ProblemDetail
      */
     public function deleteResource(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         ?\Camunda\Orchestration\Api\Model\DeleteResourceRequest $deleteResourceRequest = null,
         string $contentType = self::contentTypes['deleteResource'][0]
     ): \Camunda\Orchestration\Api\Model\DeleteResourceResponse|\Camunda\Orchestration\Api\Model\ProblemDetail
@@ -505,7 +505,7 @@ class ResourceApi
      *
      * Delete resource
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
      * @param  \Camunda\Orchestration\Api\Model\DeleteResourceRequest|null $deleteResourceRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteResource'] to see the possible values for this operation
      *
@@ -514,7 +514,7 @@ class ResourceApi
      * @return array{0: \Camunda\Orchestration\Api\Model\DeleteResourceResponse|\Camunda\Orchestration\Api\Model\ProblemDetail, 1: int, 2: array<string, string[]>} [response data, HTTP status code, HTTP response headers]
      */
     public function deleteResourceWithHttpInfo(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         ?\Camunda\Orchestration\Api\Model\DeleteResourceRequest $deleteResourceRequest = null,
         string $contentType = self::contentTypes['deleteResource'][0]
     ): array
@@ -647,7 +647,7 @@ class ResourceApi
      *
      * Delete resource
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
      * @param  \Camunda\Orchestration\Api\Model\DeleteResourceRequest|null $deleteResourceRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteResource'] to see the possible values for this operation
      *
@@ -655,7 +655,7 @@ class ResourceApi
      * @return PromiseInterface
      */
     public function deleteResourceAsync(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         ?\Camunda\Orchestration\Api\Model\DeleteResourceRequest $deleteResourceRequest = null,
         string $contentType = self::contentTypes['deleteResource'][0]
     ): PromiseInterface
@@ -673,7 +673,7 @@ class ResourceApi
      *
      * Delete resource
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
      * @param  \Camunda\Orchestration\Api\Model\DeleteResourceRequest|null $deleteResourceRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteResource'] to see the possible values for this operation
      *
@@ -681,7 +681,7 @@ class ResourceApi
      * @return PromiseInterface
      */
     public function deleteResourceAsyncWithHttpInfo(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         ?\Camunda\Orchestration\Api\Model\DeleteResourceRequest $deleteResourceRequest = null,
         string $contentType = self::contentTypes['deleteResource'][0]
     ): PromiseInterface
@@ -728,7 +728,7 @@ class ResourceApi
     /**
      * Create request for operation 'deleteResource'
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
      * @param  \Camunda\Orchestration\Api\Model\DeleteResourceRequest|null $deleteResourceRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteResource'] to see the possible values for this operation
      *
@@ -736,7 +736,7 @@ class ResourceApi
      * @return \GuzzleHttp\Psr7\Request
      */
     public function deleteResourceRequest(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         ?\Camunda\Orchestration\Api\Model\DeleteResourceRequest $deleteResourceRequest = null,
         string $contentType = self::contentTypes['deleteResource'][0]
     ): Request
@@ -761,7 +761,7 @@ class ResourceApi
         if ($resourceKey !== null) {
             $resourcePath = str_replace(
                 '{resourceKey}',
-                ObjectSerializer::toPathValue($resourceKey),
+                ObjectSerializer::toPathValue((string) $resourceKey),
                 $resourcePath
             );
         }
@@ -849,7 +849,7 @@ class ResourceApi
      *
      * Get resource
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResource'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -857,7 +857,7 @@ class ResourceApi
      * @return \Camunda\Orchestration\Api\Model\ResourceResult|\Camunda\Orchestration\Api\Model\ProblemDetail
      */
     public function getResource(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResource'][0]
     ): \Camunda\Orchestration\Api\Model\ResourceResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
@@ -870,7 +870,7 @@ class ResourceApi
      *
      * Get resource
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResource'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -878,7 +878,7 @@ class ResourceApi
      * @return array{0: \Camunda\Orchestration\Api\Model\ResourceResult|\Camunda\Orchestration\Api\Model\ProblemDetail, 1: int, 2: array<string, string[]>} [response data, HTTP status code, HTTP response headers]
      */
     public function getResourceWithHttpInfo(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResource'][0]
     ): array
     {
@@ -982,14 +982,14 @@ class ResourceApi
      *
      * Get resource
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResource'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
      * @return PromiseInterface
      */
     public function getResourceAsync(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResource'][0]
     ): PromiseInterface
     {
@@ -1006,14 +1006,14 @@ class ResourceApi
      *
      * Get resource
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResource'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
      * @return PromiseInterface
      */
     public function getResourceAsyncWithHttpInfo(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResource'][0]
     ): PromiseInterface
     {
@@ -1059,14 +1059,14 @@ class ResourceApi
     /**
      * Create request for operation 'getResource'
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResource'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function getResourceRequest(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResource'][0]
     ): Request
     {
@@ -1089,7 +1089,7 @@ class ResourceApi
         if ($resourceKey !== null) {
             $resourcePath = str_replace(
                 '{resourceKey}',
-                ObjectSerializer::toPathValue($resourceKey),
+                ObjectSerializer::toPathValue((string) $resourceKey),
                 $resourcePath
             );
         }
@@ -1138,7 +1138,7 @@ class ResourceApi
      *
      * Get RPA resource content (deprecated)
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContent'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -1147,7 +1147,7 @@ class ResourceApi
      * @deprecated
      */
     public function getResourceContent(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResourceContent'][0]
     ): array|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
@@ -1160,7 +1160,7 @@ class ResourceApi
      *
      * Get RPA resource content (deprecated)
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContent'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -1169,7 +1169,7 @@ class ResourceApi
      * @deprecated
      */
     public function getResourceContentWithHttpInfo(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResourceContent'][0]
     ): array
     {
@@ -1287,7 +1287,7 @@ class ResourceApi
      *
      * Get RPA resource content (deprecated)
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContent'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
@@ -1295,7 +1295,7 @@ class ResourceApi
      * @deprecated
      */
     public function getResourceContentAsync(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResourceContent'][0]
     ): PromiseInterface
     {
@@ -1312,7 +1312,7 @@ class ResourceApi
      *
      * Get RPA resource content (deprecated)
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContent'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
@@ -1320,7 +1320,7 @@ class ResourceApi
      * @deprecated
      */
     public function getResourceContentAsyncWithHttpInfo(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResourceContent'][0]
     ): PromiseInterface
     {
@@ -1366,7 +1366,7 @@ class ResourceApi
     /**
      * Create request for operation 'getResourceContent'
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContent'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
@@ -1374,7 +1374,7 @@ class ResourceApi
      * @deprecated
      */
     public function getResourceContentRequest(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResourceContent'][0]
     ): Request
     {
@@ -1397,7 +1397,7 @@ class ResourceApi
         if ($resourceKey !== null) {
             $resourcePath = str_replace(
                 '{resourceKey}',
-                ObjectSerializer::toPathValue($resourceKey),
+                ObjectSerializer::toPathValue((string) $resourceKey),
                 $resourcePath
             );
         }
@@ -1446,7 +1446,7 @@ class ResourceApi
      *
      * Get resource content as binary
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContentBinary'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -1454,7 +1454,7 @@ class ResourceApi
      * @return \SplFileObject|\Camunda\Orchestration\Api\Model\ProblemDetail
      */
     public function getResourceContentBinary(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResourceContentBinary'][0]
     ): \SplFileObject|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
@@ -1467,7 +1467,7 @@ class ResourceApi
      *
      * Get resource content as binary
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContentBinary'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -1475,7 +1475,7 @@ class ResourceApi
      * @return array{0: \SplFileObject|\Camunda\Orchestration\Api\Model\ProblemDetail, 1: int, 2: array<string, string[]>} [response data, HTTP status code, HTTP response headers]
      */
     public function getResourceContentBinaryWithHttpInfo(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResourceContentBinary'][0]
     ): array
     {
@@ -1579,14 +1579,14 @@ class ResourceApi
      *
      * Get resource content as binary
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContentBinary'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
      * @return PromiseInterface
      */
     public function getResourceContentBinaryAsync(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResourceContentBinary'][0]
     ): PromiseInterface
     {
@@ -1603,14 +1603,14 @@ class ResourceApi
      *
      * Get resource content as binary
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContentBinary'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
      * @return PromiseInterface
      */
     public function getResourceContentBinaryAsyncWithHttpInfo(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResourceContentBinary'][0]
     ): PromiseInterface
     {
@@ -1656,14 +1656,14 @@ class ResourceApi
     /**
      * Create request for operation 'getResourceContentBinary'
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContentBinary'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function getResourceContentBinaryRequest(
-        \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey,
+        \Camunda\Orchestration\Semantic\ResourceKey $resourceKey,
         string $contentType = self::contentTypes['getResourceContentBinary'][0]
     ): Request
     {
@@ -1686,7 +1686,7 @@ class ResourceApi
         if ($resourceKey !== null) {
             $resourcePath = str_replace(
                 '{resourceKey}',
-                ObjectSerializer::toPathValue($resourceKey),
+                ObjectSerializer::toPathValue((string) $resourceKey),
                 $resourcePath
             );
         }

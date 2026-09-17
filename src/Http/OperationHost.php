@@ -53,7 +53,16 @@ final class OperationHost
 
         if (self::isRelativePath($parts, $restAddress)) {
             if (self::hasAbsoluteOverride($merged)) {
-                return ApiConfiguration::getHostString($hostSettings, $hostIndex, $merged);
+                $basePath = self::basePath($parts);
+                if ($basePath !== '' && !str_starts_with($basePath, '/')) {
+                    $basePath = '/' . $basePath;
+                }
+
+                return ApiConfiguration::getHostString(
+                    $hostSettings,
+                    $hostIndex,
+                    array_replace(['basePath' => $basePath], $merged),
+                );
             }
 
             if (self::hasPartialAbsoluteOverride($merged)) {
@@ -108,11 +117,16 @@ final class OperationHost
     private static function basePath(array|false $parts): string
     {
         $path = is_array($parts) ? $parts['path'] ?? '' : '';
-        if (!is_string($path) || $path === '' || $path === '/v2') {
+        if (!is_string($path) || $path === '') {
             return '';
         }
 
-        $basePath = rtrim((string) preg_replace('#/v\d+$#', '', rtrim($path, '/')), '/');
+        $trimmedPath = rtrim($path, '/');
+        if ($trimmedPath === '' || preg_match('#^/?v\d+$#', $trimmedPath) === 1) {
+            return '';
+        }
+
+        $basePath = rtrim((string) preg_replace('#(?:^|/)v\d+$#', '', $trimmedPath), '/');
 
         return $basePath === '' || $basePath === '/' ? '' : $basePath;
     }

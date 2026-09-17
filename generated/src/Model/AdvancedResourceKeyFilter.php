@@ -59,11 +59,11 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
      * @var array<string, string>
      */
     protected static array $openAPITypes = [
-        'eq' => '\Camunda\Orchestration\Api\Model\ResourceKey',
-        'neq' => '\Camunda\Orchestration\Api\Model\ResourceKey',
+        'eq' => '\Camunda\Orchestration\Semantic\ResourceKey',
+        'neq' => '\Camunda\Orchestration\Semantic\ResourceKey',
         'exists' => 'bool',
-        'in' => '\Camunda\Orchestration\Api\Model\ResourceKey[]',
-        'notIn' => '\Camunda\Orchestration\Api\Model\ResourceKey[]'
+        'in' => '\Camunda\Orchestration\Semantic\ResourceKey[]',
+        'notIn' => '\Camunda\Orchestration\Semantic\ResourceKey[]'
     ];
 
     /**
@@ -270,7 +270,27 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
             $this->openAPINullablesSetToNull[] = $variableName;
         }
 
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $value = $fields[$variableName] ?? $defaultValue;
+        $semanticType = static::$openAPITypes[$variableName] ?? null;
+        if (is_string($semanticType)) {
+            $isArray = str_ends_with($semanticType, '[]');
+            $elementType = $isArray ? substr($semanticType, 0, -2) : $semanticType;
+            if (
+                is_string($elementType)
+                && is_subclass_of($elementType, \Camunda\Orchestration\Semantic\SemanticKey::class)
+            ) {
+                if (is_string($value)) {
+                    $value = new $elementType($value);
+                } elseif ($isArray && is_array($value)) {
+                    foreach ($value as $index => $item) {
+                        if (is_string($item)) {
+                            $value[$index] = new $elementType($item);
+                        }
+                    }
+                }
+            }
+        }
+        $this->container[$variableName] = $value;
     }
 
     /**
@@ -295,9 +315,9 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Gets eq
      *
-     * @return \Camunda\Orchestration\Api\Model\ResourceKey|null
+     * @return \Camunda\Orchestration\Semantic\ResourceKey|null
      */
-    public function getEq(): ?\Camunda\Orchestration\Api\Model\ResourceKey
+    public function getEq(): ?\Camunda\Orchestration\Semantic\ResourceKey
     {
         return $this->container['eq'];
     }
@@ -305,11 +325,11 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Sets eq
      *
-     * @param \Camunda\Orchestration\Api\Model\ResourceKey|null $eq Checks for equality with the provided value.
+     * @param \Camunda\Orchestration\Semantic\ResourceKey|null $eq Checks for equality with the provided value.
      *
      * @return $this
      */
-    public function setEq(?\Camunda\Orchestration\Api\Model\ResourceKey $eq): static
+    public function setEq(?\Camunda\Orchestration\Semantic\ResourceKey $eq): static
     {
         if (is_null($eq)) {
             throw new InvalidArgumentException('non-nullable eq cannot be null');
@@ -322,9 +342,9 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Gets neq
      *
-     * @return \Camunda\Orchestration\Api\Model\ResourceKey|null
+     * @return \Camunda\Orchestration\Semantic\ResourceKey|null
      */
-    public function getNeq(): ?\Camunda\Orchestration\Api\Model\ResourceKey
+    public function getNeq(): ?\Camunda\Orchestration\Semantic\ResourceKey
     {
         return $this->container['neq'];
     }
@@ -332,11 +352,11 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Sets neq
      *
-     * @param \Camunda\Orchestration\Api\Model\ResourceKey|null $neq Checks for inequality with the provided value.
+     * @param \Camunda\Orchestration\Semantic\ResourceKey|null $neq Checks for inequality with the provided value.
      *
      * @return $this
      */
-    public function setNeq(?\Camunda\Orchestration\Api\Model\ResourceKey $neq): static
+    public function setNeq(?\Camunda\Orchestration\Semantic\ResourceKey $neq): static
     {
         if (is_null($neq)) {
             throw new InvalidArgumentException('non-nullable neq cannot be null');
@@ -376,7 +396,7 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Gets in
      *
-     * @return \Camunda\Orchestration\Api\Model\ResourceKey[]|null
+     * @return \Camunda\Orchestration\Semantic\ResourceKey[]|null
      */
     public function getIn(): ?array
     {
@@ -386,7 +406,7 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Sets in
      *
-     * @param \Camunda\Orchestration\Api\Model\ResourceKey[]|null $in Checks if the property matches any of the provided values.
+     * @param \Camunda\Orchestration\Semantic\ResourceKey[]|null $in Checks if the property matches any of the provided values.
      *
      * @return $this
      */
@@ -403,7 +423,7 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Gets notIn
      *
-     * @return \Camunda\Orchestration\Api\Model\ResourceKey[]|null
+     * @return \Camunda\Orchestration\Semantic\ResourceKey[]|null
      */
     public function getNotIn(): ?array
     {
@@ -413,7 +433,7 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Sets notIn
      *
-     * @param \Camunda\Orchestration\Api\Model\ResourceKey[]|null $notIn Checks if the property matches none of the provided values.
+     * @param \Camunda\Orchestration\Semantic\ResourceKey[]|null $notIn Checks if the property matches none of the provided values.
      *
      * @return $this
      */

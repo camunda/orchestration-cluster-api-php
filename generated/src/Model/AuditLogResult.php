@@ -86,7 +86,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
         'decisionEvaluationKey' => '\Camunda\Orchestration\Semantic\DecisionEvaluationKey',
         'deploymentKey' => '\Camunda\Orchestration\Semantic\DeploymentKey',
         'formKey' => '\Camunda\Orchestration\Semantic\FormKey',
-        'resourceKey' => '\Camunda\Orchestration\Api\Model\ResourceKey',
+        'resourceKey' => '\Camunda\Orchestration\Semantic\ResourceKey',
         'relatedEntityKey' => '\Camunda\Orchestration\Semantic\AuditLogEntityKey',
         'relatedEntityType' => '\Camunda\Orchestration\Api\Model\AuditLogEntityTypeEnum',
         'entityDescription' => 'string',
@@ -468,12 +468,23 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
 
         $value = $fields[$variableName] ?? $defaultValue;
         $semanticType = static::$openAPITypes[$variableName] ?? null;
-        if (
-            is_string($value)
-            && is_string($semanticType)
-            && is_subclass_of($semanticType, \Camunda\Orchestration\Semantic\SemanticKey::class)
-        ) {
-            $value = new $semanticType($value);
+        if (is_string($semanticType)) {
+            $isArray = str_ends_with($semanticType, '[]');
+            $elementType = $isArray ? substr($semanticType, 0, -2) : $semanticType;
+            if (
+                is_string($elementType)
+                && is_subclass_of($elementType, \Camunda\Orchestration\Semantic\SemanticKey::class)
+            ) {
+                if (is_string($value)) {
+                    $value = new $elementType($value);
+                } elseif ($isArray && is_array($value)) {
+                    foreach ($value as $index => $item) {
+                        if (is_string($item)) {
+                            $value[$index] = new $elementType($item);
+                        }
+                    }
+                }
+            }
         }
         $this->container[$variableName] = $value;
     }
@@ -1340,9 +1351,9 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets resourceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ResourceKey|null
+     * @return \Camunda\Orchestration\Semantic\ResourceKey|null
      */
-    public function getResourceKey(): ?\Camunda\Orchestration\Api\Model\ResourceKey
+    public function getResourceKey(): ?\Camunda\Orchestration\Semantic\ResourceKey
     {
         return $this->container['resourceKey'];
     }
@@ -1350,11 +1361,11 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets resourceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ResourceKey|null $resourceKey The system-assigned key for this resource.
+     * @param \Camunda\Orchestration\Semantic\ResourceKey|null $resourceKey The system-assigned key for this resource.
      *
      * @return $this
      */
-    public function setResourceKey(?\Camunda\Orchestration\Api\Model\ResourceKey $resourceKey): static
+    public function setResourceKey(?\Camunda\Orchestration\Semantic\ResourceKey $resourceKey): static
     {
         if (is_null($resourceKey)) {
             array_push($this->openAPINullablesSetToNull, 'resourceKey');

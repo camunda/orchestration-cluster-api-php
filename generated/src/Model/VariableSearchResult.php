@@ -61,7 +61,7 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
         'name' => 'string',
         'tenantId' => 'string',
         'variableKey' => 'string',
-        'scopeKey' => '\Camunda\Orchestration\Api\Model\ScopeKey',
+        'scopeKey' => '\Camunda\Orchestration\Semantic\ScopeKey',
         'processInstanceKey' => 'string',
         'rootProcessInstanceKey' => 'string',
         'value' => 'string',
@@ -290,7 +290,27 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
             $this->openAPINullablesSetToNull[] = $variableName;
         }
 
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $value = $fields[$variableName] ?? $defaultValue;
+        $semanticType = static::$openAPITypes[$variableName] ?? null;
+        if (is_string($semanticType)) {
+            $isArray = str_ends_with($semanticType, '[]');
+            $elementType = $isArray ? substr($semanticType, 0, -2) : $semanticType;
+            if (
+                is_string($elementType)
+                && is_subclass_of($elementType, \Camunda\Orchestration\Semantic\SemanticKey::class)
+            ) {
+                if (is_string($value)) {
+                    $value = new $elementType($value);
+                } elseif ($isArray && is_array($value)) {
+                    foreach ($value as $index => $item) {
+                        if (is_string($item)) {
+                            $value[$index] = new $elementType($item);
+                        }
+                    }
+                }
+            }
+        }
+        $this->container[$variableName] = $value;
     }
 
     /**
@@ -442,9 +462,9 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
     /**
      * Gets scopeKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ScopeKey
+     * @return \Camunda\Orchestration\Semantic\ScopeKey
      */
-    public function getScopeKey(): \Camunda\Orchestration\Api\Model\ScopeKey
+    public function getScopeKey(): \Camunda\Orchestration\Semantic\ScopeKey
     {
         return $this->container['scopeKey'];
     }
@@ -452,11 +472,11 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
     /**
      * Sets scopeKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ScopeKey $scopeKey The key of the scope where this variable is directly defined. For process-level variables, this is the process instance key. For local variables, this is the key of the specific element instance (task, subprocess, gateway, event, etc.) where the variable is directly defined.
+     * @param \Camunda\Orchestration\Semantic\ScopeKey $scopeKey The key of the scope where this variable is directly defined. For process-level variables, this is the process instance key. For local variables, this is the key of the specific element instance (task, subprocess, gateway, event, etc.) where the variable is directly defined.
      *
      * @return $this
      */
-    public function setScopeKey(\Camunda\Orchestration\Api\Model\ScopeKey $scopeKey): static
+    public function setScopeKey(\Camunda\Orchestration\Semantic\ScopeKey $scopeKey): static
     {
         if (is_null($scopeKey)) {
             throw new InvalidArgumentException('non-nullable scopeKey cannot be null');

@@ -63,7 +63,7 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
         'resourceName' => 'string',
         'version' => 'int',
         'tenantId' => '\Camunda\Orchestration\Semantic\TenantId',
-        'resourceKey' => '\Camunda\Orchestration\Api\Model\ResourceKey'
+        'resourceKey' => '\Camunda\Orchestration\Semantic\ResourceKey'
     ];
 
     /**
@@ -272,12 +272,23 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
 
         $value = $fields[$variableName] ?? $defaultValue;
         $semanticType = static::$openAPITypes[$variableName] ?? null;
-        if (
-            is_string($value)
-            && is_string($semanticType)
-            && is_subclass_of($semanticType, \Camunda\Orchestration\Semantic\SemanticKey::class)
-        ) {
-            $value = new $semanticType($value);
+        if (is_string($semanticType)) {
+            $isArray = str_ends_with($semanticType, '[]');
+            $elementType = $isArray ? substr($semanticType, 0, -2) : $semanticType;
+            if (
+                is_string($elementType)
+                && is_subclass_of($elementType, \Camunda\Orchestration\Semantic\SemanticKey::class)
+            ) {
+                if (is_string($value)) {
+                    $value = new $elementType($value);
+                } elseif ($isArray && is_array($value)) {
+                    foreach ($value as $index => $item) {
+                        if (is_string($item)) {
+                            $value[$index] = new $elementType($item);
+                        }
+                    }
+                }
+            }
         }
         $this->container[$variableName] = $value;
     }
@@ -436,9 +447,9 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
     /**
      * Gets resourceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ResourceKey
+     * @return \Camunda\Orchestration\Semantic\ResourceKey
      */
-    public function getResourceKey(): \Camunda\Orchestration\Api\Model\ResourceKey
+    public function getResourceKey(): \Camunda\Orchestration\Semantic\ResourceKey
     {
         return $this->container['resourceKey'];
     }
@@ -446,11 +457,11 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
     /**
      * Sets resourceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The assigned key, which acts as a unique identifier for this Resource.
+     * @param \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The assigned key, which acts as a unique identifier for this Resource.
      *
      * @return $this
      */
-    public function setResourceKey(\Camunda\Orchestration\Api\Model\ResourceKey $resourceKey): static
+    public function setResourceKey(\Camunda\Orchestration\Semantic\ResourceKey $resourceKey): static
     {
         if (is_null($resourceKey)) {
             throw new InvalidArgumentException('non-nullable resourceKey cannot be null');

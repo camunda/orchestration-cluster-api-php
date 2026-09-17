@@ -7,33 +7,61 @@ namespace Camunda\Orchestration\Semantic;
 use InvalidArgumentException;
 
 /**
- * Factory for the ResourceKey key set (ProcessDefinitionKey, DecisionRequirementsKey, FormKey, DecisionDefinitionKey).
- *
- * PHP has no union types for classes, so this lifts a raw string into the first
- * branch whose constraints accept it.
+ * Semantic identifier that accepts any of: ProcessDefinitionKey, DecisionRequirementsKey, FormKey, DecisionDefinitionKey.
  */
-final class ResourceKey
+final class ResourceKey implements SemanticKey
 {
-    public static function of(string $value): SemanticKey
+    public const NAME = 'ResourceKey';
+
+    public function __construct(private readonly string $value)
     {
         try {
-            return new ProcessDefinitionKey($value);
+            new ProcessDefinitionKey($value);
+            return;
         } catch (InvalidArgumentException) {
         }
         try {
-            return new DecisionRequirementsKey($value);
+            new DecisionRequirementsKey($value);
+            return;
         } catch (InvalidArgumentException) {
         }
         try {
-            return new FormKey($value);
+            new FormKey($value);
+            return;
         } catch (InvalidArgumentException) {
         }
         try {
-            return new DecisionDefinitionKey($value);
+            new DecisionDefinitionKey($value);
+            return;
         } catch (InvalidArgumentException) {
         }
         throw new InvalidArgumentException(
             sprintf('%s: "%s" matched no branch (ProcessDefinitionKey, DecisionRequirementsKey, FormKey, DecisionDefinitionKey)', 'ResourceKey', $value)
         );
+    }
+
+    public static function of(string $value): self
+    {
+        return new self($value);
+    }
+
+    public function value(): string
+    {
+        return $this->value;
+    }
+
+    public function equals(self $other): bool
+    {
+        return $this->value === $other->value;
+    }
+
+    public function __toString(): string
+    {
+        return $this->value;
+    }
+
+    public function jsonSerialize(): string
+    {
+        return $this->value;
     }
 }

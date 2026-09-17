@@ -511,14 +511,12 @@ class ClusterApi
             if ($hostIndex < 0 || $hostIndex >= count($hostSettings)) {
                 throw new InvalidArgumentException("Invalid index {$hostIndex} when selecting the host. Must be less than ".count($hostSettings));
             }
-            $operationHost = Configuration::getHostString(
+            $operationHost = \Camunda\Orchestration\Http\OperationHost::resolveHost(
+                $this->config->getHost(),
                 $hostSettings,
                 $hostIndex,
-                \Camunda\Orchestration\Http\OperationHost::resolveVariables(
-                    $this->config->getHost(),
-                    $this->config->getOperationHostVariables(),
-                    $variables,
-                ),
+                $this->config->getOperationHostVariables(),
+                $variables,
             );
         }
         $query = ObjectSerializer::buildQuery($queryParams);
@@ -933,14 +931,12 @@ class ClusterApi
             if ($hostIndex < 0 || $hostIndex >= count($hostSettings)) {
                 throw new InvalidArgumentException("Invalid index {$hostIndex} when selecting the host. Must be less than ".count($hostSettings));
             }
-            $operationHost = Configuration::getHostString(
+            $operationHost = \Camunda\Orchestration\Http\OperationHost::resolveHost(
+                $this->config->getHost(),
                 $hostSettings,
                 $hostIndex,
-                \Camunda\Orchestration\Http\OperationHost::resolveVariables(
-                    $this->config->getHost(),
-                    $this->config->getOperationHostVariables(),
-                    $variables,
-                ),
+                $this->config->getOperationHostVariables(),
+                $variables,
             );
         }
         $query = ObjectSerializer::buildQuery($queryParams);
@@ -1289,14 +1285,12 @@ class ClusterApi
             if ($hostIndex < 0 || $hostIndex >= count($hostSettings)) {
                 throw new InvalidArgumentException("Invalid index {$hostIndex} when selecting the host. Must be less than ".count($hostSettings));
             }
-            $operationHost = Configuration::getHostString(
+            $operationHost = \Camunda\Orchestration\Http\OperationHost::resolveHost(
+                $this->config->getHost(),
                 $hostSettings,
                 $hostIndex,
-                \Camunda\Orchestration\Http\OperationHost::resolveVariables(
-                    $this->config->getHost(),
-                    $this->config->getOperationHostVariables(),
-                    $variables,
-                ),
+                $this->config->getOperationHostVariables(),
+                $variables,
             );
         }
         $query = ObjectSerializer::buildQuery($queryParams);
@@ -1683,14 +1677,12 @@ class ClusterApi
             if ($hostIndex < 0 || $hostIndex >= count($hostSettings)) {
                 throw new InvalidArgumentException("Invalid index {$hostIndex} when selecting the host. Must be less than ".count($hostSettings));
             }
-            $operationHost = Configuration::getHostString(
+            $operationHost = \Camunda\Orchestration\Http\OperationHost::resolveHost(
+                $this->config->getHost(),
                 $hostSettings,
                 $hostIndex,
-                \Camunda\Orchestration\Http\OperationHost::resolveVariables(
-                    $this->config->getHost(),
-                    $this->config->getOperationHostVariables(),
-                    $variables,
-                ),
+                $this->config->getOperationHostVariables(),
+                $variables,
             );
         }
         $query = ObjectSerializer::buildQuery($queryParams);
@@ -2647,14 +2639,12 @@ class ClusterApi
             if ($hostIndex < 0 || $hostIndex >= count($hostSettings)) {
                 throw new InvalidArgumentException("Invalid index {$hostIndex} when selecting the host. Must be less than ".count($hostSettings));
             }
-            $operationHost = Configuration::getHostString(
+            $operationHost = \Camunda\Orchestration\Http\OperationHost::resolveHost(
+                $this->config->getHost(),
                 $hostSettings,
                 $hostIndex,
-                \Camunda\Orchestration\Http\OperationHost::resolveVariables(
-                    $this->config->getHost(),
-                    $this->config->getOperationHostVariables(),
-                    $variables,
-                ),
+                $this->config->getOperationHostVariables(),
+                $variables,
             );
         }
         $query = ObjectSerializer::buildQuery($queryParams);
