@@ -10,8 +10,6 @@ use RuntimeException;
 
 final class OperationHostHookTest extends TestCase
 {
-    private static ?Closure $operationHostHook = null;
-
     public function testHookPatchesOperationHostCallsites(): void
     {
         $dir = $this->createGeneratedFixture($this->unpatchedApiSource());
@@ -64,18 +62,21 @@ final class OperationHostHookTest extends TestCase
         }
     }
 
+    public function testHookCanBeRequiredMoreThanOnce(): void
+    {
+        self::assertInstanceOf(Closure::class, self::operationHostHook());
+        self::assertInstanceOf(Closure::class, self::operationHostHook());
+    }
+
     /**
      * @return Closure(array{out_dir: string}): void
      */
     private static function operationHostHook(): Closure
     {
-        if (self::$operationHostHook === null) {
-            /** @var Closure(array{out_dir: string}): void $hook */
-            $hook = require dirname(__DIR__, 2) . '/hooks/post_gen/0125_operation_host_variables.php';
-            self::$operationHostHook = $hook;
-        }
+        /** @var Closure(array{out_dir: string}): void $hook */
+        $hook = require dirname(__DIR__, 2) . '/hooks/post_gen/0125_operation_host_variables.php';
 
-        return self::$operationHostHook;
+        return $hook;
     }
 
     private function createGeneratedFixture(string $apiSource): string

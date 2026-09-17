@@ -11,6 +11,20 @@
 declare(strict_types=1);
 
 return static function (array $ctx): void {
+    $replaceOnce = static function (
+        string $source,
+        string $needle,
+        string $replacement,
+        string $description,
+    ): string {
+        $position = strpos($source, $needle);
+        if ($position === false) {
+            throw new RuntimeException("hook 0125: anchor for $description not found");
+        }
+
+        return substr($source, 0, $position) . $replacement . substr($source, $position + strlen($needle));
+    };
+
     $outDir = $ctx['out_dir'] ?? null;
     if (!is_string($outDir) || $outDir === '') {
         throw new RuntimeException('hook 0125: output directory not provided');
@@ -23,7 +37,7 @@ return static function (array $ctx): void {
 
     $configurationSource = (string) file_get_contents($configuration);
     if (!str_contains($configurationSource, 'getOperationHostVariables')) {
-        $configurationSource = replace_once_operation_hosts(
+        $configurationSource = $replaceOnce(
             $configurationSource,
             "    protected bool \$ignoreOperationHosts = false;\n",
             <<<'PHP'
@@ -38,7 +52,7 @@ return static function (array $ctx): void {
 PHP,
             'operation-host variables property',
         );
-        $configurationSource = replace_once_operation_hosts(
+        $configurationSource = $replaceOnce(
             $configurationSource,
             <<<'PHP'
     public function getIgnoreOperationHosts(): bool
@@ -172,17 +186,3 @@ PHP;
 
     fwrite(STDOUT, "  [operation-hosts] configured $operationHostBuilders operation-specific server calls\n");
 };
-
-function replace_once_operation_hosts(
-    string $source,
-    string $needle,
-    string $replacement,
-    string $description,
-): string {
-    $position = strpos($source, $needle);
-    if ($position === false) {
-        throw new RuntimeException("hook 0125: anchor for $description not found");
-    }
-
-    return substr($source, 0, $position) . $replacement . substr($source, $position + strlen($needle));
-}
