@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Auth;
 
 use Camunda\Orchestration\Exception\AuthenticationException;
+use Closure;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -22,6 +23,8 @@ final class OAuthClientCredentialsProvider implements AuthProvider
 
     private ?string $accessToken = null;
     private float $expiresAtEpoch = 0.0;
+    /** @var Closure(): float */
+    private readonly Closure $now;
 
     public function __construct(
         private readonly ClientInterface $httpClient,
@@ -31,7 +34,9 @@ final class OAuthClientCredentialsProvider implements AuthProvider
         private readonly string $clientId,
         private readonly string $clientSecret,
         private readonly string $audience,
+        ?Closure $now = null,
     ) {
+        $this->now = $now ?? static fn (): float => microtime(true);
     }
 
     public function getHeaders(): array
@@ -41,7 +46,7 @@ final class OAuthClientCredentialsProvider implements AuthProvider
 
     private function token(): string
     {
-        if ($this->accessToken !== null && microtime(true) < $this->expiresAtEpoch) {
+        if ($this->accessToken !== null && ($this->now)() < $this->expiresAtEpoch) {
             return $this->accessToken;
         }
         return $this->fetchToken();
@@ -87,7 +92,7 @@ final class OAuthClientCredentialsProvider implements AuthProvider
 
         $expiresIn = isset($payload['expires_in']) ? (int) $payload['expires_in'] : 300;
         $this->accessToken = $payload['access_token'];
-        $this->expiresAtEpoch = microtime(true) + max(1, $expiresIn - self::EXPIRY_LEEWAY_SECONDS);
+        $this->expiresAtEpoch = ($this->now)() + max(1, $expiresIn - self::EXPIRY_LEEWAY_SECONDS);
 
         return $this->accessToken;
     }

@@ -16,6 +16,7 @@ final class OAuthClientCredentialsProviderTest extends TestCase
 {
     public function testCachesAnOAuthTokenUntilItsRefreshWindow(): void
     {
+        $now = 1_000.0;
         $httpClient = new RecordingTokenClient(
             new Response(
                 200,
@@ -37,13 +38,16 @@ final class OAuthClientCredentialsProviderTest extends TestCase
             clientId: 'client id',
             clientSecret: 'client secret',
             audience: 'zeebe-api',
+            now: static function () use (&$now): float {
+                return $now;
+            },
         );
 
         self::assertSame(['Authorization' => 'Bearer ' . 'access-token'], $provider->getHeaders());
         self::assertSame(['Authorization' => 'Bearer ' . 'access-token'], $provider->getHeaders());
         self::assertCount(1, $httpClient->requests);
 
-        usleep(1_100_000);
+        $now += 1.1;
 
         self::assertSame(['Authorization' => 'Bearer ' . 'refreshed-access-token'], $provider->getHeaders());
         self::assertCount(2, $httpClient->requests);
