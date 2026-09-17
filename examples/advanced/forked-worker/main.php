@@ -72,14 +72,7 @@ function run(): void
         }
 
         $result = ExampleSupport::waitForCompletion($client, $instance);
-        $handledByPid = file_get_contents($handledByPidFile);
-        if ($handledByPid === false) {
-            throw new \RuntimeException('Cannot read the worker PID marker.');
-        }
-        $handledByPid = trim($handledByPid);
-        if ($handledByPid === '') {
-            throw new \RuntimeException('The forked worker did not record a handler PID.');
-        }
+        $handledByPid = waitForHandledByPid($handledByPidFile);
         if ($handledByPid === (string) $parentPid) {
             throw new \RuntimeException(
                 sprintf('Expected a forked worker child process, but job ran in parent PID %d.', $parentPid),
@@ -101,6 +94,32 @@ function cleanupFile(string $path, string $label): void
     if (is_file($path) && !unlink($path)) {
         throw new \RuntimeException("Cannot remove temporary $label file: $path");
     }
+}
+
+function waitForHandledByPid(string $path, int $timeoutSeconds = 5): string
+{
+    $deadline = microtime(true) + $timeoutSeconds;
+    $lastState = 'PID marker not yet recorded';
+
+    do {
+        $handledByPid = file_get_contents($path);
+        if ($handledByPid !== false) {
+            $handledByPid = trim($handledByPid);
+            if ($handledByPid !== '') {
+                return $handledByPid;
+            }
+
+            $lastState = 'PID marker is still empty';
+        } else {
+            $lastState = 'PID marker is not readable';
+        }
+
+        usleep(200_000);
+    } while (microtime(true) < $deadline);
+
+    throw new \RuntimeException(
+        "The forked worker did not record a handler PID within $timeoutSeconds seconds ($lastState).",
+    );
 }
 
 try {
