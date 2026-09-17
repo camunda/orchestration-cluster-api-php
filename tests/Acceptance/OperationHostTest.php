@@ -31,7 +31,7 @@ final class OperationHostTest extends TestCase
 
         $request = $client->api(ClusterApi::class)->getClusterStatusRequest();
 
-        self::assertSame('https://cluster.example.test:443/gateway/cluster/v2/status', (string) $request->getUri());
+        self::assertSame('https://cluster.example.test/gateway/cluster/v2/status', (string) $request->getUri());
     }
 
     public function testExplicitOperationHostVariablesOverrideConfiguredHost(): void
@@ -78,7 +78,7 @@ final class OperationHostTest extends TestCase
 
         $request = $client->api(ExportingApi::class)->getClusterExportingStatusRequest();
 
-        self::assertSame('https://cluster.example.test:443/proxy/cluster/v2/exporting', (string) $request->getUri());
+        self::assertSame('https://cluster.example.test/proxy/cluster/v2/exporting', (string) $request->getUri());
     }
 
     public function testOperationHostRejectsRelativeAddress(): void
