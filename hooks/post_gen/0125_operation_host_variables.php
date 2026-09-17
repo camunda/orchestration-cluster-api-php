@@ -11,7 +11,12 @@
 declare(strict_types=1);
 
 return static function (array $ctx): void {
-    $configuration = $ctx['out_dir'] . '/src/Configuration.php';
+    $outDir = $ctx['out_dir'] ?? null;
+    if (!is_string($outDir) || $outDir === '') {
+        throw new RuntimeException('hook 0125: output directory not provided');
+    }
+
+    $configuration = $outDir . '/src/Configuration.php';
     if (!is_file($configuration)) {
         throw new RuntimeException('hook 0125: Configuration.php not found');
     }
@@ -73,27 +78,46 @@ PHP,
         }
     }
 
-    $replacement = 'array_replace($this->config->getOperationHostVariables(), $variables)';
-    $callsiteNeedle = 'Configuration::getHostString(';
-    $patched = 0;
-    foreach (glob($ctx['out_dir'] . '/src/Api/*.php') ?: [] as $file) {
+    $unconfiguredBuilder = '$operationHost = Configuration::getHostString($hostSettings, $hostIndex, $variables);';
+    $configuredBuilder = <<<'PHP'
+$operationHost = Configuration::getHostString(
+                $hostSettings,
+                $hostIndex,
+                array_replace($this->config->getOperationHostVariables(), $variables),
+            );
+PHP;
+    $hostSettingsAssignment = '$hostSettings = $this->getHostSettingsFor';
+    $operationHostBuilders = 0;
+    foreach (glob($outDir . '/src/Api/*.php') ?: [] as $file) {
         $source = (string) file_get_contents($file);
-        if (!str_contains($source, $callsiteNeedle)) {
+        $expected = substr_count($source, $hostSettingsAssignment);
+        if ($expected === 0) {
             continue;
         }
 
-        ['source' => $source, 'count' => $count] = patch_operation_host_calls($source, $replacement, $file);
-        if ($count === 0) {
-            continue;
+        $unconfigured = substr_count($source, $unconfiguredBuilder);
+        $configured = substr_count($source, $configuredBuilder);
+        if ($expected !== $unconfigured + $configured) {
+            throw new RuntimeException(
+                "hook 0125: expected $expected operation-specific host builder(s) in $file, found $unconfigured unconfigured and $configured configured",
+            );
         }
 
-        if (file_put_contents($file, $source) === false) {
-            throw new RuntimeException("hook 0125: cannot write $file");
+        if ($unconfigured > 0) {
+            $source = str_replace($unconfiguredBuilder, $configuredBuilder, $source);
+            if (file_put_contents($file, $source) === false) {
+                throw new RuntimeException("hook 0125: cannot write $file");
+            }
         }
-        $patched += $count;
+
+        $operationHostBuilders += $expected;
     }
 
-    fwrite(STDOUT, "  [operation-hosts] configured $patched operation-specific server calls\n");
+    if ($operationHostBuilders === 0) {
+        throw new RuntimeException('hook 0125: no operation-specific host builders found');
+    }
+
+    fwrite(STDOUT, "  [operation-hosts] configured $operationHostBuilders operation-specific server calls\n");
 };
 
 function replace_once_operation_hosts(
@@ -108,324 +132,4 @@ function replace_once_operation_hosts(
     }
 
     return substr($source, 0, $position) . $replacement . substr($source, $position + strlen($needle));
-}
-
-/**
- * @return array{source: string, count: int}
- */
-function patch_operation_host_calls(string $source, string $replacement, string $file): array
-{
-    $needle = 'Configuration::getHostString(';
-    $offset = 0;
-    $patched = 0;
-    $calls = [];
-
-    while (($position = strpos($source, $needle, $offset)) !== false) {
-        $openParen = $position + strlen($needle) - 1;
-        $closeParen = find_matching_paren_operation_hosts($source, $openParen, $file);
-        $arguments = parse_operation_host_arguments($source, $openParen + 1, $closeParen, $file);
-
-        if (count($arguments) !== 3 || !is_operation_host_call($source, $arguments[0]['value'], $position)) {
-            $offset = $closeParen + 1;
-
-            continue;
-        }
-
-        $thirdArgument = trim($arguments[2]['value']);
-        if ($thirdArgument === '$variables') {
-            $calls[] = $arguments[2];
-        } elseif ($thirdArgument !== $replacement) {
-            throw new RuntimeException(
-                "hook 0125: unsupported operation-host variables argument '$thirdArgument' in $file",
-            );
-        }
-
-        $patched++;
-
-        $offset = $closeParen + 1;
-    }
-
-    if ($calls === []) {
-        return ['source' => $source, 'count' => $patched];
-    }
-
-    foreach (array_reverse($calls) as $call) {
-        $value = $call['value'];
-        $leading = substr($value, 0, strlen($value) - strlen(ltrim($value)));
-        $trailing = substr($value, strlen(rtrim($value)));
-        $source = substr($source, 0, $call['start'])
-            . $leading
-            . $replacement
-            . $trailing
-            . substr($source, $call['end']);
-    }
-
-    return ['source' => $source, 'count' => $patched];
-}
-
-function find_matching_paren_operation_hosts(string $source, int $openParen, string $file): int
-{
-    $depth = 0;
-    $length = strlen($source);
-
-    for ($index = $openParen; $index < $length; $index++) {
-        $skipped = skip_operation_host_literal_or_comment($source, $index);
-        if ($skipped !== $index) {
-            $index = $skipped;
-
-            continue;
-        }
-
-        $char = $source[$index];
-        if ($char === '(') {
-            $depth++;
-
-            continue;
-        }
-
-        if ($char !== ')') {
-            continue;
-        }
-
-        $depth--;
-        if ($depth === 0) {
-            return $index;
-        }
-    }
-
-    throw new RuntimeException("hook 0125: unterminated operation-host call in $file");
-}
-
-/**
- * @return list<array{start: int, end: int, value: string}>
- */
-function parse_operation_host_arguments(string $source, int $start, int $end, string $file): array
-{
-    $arguments = [];
-    $depth = 0;
-    $argumentStart = $start;
-
-    for ($index = $start; $index < $end; $index++) {
-        $skipped = skip_operation_host_literal_or_comment($source, $index);
-        if ($skipped !== $index) {
-            $index = $skipped;
-
-            continue;
-        }
-
-        $char = $source[$index];
-        if ($char === '(' || $char === '[' || $char === '{') {
-            $depth++;
-
-            continue;
-        }
-
-        if ($char === ')' || $char === ']' || $char === '}') {
-            $depth--;
-
-            continue;
-        }
-
-        if ($char !== ',' || $depth !== 0) {
-            continue;
-        }
-
-        $arguments[] = [
-            'start' => $argumentStart,
-            'end' => $index,
-            'value' => substr($source, $argumentStart, $index - $argumentStart),
-        ];
-        $argumentStart = $index + 1;
-    }
-
-    if ($depth !== 0) {
-        throw new RuntimeException("hook 0125: unbalanced operation-host arguments in $file");
-    }
-
-    $arguments[] = [
-        'start' => $argumentStart,
-        'end' => $end,
-        'value' => substr($source, $argumentStart, $end - $argumentStart),
-    ];
-
-    $last = $arguments[array_key_last($arguments)];
-    if (count($arguments) > 1 && trim($last['value']) === '') {
-        array_pop($arguments);
-    }
-
-    return $arguments;
-}
-
-function skip_operation_host_literal_or_comment(string $source, int $index): int
-{
-    $char = $source[$index];
-    $next = $source[$index + 1] ?? '';
-
-    if ($char === '\'' || $char === '"') {
-        return skip_operation_host_string($source, $index, $char);
-    }
-
-    if ($char === '/' && $next === '*') {
-        $end = strpos($source, '*/', $index + 2);
-
-        return $end === false ? strlen($source) - 1 : $end + 1;
-    }
-
-    if ($char === '/' && $next === '/') {
-        $end = strpos($source, "\n", $index + 2);
-
-        return $end === false ? strlen($source) - 1 : $end - 1;
-    }
-
-    if ($char === '#') {
-        $end = strpos($source, "\n", $index + 1);
-
-        return $end === false ? strlen($source) - 1 : $end - 1;
-    }
-
-    return $index;
-}
-
-function skip_operation_host_string(string $source, int $index, string $quote): int
-{
-    $length = strlen($source);
-
-    for ($cursor = $index + 1; $cursor < $length; $cursor++) {
-        if ($source[$cursor] === '\\') {
-            $cursor++;
-
-            continue;
-        }
-
-        if ($source[$cursor] === $quote) {
-            return $cursor;
-        }
-    }
-
-    return $length - 1;
-}
-
-function is_operation_host_call(string $source, string $firstArgument, int $callPosition): bool
-{
-    $firstArgument = trim($firstArgument);
-    if (str_contains($firstArgument, 'getHostSettingsFor')) {
-        return true;
-    }
-
-    if (preg_match('/^\$[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$/', $firstArgument) !== 1) {
-        return false;
-    }
-
-    $assignment = find_operation_host_assignment(substr($source, 0, $callPosition), $firstArgument);
-
-    return is_string($assignment)
-        && preg_match('/^\s*\$this->getHostSettingsFor[A-Za-z0-9_]+\(\)\s*$/', $assignment) === 1;
-}
-
-function find_operation_host_assignment(string $source, string $variable): ?string
-{
-    $tokens = token_get_all('<?php ' . $source);
-    $assignments = [];
-    $count = count($tokens);
-    $scopeDepth = 0;
-    $stringInterpolationDepth = 0;
-
-    for ($index = 0; $index < $count; $index++) {
-        $token = $tokens[$index];
-        update_operation_host_scope_depth($token, $scopeDepth, $stringInterpolationDepth);
-
-        if (!is_array($token) || $token[0] !== T_VARIABLE || $token[1] !== $variable) {
-            continue;
-        }
-
-        $assignmentScope = $scopeDepth;
-        $next = $index + 1;
-        while (
-            $next < $count
-            && is_array($tokens[$next])
-            && in_array($tokens[$next][0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)
-        ) {
-            $next++;
-        }
-
-        if ($next >= $count || $tokens[$next] !== '=') {
-            continue;
-        }
-
-        $expression = '';
-        $depth = 0;
-        $assignmentEnd = null;
-
-        for ($cursor = $next + 1; $cursor < $count; $cursor++) {
-            update_operation_host_scope_depth($tokens[$cursor], $scopeDepth, $stringInterpolationDepth);
-            $part = is_array($tokens[$cursor]) ? $tokens[$cursor][1] : $tokens[$cursor];
-
-            if ($part === '(' || $part === '[' || $part === '{') {
-                $depth++;
-                $expression .= $part;
-
-                continue;
-            }
-
-            if ($part === ')' || $part === ']' || $part === '}') {
-                $depth--;
-                $expression .= $part;
-
-                continue;
-            }
-
-            if ($part === ';' && $depth === 0) {
-                $assignments[] = [
-                    'depth' => $assignmentScope,
-                    'expression' => trim($expression),
-                ];
-                $assignmentEnd = $cursor;
-
-                break;
-            }
-
-            $expression .= $part;
-        }
-
-        if (is_int($assignmentEnd)) {
-            $index = $assignmentEnd;
-        }
-    }
-
-    for ($index = count($assignments) - 1; $index >= 0; $index--) {
-        if ($assignments[$index]['depth'] === $scopeDepth) {
-            return $assignments[$index]['expression'];
-        }
-    }
-
-    return null;
-}
-
-function update_operation_host_scope_depth(mixed $token, int &$scopeDepth, int &$stringInterpolationDepth): void
-{
-    if (is_array($token)) {
-        if ($token[0] === T_CURLY_OPEN || $token[0] === T_DOLLAR_OPEN_CURLY_BRACES) {
-            $stringInterpolationDepth++;
-        }
-
-        return;
-    }
-
-    if ($token === '{') {
-        $scopeDepth++;
-
-        return;
-    }
-
-    if ($token !== '}') {
-        return;
-    }
-
-    if ($stringInterpolationDepth > 0) {
-        $stringInterpolationDepth--;
-
-        return;
-    }
-
-    $scopeDepth--;
 }

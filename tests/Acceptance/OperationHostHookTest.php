@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Tests\Acceptance;
 
+use Closure;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 final class OperationHostHookTest extends TestCase
 {
+    private static ?Closure $operationHostHook = null;
+
     public function testHookPatchesOperationHostCallsites(): void
     {
-        $dir = $this->createGeneratedFixture($this->multilineUnpatchedApiSource());
+        $dir = $this->createGeneratedFixture($this->unpatchedApiSource());
 
         try {
-            $hook = require dirname(__DIR__, 2) . '/hooks/post_gen/0125_operation_host_variables.php';
+            $hook = self::operationHostHook();
             $hook(['out_dir' => $dir]);
 
             $configuration = file_get_contents($dir . '/src/Configuration.php');
@@ -28,6 +31,10 @@ final class OperationHostHookTest extends TestCase
                 'array_replace($this->config->getOperationHostVariables(), $variables)',
                 $api,
             );
+            self::assertStringContainsString(
+                'Configuration::getHostString($primaryHosts, $hostSelection, $variablesMap)',
+                $api,
+            );
         } finally {
             $this->removeDirectory($dir);
         }
@@ -38,10 +45,10 @@ final class OperationHostHookTest extends TestCase
         $dir = $this->createGeneratedFixture($this->divergentApiSource());
 
         try {
-            $hook = require dirname(__DIR__, 2) . '/hooks/post_gen/0125_operation_host_variables.php';
+            $hook = self::operationHostHook();
 
             $this->expectException(RuntimeException::class);
-            $this->expectExceptionMessage('hook 0125: expected to classify 1 operation-specific host call(s)');
+            $this->expectExceptionMessage('hook 0125: expected 1 operation-specific host builder(s)');
 
             $hook(['out_dir' => $dir]);
         } finally {
@@ -49,9 +56,23 @@ final class OperationHostHookTest extends TestCase
         }
     }
 
+    /**
+     * @return Closure(array{out_dir: string}): void
+     */
+    private static function operationHostHook(): Closure
+    {
+        if (self::$operationHostHook === null) {
+            /** @var Closure(array{out_dir: string}): void $hook */
+            $hook = require dirname(__DIR__, 2) . '/hooks/post_gen/0125_operation_host_variables.php';
+            self::$operationHostHook = $hook;
+        }
+
+        return self::$operationHostHook;
+    }
+
     private function createGeneratedFixture(string $apiSource): string
     {
-        $dir = sys_get_temp_dir() . '/operation-host-hook-' . bin2hex(random_bytes(8));
+        $dir = dirname(__DIR__, 2) . '/.operation-host-hook-' . bin2hex(random_bytes(8));
         self::assertTrue(mkdir($dir . '/src/Api', 0777, true));
         self::assertNotFalse(file_put_contents($dir . '/src/Configuration.php', $this->configurationSource()));
         self::assertNotFalse(file_put_contents($dir . '/src/Api/ClusterApi.php', $apiSource));
@@ -76,7 +97,7 @@ final class Configuration
 PHP;
     }
 
-    private function multilineUnpatchedApiSource(): string
+    private function unpatchedApiSource(): string
     {
         return <<<'PHP'
 <?php
@@ -87,12 +108,8 @@ final class ClusterApi
     {
         $primaryHosts = $this->getPrimaryHosts();
         $ignoredHost = Configuration::getHostString($primaryHosts, $hostSelection, $variablesMap);
-        $serverSettings = $this->getHostSettingsForstatus();
-        $resolvedHost = Configuration::getHostString(
-            $serverSettings,
-            $hostSelection,
-            $variables,
-        );
+        $hostSettings = $this->getHostSettingsForstatus();
+        $operationHost = Configuration::getHostString($hostSettings, $hostIndex, $variables);
     }
 }
 PHP;
@@ -107,10 +124,10 @@ final class ClusterApi
 {
     public function request(): void
     {
-        $serverSettings = $this->getHostSettingsForstatus();
-        $resolvedHost = Configuration::getHostString(
-            $serverSettings,
-            $hostSelection,
+        $hostSettings = $this->getHostSettingsForstatus();
+        $operationHost = Configuration::getHostString(
+            $hostSettings,
+            $hostIndex,
             array_merge([], $variables),
         );
     }
