@@ -17,18 +17,32 @@ return static function (array $ctx): void {
     }
 
     $source = (string) file_get_contents($file);
-    if (str_contains($source, 'containsFileValue')) {
+    $hasNewFlatten = str_contains($source, 'if (self::containsOnlyFileValues($val)) {');
+    $hasOldHelper = str_contains($source, 'private static function containsFileValue');
+    $hasNewHelper = str_contains($source, 'private static function containsOnlyFileValues');
+    if ($hasNewFlatten && $hasNewHelper && !$hasOldHelper) {
         fwrite(STDOUT, "  [multipart] FormDataProcessor already handles file arrays\n");
         return;
     }
 
-    $flattenNeedle = <<<'PHP'
+    $flattenReplacement = <<<'PHP'
+            if (is_array($val) && !empty($val)) {
+                if (self::containsOnlyFileValues($val)) {
+                    $result[$currentName] = array_values($val);
+                } else {
+                    $currentName .= $currentSuffix;
+                    $result += self::flatten($val, $currentName);
+                }
+            } else {
+PHP;
+    $flattenNeedles = [
+        <<<'PHP'
             if (is_array($val) && !empty($val)) {
                 $currentName .= $currentSuffix;
                 $result += self::flatten($val, $currentName);
             } else {
-PHP;
-    $flattenReplacement = <<<'PHP'
+PHP,
+        <<<'PHP'
             if (is_array($val) && !empty($val)) {
                 if (array_is_list($val) && self::containsFileValue($val)) {
                     $result[$currentName] = $val;
@@ -37,12 +51,31 @@ PHP;
                     $result += self::flatten($val, $currentName);
                 }
             } else {
+PHP,
+    ];
+    $helper = <<<'PHP'
+    /**
+     * @param array<mixed> $values
+     */
+    private static function containsOnlyFileValues(array $values): bool
+    {
+        foreach ($values as $value) {
+            if (!is_resource($value) && !$value instanceof StreamInterface) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * formdata must be limited to scalars or arrays of scalar values,
 PHP;
     $helperAnchor = <<<'PHP'
     /**
      * formdata must be limited to scalars or arrays of scalar values,
 PHP;
-    $helper = <<<'PHP'
+    $oldHelper = <<<'PHP'
     /**
      * @param array<mixed> $values
      */
@@ -56,13 +89,19 @@ PHP;
 
         return false;
     }
-
-    /**
-     * formdata must be limited to scalars or arrays of scalar values,
 PHP;
 
-    $source = replace_once($source, $flattenNeedle, $flattenReplacement, 'flatten file-array branch');
-    $source = replace_once($source, $helperAnchor, $helper, 'file-array helper anchor');
+    if (!$hasNewFlatten) {
+        $source = replace_first($source, $flattenNeedles, $flattenReplacement, 'flatten file-array branch');
+    }
+
+    if ($hasOldHelper) {
+        $source = replace_once($source, $oldHelper, '', 'file-array helper removal');
+    }
+
+    if (!$hasNewHelper) {
+        $source = replace_once($source, $helperAnchor, $helper, 'file-array helper anchor');
+    }
 
     if (file_put_contents($file, $source) === false) {
         throw new RuntimeException('hook 0150: cannot write FormDataProcessor.php');
@@ -79,4 +118,19 @@ function replace_once(string $source, string $needle, string $replacement, strin
     }
 
     return substr($source, 0, $position) . $replacement . substr($source, $position + strlen($needle));
+}
+
+/**
+ * @param non-empty-list<string> $needles
+ */
+function replace_first(string $source, array $needles, string $replacement, string $description): string
+{
+    foreach ($needles as $needle) {
+        $position = strpos($source, $needle);
+        if ($position !== false) {
+            return substr($source, 0, $position) . $replacement . substr($source, $position + strlen($needle));
+        }
+    }
+
+    throw new RuntimeException("hook 0150: anchor for $description not found");
 }

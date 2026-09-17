@@ -63,15 +63,43 @@ final class DeploymentHelperTest extends TestCase
         self::assertInstanceOf(DeploymentResult::class, $deployment);
         self::assertCount(1, $this->requests);
         self::assertStringContainsString('multipart/form-data', $this->requests[0]->getHeaderLine('Content-Type'));
+        $this->assertRepeatedResourceParts((string) $this->requests[0]->getBody());
+        self::assertStringContainsString('name="tenantId"', (string) $this->requests[0]->getBody());
+        self::assertStringContainsString("\r\nacme\r\n", (string) $this->requests[0]->getBody());
+    }
 
-        $body = (string) $this->requests[0]->getBody();
-        self::assertSame(2, substr_count($body, 'name="resources"'));
-        self::assertStringNotContainsString('name="resources[0]"', $body);
-        self::assertStringNotContainsString('name="resources[1]"', $body);
-        self::assertStringContainsString('test-1', $body);
-        self::assertStringContainsString('test-2', $body);
-        self::assertStringContainsString('name="tenantId"', $body);
-        self::assertStringContainsString("\r\nacme\r\n", $body);
+    public function testCreateDeploymentUsesRepeatedResourcesMultipartFieldForSparseArrays(): void
+    {
+        $client = CamundaClient::fromConfiguration(
+            ConfigResolver::resolve(
+                overrides: [
+                    'CAMUNDA_AUTH_STRATEGY' => 'NONE',
+                    'CAMUNDA_TENANT_ID' => 'acme',
+                ],
+                environment: [],
+            ),
+            $this->httpClient(new Response(
+                200,
+                ['Content-Type' => 'application/json'],
+                (string) json_encode([
+                    'deploymentKey' => '2251799813685249',
+                    'tenantId' => 'acme',
+                    'deployments' => [],
+                ]),
+            )),
+        );
+
+        $deployment = $client->createDeployment([
+            2 => new \SplFileObject($this->resourcePaths[0], 'r'),
+            5 => new \SplFileObject($this->resourcePaths[1], 'r'),
+        ]);
+
+        self::assertInstanceOf(DeploymentResult::class, $deployment);
+        self::assertCount(1, $this->requests);
+        self::assertStringContainsString('multipart/form-data', $this->requests[0]->getHeaderLine('Content-Type'));
+        $this->assertRepeatedResourceParts((string) $this->requests[0]->getBody());
+        self::assertStringNotContainsString('name="resources[2]"', (string) $this->requests[0]->getBody());
+        self::assertStringNotContainsString('name="resources[5]"', (string) $this->requests[0]->getBody());
     }
 
     private function createResourceFile(string $contents): void
@@ -82,6 +110,15 @@ final class DeploymentHelperTest extends TestCase
         rename($path, $resourcePath);
         file_put_contents($resourcePath, $contents);
         $this->resourcePaths[] = $resourcePath;
+    }
+
+    private function assertRepeatedResourceParts(string $body): void
+    {
+        self::assertSame(2, substr_count($body, 'name="resources"'));
+        self::assertStringNotContainsString('name="resources[0]"', $body);
+        self::assertStringNotContainsString('name="resources[1]"', $body);
+        self::assertStringContainsString('test-1', $body);
+        self::assertStringContainsString('test-2', $body);
     }
 
     private function httpClient(Response $response): GuzzleClient

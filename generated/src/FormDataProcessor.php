@@ -106,8 +106,8 @@ class FormDataProcessor
             $currentName .= $currentPrefix . $key;
 
             if (is_array($val) && !empty($val)) {
-                if (array_is_list($val) && self::containsFileValue($val)) {
-                    $result[$currentName] = $val;
+                if (self::containsOnlyFileValues($val)) {
+                    $result[$currentName] = array_values($val);
                 } else {
                     $currentName .= $currentSuffix;
                     $result += self::flatten($val, $currentName);
@@ -130,18 +130,20 @@ class FormDataProcessor
         return $result;
     }
 
+
+
     /**
      * @param array<mixed> $values
      */
-    private static function containsFileValue(array $values): bool
+    private static function containsOnlyFileValues(array $values): bool
     {
         foreach ($values as $value) {
-            if (is_resource($value) || $value instanceof StreamInterface) {
-                return true;
+            if (!is_resource($value) && !$value instanceof StreamInterface) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     /**
