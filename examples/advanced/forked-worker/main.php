@@ -105,9 +105,6 @@ function run(): void
 
         if ($cleanupErrors !== []) {
             $cleanupMessage = implode(' ', $cleanupErrors);
-            if ($failure === null) {
-                throw new \RuntimeException($cleanupMessage);
-            }
         }
     }
 
@@ -116,6 +113,9 @@ function run(): void
             fwrite(STDERR, "Forked-worker cleanup warning: $cleanupMessage\n");
         }
         throw $failure;
+    }
+    if ($cleanupMessage !== null) {
+        throw new \RuntimeException($cleanupMessage);
     }
 }
 
