@@ -316,7 +316,7 @@ function is_operation_host_call(string $source, string $firstArgument, int $call
         return false;
     }
 
-    $context = substr($source, max(0, $callPosition - 1000), min($callPosition, 1000));
+    $context = substr($source, 0, $callPosition);
 
     return preg_match(
         '/'.preg_quote($firstArgument, '/').'\s*=\s*\$this->getHostSettingsFor[A-Za-z0-9_]+\(\)\s*;/',
