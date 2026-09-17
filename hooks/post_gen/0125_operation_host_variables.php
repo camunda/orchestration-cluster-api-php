@@ -73,17 +73,10 @@ PHP,
         }
     }
 
-    $needle = '$operationHost = Configuration::getHostString($hostSettings, $hostIndex, $variables);';
-    $replacement = <<<'PHP'
-$operationHost = Configuration::getHostString(
-                $hostSettings,
-                $hostIndex,
-                array_replace($this->config->getOperationHostVariables(), $variables),
-            );
-PHP;
-    $callsiteNeedle = '$operationHost = Configuration::getHostString(';
-    $unpatchedPattern = '/\$operationHost = Configuration::getHostString\(\s*\$hostSettings,\s*\$hostIndex,\s*\$variables,\s*\);/m';
-    $patchedPattern = '/\$operationHost = Configuration::getHostString\(\s*\$hostSettings,\s*\$hostIndex,\s*array_replace\(\$this->config->getOperationHostVariables\(\), \$variables\),\s*\);/m';
+    $replacement = 'array_replace($this->config->getOperationHostVariables(), $variables)';
+    $callsiteNeedle = 'Configuration::getHostString(';
+    $unpatchedPattern = '/(Configuration::getHostString\(\s*[^,]+,\s*[^,]+,\s*)\$variables(\s*,?\s*\))/m';
+    $patchedPattern = '/(Configuration::getHostString\(\s*[^,]+,\s*[^,]+,\s*)array_replace\(\$this->config->getOperationHostVariables\(\), \$variables\)(\s*,?\s*\))/m';
     $patched = 0;
     foreach (glob($ctx['out_dir'] . '/src/Api/*.php') ?: [] as $file) {
         $source = (string) file_get_contents($file);
@@ -114,7 +107,13 @@ PHP;
             continue;
         }
 
-        $source = preg_replace_callback($unpatchedPattern, static fn (): string => $replacement, $source, -1, $applied);
+        $source = preg_replace_callback(
+            $unpatchedPattern,
+            static fn (array $matches): string => $matches[1] . $replacement . $matches[2],
+            $source,
+            -1,
+            $applied,
+        );
         if (!is_string($source) || $applied !== $count) {
             throw new RuntimeException("hook 0125: failed to patch $count operation-specific host call(s) in $file");
         }
