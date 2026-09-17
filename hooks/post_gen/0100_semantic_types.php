@@ -47,10 +47,10 @@ return static function (array $ctx): void {
         emit_value_object($dir, $name, $entry);
     }
 
-    // Union aliases whose branches are all semantic keys become "key set" helpers
-    // (e.g. ScopeKey = ProcessInstanceKey | ElementInstanceKey). PHP has no union
-    // classes, so we emit a factory that lifts a raw string into the first branch
-    // that accepts it. Only unions whose every branch is itself a semantic key.
+    // Union aliases whose branches are all semantic keys become validated semantic
+    // value objects themselves (e.g. ScopeKey = ProcessInstanceKey | ElementInstanceKey).
+    // They preserve the raw string, validate it against at least one branch, and
+    // serialize like any other semantic key.
     $keySet = array_flip($names);
     foreach (($meta['unions'] ?? []) as $union) {
         $branches = $union['branches'] ?? [];
@@ -64,7 +64,8 @@ return static function (array $ctx): void {
             $refs[] = $b['ref'];
         }
         if ($ok && preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $union['name'] ?? '')) {
-            emit_union_factory($dir, $union['name'], $refs);
+            $names[] = $union['name'];
+            emit_union_value_object($dir, $union['name'], $refs);
         }
     }
 
@@ -199,12 +200,13 @@ PHP;
 /**
  * @param list<string> $refs
  */
-function emit_union_factory(string $dir, string $name, array $refs): void
+function emit_union_value_object(string $dir, string $name, array $refs): void
 {
     $tries = '';
     foreach ($refs as $ref) {
         $tries .= "        try {\n"
-            . "            return new $ref(\$value);\n"
+            . "            new $ref(\$value);\n"
+            . "            return;\n"
             . "        } catch (InvalidArgumentException) {\n"
             . "        }\n";
     }
@@ -220,18 +222,42 @@ namespace Camunda\\Orchestration\\Semantic;
 use InvalidArgumentException;
 
 /**
- * Factory for the $name key set ($branchList).
- *
- * PHP has no union types for classes, so this lifts a raw string into the first
- * branch whose constraints accept it.
+ * Semantic identifier that accepts any of: $branchList.
  */
-final class $name
+final class $name implements SemanticKey
 {
-    public static function of(string \$value): SemanticKey
+    public const NAME = '$name';
+
+    public function __construct(private readonly string \$value)
     {
 $tries        throw new InvalidArgumentException(
             sprintf('%s: "%s" matched no branch ($branchList)', '$name', \$value)
         );
+    }
+
+    public static function of(string \$value): self
+    {
+        return new self(\$value);
+    }
+
+    public function value(): string
+    {
+        return \$this->value;
+    }
+
+    public function equals(self \$other): bool
+    {
+        return \$this->value === \$other->value;
+    }
+
+    public function __toString(): string
+    {
+        return \$this->value;
+    }
+
+    public function jsonSerialize(): string
+    {
+        return \$this->value;
     }
 }
 

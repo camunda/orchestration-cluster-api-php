@@ -58,7 +58,7 @@ class DeleteResourceResponse implements ModelInterface, ArrayAccess, JsonSeriali
      * @var array<string, string>
      */
     protected static array $openAPITypes = [
-        'resourceKey' => '\Camunda\Orchestration\Api\Model\ResourceKey',
+        'resourceKey' => '\Camunda\Orchestration\Semantic\ResourceKey',
         'batchOperation' => '\Camunda\Orchestration\Api\Model\BatchOperationCreatedResult'
     ];
 
@@ -279,9 +279,9 @@ class DeleteResourceResponse implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets resourceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ResourceKey
+     * @return \Camunda\Orchestration\Semantic\ResourceKey
      */
-    public function getResourceKey(): \Camunda\Orchestration\Api\Model\ResourceKey
+    public function getResourceKey(): \Camunda\Orchestration\Semantic\ResourceKey
     {
         return $this->container['resourceKey'];
     }
@@ -289,11 +289,11 @@ class DeleteResourceResponse implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets resourceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The system-assigned key for this resource, requested to be deleted.
+     * @param \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The system-assigned key for this resource, requested to be deleted.
      *
      * @return $this
      */
-    public function setResourceKey(\Camunda\Orchestration\Api\Model\ResourceKey $resourceKey): static
+    public function setResourceKey(\Camunda\Orchestration\Semantic\ResourceKey $resourceKey): static
     {
         if (is_null($resourceKey)) {
             throw new InvalidArgumentException('non-nullable resourceKey cannot be null');

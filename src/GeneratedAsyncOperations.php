@@ -2777,12 +2777,12 @@ trait GeneratedAsyncOperations
      *
      * Delete resource
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
      * @param  \Camunda\Orchestration\Api\Model\DeleteResourceRequest|null $deleteResourceRequest deleteResourceRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteResource'] to see the possible values for this operation
      *
      */
-    public function deleteResource(\Camunda\Orchestration\Api\Model\ResourceKey $resourceKey, ?\Camunda\Orchestration\Api\Model\DeleteResourceRequest $deleteResourceRequest = null, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['deleteResource'][0]): \GuzzleHttp\Promise\PromiseInterface
+    public function deleteResource(\Camunda\Orchestration\Semantic\ResourceKey $resourceKey, ?\Camunda\Orchestration\Api\Model\DeleteResourceRequest $deleteResourceRequest = null, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['deleteResource'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
         return $this->api(\Camunda\Orchestration\Api\Api\ResourceApi::class)->deleteResourceAsync($resourceKey, $deleteResourceRequest, $contentType);
     }
@@ -2792,11 +2792,11 @@ trait GeneratedAsyncOperations
      *
      * Get resource
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResource'] to see the possible values for this operation
      *
      */
-    public function getResource(\Camunda\Orchestration\Api\Model\ResourceKey $resourceKey, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['getResource'][0]): \GuzzleHttp\Promise\PromiseInterface
+    public function getResource(\Camunda\Orchestration\Semantic\ResourceKey $resourceKey, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['getResource'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
         return $this->api(\Camunda\Orchestration\Api\Api\ResourceApi::class)->getResourceAsync($resourceKey, $contentType);
     }
@@ -2806,12 +2806,12 @@ trait GeneratedAsyncOperations
      *
      * Get RPA resource content (deprecated)
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContent'] to see the possible values for this operation
      *
      * @deprecated
      */
-    public function getResourceContent(\Camunda\Orchestration\Api\Model\ResourceKey $resourceKey, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['getResourceContent'][0]): \GuzzleHttp\Promise\PromiseInterface
+    public function getResourceContent(\Camunda\Orchestration\Semantic\ResourceKey $resourceKey, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['getResourceContent'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
         return $this->api(\Camunda\Orchestration\Api\Api\ResourceApi::class)->getResourceContentAsync($resourceKey, $contentType);
     }
@@ -2821,11 +2821,11 @@ trait GeneratedAsyncOperations
      *
      * Get resource content as binary
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContentBinary'] to see the possible values for this operation
      *
      */
-    public function getResourceContentBinary(\Camunda\Orchestration\Api\Model\ResourceKey $resourceKey, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['getResourceContentBinary'][0]): \GuzzleHttp\Promise\PromiseInterface
+    public function getResourceContentBinary(\Camunda\Orchestration\Semantic\ResourceKey $resourceKey, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['getResourceContentBinary'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
         return $this->api(\Camunda\Orchestration\Api\Api\ResourceApi::class)->getResourceContentBinaryAsync($resourceKey, $contentType);
     }

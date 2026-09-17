@@ -63,7 +63,7 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
         'resourceName' => 'string',
         'version' => 'int',
         'tenantId' => '\Camunda\Orchestration\Semantic\TenantId',
-        'resourceKey' => '\Camunda\Orchestration\Api\Model\ResourceKey'
+        'resourceKey' => '\Camunda\Orchestration\Semantic\ResourceKey'
     ];
 
     /**
@@ -436,9 +436,9 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
     /**
      * Gets resourceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ResourceKey
+     * @return \Camunda\Orchestration\Semantic\ResourceKey
      */
-    public function getResourceKey(): \Camunda\Orchestration\Api\Model\ResourceKey
+    public function getResourceKey(): \Camunda\Orchestration\Semantic\ResourceKey
     {
         return $this->container['resourceKey'];
     }
@@ -446,11 +446,11 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
     /**
      * Sets resourceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The assigned key, which acts as a unique identifier for this Resource.
+     * @param \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The assigned key, which acts as a unique identifier for this Resource.
      *
      * @return $this
      */
-    public function setResourceKey(\Camunda\Orchestration\Api\Model\ResourceKey $resourceKey): static
+    public function setResourceKey(\Camunda\Orchestration\Semantic\ResourceKey $resourceKey): static
     {
         if (is_null($resourceKey)) {
             throw new InvalidArgumentException('non-nullable resourceKey cannot be null');

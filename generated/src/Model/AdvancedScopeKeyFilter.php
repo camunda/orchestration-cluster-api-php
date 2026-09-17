@@ -59,11 +59,11 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
      * @var array<string, string>
      */
     protected static array $openAPITypes = [
-        'eq' => '\Camunda\Orchestration\Api\Model\ScopeKey',
-        'neq' => '\Camunda\Orchestration\Api\Model\ScopeKey',
+        'eq' => '\Camunda\Orchestration\Semantic\ScopeKey',
+        'neq' => '\Camunda\Orchestration\Semantic\ScopeKey',
         'exists' => 'bool',
-        'in' => '\Camunda\Orchestration\Api\Model\ScopeKey[]',
-        'notIn' => '\Camunda\Orchestration\Api\Model\ScopeKey[]'
+        'in' => '\Camunda\Orchestration\Semantic\ScopeKey[]',
+        'notIn' => '\Camunda\Orchestration\Semantic\ScopeKey[]'
     ];
 
     /**
@@ -295,9 +295,9 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets eq
      *
-     * @return \Camunda\Orchestration\Api\Model\ScopeKey|null
+     * @return \Camunda\Orchestration\Semantic\ScopeKey|null
      */
-    public function getEq(): ?\Camunda\Orchestration\Api\Model\ScopeKey
+    public function getEq(): ?\Camunda\Orchestration\Semantic\ScopeKey
     {
         return $this->container['eq'];
     }
@@ -305,11 +305,11 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets eq
      *
-     * @param \Camunda\Orchestration\Api\Model\ScopeKey|null $eq Checks for equality with the provided value.
+     * @param \Camunda\Orchestration\Semantic\ScopeKey|null $eq Checks for equality with the provided value.
      *
      * @return $this
      */
-    public function setEq(?\Camunda\Orchestration\Api\Model\ScopeKey $eq): static
+    public function setEq(?\Camunda\Orchestration\Semantic\ScopeKey $eq): static
     {
         if (is_null($eq)) {
             throw new InvalidArgumentException('non-nullable eq cannot be null');
@@ -322,9 +322,9 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets neq
      *
-     * @return \Camunda\Orchestration\Api\Model\ScopeKey|null
+     * @return \Camunda\Orchestration\Semantic\ScopeKey|null
      */
-    public function getNeq(): ?\Camunda\Orchestration\Api\Model\ScopeKey
+    public function getNeq(): ?\Camunda\Orchestration\Semantic\ScopeKey
     {
         return $this->container['neq'];
     }
@@ -332,11 +332,11 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets neq
      *
-     * @param \Camunda\Orchestration\Api\Model\ScopeKey|null $neq Checks for inequality with the provided value.
+     * @param \Camunda\Orchestration\Semantic\ScopeKey|null $neq Checks for inequality with the provided value.
      *
      * @return $this
      */
-    public function setNeq(?\Camunda\Orchestration\Api\Model\ScopeKey $neq): static
+    public function setNeq(?\Camunda\Orchestration\Semantic\ScopeKey $neq): static
     {
         if (is_null($neq)) {
             throw new InvalidArgumentException('non-nullable neq cannot be null');
@@ -376,7 +376,7 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets in
      *
-     * @return \Camunda\Orchestration\Api\Model\ScopeKey[]|null
+     * @return \Camunda\Orchestration\Semantic\ScopeKey[]|null
      */
     public function getIn(): ?array
     {
@@ -386,7 +386,7 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets in
      *
-     * @param \Camunda\Orchestration\Api\Model\ScopeKey[]|null $in Checks if the property matches any of the provided values.
+     * @param \Camunda\Orchestration\Semantic\ScopeKey[]|null $in Checks if the property matches any of the provided values.
      *
      * @return $this
      */
@@ -403,7 +403,7 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets notIn
      *
-     * @return \Camunda\Orchestration\Api\Model\ScopeKey[]|null
+     * @return \Camunda\Orchestration\Semantic\ScopeKey[]|null
      */
     public function getNotIn(): ?array
     {
@@ -413,7 +413,7 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets notIn
      *
-     * @param \Camunda\Orchestration\Api\Model\ScopeKey[]|null $notIn Checks if the property matches none of the provided values.
+     * @param \Camunda\Orchestration\Semantic\ScopeKey[]|null $notIn Checks if the property matches none of the provided values.
      *
      * @return $this
      */

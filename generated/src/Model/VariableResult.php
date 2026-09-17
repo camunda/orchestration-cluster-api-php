@@ -61,7 +61,7 @@ class VariableResult implements ModelInterface, ArrayAccess, JsonSerializable
         'name' => 'string',
         'tenantId' => 'string',
         'variableKey' => 'string',
-        'scopeKey' => '\Camunda\Orchestration\Api\Model\ScopeKey',
+        'scopeKey' => '\Camunda\Orchestration\Semantic\ScopeKey',
         'processInstanceKey' => 'string',
         'rootProcessInstanceKey' => 'string',
         'value' => 'string'
@@ -432,9 +432,9 @@ class VariableResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets scopeKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ScopeKey
+     * @return \Camunda\Orchestration\Semantic\ScopeKey
      */
-    public function getScopeKey(): \Camunda\Orchestration\Api\Model\ScopeKey
+    public function getScopeKey(): \Camunda\Orchestration\Semantic\ScopeKey
     {
         return $this->container['scopeKey'];
     }
@@ -442,11 +442,11 @@ class VariableResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets scopeKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ScopeKey $scopeKey The key of the scope where this variable is directly defined. For process-level variables, this is the process instance key. For local variables, this is the key of the specific element instance (task, subprocess, gateway, event, etc.) where the variable is directly defined.
+     * @param \Camunda\Orchestration\Semantic\ScopeKey $scopeKey The key of the scope where this variable is directly defined. For process-level variables, this is the process instance key. For local variables, this is the key of the specific element instance (task, subprocess, gateway, event, etc.) where the variable is directly defined.
      *
      * @return $this
      */
-    public function setScopeKey(\Camunda\Orchestration\Api\Model\ScopeKey $scopeKey): static
+    public function setScopeKey(\Camunda\Orchestration\Semantic\ScopeKey $scopeKey): static
     {
         if (is_null($scopeKey)) {
             throw new InvalidArgumentException('non-nullable scopeKey cannot be null');

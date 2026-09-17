@@ -62,7 +62,7 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
         'name' => 'string',
         'tenantId' => '\Camunda\Orchestration\Semantic\TenantId',
         'variableKey' => '\Camunda\Orchestration\Semantic\VariableKey',
-        'scopeKey' => '\Camunda\Orchestration\Api\Model\ScopeKey',
+        'scopeKey' => '\Camunda\Orchestration\Semantic\ScopeKey',
         'processInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
         'rootProcessInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey'
     ];
@@ -416,9 +416,9 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
     /**
      * Gets scopeKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ScopeKey
+     * @return \Camunda\Orchestration\Semantic\ScopeKey
      */
-    public function getScopeKey(): \Camunda\Orchestration\Api\Model\ScopeKey
+    public function getScopeKey(): \Camunda\Orchestration\Semantic\ScopeKey
     {
         return $this->container['scopeKey'];
     }
@@ -426,11 +426,11 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
     /**
      * Sets scopeKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ScopeKey $scopeKey The key of the scope where this variable is directly defined. For process-level variables, this is the process instance key. For local variables, this is the key of the specific element instance (task, subprocess, gateway, event, etc.) where the variable is directly defined.
+     * @param \Camunda\Orchestration\Semantic\ScopeKey $scopeKey The key of the scope where this variable is directly defined. For process-level variables, this is the process instance key. For local variables, this is the key of the specific element instance (task, subprocess, gateway, event, etc.) where the variable is directly defined.
      *
      * @return $this
      */
-    public function setScopeKey(\Camunda\Orchestration\Api\Model\ScopeKey $scopeKey): static
+    public function setScopeKey(\Camunda\Orchestration\Semantic\ScopeKey $scopeKey): static
     {
         if (is_null($scopeKey)) {
             throw new InvalidArgumentException('non-nullable scopeKey cannot be null');
