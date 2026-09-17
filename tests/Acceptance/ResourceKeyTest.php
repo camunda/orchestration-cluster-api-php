@@ -70,14 +70,14 @@ final class ResourceKeyTest extends TestCase
         ]);
 
         $scopeKeys = $scopeFilter->getIn();
-        self::assertNotNull($scopeKeys);
+        self::assertIsArray($scopeKeys);
         self::assertContainsOnlyInstancesOf(ScopeKey::class, $scopeKeys);
         self::assertSame(
             ['2251799813685249', '2251799813685250'],
             array_map(static fn (ScopeKey $key): string => $key->value(), $scopeKeys)
         );
         $resourceKeys = $resourceFilter->getIn();
-        self::assertNotNull($resourceKeys);
+        self::assertIsArray($resourceKeys);
         self::assertContainsOnlyInstancesOf(ResourceKey::class, $resourceKeys);
         self::assertSame(
             ['2251799813685676', '2251799813685677'],
