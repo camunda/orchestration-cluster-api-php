@@ -1,4 +1,4 @@
-# Camunda Orchestration Cluster API – PHP SDK
+# Camunda Orchestration Cluster API – PHP SDK (Technical Preview)
 
 <!-- WARNING: The content and specific structure of this file drives Docusaurus generation in camunda-docs. Also, code examples are injected during build. Please refer to AGENTS.md before editing. -->
 <!-- docs:cut:start -->
@@ -14,6 +14,21 @@ A fully typed PHP client for the [Camunda 8 Orchestration Cluster REST API](http
 - **Job workers** — long-poll workers with optional `pcntl` process forking
 - **OAuth & Basic auth** — pluggable authentication with automatic token management
 - **PSR standards** — PSR-4 autoloading, PSR-18/PSR-7 HTTP via Guzzle
+
+## Support status
+
+This is a **Technical Preview** of the PHP client for the Camunda 8 Orchestration Cluster
+API, provided for evaluation and feedback. It gives you a stable foundation to build on
+now, with a clear path to full support: we do not intend to make breaking changes to the
+application integration surface, but we do not guarantee that we will not. The SDK will
+become fully supported with an SLA in a future release.
+
+We don't anticipate major changes — and
+[your feedback](https://github.com/camunda/orchestration-cluster-api-php/issues) is what
+helps close that gap.
+
+> As a Technical Preview, the API surface may still evolve before it is declared fully
+> supported. Pin a specific version if you need stability.
 
 ## Installing the SDK to your project
 
