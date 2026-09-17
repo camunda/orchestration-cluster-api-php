@@ -52,7 +52,13 @@ return static function (array $ctx): void {
             continue;
         }
 
-        $patched = patch_semantic_union_set_if_exists($src);
+        [$patched, $replaced] = patch_semantic_union_set_if_exists($src);
+        if (!$replaced) {
+            throw new RuntimeException(sprintf(
+                '[semantic-union-hydration] expected to patch setIfExists() in %s',
+                basename($file)
+            ));
+        }
         if ($patched !== $src) {
             file_put_contents($file, $patched);
             ++$touched;
@@ -76,7 +82,10 @@ function contains_semantic_union_type(string $src, array $unionNames): bool
     return false;
 }
 
-function patch_semantic_union_set_if_exists(string $src): string
+/**
+ * @return array{0: string, 1: bool}
+ */
+function patch_semantic_union_set_if_exists(string $src): array
 {
     $scalarNeedle = <<<'PHP'
         $value = $fields[$variableName] ?? $defaultValue;
@@ -116,7 +125,12 @@ PHP;
         $this->container[$variableName] = $value;
 PHP;
 
-    $patched = str_replace($scalarNeedle, $replacement, $src);
+    $patched = str_replace($scalarNeedle, $replacement, $src, $scalarCount);
+    if ($scalarCount > 0) {
+        return [$patched, true];
+    }
 
-    return str_replace($plainNeedle, $replacement, $patched);
+    $patched = str_replace($plainNeedle, $replacement, $src, $plainCount);
+
+    return [$patched, $plainCount > 0];
 }
