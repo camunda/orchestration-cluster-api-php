@@ -52,6 +52,14 @@ final class ForkedWorkerSupportTest extends TestCase
         ], 'run-1', 1010);
     }
 
+    public function testEncodePidMarkerWrapsJsonEncodingFailures(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot encode the worker PID marker');
+
+        ForkedWorkerSupport::encodePidMarker("\xB1\x31", 1010, 'run-1');
+    }
+
     private function createTempFile(): string
     {
         $path = tempnam(sys_get_temp_dir(), 'forked-worker-support-');
