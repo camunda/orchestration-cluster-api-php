@@ -8,6 +8,7 @@ require_once dirname(__DIR__, 3) . '/vendor/autoload.php';
 require_once dirname(__DIR__) . '/internal/ExampleSupport.php';
 
 use Camunda\Orchestration\Api\ApiException;
+use Camunda\Orchestration\Api\Model\MessagePublicationResult;
 use Camunda\Orchestration\Api\Model\MessagePublicationRequest;
 use Camunda\Orchestration\Api\Model\ProblemDetail;
 use Camunda\Orchestration\CamundaClient;
@@ -96,6 +97,9 @@ function publishPayment(
         throw new \RuntimeException(
             "Message publication failed for $orderId: {$result->getDetail()}",
         );
+    }
+    if (!$result instanceof MessagePublicationResult) {
+        throw new \RuntimeException("Unexpected message publication response for $orderId.");
     }
 
     return false;
