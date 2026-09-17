@@ -69,7 +69,7 @@ final class ExampleToolingTest extends TestCase
         self::assertStringContainsString("Region 'Missing' does not exist", $stderr);
     }
 
-    public function testCoverageCheckerUsesExactOperationIdsAndStrictMode(): void
+    public function testCoverageCheckerUsesExactOperationIdsAndRequiresCompleteCoverage(): void
     {
         $this->write('examples/workflow.php', <<<'PHP'
             <?php
@@ -78,6 +78,11 @@ final class ExampleToolingTest extends TestCase
             {
             }
             // endregion GetWorkflow
+            // region DeleteWorkflow
+            function delete_workflow(): void
+            {
+            }
+            // endregion DeleteWorkflow
             PHP);
         $this->write('external-spec/bundled/spec-metadata.json', json_encode([
             'operations' => [
@@ -91,13 +96,23 @@ final class ExampleToolingTest extends TestCase
             ],
         ], JSON_THROW_ON_ERROR));
 
+        [$status, $stdout, $stderr] = $this->runScript('check-example-coverage.php');
+        self::assertSame(1, $status);
+        self::assertStringContainsString('Covered:         1', $stdout);
+        self::assertStringContainsString('deleteWorkflow', $stderr);
+
+        $this->write('examples/operation-map.json', json_encode([
+            'getWorkflow' => [
+                ['file' => 'workflow.php', 'region' => 'GetWorkflow'],
+            ],
+            'deleteWorkflow' => [
+                ['file' => 'workflow.php', 'region' => 'DeleteWorkflow'],
+            ],
+        ], JSON_THROW_ON_ERROR));
+
         [$status, $stdout] = $this->runScript('check-example-coverage.php');
         self::assertSame(0, $status);
-        self::assertStringContainsString('Covered:         1', $stdout);
-
-        [$status, , $stderr] = $this->runScript('check-example-coverage.php', '--strict');
-        self::assertSame(1, $status);
-        self::assertStringContainsString('deleteWorkflow', $stderr);
+        self::assertStringContainsString('Example coverage is complete.', $stdout);
     }
 
     public function testCoverageCheckerRejectsDuplicateRegions(): void

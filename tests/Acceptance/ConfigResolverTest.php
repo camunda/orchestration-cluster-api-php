@@ -100,4 +100,45 @@ final class ConfigResolverTest extends TestCase
         $config = ConfigResolver::resolve(environment: []);
         self::assertSame('http://localhost:8080/v2', $config->restAddress);
     }
+
+    public function testLoadsEnvironmentFileWithoutOverridingProcessEnvironment(): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'orchestration-config-');
+        self::assertNotFalse($path);
+        file_put_contents(
+            $path,
+            "CAMUNDA_REST_ADDRESS=http://from-file.example\nCAMUNDA_AUTH_STRATEGY=NONE\nCAMUNDA_WORKER_NAME=from-file\n",
+        );
+
+        $previousEnvFile = getenv('CAMUNDA_LOAD_ENVFILE');
+        $previousAddress = getenv('CAMUNDA_REST_ADDRESS');
+        $previousStrategy = getenv('CAMUNDA_AUTH_STRATEGY');
+        $previousWorkerName = getenv('CAMUNDA_WORKER_NAME');
+        putenv("CAMUNDA_LOAD_ENVFILE=$path");
+        putenv('CAMUNDA_REST_ADDRESS=http://from-process.example');
+        putenv('CAMUNDA_AUTH_STRATEGY=NONE');
+        putenv('CAMUNDA_WORKER_NAME');
+
+        try {
+            $config = ConfigResolver::resolve();
+            self::assertSame('http://from-process.example/v2', $config->restAddress);
+            self::assertSame('from-file', $config->workerName);
+        } finally {
+            $this->restoreEnvironment('CAMUNDA_LOAD_ENVFILE', $previousEnvFile);
+            $this->restoreEnvironment('CAMUNDA_REST_ADDRESS', $previousAddress);
+            $this->restoreEnvironment('CAMUNDA_AUTH_STRATEGY', $previousStrategy);
+            $this->restoreEnvironment('CAMUNDA_WORKER_NAME', $previousWorkerName);
+            unlink($path);
+        }
+    }
+
+    private function restoreEnvironment(string $name, string|false $value): void
+    {
+        if ($value === false) {
+            putenv($name);
+            return;
+        }
+
+        putenv("$name=$value");
+    }
 }

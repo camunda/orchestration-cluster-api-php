@@ -86,6 +86,28 @@ function readme_async_client(): void
 }
 ```
 
+### Parallel async reads
+
+<!-- snippet-source: examples/async.php | regions: ParallelAsyncReads -->
+```php
+function parallel_async_reads(CamundaAsyncClient $client): void
+{
+    // Requests are issued before either promise is awaited.
+    $topologyPromise = $client->getTopology();
+    $definitionsPromise = $client->searchProcessDefinitions();
+
+    $topology = $topologyPromise->wait();
+    $definitions = $definitionsPromise->wait();
+
+    if ($topology instanceof TopologyResponse) {
+        printf("Connected to %d broker(s).\n", count($topology->getBrokers()));
+    }
+    if ($definitions instanceof ProcessDefinitionSearchQueryResult) {
+        printf("Found %d process definitions.\n", count($definitions->getItems()));
+    }
+}
+```
+
 ## Semantic Types
 
 The SDK uses distinct value objects for identifiers like `ProcessDefinitionId`, `ProcessInstanceKey`, `JobKey`, `TenantId`, and so on, defined in the `Camunda\Orchestration\Semantic` namespace.
@@ -163,6 +185,58 @@ function readme_basic_auth(): void
 }
 ```
 
+### Loading a `.env` file
+
+Set `CAMUNDA_LOAD_ENVFILE=true` to read `.env` in the working directory, or set
+it to an explicit path. This optional capability requires
+[`vlucas/phpdotenv`](https://packagist.org/packages/vlucas/phpdotenv).
+
+<!-- snippet-source: examples/client.php | regions: EnvFileClient -->
+```php
+function env_file_client(): CamundaClient
+{
+    // Set CAMUNDA_LOAD_ENVFILE=true (or a path) before starting PHP. Real
+    // environment variables and explicit overrides still take precedence.
+    return CamundaClient::fromEnvironment();
+}
+```
+
+### Mutual TLS
+
+<!-- snippet-source: examples/client.php | regions: MtlsClient -->
+```php
+function mtls_client(): CamundaClient
+{
+    return CamundaClient::fromConfiguration(new CamundaConfiguration(
+        restAddress: 'https://my-cluster.example.com/v2',
+        authStrategy: 'OAUTH',
+        clientId: 'my-client-id',
+        clientSecret: 'my-client-secret',
+        mtlsCertPath: '/run/secrets/client.crt',
+        mtlsKeyPath: '/run/secrets/client.key',
+        mtlsCaPath: '/run/secrets/cluster-ca.pem',
+    ));
+}
+```
+
+### Custom Guzzle middleware
+
+<!-- snippet-source: examples/client.php | regions: CustomHttpClient -->
+```php
+function custom_http_client(CamundaConfiguration $configuration): CamundaClient
+{
+    // Supplying a Guzzle client replaces the SDK-built stack. Add the SDK auth
+    // middleware and any proxy, tracing, or mTLS options your application needs.
+    $stack = HandlerStack::create();
+    $stack->push(new AuthMiddleware(AuthProviderFactory::fromConfiguration($configuration)), 'camunda_auth');
+
+    return CamundaClient::fromConfiguration(
+        $configuration,
+        new GuzzleClient(['handler' => $stack, 'http_errors' => false]),
+    );
+}
+```
+
 ### Supported environment variables
 
 <!-- BEGIN_CONFIG_REFERENCE -->
@@ -233,6 +307,31 @@ function readme_job_worker(): void
 
 When `ext-pcntl` is available and `forked: true` is set, each job is processed in its own child process, bounded to `maxJobs` concurrent children.
 
+### Object-oriented handlers
+
+<!-- snippet-source: examples/job.php | regions: ObjectJobHandler -->
+```php
+final class PaymentJobHandler implements JobHandler
+{
+    public function handle(ActivatedJobResult $job, JobActionClient $action): ?array
+    {
+        $variables = $job->getVariables();
+        if (!isset($variables['paymentId'])) {
+            $action->error('MISSING_PAYMENT_ID', 'The payment job has no payment id.');
+            return null;
+        }
+
+        return ['paymentStatus' => 'approved'];
+    }
+}
+
+function object_job_handler(CamundaClient $client): void
+{
+    $worker = $client->createJobWorker(new JobWorkerOptions(type: 'process-payment'));
+    $worker->run(new PaymentJobHandler());
+}
+```
+
 ## Accessing every operation
 
 Every one of the 243 API operations is exposed as a method directly on the client — the
@@ -276,7 +375,13 @@ function readme_api_accessor(): void
 }
 ```
 
-See the [`examples/`](examples/) directory for compilable, static-analysed usage of the most common operations.
+See the [`examples/`](examples/) directory for compilable, static-analysed usage of every REST API operation.
+
+## Advanced runnable examples
+
+The [`examples/advanced/`](examples/advanced/) directory contains self-verifying
+local-cluster scenarios for a test drive, resilient worker behavior, idempotent
+message correlation, and PHP process-forking.
 
 ## Contributing
 

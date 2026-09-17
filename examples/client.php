@@ -8,9 +8,13 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Examples;
 
+use Camunda\Orchestration\Auth\AuthProviderFactory;
 use Camunda\Orchestration\CamundaAsyncClient;
 use Camunda\Orchestration\CamundaClient;
 use Camunda\Orchestration\Config\CamundaConfiguration;
+use Camunda\Orchestration\Http\AuthMiddleware;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\HandlerStack;
 
 // region ZeroConfigClient
 function zero_config_client(): CamundaClient
@@ -68,3 +72,42 @@ function async_client(): CamundaAsyncClient
     return CamundaAsyncClient::fromEnvironment();
 }
 // endregion AsyncClient
+
+// region EnvFileClient
+function env_file_client(): CamundaClient
+{
+    // Set CAMUNDA_LOAD_ENVFILE=true (or a path) before starting PHP. Real
+    // environment variables and explicit overrides still take precedence.
+    return CamundaClient::fromEnvironment();
+}
+// endregion EnvFileClient
+
+// region MtlsClient
+function mtls_client(): CamundaClient
+{
+    return CamundaClient::fromConfiguration(new CamundaConfiguration(
+        restAddress: 'https://my-cluster.example.com/v2',
+        authStrategy: 'OAUTH',
+        clientId: 'my-client-id',
+        clientSecret: 'my-client-secret',
+        mtlsCertPath: '/run/secrets/client.crt',
+        mtlsKeyPath: '/run/secrets/client.key',
+        mtlsCaPath: '/run/secrets/cluster-ca.pem',
+    ));
+}
+// endregion MtlsClient
+
+// region CustomHttpClient
+function custom_http_client(CamundaConfiguration $configuration): CamundaClient
+{
+    // Supplying a Guzzle client replaces the SDK-built stack. Add the SDK auth
+    // middleware and any proxy, tracing, or mTLS options your application needs.
+    $stack = HandlerStack::create();
+    $stack->push(new AuthMiddleware(AuthProviderFactory::fromConfiguration($configuration)), 'camunda_auth');
+
+    return CamundaClient::fromConfiguration(
+        $configuration,
+        new GuzzleClient(['handler' => $stack, 'http_errors' => false]),
+    );
+}
+// endregion CustomHttpClient
