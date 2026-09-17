@@ -9,6 +9,25 @@ use Camunda\Orchestration\Exception\ConfigurationException;
 final class OperationHost
 {
     /**
+     * @param array<string, string> $configuredVariables
+     * @param array<string, string> $variables
+     * @return array<string, string>
+     */
+    public static function resolveVariables(
+        string $restAddress,
+        array $configuredVariables = [],
+        array $variables = [],
+    ): array {
+        try {
+            $derived = self::variables($restAddress);
+        } catch (ConfigurationException) {
+            $derived = [];
+        }
+
+        return array_replace($derived, $configuredVariables, $variables);
+    }
+
+    /**
      * @return array{schema: string, host: string, port: string, basePath: string}
      */
     public static function variables(string $restAddress): array

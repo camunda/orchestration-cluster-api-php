@@ -514,8 +514,8 @@ class ClusterApi
             $operationHost = Configuration::getHostString(
                 $hostSettings,
                 $hostIndex,
-                array_replace(
-                    \Camunda\Orchestration\Http\OperationHost::variables($this->config->getHost()),
+                \Camunda\Orchestration\Http\OperationHost::resolveVariables(
+                    $this->config->getHost(),
                     $this->config->getOperationHostVariables(),
                     $variables,
                 ),
@@ -936,8 +936,8 @@ class ClusterApi
             $operationHost = Configuration::getHostString(
                 $hostSettings,
                 $hostIndex,
-                array_replace(
-                    \Camunda\Orchestration\Http\OperationHost::variables($this->config->getHost()),
+                \Camunda\Orchestration\Http\OperationHost::resolveVariables(
+                    $this->config->getHost(),
                     $this->config->getOperationHostVariables(),
                     $variables,
                 ),
@@ -1292,8 +1292,8 @@ class ClusterApi
             $operationHost = Configuration::getHostString(
                 $hostSettings,
                 $hostIndex,
-                array_replace(
-                    \Camunda\Orchestration\Http\OperationHost::variables($this->config->getHost()),
+                \Camunda\Orchestration\Http\OperationHost::resolveVariables(
+                    $this->config->getHost(),
                     $this->config->getOperationHostVariables(),
                     $variables,
                 ),
@@ -1686,8 +1686,8 @@ class ClusterApi
             $operationHost = Configuration::getHostString(
                 $hostSettings,
                 $hostIndex,
-                array_replace(
-                    \Camunda\Orchestration\Http\OperationHost::variables($this->config->getHost()),
+                \Camunda\Orchestration\Http\OperationHost::resolveVariables(
+                    $this->config->getHost(),
                     $this->config->getOperationHostVariables(),
                     $variables,
                 ),
@@ -2650,8 +2650,8 @@ class ClusterApi
             $operationHost = Configuration::getHostString(
                 $hostSettings,
                 $hostIndex,
-                array_replace(
-                    \Camunda\Orchestration\Http\OperationHost::variables($this->config->getHost()),
+                \Camunda\Orchestration\Http\OperationHost::resolveVariables(
+                    $this->config->getHost(),
                     $this->config->getOperationHostVariables(),
                     $variables,
                 ),
