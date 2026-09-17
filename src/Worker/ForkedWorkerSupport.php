@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Camunda\Orchestration\Examples\Advanced\Internal;
+namespace Camunda\Orchestration\Worker;
 
 use JsonException;
 use RuntimeException;

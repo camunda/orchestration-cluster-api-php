@@ -6,12 +6,11 @@ namespace Camunda\Orchestration\Examples\Advanced\ForkedWorker;
 
 require_once dirname(__DIR__, 3) . '/vendor/autoload.php';
 require_once dirname(__DIR__) . '/internal/ExampleSupport.php';
-require_once dirname(__DIR__) . '/internal/ForkedWorkerSupport.php';
 
 use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\Examples\Advanced\Internal\ExampleSupport;
-use Camunda\Orchestration\Examples\Advanced\Internal\ForkedWorkerSupport;
 use Camunda\Orchestration\Semantic\ProcessInstanceKey;
+use Camunda\Orchestration\Worker\ForkedWorkerSupport;
 use Camunda\Orchestration\Worker\JobActionClient;
 use Camunda\Orchestration\Worker\JobWorkerOptions;
 

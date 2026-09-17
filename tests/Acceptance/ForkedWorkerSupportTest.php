@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Tests\Acceptance;
 
-require_once dirname(__DIR__, 2) . '/examples/advanced/internal/ForkedWorkerSupport.php';
+require_once dirname(__DIR__, 2) . '/src/Worker/ForkedWorkerSupport.php';
 
-use Camunda\Orchestration\Examples\Advanced\Internal\ForkedWorkerSupport;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Camunda\Orchestration\Worker\ForkedWorkerSupport;
 
 final class ForkedWorkerSupportTest extends TestCase
 {
