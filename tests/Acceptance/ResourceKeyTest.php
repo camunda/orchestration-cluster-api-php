@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Tests\Acceptance;
 
 use Camunda\Orchestration\Api\Api\ResourceApi;
+use Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter;
 use Camunda\Orchestration\Api\Model\AdvancedScopeKeyFilter;
 use Camunda\Orchestration\Api\Model\DeleteResourceResponse;
 use Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest;
@@ -61,14 +62,22 @@ final class ResourceKeyTest extends TestCase
 
     public function testSemanticUnionModelsLiftRawStringArraysIntoSemanticKeys(): void
     {
-        $filter = new AdvancedScopeKeyFilter([
+        $scopeFilter = new AdvancedScopeKeyFilter([
             'in' => ['2251799813685249', '2251799813685250'],
         ]);
+        $resourceFilter = new AdvancedResourceKeyFilter([
+            'in' => ['2251799813685676', '2251799813685677'],
+        ]);
 
-        self::assertContainsOnlyInstancesOf(ScopeKey::class, $filter->getIn());
+        self::assertContainsOnlyInstancesOf(ScopeKey::class, $scopeFilter->getIn());
         self::assertSame(
             ['2251799813685249', '2251799813685250'],
-            array_map(static fn (ScopeKey $key): string => $key->value(), $filter->getIn())
+            array_map(static fn (ScopeKey $key): string => $key->value(), $scopeFilter->getIn())
+        );
+        self::assertContainsOnlyInstancesOf(ResourceKey::class, $resourceFilter->getIn());
+        self::assertSame(
+            ['2251799813685676', '2251799813685677'],
+            array_map(static fn (ResourceKey $key): string => $key->value(), $resourceFilter->getIn())
         );
     }
 
