@@ -22,12 +22,28 @@ final class FacadeCoverageTest extends TestCase
         self::assertSame($expected, $this->traitOperations(GeneratedAsyncOperations::class));
     }
 
+    public function testSpecOperationsFailsWhenMetadataCannotBeRead(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot read spec metadata.');
+
+        $this->specOperationsFromMetadata(dirname(__DIR__, 2) . '/external-spec/bundled/does-not-exist.json');
+    }
+
     /**
      * @return list<string>
      */
     private function specOperations(): array
     {
-        $metadataJson = file_get_contents(dirname(__DIR__, 2) . '/external-spec/bundled/spec-metadata.json');
+        return $this->specOperationsFromMetadata(dirname(__DIR__, 2) . '/external-spec/bundled/spec-metadata.json');
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function specOperationsFromMetadata(string $path): array
+    {
+        $metadataJson = file_get_contents($path);
         if ($metadataJson === false) {
             throw new RuntimeException('Cannot read spec metadata.');
         }
