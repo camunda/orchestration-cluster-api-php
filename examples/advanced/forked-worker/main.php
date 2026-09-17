@@ -91,12 +91,15 @@ function run(): void
         if (!$completed && $instance instanceof ProcessInstanceKey) {
             ExampleSupport::cancelIfActive($client, $instance);
         }
-        if (is_file($handledByPidFile)) {
-            unlink($handledByPidFile);
-        }
-        if (is_file($resource)) {
-            unlink($resource);
-        }
+        cleanupFile($handledByPidFile, 'worker PID marker');
+        cleanupFile($resource, 'BPMN resource');
+    }
+}
+
+function cleanupFile(string $path, string $label): void
+{
+    if (is_file($path) && !unlink($path)) {
+        throw new \RuntimeException("Cannot remove temporary $label file: $path");
     }
 }
 
