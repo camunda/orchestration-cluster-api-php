@@ -15,14 +15,16 @@ final class ForkedWorkerSupportTest extends TestCase
         $path = $this->createTempFile();
         file_put_contents($path, ForkedWorkerSupport::encodePidMarker('4242', 1010, 'run-1'));
 
-        $marker = ForkedWorkerSupport::waitForHandledByPidMarker($path, 0);
+        try {
+            $marker = ForkedWorkerSupport::waitForHandledByPidMarker($path, 0);
 
-        self::assertSame(
-            ['handledByPid' => '4242', 'handledByParentPid' => '1010', 'runId' => 'run-1'],
-            $marker,
-        );
-
-        unlink($path);
+            self::assertSame(
+                ['handledByPid' => '4242', 'handledByParentPid' => '1010', 'runId' => 'run-1'],
+                $marker,
+            );
+        } finally {
+            unlink($path);
+        }
     }
 
     public function testWaitForHandledByPidMarkerRejectsInvalidJson(): void
