@@ -36,3 +36,33 @@ function search_incidents(CamundaClient $client): void
     }
 }
 // endregion SearchIncidents
+
+// region GetIncident
+/**
+ * Get incident.
+ */
+function get_incident(CamundaClient $client, IncidentKey $incidentKey): void
+{
+    $client->getIncident((string) $incidentKey);
+}
+// endregion GetIncident
+
+// region GetProcessInstanceStatisticsByDefinition
+/**
+ * Get process instance statistics by definition.
+ */
+function get_process_instance_statistics_by_definition(CamundaClient $client, \Camunda\Orchestration\Api\Model\IncidentProcessInstanceStatisticsByDefinitionQuery $incidentProcessInstanceStatisticsByDefinitionQuery): void
+{
+    $client->getProcessInstanceStatisticsByDefinition($incidentProcessInstanceStatisticsByDefinitionQuery);
+}
+// endregion GetProcessInstanceStatisticsByDefinition
+
+// region GetProcessInstanceStatisticsByError
+/**
+ * Get process instance statistics by error.
+ */
+function get_process_instance_statistics_by_error(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\IncidentProcessInstanceStatisticsByErrorQuery $incidentProcessInstanceStatisticsByErrorQuery = null): void
+{
+    $client->getProcessInstanceStatisticsByError($incidentProcessInstanceStatisticsByErrorQuery);
+}
+// endregion GetProcessInstanceStatisticsByError
