@@ -915,7 +915,7 @@ class RecoveryApi
     {
         return [
             [
-                "url" => "{schema}://{host}:{port}",
+                "url" => "{schema}://{host}:{port}{basePath}",
                 "description" => "No description provided",
                 "variables" => [
                     "host" => [
@@ -929,6 +929,10 @@ class RecoveryApi
                     "schema" => [
                     "description" => "The schema of the Orchestration Cluster REST API server.",
                     "default_value" => "http",
+                    ],
+                    "basePath" => [
+                    "description" => "The path prefix of the Orchestration Cluster REST Gateway.",
+                    "default_value" => "",
                     ]
                 ]
             ]
@@ -2056,7 +2060,7 @@ class RecoveryApi
     {
         return [
             [
-                "url" => "{schema}://{host}:{port}",
+                "url" => "{schema}://{host}:{port}{basePath}",
                 "description" => "No description provided",
                 "variables" => [
                     "host" => [
@@ -2070,6 +2074,10 @@ class RecoveryApi
                     "schema" => [
                     "description" => "The schema of the Orchestration Cluster REST API server.",
                     "default_value" => "http",
+                    ],
+                    "basePath" => [
+                    "description" => "The path prefix of the Orchestration Cluster REST Gateway.",
+                    "default_value" => "",
                     ]
                 ]
             ]

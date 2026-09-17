@@ -25,6 +25,15 @@ final class OperationHostTest extends TestCase
         self::assertSame('https://cluster.example.test:8443/cluster/v2/status', (string) $request->getUri());
     }
 
+    public function testConfiguredPathPrefixIsPreservedForClusterAdminOperations(): void
+    {
+        $client = $this->client('https://cluster.example.test/gateway/v2');
+
+        $request = $client->api(ClusterApi::class)->getClusterStatusRequest();
+
+        self::assertSame('https://cluster.example.test:443/gateway/cluster/v2/status', (string) $request->getUri());
+    }
+
     public function testExplicitOperationHostVariablesOverrideConfiguredHost(): void
     {
         $client = $this->client('https://cluster.example.test/v2');
@@ -54,6 +63,22 @@ final class OperationHostTest extends TestCase
         $request = $client->api(ExportingApi::class)->getClusterExportingStatusRequest();
 
         self::assertSame('http://cluster.example.test:8080/cluster/v2/exporting', (string) $request->getUri());
+    }
+
+    public function testAsyncClientPreservesConfiguredPathPrefixForOperationSpecificServer(): void
+    {
+        $config = ConfigResolver::resolve(
+            overrides: [
+                'CAMUNDA_REST_ADDRESS' => 'https://cluster.example.test/proxy/v2',
+                'CAMUNDA_AUTH_STRATEGY' => 'NONE',
+            ],
+            environment: [],
+        );
+        $client = CamundaAsyncClient::fromConfiguration($config, new GuzzleClient());
+
+        $request = $client->api(ExportingApi::class)->getClusterExportingStatusRequest();
+
+        self::assertSame('https://cluster.example.test:443/proxy/cluster/v2/exporting', (string) $request->getUri());
     }
 
     public function testOperationHostRejectsRelativeAddress(): void
