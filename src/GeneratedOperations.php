@@ -2955,13 +2955,13 @@ trait GeneratedOperations
      *
      * Delete resource
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The key of the resource to delete. This can be the key of a process definition, the key of a decision requirements definition or the key of a form definition (required)
      * @param  \Camunda\Orchestration\Api\Model\DeleteResourceRequest|null $deleteResourceRequest deleteResourceRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteResource'] to see the possible values for this operation
      *
      * @return \Camunda\Orchestration\Api\Model\DeleteResourceResponse|\Camunda\Orchestration\Api\Model\ProblemDetail
      */
-    public function deleteResource(\Camunda\Orchestration\Api\Model\ResourceKey $resourceKey, ?\Camunda\Orchestration\Api\Model\DeleteResourceRequest $deleteResourceRequest = null, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['deleteResource'][0]): \Camunda\Orchestration\Api\Model\DeleteResourceResponse|\Camunda\Orchestration\Api\Model\ProblemDetail
+    public function deleteResource(\Camunda\Orchestration\Semantic\ResourceKey $resourceKey, ?\Camunda\Orchestration\Api\Model\DeleteResourceRequest $deleteResourceRequest = null, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['deleteResource'][0]): \Camunda\Orchestration\Api\Model\DeleteResourceResponse|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
         return $this->api(\Camunda\Orchestration\Api\Api\ResourceApi::class)->deleteResource($resourceKey, $deleteResourceRequest, $contentType);
     }
@@ -2971,12 +2971,12 @@ trait GeneratedOperations
      *
      * Get resource
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResource'] to see the possible values for this operation
      *
      * @return \Camunda\Orchestration\Api\Model\ResourceResult|\Camunda\Orchestration\Api\Model\ProblemDetail
      */
-    public function getResource(\Camunda\Orchestration\Api\Model\ResourceKey $resourceKey, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['getResource'][0]): \Camunda\Orchestration\Api\Model\ResourceResult|\Camunda\Orchestration\Api\Model\ProblemDetail
+    public function getResource(\Camunda\Orchestration\Semantic\ResourceKey $resourceKey, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['getResource'][0]): \Camunda\Orchestration\Api\Model\ResourceResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
         return $this->api(\Camunda\Orchestration\Api\Api\ResourceApi::class)->getResource($resourceKey, $contentType);
     }
@@ -2986,13 +2986,13 @@ trait GeneratedOperations
      *
      * Get RPA resource content (deprecated)
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the RPA resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContent'] to see the possible values for this operation
      *
      * @return array<string,mixed>|\Camunda\Orchestration\Api\Model\ProblemDetail
      * @deprecated
      */
-    public function getResourceContent(\Camunda\Orchestration\Api\Model\ResourceKey $resourceKey, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['getResourceContent'][0]): array|\Camunda\Orchestration\Api\Model\ProblemDetail
+    public function getResourceContent(\Camunda\Orchestration\Semantic\ResourceKey $resourceKey, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['getResourceContent'][0]): array|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
         return $this->api(\Camunda\Orchestration\Api\Api\ResourceApi::class)->getResourceContent($resourceKey, $contentType);
     }
@@ -3002,12 +3002,12 @@ trait GeneratedOperations
      *
      * Get resource content as binary
      *
-     * @param  \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key identifying the resource. (required)
+     * @param  \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key identifying the resource. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getResourceContentBinary'] to see the possible values for this operation
      *
      * @return \SplFileObject|\Camunda\Orchestration\Api\Model\ProblemDetail
      */
-    public function getResourceContentBinary(\Camunda\Orchestration\Api\Model\ResourceKey $resourceKey, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['getResourceContentBinary'][0]): \SplFileObject|\Camunda\Orchestration\Api\Model\ProblemDetail
+    public function getResourceContentBinary(\Camunda\Orchestration\Semantic\ResourceKey $resourceKey, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['getResourceContentBinary'][0]): \SplFileObject|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
         return $this->api(\Camunda\Orchestration\Api\Api\ResourceApi::class)->getResourceContentBinary($resourceKey, $contentType);
     }

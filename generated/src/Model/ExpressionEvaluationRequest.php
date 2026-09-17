@@ -60,7 +60,7 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
     protected static array $openAPITypes = [
         'expression' => 'string',
         'tenantId' => 'string',
-        'scopeKey' => '\Camunda\Orchestration\Api\Model\ScopeKey',
+        'scopeKey' => '\Camunda\Orchestration\Semantic\ScopeKey',
         'variables' => 'array<string,mixed>'
     ];
 
@@ -344,9 +344,9 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
     /**
      * Gets scopeKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ScopeKey|null
+     * @return \Camunda\Orchestration\Semantic\ScopeKey|null
      */
-    public function getScopeKey(): ?\Camunda\Orchestration\Api\Model\ScopeKey
+    public function getScopeKey(): ?\Camunda\Orchestration\Semantic\ScopeKey
     {
         return $this->container['scopeKey'];
     }
@@ -354,11 +354,11 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
     /**
      * Sets scopeKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ScopeKey|null $scopeKey Key of the process instance or element instance whose variables should be made visible to the expression. Use a process instance key to evaluate against the process instance scope, or an element instance key to evaluate against that element instance scope. If omitted, the expression is evaluated unscoped, using only cluster variables and request-body variables.
+     * @param \Camunda\Orchestration\Semantic\ScopeKey|null $scopeKey Key of the process instance or element instance whose variables should be made visible to the expression. Use a process instance key to evaluate against the process instance scope, or an element instance key to evaluate against that element instance scope. If omitted, the expression is evaluated unscoped, using only cluster variables and request-body variables.
      *
      * @return $this
      */
-    public function setScopeKey(?\Camunda\Orchestration\Api\Model\ScopeKey $scopeKey): static
+    public function setScopeKey(?\Camunda\Orchestration\Semantic\ScopeKey $scopeKey): static
     {
         if (is_null($scopeKey)) {
             throw new InvalidArgumentException('non-nullable scopeKey cannot be null');

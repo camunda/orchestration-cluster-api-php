@@ -63,7 +63,7 @@ class ResourceResult implements ModelInterface, ArrayAccess, JsonSerializable
         'versionTag' => 'string',
         'resourceId' => 'string',
         'tenantId' => '\Camunda\Orchestration\Semantic\TenantId',
-        'resourceKey' => '\Camunda\Orchestration\Api\Model\ResourceKey'
+        'resourceKey' => '\Camunda\Orchestration\Semantic\ResourceKey'
     ];
 
     /**
@@ -479,9 +479,9 @@ class ResourceResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets resourceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ResourceKey
+     * @return \Camunda\Orchestration\Semantic\ResourceKey
      */
-    public function getResourceKey(): \Camunda\Orchestration\Api\Model\ResourceKey
+    public function getResourceKey(): \Camunda\Orchestration\Semantic\ResourceKey
     {
         return $this->container['resourceKey'];
     }
@@ -489,11 +489,11 @@ class ResourceResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets resourceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ResourceKey $resourceKey The unique key of this resource.
+     * @param \Camunda\Orchestration\Semantic\ResourceKey $resourceKey The unique key of this resource.
      *
      * @return $this
      */
-    public function setResourceKey(\Camunda\Orchestration\Api\Model\ResourceKey $resourceKey): static
+    public function setResourceKey(\Camunda\Orchestration\Semantic\ResourceKey $resourceKey): static
     {
         if (is_null($resourceKey)) {
             throw new InvalidArgumentException('non-nullable resourceKey cannot be null');
