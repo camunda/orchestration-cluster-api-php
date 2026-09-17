@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Tests\Integration;
 
+use Camunda\Orchestration\Api\Model\DeploymentResult;
+
 final class DeploymentExampleTest extends IntegrationTestCase
 {
     public function testDeploymentExamplesUseCheckedInResources(): void
@@ -16,10 +18,13 @@ final class DeploymentExampleTest extends IntegrationTestCase
 
         ob_start();
         try {
-            \Camunda\Orchestration\Examples\deploy_resources($this->client);
-            \Camunda\Orchestration\Examples\deploy_single_resource($this->client);
+            $multipleDeployment = \Camunda\Orchestration\Examples\deploy_resources($this->client);
+            $singleDeployment = \Camunda\Orchestration\Examples\deploy_single_resource($this->client);
         } finally {
             ob_end_clean();
         }
+
+        self::assertInstanceOf(DeploymentResult::class, $multipleDeployment);
+        self::assertInstanceOf(DeploymentResult::class, $singleDeployment);
     }
 }
