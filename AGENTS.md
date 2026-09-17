@@ -72,6 +72,7 @@ Upstream dependencies — when they misbehave, fix them at the source rather tha
 | `make lint` / `make lint-fix` | Coding-standards check / auto-fix. |
 | `make sync-readme` / `make sync-readme-check` | Regenerate / verify README snippets. |
 | `make docs-md` | Regenerate `docs/` reference markdown. |
+| `make docs-docusaurus` | Regenerate `docs-md/php-sdk/` Docusaurus pages consumed by camunda-docs. |
 | `make config-reference` / `make config-reference-check` | Regenerate / verify the README configuration reference. |
 | `make example-coverage` | Verify `examples/operation-map.json` integrity and report example coverage. |
 

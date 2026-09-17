@@ -1,4 +1,4 @@
-.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan check sync-readme sync-readme-check docs-md config-reference config-reference-check example-coverage
+.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan check sync-readme sync-readme-check docs-md docs-docusaurus config-reference config-reference-check example-coverage
 
 # Git ref/branch/tag/SHA in https://github.com/camunda/camunda.git to fetch the OpenAPI
 # spec from. Override like: `make generate SPEC_REF=stable/8.9`
@@ -52,6 +52,11 @@ sync-readme-check:
 
 docs-md:
 	php scripts/generate-docs.php
+
+# Generate Docusaurus-ready markdown (landing + section pages + API reference)
+# consumed by camunda-docs' sync-php-sdk-docs.yaml workflow.
+docs-docusaurus:
+	php scripts/generate-docusaurus-md.php --validate-links
 
 config-reference:
 	php scripts/generate-config-reference.php
