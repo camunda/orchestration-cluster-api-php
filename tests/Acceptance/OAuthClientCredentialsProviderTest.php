@@ -69,7 +69,7 @@ final class RecordingTokenClient implements ClientInterface
 
     public function __construct(ResponseInterface ...$responses)
     {
-        $this->responses = $responses;
+        $this->responses = array_values($responses);
     }
 
     public function sendRequest(RequestInterface $request): ResponseInterface

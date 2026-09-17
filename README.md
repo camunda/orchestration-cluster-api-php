@@ -88,7 +88,7 @@ function readme_async_client(): void
 
 ### Parallel async reads
 
-<!-- snippet-source: examples/async.php | regions: ParallelAsyncReads -->
+<!-- snippet-source: examples/readme.php | regions: ReadmeParallelAsyncReads -->
 ```php
 function parallel_async_reads(CamundaAsyncClient $client): void
 {
@@ -191,7 +191,7 @@ Set `CAMUNDA_LOAD_ENVFILE=true` to read `.env` in the working directory, or set
 it to an explicit path. This optional capability requires
 [`vlucas/phpdotenv`](https://packagist.org/packages/vlucas/phpdotenv).
 
-<!-- snippet-source: examples/client.php | regions: EnvFileClient -->
+<!-- snippet-source: examples/readme.php | regions: ReadmeEnvFileClient -->
 ```php
 function env_file_client(): CamundaClient
 {
@@ -203,7 +203,7 @@ function env_file_client(): CamundaClient
 
 ### Mutual TLS
 
-<!-- snippet-source: examples/client.php | regions: MtlsClient -->
+<!-- snippet-source: examples/readme.php | regions: ReadmeMtlsClient -->
 ```php
 function mtls_client(): CamundaClient
 {
@@ -221,7 +221,7 @@ function mtls_client(): CamundaClient
 
 ### Custom Guzzle middleware
 
-<!-- snippet-source: examples/client.php | regions: CustomHttpClient -->
+<!-- snippet-source: examples/readme.php | regions: ReadmeCustomHttpClient -->
 ```php
 function custom_http_client(CamundaConfiguration $configuration): CamundaClient
 {
@@ -309,7 +309,7 @@ When `ext-pcntl` is available and `forked: true` is set, each job is processed i
 
 ### Object-oriented handlers
 
-<!-- snippet-source: examples/job.php | regions: ObjectJobHandler -->
+<!-- snippet-source: examples/readme.php | regions: ReadmeObjectJobHandler -->
 ```php
 final class PaymentJobHandler implements JobHandler
 {

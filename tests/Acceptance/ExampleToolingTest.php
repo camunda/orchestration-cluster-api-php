@@ -69,6 +69,30 @@ final class ExampleToolingTest extends TestCase
         self::assertStringContainsString("Region 'Missing' does not exist", $stderr);
     }
 
+    public function testSnippetCheckerRequiresTheCanonicalReadmeSource(): void
+    {
+        $this->write('examples/readme.php', "<?php\n");
+        $this->write('examples/other.php', <<<'PHP'
+            <?php
+            // region Example
+            function example(): void
+            {
+            }
+            // endregion Example
+            PHP);
+        $this->write('README.md', <<<'MARKDOWN'
+            <!-- snippet-source: examples/other.php | regions: Example -->
+            ```php
+            stale
+            ```
+            MARKDOWN);
+
+        [$status, , $stderr] = $this->runScript('sync-readme-snippets.php', '--check');
+
+        self::assertSame(1, $status);
+        self::assertStringContainsString('README snippets must be sourced from examples/readme.php.', $stderr);
+    }
+
     public function testCoverageCheckerUsesExactOperationIdsAndRequiresCompleteCoverage(): void
     {
         $this->write('examples/workflow.php', <<<'PHP'

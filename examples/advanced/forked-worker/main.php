@@ -43,25 +43,19 @@ function run(): void
             forked: true,
         ));
 
-        $handled = false;
         $deadline = microtime(true) + 30;
-
-        while (!$handled && microtime(true) < $deadline) {
+        do {
             $processed = $worker->pollOnce(
-                static function (ActivatedJobResult $job, JobActionClient $action) use (&$handled): array {
-                    $handled = true;
-
-                    return [
-                        'handledByPid' => getmypid(),
-                    ];
-                },
+                static fn (ActivatedJobResult $job, JobActionClient $action): array => [
+                    'handledByPid' => getmypid(),
+                ],
             );
             if ($processed === 0) {
                 usleep(200_000);
             }
-        }
+        } while ($processed === 0 && microtime(true) < $deadline);
 
-        if (!$handled) {
+        if ($processed === 0) {
             throw new \RuntimeException('The forked worker did not receive its job.');
         }
 

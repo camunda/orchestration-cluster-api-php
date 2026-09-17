@@ -16,6 +16,8 @@ use function Camunda\Orchestration\Scripts\resolve_snippet_source;
 use function Camunda\Orchestration\Scripts\read_text_file;
 use function Camunda\Orchestration\Scripts\split_root_argument;
 
+const README_SNIPPET_SOURCE = 'examples/readme.php';
+
 /**
  * @return array{regions: string, sources: string|null}
  */
@@ -57,6 +59,12 @@ function resolve_regions(string $root, array $regions, array $marker): array
 
     $expectedSources = array_values($sources);
     sort($expectedSources, SORT_STRING);
+
+    if ($expectedSources !== [README_SNIPPET_SOURCE]) {
+        throw new RuntimeException(
+            'README snippets must be sourced from ' . README_SNIPPET_SOURCE . '.',
+        );
+    }
 
     if ($marker['sources'] !== null) {
         $declaredSources = [];
