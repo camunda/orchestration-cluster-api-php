@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "scripts": {
+    "release": "semantic-release",
+    "bundle:spec": "camunda-schema-bundler --ref ${SPEC_REF:-stable/8.10} --deref-path-local --output-spec external-spec/bundled/rest-api.bundle.json --output-metadata external-spec/bundled/spec-metadata.json"
+  },
+  "devDependencies": {
+    "@camunda8/sdk-infra": "1.11.1",
+    "@commitlint/cli": "21.2.0",
+    "@commitlint/config-conventional": "21.2.0",
+    "@semantic-release/changelog": "6.0.3",
+    "@semantic-release/exec": "7.1.0",
+    "@semantic-release/git": "10.0.1",
+    "camunda-schema-bundler": "2.4.5",
+    "semantic-release": "25.0.9"
+  },
+  "overrides": {
+    "js-yaml@4": "4.3.0",
+    "fast-uri@3": "3.1.4"
+  }
+}

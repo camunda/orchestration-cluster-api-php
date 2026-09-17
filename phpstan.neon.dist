@@ -1,0 +1,16 @@
+parameters:
+    level: max
+    paths:
+        - src
+        - examples
+        - tests
+    # The generated low-level client (generated/) is machine-produced and validated
+    # by its own phplint step, not by PHPStan max. The hand-written runtime and
+    # ergonomic facade in src/ must stay at level max with zero errors.
+    excludePaths:
+        - generated
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # php-http/discovery factories are resolved at runtime.
+        - identifier: missingType.generics

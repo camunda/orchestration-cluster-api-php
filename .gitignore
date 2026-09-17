@@ -1,0 +1,11 @@
+/vendor/
+/node_modules/
+/external-spec/upstream/
+/.php-cs-fixer.cache
+/.phpunit.result.cache
+/.phpunit.cache/
+/composer.lock
+/public/
+/docs-md/
+.DS_Store
+*.log

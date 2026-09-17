@@ -1,0 +1,10 @@
+# Mark generated / derived output so GitHub collapses diffs in PRs by default
+# and Copilot code review skips them. Reviewers can still expand when needed.
+generated/** linguist-generated=true
+external-spec/bundled/** linguist-generated=true
+docs/api-reference.md linguist-generated=true
+docs/semantic-types.md linguist-generated=true
+package-lock.json linguist-generated=true
+
+# Force LF line endings for shell scripts so they work regardless of platform.
+*.sh text eol=lf

@@ -1,0 +1,20 @@
+# openapi-generator configuration for the generated low-level PHP client.
+#
+# The generated client (generated/) is NEVER hand-edited. Regenerate via `make generate`.
+#
+# The Camunda Domain Type System (semantic keys such as JobKey, ProcessInstanceKey,
+# ProcessDefinitionId, ElementId, …) is NOT produced by openapi-generator — it collapses
+# every semantic string/long key to a bare `string`. The post-generation hooks under
+# hooks/post_gen/ (orchestrated by generate.php) emit validated readonly value-object
+# types under generated/semantic/ and rewrite the generated model/api signatures to use
+# them. See AGENTS.md.
+generatorName: php-nextgen
+inputSpec: external-spec/bundled/rest-api.bundle.json
+outputDir: generated
+additionalProperties:
+  invokerPackage: Camunda\Orchestration\Api
+  packageName: Camunda\Orchestration\Api
+  composerPackageName: camunda/orchestration-cluster-api-client
+  artifactVersion: 0.1.0
+  srcBasePath: src
+  variableNamingConvention: camelCase

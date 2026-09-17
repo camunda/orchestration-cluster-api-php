@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  id="greet-definitions"
+                  targetNamespace="http://camunda.org/php-sdk">
+  <bpmn:process id="greet-process" isExecutable="true">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>flow-to-task</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="greet-task" name="Greet">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="greet" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>flow-to-task</bpmn:incoming>
+      <bpmn:outgoing>flow-to-end</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end">
+      <bpmn:incoming>flow-to-end</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="flow-to-task" sourceRef="start" targetRef="greet-task" />
+    <bpmn:sequenceFlow id="flow-to-end" sourceRef="greet-task" targetRef="end" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="diagram">
+    <bpmndi:BPMNPlane id="plane" bpmnElement="greet-process" />
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
