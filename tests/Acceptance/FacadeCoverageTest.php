@@ -17,9 +17,13 @@ final class FacadeCoverageTest extends TestCase
     public function testSyncAndAsyncFacadesCoverEveryGeneratedOperation(): void
     {
         $expected = $this->specOperations();
+        $syncOperations = $this->traitOperations(GeneratedOperations::class);
+        $asyncOperations = $this->traitOperations(GeneratedAsyncOperations::class);
 
-        self::assertSame($expected, $this->traitOperations(GeneratedOperations::class));
-        self::assertSame($expected, $this->traitOperations(GeneratedAsyncOperations::class));
+        self::assertCount(count($expected), $syncOperations);
+        self::assertCount(count($expected), $asyncOperations);
+        self::assertSame($expected, $syncOperations);
+        self::assertSame($expected, $asyncOperations);
     }
 
     public function testSpecOperationsFailsWhenMetadataCannotBeRead(): void
