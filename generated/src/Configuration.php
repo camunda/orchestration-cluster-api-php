@@ -130,6 +130,12 @@ class Configuration
     protected bool $ignoreOperationHosts = false;
 
     /**
+     * Variables that replace operation-specific server defaults.
+     *
+     * @var array<string, string>
+     */
+    protected array $operationHostVariables = [];
+    /**
      * Constructor
      */
     public function __construct()
@@ -419,6 +425,24 @@ class Configuration
     public function getIgnoreOperationHosts(): bool
     {
         return $this->ignoreOperationHosts;
+    }
+
+    /**
+     * @param array<string, string> $operationHostVariables
+     */
+    public function setOperationHostVariables(array $operationHostVariables): static
+    {
+        $this->operationHostVariables = $operationHostVariables;
+
+        return $this;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getOperationHostVariables(): array
+    {
+        return $this->operationHostVariables;
     }
 
     /**

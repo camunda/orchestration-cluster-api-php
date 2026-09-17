@@ -494,7 +494,11 @@ class ExportingApi
             if ($hostIndex < 0 || $hostIndex >= count($hostSettings)) {
                 throw new InvalidArgumentException("Invalid index {$hostIndex} when selecting the host. Must be less than ".count($hostSettings));
             }
-            $operationHost = Configuration::getHostString($hostSettings, $hostIndex, $variables);
+            $operationHost = Configuration::getHostString(
+                $hostSettings,
+                $hostIndex,
+                array_replace($this->config->getOperationHostVariables(), $variables),
+            );
         }
         $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
@@ -1132,7 +1136,11 @@ class ExportingApi
             if ($hostIndex < 0 || $hostIndex >= count($hostSettings)) {
                 throw new InvalidArgumentException("Invalid index {$hostIndex} when selecting the host. Must be less than ".count($hostSettings));
             }
-            $operationHost = Configuration::getHostString($hostSettings, $hostIndex, $variables);
+            $operationHost = Configuration::getHostString(
+                $hostSettings,
+                $hostIndex,
+                array_replace($this->config->getOperationHostVariables(), $variables),
+            );
         }
         $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
@@ -1700,7 +1708,11 @@ class ExportingApi
             if ($hostIndex < 0 || $hostIndex >= count($hostSettings)) {
                 throw new InvalidArgumentException("Invalid index {$hostIndex} when selecting the host. Must be less than ".count($hostSettings));
             }
-            $operationHost = Configuration::getHostString($hostSettings, $hostIndex, $variables);
+            $operationHost = Configuration::getHostString(
+                $hostSettings,
+                $hostIndex,
+                array_replace($this->config->getOperationHostVariables(), $variables),
+            );
         }
         $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
