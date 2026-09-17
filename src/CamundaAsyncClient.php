@@ -35,6 +35,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 final class CamundaAsyncClient
 {
     use ApiAccessors;
+    use GeneratedAsyncOperations;
 
     private readonly ApiConfiguration $apiConfig;
 

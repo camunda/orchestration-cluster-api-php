@@ -157,6 +157,13 @@ jobs:
       - name: Check README snippets are up-to-date
         run: make sync-readme-check
 
+      # If this fails, run `make config-reference` and commit the result.
+      - name: Check configuration reference is up-to-date
+        run: make config-reference-check
+
+      - name: Check example map coverage
+        run: make example-coverage
+
       - name: Run coding-standards check
         run: make lint
 

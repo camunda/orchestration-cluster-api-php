@@ -54,6 +54,42 @@ final class ConfigResolver
     ];
 
     /**
+     * Structured metadata for every supported environment variable, used to
+     * generate the configuration reference table in the README. The default
+     * values here are the effective SDK defaults applied by {@see resolve()}.
+     *
+     * @return list<array{variable: string, default: string, description: string}>
+     */
+    public static function configReference(): array
+    {
+        return [
+            ['variable' => 'CAMUNDA_REST_ADDRESS', 'default' => self::DEFAULT_REST_ADDRESS, 'description' => 'Cluster REST endpoint. `/v2` is appended automatically when absent.'],
+            ['variable' => 'ZEEBE_REST_ADDRESS', 'default' => '', 'description' => 'Legacy alias for `CAMUNDA_REST_ADDRESS` (used only when the latter is unset).'],
+            ['variable' => 'CAMUNDA_AUTH_STRATEGY', 'default' => '', 'description' => '`NONE`, `BASIC`, or `OAUTH`. Auto-detected from the supplied credentials when unset.'],
+            ['variable' => 'CAMUNDA_CLIENT_ID', 'default' => '', 'description' => 'OAuth client id.'],
+            ['variable' => 'CAMUNDA_CLIENT_SECRET', 'default' => '', 'description' => 'OAuth client secret.'],
+            ['variable' => 'CAMUNDA_CLIENT_AUTH_CLIENTID', 'default' => '', 'description' => 'Legacy alias for `CAMUNDA_CLIENT_ID`.'],
+            ['variable' => 'CAMUNDA_CLIENT_AUTH_CLIENTSECRET', 'default' => '', 'description' => 'Legacy alias for `CAMUNDA_CLIENT_SECRET`.'],
+            ['variable' => 'CAMUNDA_OAUTH_URL', 'default' => self::DEFAULT_OAUTH_URL, 'description' => 'OAuth token endpoint.'],
+            ['variable' => 'CAMUNDA_TOKEN_AUDIENCE', 'default' => self::DEFAULT_AUDIENCE, 'description' => 'OAuth token audience.'],
+            ['variable' => 'CAMUNDA_BASIC_AUTH_USERNAME', 'default' => '', 'description' => 'Basic-auth username.'],
+            ['variable' => 'CAMUNDA_BASIC_AUTH_PASSWORD', 'default' => '', 'description' => 'Basic-auth password.'],
+            ['variable' => 'CAMUNDA_TENANT_ID', 'default' => '', 'description' => 'Default tenant id applied to tenant-aware operations.'],
+            ['variable' => 'CAMUNDA_TENANT_IDS', 'default' => '', 'description' => 'Comma-separated default tenant ids (e.g. for job activation).'],
+            ['variable' => 'CAMUNDA_SDK_LOG_LEVEL', 'default' => 'warn', 'description' => 'SDK log level (`error`, `warn`, `info`, `debug`).'],
+            ['variable' => 'CAMUNDA_WORKER_MAX_CONCURRENT_JOBS', 'default' => '32', 'description' => 'Default maximum number of jobs a worker activates at once.'],
+            ['variable' => 'CAMUNDA_WORKER_TIMEOUT', 'default' => '60000', 'description' => 'Default job activation timeout, in milliseconds.'],
+            ['variable' => 'CAMUNDA_WORKER_REQUEST_TIMEOUT', 'default' => '10000', 'description' => 'Default long-poll request timeout, in milliseconds.'],
+            ['variable' => 'CAMUNDA_WORKER_NAME', 'default' => '', 'description' => 'Default worker name reported when activating jobs.'],
+            ['variable' => 'CAMUNDA_MTLS_CERT_PATH', 'default' => '', 'description' => 'Path to the client certificate for mutual TLS.'],
+            ['variable' => 'CAMUNDA_MTLS_KEY_PATH', 'default' => '', 'description' => 'Path to the client private key for mutual TLS.'],
+            ['variable' => 'CAMUNDA_MTLS_CA_PATH', 'default' => '', 'description' => 'Path to the CA bundle used to verify the server certificate.'],
+            ['variable' => 'CAMUNDA_MTLS_KEY_PASSPHRASE', 'default' => '', 'description' => 'Passphrase protecting the mTLS client key, if any.'],
+            ['variable' => 'CAMUNDA_LOAD_ENVFILE', 'default' => '', 'description' => 'Load configuration from a `.env` file. Set to `true` or a file path.'],
+        ];
+    }
+
+    /**
      * @param array<string, string> $overrides Explicit configuration (highest precedence).
      * @param array<string, string>|null $environment Environment map; defaults to getenv().
      */

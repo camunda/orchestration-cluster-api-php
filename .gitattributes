@@ -4,6 +4,8 @@ generated/** linguist-generated=true
 external-spec/bundled/** linguist-generated=true
 docs/api-reference.md linguist-generated=true
 docs/semantic-types.md linguist-generated=true
+src/GeneratedOperations.php linguist-generated=true
+src/GeneratedAsyncOperations.php linguist-generated=true
 package-lock.json linguist-generated=true
 
 # Force LF line endings for shell scripts so they work regardless of platform.

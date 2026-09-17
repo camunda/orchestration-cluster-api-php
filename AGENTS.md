@@ -37,6 +37,7 @@ Upstream dependencies — when they misbehave, fix them at the source rather tha
 | `hooks/post_gen/0200_serializer_semantic.php` | Patches `ObjectSerializer` to (de)serialize value objects. |
 | `hooks/post_gen/0300_retype_models.php` | Retypes generated model properties from scalars to value objects. |
 | `hooks/post_gen/0400_api_accessors.php` | Generates `src/ApiAccessors.php` (one accessor per API group). |
+| `hooks/post_gen/0500_flat_facade.php` | Generates `src/GeneratedOperations.php` + `src/GeneratedAsyncOperations.php` — the flat facade forwarding all 243 operations onto the clients. |
 | `generated/` | **Generated.** Produced by `make generate`. Never hand-edit. Tracked in git (Packagist installs the repo). |
 | `src/` | Hand-written runtime: clients, config, auth, HTTP, job worker. **Primary edit surface** for runtime behaviour. Held at PHPStan `max`. |
 | `examples/` | Compilable, statically-analysed usage examples. `examples/readme.php` is the source of truth for `README.md` snippets. |
@@ -44,13 +45,16 @@ Upstream dependencies — when they misbehave, fix them at the source rather tha
 | `tests/Acceptance/` | Fast unit tests (semantic types, config, serialization). No live Camunda required. |
 | `tests/Integration/` | Integration tests against a real Camunda instance. Skipped unless `CAMUNDA_INTEGRATION=1`. |
 | `docker/` | Local Camunda compose stack for integration tests. |
-| `scripts/` | Bundle, README-sync, docs, and release helpers. |
+| `scripts/` | Bundle, README-sync, docs, config-reference, example-coverage, and release helpers. |
 
 ### Non-negotiable invariants
 
 - **`generated/` is never hand-edited.** All changes to generated output happen through a hook in `hooks/post_gen/`, so the pipeline stays reproducible (`make generate`).
 - **`src/` stays green at PHPStan `max`** and passes PHP-CS-Fixer. `examples/` and `tests/` are analysed at the same level.
 - **Semantic value objects are the core feature.** Every identifier is a distinct type in `Camunda\Orchestration\Semantic`. Do not collapse them back to `string`.
+- **`src/GeneratedOperations.php` / `src/GeneratedAsyncOperations.php` are generated**, not hand-edited. They come from `hooks/post_gen/0500_flat_facade.php`; change the hook and re-run generation. They are marked `linguist-generated`.
+- **The README configuration reference is generated** from `ConfigResolver::configReference()`. Edit that method and run `make config-reference`; CI enforces `make config-reference-check`.
+- **`examples/operation-map.json` integrity is enforced** by `make example-coverage` in CI: every entry must resolve to a real spec operation and an existing example region.
 - **README snippets are generated**, not written by hand. Edit the region in `examples/readme.php` and run `make sync-readme`.
 - **`src/Version.php` is stamped by release tooling.** Do not bump it manually.
 - **Spec ref is `stable/8.10`.** SDK major `n` ↔ server `8.n`.
@@ -68,6 +72,8 @@ Upstream dependencies — when they misbehave, fix them at the source rather tha
 | `make lint` / `make lint-fix` | Coding-standards check / auto-fix. |
 | `make sync-readme` / `make sync-readme-check` | Regenerate / verify README snippets. |
 | `make docs-md` | Regenerate `docs/` reference markdown. |
+| `make config-reference` / `make config-reference-check` | Regenerate / verify the README configuration reference. |
+| `make example-coverage` | Verify `examples/operation-map.json` integrity and report example coverage. |
 
 ## Working on an issue
 

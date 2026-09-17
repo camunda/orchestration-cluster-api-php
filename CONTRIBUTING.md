@@ -42,14 +42,17 @@ make generate-only
 Run the full local gate:
 
 ```bash
-make check            # lint + phpstan (level max) + acceptance tests
-make sync-readme-check # verify README snippets match examples/
+make check              # lint + phpstan (level max) + acceptance tests
+make sync-readme-check  # verify README snippets match examples/
+make config-reference-check # verify the README config reference is in sync
+make example-coverage   # verify examples/operation-map.json integrity
 ```
 
 If you changed anything user-facing:
 
 - Update the relevant region in `examples/readme.php` and run `make sync-readme`.
 - Add or update an example in `examples/` and reference it from `examples/operation-map.json`.
+- If you changed configuration, update `ConfigResolver::configReference()` and run `make config-reference`.
 - Regenerate the reference docs with `make docs-md`.
 
 ## Testing

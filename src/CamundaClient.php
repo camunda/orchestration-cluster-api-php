@@ -39,6 +39,7 @@ use GuzzleHttp\HandlerStack;
 final class CamundaClient
 {
     use ApiAccessors;
+    use GeneratedOperations;
 
     private readonly ApiConfiguration $apiConfig;
 

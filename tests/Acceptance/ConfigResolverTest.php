@@ -9,6 +9,20 @@ use PHPUnit\Framework\TestCase;
 
 final class ConfigResolverTest extends TestCase
 {
+    public function testConfigReferenceCoversEverySupportedVariable(): void
+    {
+        $documented = array_map(
+            static fn (array $row): string => $row['variable'],
+            ConfigResolver::configReference(),
+        );
+
+        sort($documented);
+        $expected = ConfigResolver::CONFIG_KEYS;
+        sort($expected);
+
+        self::assertSame($expected, $documented, 'configReference() must document exactly the CONFIG_KEYS variables.');
+    }
+
     public function testNormalizesRestAddressWithV2Suffix(): void
     {
         $config = ConfigResolver::resolve(

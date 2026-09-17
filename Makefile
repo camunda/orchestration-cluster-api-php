@@ -1,4 +1,4 @@
-.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan check sync-readme sync-readme-check docs-md
+.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan check sync-readme sync-readme-check docs-md config-reference config-reference-check example-coverage
 
 # Git ref/branch/tag/SHA in https://github.com/camunda/camunda.git to fetch the OpenAPI
 # spec from. Override like: `make generate SPEC_REF=stable/8.9`
@@ -40,7 +40,7 @@ lint-fix:
 	vendor/bin/php-cs-fixer fix
 
 phpstan:
-	vendor/bin/phpstan analyse
+	vendor/bin/phpstan analyse --memory-limit=1G
 
 check: lint phpstan test
 
@@ -52,6 +52,15 @@ sync-readme-check:
 
 docs-md:
 	php scripts/generate-docs.php
+
+config-reference:
+	php scripts/generate-config-reference.php
+
+config-reference-check:
+	php scripts/generate-config-reference.php --check
+
+example-coverage:
+	php scripts/check-example-coverage.php
 
 docker-start:
 	docker compose -f docker/docker-compose.yaml up -d
