@@ -328,16 +328,11 @@ function find_operation_host_assignment(string $source, string $variable): ?stri
     $assignments = [];
     $count = count($tokens);
     $scopeDepth = 0;
+    $stringInterpolationDepth = 0;
 
     for ($index = 0; $index < $count; $index++) {
         $token = $tokens[$index];
-        if (!is_array($token)) {
-            if ($token === '{') {
-                $scopeDepth++;
-            } elseif ($token === '}') {
-                $scopeDepth--;
-            }
-        }
+        update_operation_host_scope_depth($token, $scopeDepth, $stringInterpolationDepth);
 
         if (!is_array($token) || $token[0] !== T_VARIABLE || $token[1] !== $variable) {
             continue;
@@ -362,14 +357,8 @@ function find_operation_host_assignment(string $source, string $variable): ?stri
         $assignmentEnd = null;
 
         for ($cursor = $next + 1; $cursor < $count; $cursor++) {
+            update_operation_host_scope_depth($tokens[$cursor], $scopeDepth, $stringInterpolationDepth);
             $part = is_array($tokens[$cursor]) ? $tokens[$cursor][1] : $tokens[$cursor];
-            if (!is_array($tokens[$cursor])) {
-                if ($part === '{') {
-                    $scopeDepth++;
-                } elseif ($part === '}') {
-                    $scopeDepth--;
-                }
-            }
 
             if ($part === '(' || $part === '[' || $part === '{') {
                 $depth++;
@@ -410,4 +399,33 @@ function find_operation_host_assignment(string $source, string $variable): ?stri
     }
 
     return null;
+}
+
+function update_operation_host_scope_depth(mixed $token, int &$scopeDepth, int &$stringInterpolationDepth): void
+{
+    if (is_array($token)) {
+        if ($token[0] === T_CURLY_OPEN || $token[0] === T_DOLLAR_OPEN_CURLY_BRACES) {
+            $stringInterpolationDepth++;
+        }
+
+        return;
+    }
+
+    if ($token === '{') {
+        $scopeDepth++;
+
+        return;
+    }
+
+    if ($token !== '}') {
+        return;
+    }
+
+    if ($stringInterpolationDepth > 0) {
+        $stringInterpolationDepth--;
+
+        return;
+    }
+
+    $scopeDepth--;
 }
