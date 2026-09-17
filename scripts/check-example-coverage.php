@@ -1,153 +1,184 @@
 <?php
 
 /**
- * Check example coverage for the SDK.
- *
- * Two responsibilities:
- *
- *   1. Integrity (always enforced): every entry in examples/operation-map.json must
- *      reference (a) a real operation from the bundled OpenAPI spec, and (b) an
- *      example file + region tag that actually exists. Broken references fail CI.
- *
- *   2. Coverage (advisory by default): report how many spec operations have a curated
- *      example. Pass --strict to fail when any operation is missing an example.
+ * Verify operation-to-example coverage.
  *
  * Usage:
- *   php scripts/check-example-coverage.php            # integrity gate + coverage report
- *   php scripts/check-example-coverage.php --strict    # additionally require full coverage
+ *   php scripts/check-example-coverage.php [--strict] [--root <repository-root>]
  */
 
 declare(strict_types=1);
 
-$root = dirname(__DIR__);
-$specPath = $root . '/external-spec/bundled/rest-api.bundle.json';
-$mapPath = $root . '/examples/operation-map.json';
-$examplesDir = $root . '/examples';
-$strict = in_array('--strict', $argv, true);
+require_once __DIR__ . '/ExampleSupport.php';
 
-const HTTP_METHODS = ['get', 'post', 'put', 'patch', 'delete', 'head', 'options', 'trace'];
+use function Camunda\Orchestration\Scripts\all_example_regions;
+use function Camunda\Orchestration\Scripts\read_text_file;
+use function Camunda\Orchestration\Scripts\resolve_mapped_example_file;
+use function Camunda\Orchestration\Scripts\split_root_argument;
 
-function to_snake_case(string $name): string
+/**
+ * @return array<string, true>
+ */
+function spec_operations(string $path): array
 {
-    $s = preg_replace('/([A-Z]+)([A-Z][a-z])/', '$1_$2', $name) ?? $name;
-    $s = preg_replace('/([a-z0-9])([A-Z])/', '$1_$2', $s) ?? $s;
-    return strtolower($s);
+    try {
+        $metadata = json_decode(read_text_file($path), true, flags: JSON_THROW_ON_ERROR);
+    } catch (JsonException $error) {
+        throw new RuntimeException("Cannot parse spec metadata: {$error->getMessage()}", 0, $error);
+    }
+
+    if (!is_array($metadata) || !is_array($metadata['operations'] ?? null)) {
+        throw new RuntimeException("Spec metadata has no operations list: $path");
+    }
+
+    $operations = [];
+    foreach ($metadata['operations'] as $operation) {
+        $operationId = is_array($operation) ? $operation['operationId'] ?? null : null;
+        if (!is_string($operationId) || $operationId === '') {
+            throw new RuntimeException("Spec metadata contains an operation without an operationId: $path");
+        }
+        if (isset($operations[$operationId])) {
+            throw new RuntimeException("Spec metadata contains duplicate operationId '$operationId'.");
+        }
+        $operations[$operationId] = true;
+    }
+
+    return $operations;
 }
 
-/** @return array<string, string> region name => region name (set) */
-function extract_regions(string $path): array
+/**
+ * @return array<string, mixed>
+ */
+function operation_map(string $path): array
 {
-    $regions = [];
-    $text = file_get_contents($path);
-    if ($text === false) {
-        return $regions;
+    try {
+        $map = json_decode(read_text_file($path), true, flags: JSON_THROW_ON_ERROR);
+    } catch (JsonException $error) {
+        throw new RuntimeException("Cannot parse operation map: {$error->getMessage()}", 0, $error);
     }
-    foreach (explode("\n", $text) as $line) {
-        if (preg_match('/^\s*\/\/\s*region\s+(.+?)\s*$/', $line, $m) === 1) {
-            $regions[$m[1]] = $m[1];
+
+    if (!is_array($map)) {
+        throw new RuntimeException("Operation map is not an object: $path");
+    }
+
+    /** @var array<string, mixed> $map */
+    return $map;
+}
+
+/**
+ * @param array<string, true> $operations
+ * @param array<string, mixed> $map
+ * @param array<string, array{content: string, source: string}> $regions
+ * @return list<string>
+ */
+function integrity_errors(string $root, array $operations, array $map, array $regions): array
+{
+    $errors = [];
+
+    foreach ($map as $operationId => $entries) {
+        if (!is_string($operationId) || !isset($operations[$operationId])) {
+            $errors[] = "'$operationId' is not a known exact OpenAPI operationId.";
         }
-    }
-    return $regions;
-}
-
-if (!is_file($specPath)) {
-    fwrite(STDERR, "Spec not found at {$specPath}\nRun 'make bundle-spec' first.\n");
-    exit(2);
-}
-if (!is_file($mapPath)) {
-    fwrite(STDERR, "Operation map not found at {$mapPath}\n");
-    exit(2);
-}
-
-/** @var array{paths?: array<string, array<string, mixed>>} $spec */
-$spec = json_decode((string) file_get_contents($specPath), true, flags: JSON_THROW_ON_ERROR);
-/** @var array<string, list<array{file?: string, region?: string, label?: string}>> $map */
-$map = json_decode((string) file_get_contents($mapPath), true, flags: JSON_THROW_ON_ERROR);
-
-// Collect operationIds from the spec, keyed by snake_case name.
-$specOps = [];
-foreach ($spec['paths'] ?? [] as $path => $item) {
-    if (!is_array($item)) {
-        continue;
-    }
-    foreach ($item as $method => $operation) {
-        if (!in_array(strtolower((string) $method), HTTP_METHODS, true) || !is_array($operation)) {
+        if (!is_array($entries) || !array_is_list($entries) || $entries === []) {
+            $errors[] = "'$operationId' must map to a non-empty list of examples.";
             continue;
         }
-        $operationId = $operation['operationId'] ?? null;
-        if (is_string($operationId) && $operationId !== '') {
-            $specOps[to_snake_case($operationId)] = [
-                'operationId' => $operationId,
-                'method' => strtoupper((string) $method),
-                'path' => (string) $path,
-            ];
+
+        foreach ($entries as $entry) {
+            if (!is_array($entry)) {
+                $errors[] = "'$operationId' has a non-object example entry.";
+                continue;
+            }
+
+            $file = $entry['file'] ?? null;
+            $region = $entry['region'] ?? null;
+            if (!is_string($file) || $file === '') {
+                $errors[] = "'$operationId' has an entry without a file.";
+                continue;
+            }
+            if (!is_string($region) || $region === '') {
+                $errors[] = "'$operationId' has an entry without a region.";
+                continue;
+            }
+
+            try {
+                $resolvedFile = resolve_mapped_example_file($root, $file);
+            } catch (RuntimeException $error) {
+                $errors[] = "'$operationId' has an invalid example file '$file': {$error->getMessage()}";
+                continue;
+            }
+
+            if (!isset($regions[$region])) {
+                $errors[] = "'$operationId' references missing region '$region'.";
+                continue;
+            }
+
+            $actualFile = substr($regions[$region]['source'], strlen('examples/'));
+            if ($actualFile !== $resolvedFile) {
+                $errors[] = "'$operationId' region '$region' is in $actualFile, not $file.";
+            }
         }
+    }
+
+    return $errors;
+}
+
+/**
+ * @param list<string> $argv
+ */
+function main(array $argv): int
+{
+    try {
+        [$root, $arguments] = split_root_argument($argv, dirname(__DIR__));
+        $strict = false;
+        foreach ($arguments as $argument) {
+            if ($argument === '--strict') {
+                $strict = true;
+                continue;
+            }
+            throw new RuntimeException("Unknown argument: $argument");
+        }
+
+        $operations = spec_operations($root . '/external-spec/bundled/spec-metadata.json');
+        $map = operation_map($root . '/examples/operation-map.json');
+        $regions = all_example_regions($root);
+        $errors = integrity_errors($root, $operations, $map, $regions);
+
+        if ($errors !== []) {
+            fwrite(STDERR, "Example map integrity errors:\n  - " . implode("\n  - ", $errors) . "\n");
+            return 1;
+        }
+
+        $covered = array_intersect_key($operations, $map);
+        $missing = array_diff_key($operations, $map);
+        $total = count($operations);
+        $coveredCount = count($covered);
+        $percentage = $total === 0 ? 100 : (int) round($coveredCount / $total * 100);
+
+        printf("Spec operations: %d\n", $total);
+        printf("Covered:         %d\n", $coveredCount);
+        printf("Missing:         %d\n", count($missing));
+        printf("Coverage:        %d%%\n", $percentage);
+
+        if ($missing === []) {
+            echo "\nExample coverage is complete.\n";
+            return 0;
+        }
+
+        if (!$strict) {
+            echo "\nCoverage is advisory until the final example-coverage PR. Run with --strict to require completion.\n";
+            return 0;
+        }
+
+        $missingIds = array_keys($missing);
+        sort($missingIds, SORT_STRING);
+        fwrite(STDERR, "\nMissing examples for:\n  - " . implode("\n  - ", $missingIds) . "\n");
+
+        return 1;
+    } catch (RuntimeException $error) {
+        fwrite(STDERR, $error->getMessage() . "\n");
+        return 1;
     }
 }
 
-// ── Integrity check ──────────────────────────────────────────────────────────
-$integrityErrors = [];
-$regionCache = [];
-foreach ($map as $opId => $entries) {
-    if (!isset($specOps[$opId])) {
-        $integrityErrors[] = "{$opId}: not a known spec operation (check the operationId → snake_case mapping).";
-    }
-    if (!is_array($entries)) {
-        $integrityErrors[] = "{$opId}: value is not a list.";
-        continue;
-    }
-    foreach ($entries as $entry) {
-        if (!is_array($entry) || !is_string($entry['file'] ?? null) || ($entry['file'] ?? '') === '') {
-            $integrityErrors[] = "{$opId}: entry missing 'file' field.";
-            continue;
-        }
-        if (!is_string($entry['region'] ?? null) || ($entry['region'] ?? '') === '') {
-            $integrityErrors[] = "{$opId}: entry missing 'region' field.";
-            continue;
-        }
-        $file = $examplesDir . '/' . $entry['file'];
-        if (!is_file($file)) {
-            $integrityErrors[] = "{$opId}: example file not found: {$entry['file']}";
-            continue;
-        }
-        $regionCache[$file] ??= extract_regions($file);
-        if (!isset($regionCache[$file][$entry['region']])) {
-            $integrityErrors[] = "{$opId}: region '{$entry['region']}' not found in {$entry['file']}.";
-        }
-    }
-}
-
-if ($integrityErrors !== []) {
-    fwrite(STDERR, "Example map integrity errors:\n");
-    foreach ($integrityErrors as $err) {
-        fwrite(STDERR, "  - {$err}\n");
-    }
-    exit(1);
-}
-
-// ── Coverage report ──────────────────────────────────────────────────────────
-$covered = array_intersect_key($specOps, $map);
-$missing = array_diff_key($specOps, $map);
-$total = count($specOps);
-$coveredCount = count($covered);
-$pct = $total > 0 ? (int) round($coveredCount / $total * 100) : 0;
-
-printf("Spec operations: %d\n", $total);
-printf("Covered:         %d\n", $coveredCount);
-printf("Missing:         %d\n", count($missing));
-printf("Coverage:        %d%%\n", $pct);
-
-if ($missing !== []) {
-    if ($strict) {
-        uasort($missing, static fn ($a, $b) => strcmp($a['operationId'], $b['operationId']));
-        fwrite(STDERR, "\nMissing examples for:\n");
-        foreach ($missing as $op) {
-            fwrite(STDERR, "  - {$op['operationId']} ({$op['method']} {$op['path']})\n");
-        }
-        fwrite(STDERR, "\nAdd a region-tagged example and an operation-map.json entry for each.\n");
-        exit(1);
-    }
-    echo "\nNote: coverage is advisory. Run with --strict to require full coverage.\n";
-}
-
-echo "\nExample map integrity OK.\n";
+exit(main($argv));

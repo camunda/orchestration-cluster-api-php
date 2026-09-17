@@ -1,41 +1,41 @@
 {
-  "activate_jobs": [
+  "activateJobs": [
     { "file": "job.php", "region": "ActivateJobs", "label": "Activate jobs" },
     { "file": "job.php", "region": "JobWorker", "label": "Process jobs with a worker" }
   ],
-  "complete_job": [
+  "completeJob": [
     { "file": "job.php", "region": "CompleteJob", "label": "Complete a job" },
     { "file": "job.php", "region": "JobWorkerWithErrorHandling", "label": "Complete, fail or raise a BPMN error from a worker" }
   ],
-  "fail_job": [
+  "failJob": [
     { "file": "job.php", "region": "JobWorkerWithErrorHandling", "label": "Fail a job with retries and back-off" }
   ],
-  "throw_job_error": [
+  "throwJobError": [
     { "file": "job.php", "region": "JobWorkerWithErrorHandling", "label": "Raise a BPMN error for a job" }
   ],
-  "create_deployment": [
+  "createDeployment": [
     { "file": "deployment.php", "region": "DeployResources", "label": "Deploy BPMN, DMN and Form resources" }
   ],
-  "create_process_instance": [
+  "createProcessInstance": [
     { "file": "process_instance.php", "region": "CreateProcessInstance", "label": "Create a process instance by definition id" },
     { "file": "process_instance.php", "region": "CreateProcessInstanceFromArray", "label": "Create a process instance from an array" }
   ],
-  "cancel_process_instance": [
+  "cancelProcessInstance": [
     { "file": "process_instance.php", "region": "CancelProcessInstance", "label": "Cancel a process instance" }
   ],
-  "search_process_instances": [
+  "searchProcessInstances": [
     { "file": "process_instance.php", "region": "SearchProcessInstances", "label": "Search process instances" }
   ],
-  "complete_user_task": [
+  "completeUserTask": [
     { "file": "user_task.php", "region": "CompleteUserTask", "label": "Complete a user task" }
   ],
-  "assign_user_task": [
+  "assignUserTask": [
     { "file": "user_task.php", "region": "AssignUserTask", "label": "Assign a user task" }
   ],
-  "resolve_incident": [
+  "resolveIncident": [
     { "file": "incident.php", "region": "ResolveIncident", "label": "Resolve an incident" }
   ],
-  "search_incidents": [
+  "searchIncidents": [
     { "file": "incident.php", "region": "SearchIncidents", "label": "Search incidents" }
   ]
 }

@@ -1,4 +1,4 @@
-.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan check sync-readme sync-readme-check docs-md docs-docusaurus config-reference config-reference-check example-coverage
+.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan examples check sync-readme sync-readme-check docs-md docs-docusaurus config-reference config-reference-check example-coverage
 
 # Git ref/branch/tag/SHA in https://github.com/camunda/camunda.git to fetch the OpenAPI
 # spec from. Override like: `make generate SPEC_REF=stable/8.9`
@@ -42,7 +42,11 @@ lint-fix:
 phpstan:
 	vendor/bin/phpstan analyse --memory-limit=1G
 
-check: lint phpstan test
+examples:
+	find examples -type f -name '*.php' -exec php -l {} \;
+	vendor/bin/phpstan analyse examples --memory-limit=1G
+
+check: lint phpstan test examples sync-readme-check example-coverage
 
 sync-readme:
 	php scripts/sync-readme-snippets.php

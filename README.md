@@ -238,25 +238,42 @@ When `ext-pcntl` is available and `forked: true` is set, each job is processed i
 Every one of the 243 API operations is exposed as a method directly on the client — the
 flat facade — so you rarely need to reach for an API group:
 
+<!-- snippet-source: examples/readme.php | regions: ReadmeFlatFacade -->
 ```php
-$client = CamundaClient::fromEnvironment();
+function readme_flat_facade(): void
+{
+    $client = CamundaClient::fromEnvironment();
+    $instruction = new ProcessInstanceCreationInstructionById([
+        'processDefinitionId' => 'order-process',
+    ]);
 
-$topology = $client->getTopology();
-$result   = $client->createProcessInstance($instruction);
+    $topology = $client->getTopology();
+    $result = $client->createProcessInstance($instruction);
 
-// The async client exposes the same surface, returning promises:
-$async = CamundaAsyncClient::fromEnvironment();
-$async->getTopology()->then(fn ($topology) => /* ... */);
+    $async = CamundaAsyncClient::fromEnvironment();
+    $async->getTopology()
+        ->then(static function ($asyncTopology): void {
+            // handle the asynchronous topology response
+        })
+        ->wait();
+}
 ```
 
 Beyond the ergonomic helpers and the flat facade, every API group is also reachable
 through the typed `api()` accessor:
 
+<!-- snippet-source: examples/readme.php | regions: ReadmeApiAccessor -->
 ```php
-use Camunda\Orchestration\Api\Api\ProcessInstanceApi;
+function readme_api_accessor(): void
+{
+    $client = CamundaClient::fromEnvironment();
+    $instruction = new ProcessInstanceCreationInstructionById([
+        'processDefinitionId' => 'order-process',
+    ]);
 
-$processInstances = $client->api(ProcessInstanceApi::class);
-$result = $processInstances->createProcessInstance($instruction);
+    $processInstances = $client->api(ProcessInstanceApi::class);
+    $result = $processInstances->createProcessInstance($instruction);
+}
 ```
 
 See the [`examples/`](examples/) directory for compilable, static-analysed usage of the most common operations.
