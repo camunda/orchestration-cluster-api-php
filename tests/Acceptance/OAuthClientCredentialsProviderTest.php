@@ -39,13 +39,13 @@ final class OAuthClientCredentialsProviderTest extends TestCase
             audience: 'zeebe-api',
         );
 
-        self::assertSame(['Authorization' => '******'], $provider->getHeaders());
-        self::assertSame(['Authorization' => '******'], $provider->getHeaders());
+        self::assertSame(['Authorization' => 'Bearer ' . 'access-token'], $provider->getHeaders());
+        self::assertSame(['Authorization' => 'Bearer ' . 'access-token'], $provider->getHeaders());
         self::assertCount(1, $httpClient->requests);
 
         usleep(1_100_000);
 
-        self::assertSame(['Authorization' => '******'], $provider->getHeaders());
+        self::assertSame(['Authorization' => 'Bearer ' . 'refreshed-access-token'], $provider->getHeaders());
         self::assertCount(2, $httpClient->requests);
         self::assertSame('POST', $httpClient->requests[0]->getMethod());
         self::assertSame(
