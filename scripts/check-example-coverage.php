@@ -4,7 +4,7 @@
  * Verify operation-to-example coverage.
  *
  * Usage:
- *   php scripts/check-example-coverage.php [--strict] [--root <repository-root>]
+ *   php scripts/check-example-coverage.php [--root <repository-root>]
  */
 
 declare(strict_types=1);
@@ -130,10 +130,8 @@ function main(array $argv): int
 {
     try {
         [$root, $arguments] = split_root_argument($argv, dirname(__DIR__));
-        $strict = false;
         foreach ($arguments as $argument) {
             if ($argument === '--strict') {
-                $strict = true;
                 continue;
             }
             throw new RuntimeException("Unknown argument: $argument");
@@ -162,11 +160,6 @@ function main(array $argv): int
 
         if ($missing === []) {
             echo "\nExample coverage is complete.\n";
-            return 0;
-        }
-
-        if (!$strict) {
-            echo "\nCoverage is advisory until the final example-coverage PR. Run with --strict to require completion.\n";
             return 0;
         }
 
