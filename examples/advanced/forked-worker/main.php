@@ -53,9 +53,14 @@ function run(): void
         $deadline = microtime(true) + 30;
         do {
             $processed = $worker->pollOnce(
-                static function (ActivatedJobResult $job, JobActionClient $action) use ($handledByPidFile): array {
+                static function (ActivatedJobResult $job, JobActionClient $action) use ($handledByPidFile, $parentPid, $runId): array {
                     $handledByPid = (string) getmypid();
-                    if (file_put_contents($handledByPidFile, $handledByPid) === false) {
+                    $marker = json_encode([
+                        'handledByPid' => $handledByPid,
+                        'handledByParentPid' => (string) $parentPid,
+                        'runId' => $runId,
+                    ], JSON_THROW_ON_ERROR);
+                    if (file_put_contents($handledByPidFile, $marker) === false) {
                         throw new \RuntimeException('Cannot persist the worker PID marker.');
                     }
 
@@ -74,7 +79,20 @@ function run(): void
         }
 
         $result = ExampleSupport::waitForCompletion($client, $instance);
-        $handledByPid = waitForHandledByPid($handledByPidFile);
+        $marker = waitForHandledByPidMarker($handledByPidFile);
+        if (($marker['runId'] ?? null) !== $runId) {
+            throw new \RuntimeException('The forked worker PID marker does not belong to this run.');
+        }
+        if (($marker['handledByParentPid'] ?? null) !== (string) $parentPid) {
+            throw new \RuntimeException(
+                sprintf(
+                    'Expected the forked worker to report parent PID %d, got %s.',
+                    $parentPid,
+                    (string) ($marker['handledByParentPid'] ?? 'unknown'),
+                ),
+            );
+        }
+        $handledByPid = (string) ($marker['handledByPid'] ?? '');
         if ($handledByPid === (string) $parentPid) {
             throw new \RuntimeException(
                 sprintf('Expected a forked worker child process, but job ran in parent PID %d.', $parentPid),
@@ -129,17 +147,33 @@ function cleanupFile(string $path, string $label): ?string
     return null;
 }
 
-function waitForHandledByPid(string $path, int $timeoutSeconds = 5): string
+/**
+ * @return array{handledByPid?: string, handledByParentPid?: string, runId?: string}
+ */
+function waitForHandledByPidMarker(string $path, int $timeoutSeconds = 5): array
 {
     $deadline = microtime(true) + $timeoutSeconds;
     $lastState = 'PID marker not yet recorded';
 
     do {
-        $handledByPid = file_get_contents($path);
-        if ($handledByPid !== false) {
-            $handledByPid = trim($handledByPid);
-            if ($handledByPid !== '') {
-                return $handledByPid;
+        $marker = file_get_contents($path);
+        if ($marker !== false) {
+            $marker = trim($marker);
+            if ($marker !== '') {
+                try {
+                    $decoded = json_decode($marker, true, flags: JSON_THROW_ON_ERROR);
+                } catch (\JsonException) {
+                    $lastState = 'PID marker is invalid';
+                    usleep(200_000);
+                    continue;
+                }
+                if (is_array($decoded)) {
+                    return $decoded;
+                }
+
+                $lastState = 'PID marker payload is not an object';
+                usleep(200_000);
+                continue;
             }
 
             $lastState = 'PID marker is still empty';

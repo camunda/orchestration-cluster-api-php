@@ -74,6 +74,13 @@ final class FacadeCoverageTest extends TestCase
 
             $operations[$name] = true;
         }
+        $expectedTotal = is_array($metadata['integrity'] ?? null) ? $metadata['integrity']['totalOperations'] ?? null : null;
+        if (!is_int($expectedTotal)) {
+            throw new RuntimeException('Spec metadata has no integrity.totalOperations count.');
+        }
+        if (count($operations) !== $expectedTotal) {
+            throw new RuntimeException('Spec metadata operation count does not match integrity.totalOperations.');
+        }
 
         $operations = array_keys($operations);
         sort($operations, SORT_STRING);
