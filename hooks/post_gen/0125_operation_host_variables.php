@@ -316,20 +316,67 @@ function is_operation_host_call(string $source, string $firstArgument, int $call
         return false;
     }
 
-    $context = substr($source, 0, $callPosition);
-    if (
-        preg_match_all(
-            '/'.preg_quote($firstArgument, '/').'\s*=\s*(.+?);/s',
-            $context,
-            $matches,
-            PREG_OFFSET_CAPTURE,
-        ) !== false
-        && $matches[1] !== []
-    ) {
-        $lastMatch = $matches[1][array_key_last($matches[1])][0];
+    $assignment = find_operation_host_assignment(substr($source, 0, $callPosition), $firstArgument);
 
-        return preg_match('/^\s*\$this->getHostSettingsFor[A-Za-z0-9_]+\(\)\s*$/', $lastMatch) === 1;
+    return is_string($assignment)
+        && preg_match('/^\s*\$this->getHostSettingsFor[A-Za-z0-9_]+\(\)\s*$/', $assignment) === 1;
+}
+
+function find_operation_host_assignment(string $source, string $variable): ?string
+{
+    $tokens = token_get_all('<?php ' . $source);
+    $lastAssignment = null;
+    $count = count($tokens);
+
+    for ($index = 0; $index < $count; $index++) {
+        $token = $tokens[$index];
+        if (!is_array($token) || $token[0] !== T_VARIABLE || $token[1] !== $variable) {
+            continue;
+        }
+
+        $next = $index + 1;
+        while (
+            $next < $count
+            && is_array($tokens[$next])
+            && in_array($tokens[$next][0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true)
+        ) {
+            $next++;
+        }
+
+        if ($next >= $count || $tokens[$next] !== '=') {
+            continue;
+        }
+
+        $expression = '';
+        $depth = 0;
+
+        for ($cursor = $next + 1; $cursor < $count; $cursor++) {
+            $part = is_array($tokens[$cursor]) ? $tokens[$cursor][1] : $tokens[$cursor];
+            if ($part === '(' || $part === '[' || $part === '{') {
+                $depth++;
+                $expression .= $part;
+
+                continue;
+            }
+
+            if ($part === ')' || $part === ']' || $part === '}') {
+                $depth--;
+                $expression .= $part;
+
+                continue;
+            }
+
+            if ($part === ';' && $depth === 0) {
+                $lastAssignment = trim($expression);
+
+                break;
+            }
+
+            $expression .= $part;
+        }
+
+        $index = $next;
     }
 
-    return false;
+    return $lastAssignment;
 }
