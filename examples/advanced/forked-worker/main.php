@@ -84,16 +84,28 @@ function run(): void
         if (!$completed && $instance instanceof ProcessInstanceKey) {
             ExampleSupport::cancelIfActive($client, $instance);
         }
-        cleanupFile($handledByPidFile, 'worker PID marker');
-        cleanupFile($resource, 'BPMN resource');
+        $cleanupErrors = array_values(array_filter([
+            cleanupFile($handledByPidFile, 'worker PID marker'),
+            cleanupFile($resource, 'BPMN resource'),
+        ]));
+        if ($cleanupErrors !== []) {
+            $cleanupMessage = implode(' ', $cleanupErrors);
+            if ($completed) {
+                throw new \RuntimeException($cleanupMessage);
+            }
+
+            fwrite(STDERR, "Forked-worker cleanup warning: $cleanupMessage\n");
+        }
     }
 }
 
-function cleanupFile(string $path, string $label): void
+function cleanupFile(string $path, string $label): ?string
 {
     if (is_file($path) && !unlink($path)) {
-        throw new \RuntimeException("Cannot remove temporary $label file: $path");
+        return "Cannot remove temporary $label file: $path";
     }
+
+    return null;
 }
 
 function waitForHandledByPid(string $path, int $timeoutSeconds = 5): string
