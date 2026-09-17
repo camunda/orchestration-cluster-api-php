@@ -16,6 +16,8 @@ use RuntimeException;
 
 final class ExampleSupport
 {
+    private const PROCESS_VISIBILITY_TIMEOUT_SECONDS = 5;
+
     public static function client(): CamundaClient
     {
         return CamundaClient::fromEnvironment();
@@ -111,23 +113,36 @@ final class ExampleSupport
 
     public static function cancelIfActive(CamundaClient $client, ProcessInstanceKey $key): void
     {
-        $result = $client->getProcessInstance((string) $key);
-        if ($result instanceof ProblemDetail) {
-            if ($result->getStatus() === 404) {
+        $deadline = microtime(true) + self::PROCESS_VISIBILITY_TIMEOUT_SECONDS;
+
+        do {
+            $result = $client->getProcessInstance((string) $key);
+            if ($result instanceof ProblemDetail) {
+                if ($result->getStatus() === 404) {
+                    usleep(200_000);
+                    continue;
+                }
+                throw new RuntimeException(
+                    'Could not inspect incomplete process instance: ' . self::describeProblem($result),
+                );
+            }
+            if ($result->getState() !== ProcessInstanceStateEnum::ACTIVE) {
                 return;
             }
-            throw new RuntimeException(
-                'Could not inspect incomplete process instance: ' . self::describeProblem($result),
-            );
-        }
-        if ($result->getState() !== ProcessInstanceStateEnum::ACTIVE) {
-            return;
-        }
 
-        $cancelled = $client->cancelProcessInstance((string) $key);
-        if ($cancelled instanceof ProblemDetail) {
-            throw new RuntimeException('Could not cancel incomplete process instance: ' . self::describeProblem($cancelled));
-        }
+            $cancelled = $client->cancelProcessInstance((string) $key);
+            if ($cancelled instanceof ProblemDetail) {
+                throw new RuntimeException('Could not cancel incomplete process instance: ' . self::describeProblem($cancelled));
+            }
+
+            return;
+        } while (microtime(true) < $deadline);
+
+        throw new RuntimeException(
+            "Could not inspect incomplete process instance $key within "
+            . self::PROCESS_VISIBILITY_TIMEOUT_SECONDS
+            . ' seconds.',
+        );
     }
 
     private static function describeProblem(ProblemDetail $problem): string
