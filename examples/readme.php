@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Examples;
 
+use Camunda\Orchestration\Api\Api\ProcessInstanceApi;
 use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById;
 use Camunda\Orchestration\CamundaAsyncClient;
@@ -119,3 +120,36 @@ function readme_job_worker(): void
     });
 }
 // endregion ReadmeJobWorker
+
+// region ReadmeFlatFacade
+function readme_flat_facade(): void
+{
+    $client = CamundaClient::fromEnvironment();
+    $instruction = new ProcessInstanceCreationInstructionById([
+        'processDefinitionId' => 'order-process',
+    ]);
+
+    $topology = $client->getTopology();
+    $result = $client->createProcessInstance($instruction);
+
+    $async = CamundaAsyncClient::fromEnvironment();
+    $async->getTopology()
+        ->then(static function ($asyncTopology): void {
+            // handle the asynchronous topology response
+        })
+        ->wait();
+}
+// endregion ReadmeFlatFacade
+
+// region ReadmeApiAccessor
+function readme_api_accessor(): void
+{
+    $client = CamundaClient::fromEnvironment();
+    $instruction = new ProcessInstanceCreationInstructionById([
+        'processDefinitionId' => 'order-process',
+    ]);
+
+    $processInstances = $client->api(ProcessInstanceApi::class);
+    $result = $processInstances->createProcessInstance($instruction);
+}
+// endregion ReadmeApiAccessor

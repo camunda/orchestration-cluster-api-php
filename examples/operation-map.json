@@ -1,41 +1,682 @@
 {
-  "activate_jobs": [
-    { "file": "job.php", "region": "ActivateJobs", "label": "Activate jobs" },
-    { "file": "job.php", "region": "JobWorker", "label": "Process jobs with a worker" }
+  "activateJobs": [
+    {
+      "file": "job.php",
+      "region": "ActivateJobs",
+      "label": "Activate jobs"
+    },
+    {
+      "file": "job.php",
+      "region": "JobWorker",
+      "label": "Process jobs with a worker"
+    }
   ],
-  "complete_job": [
-    { "file": "job.php", "region": "CompleteJob", "label": "Complete a job" },
-    { "file": "job.php", "region": "JobWorkerWithErrorHandling", "label": "Complete, fail or raise a BPMN error from a worker" }
+  "completeJob": [
+    {
+      "file": "job.php",
+      "region": "CompleteJob",
+      "label": "Complete a job"
+    },
+    {
+      "file": "job.php",
+      "region": "JobWorkerWithErrorHandling",
+      "label": "Complete, fail or raise a BPMN error from a worker"
+    }
   ],
-  "fail_job": [
-    { "file": "job.php", "region": "JobWorkerWithErrorHandling", "label": "Fail a job with retries and back-off" }
+  "failJob": [
+    {
+      "file": "job.php",
+      "region": "JobWorkerWithErrorHandling",
+      "label": "Fail a job with retries and back-off"
+    }
   ],
-  "throw_job_error": [
-    { "file": "job.php", "region": "JobWorkerWithErrorHandling", "label": "Raise a BPMN error for a job" }
+  "throwJobError": [
+    {
+      "file": "job.php",
+      "region": "JobWorkerWithErrorHandling",
+      "label": "Raise a BPMN error for a job"
+    }
   ],
-  "create_deployment": [
-    { "file": "deployment.php", "region": "DeployResources", "label": "Deploy BPMN, DMN and Form resources" }
+  "createDeployment": [
+    {
+      "file": "deployment.php",
+      "region": "DeployResources",
+      "label": "Deploy BPMN, DMN and Form resources"
+    }
   ],
-  "create_process_instance": [
-    { "file": "process_instance.php", "region": "CreateProcessInstance", "label": "Create a process instance by definition id" },
-    { "file": "process_instance.php", "region": "CreateProcessInstanceFromArray", "label": "Create a process instance from an array" }
+  "createProcessInstance": [
+    {
+      "file": "process_instance.php",
+      "region": "CreateProcessInstance",
+      "label": "Create a process instance by definition id"
+    },
+    {
+      "file": "process_instance.php",
+      "region": "CreateProcessInstanceFromArray",
+      "label": "Create a process instance from an array"
+    }
   ],
-  "cancel_process_instance": [
-    { "file": "process_instance.php", "region": "CancelProcessInstance", "label": "Cancel a process instance" }
+  "cancelProcessInstance": [
+    {
+      "file": "process_instance.php",
+      "region": "CancelProcessInstance",
+      "label": "Cancel a process instance"
+    }
   ],
-  "search_process_instances": [
-    { "file": "process_instance.php", "region": "SearchProcessInstances", "label": "Search process instances" }
+  "searchProcessInstances": [
+    {
+      "file": "process_instance.php",
+      "region": "SearchProcessInstances",
+      "label": "Search process instances"
+    }
   ],
-  "complete_user_task": [
-    { "file": "user_task.php", "region": "CompleteUserTask", "label": "Complete a user task" }
+  "completeUserTask": [
+    {
+      "file": "user_task.php",
+      "region": "CompleteUserTask",
+      "label": "Complete a user task"
+    }
   ],
-  "assign_user_task": [
-    { "file": "user_task.php", "region": "AssignUserTask", "label": "Assign a user task" }
+  "assignUserTask": [
+    {
+      "file": "user_task.php",
+      "region": "AssignUserTask",
+      "label": "Assign a user task"
+    }
   ],
-  "resolve_incident": [
-    { "file": "incident.php", "region": "ResolveIncident", "label": "Resolve an incident" }
+  "resolveIncident": [
+    {
+      "file": "incident.php",
+      "region": "ResolveIncident",
+      "label": "Resolve an incident"
+    }
   ],
-  "search_incidents": [
-    { "file": "incident.php", "region": "SearchIncidents", "label": "Search incidents" }
+  "searchIncidents": [
+    {
+      "file": "incident.php",
+      "region": "SearchIncidents",
+      "label": "Search incidents"
+    }
+  ],
+  "evaluateConditionals": [
+    {
+      "file": "evaluation.php",
+      "region": "EvaluateConditionals",
+      "label": "Evaluate root level conditional start events"
+    }
+  ],
+  "evaluateDecision": [
+    {
+      "file": "decision.php",
+      "region": "EvaluateDecision",
+      "label": "Evaluate decision"
+    }
+  ],
+  "searchDecisionDefinitions": [
+    {
+      "file": "decision.php",
+      "region": "SearchDecisionDefinitions",
+      "label": "Search decision definitions"
+    }
+  ],
+  "getDecisionDefinition": [
+    {
+      "file": "decision.php",
+      "region": "GetDecisionDefinition",
+      "label": "Get decision definition"
+    }
+  ],
+  "getDecisionDefinitionXML": [
+    {
+      "file": "decision.php",
+      "region": "GetDecisionDefinitionXML",
+      "label": "Get decision definition XML"
+    }
+  ],
+  "searchDecisionInstances": [
+    {
+      "file": "decision.php",
+      "region": "SearchDecisionInstances",
+      "label": "Search decision instances"
+    }
+  ],
+  "getDecisionInstance": [
+    {
+      "file": "decision.php",
+      "region": "GetDecisionInstance",
+      "label": "Get decision instance"
+    }
+  ],
+  "deleteDecisionInstance": [
+    {
+      "file": "decision.php",
+      "region": "DeleteDecisionInstance",
+      "label": "Delete decision instance"
+    }
+  ],
+  "deleteDecisionInstancesBatchOperation": [
+    {
+      "file": "decision.php",
+      "region": "DeleteDecisionInstancesBatchOperation",
+      "label": "Delete decision instances (batch)"
+    }
+  ],
+  "searchDecisionRequirements": [
+    {
+      "file": "decision.php",
+      "region": "SearchDecisionRequirements",
+      "label": "Search decision requirements"
+    }
+  ],
+  "getDecisionRequirements": [
+    {
+      "file": "decision.php",
+      "region": "GetDecisionRequirements",
+      "label": "Get decision requirements"
+    }
+  ],
+  "getDecisionRequirementsXML": [
+    {
+      "file": "decision.php",
+      "region": "GetDecisionRequirementsXML",
+      "label": "Get decision requirements XML"
+    }
+  ],
+  "createDocument": [
+    {
+      "file": "document.php",
+      "region": "CreateDocument",
+      "label": "Upload document"
+    }
+  ],
+  "createDocuments": [
+    {
+      "file": "document.php",
+      "region": "CreateDocuments",
+      "label": "Upload multiple documents"
+    }
+  ],
+  "getDocument": [
+    {
+      "file": "document.php",
+      "region": "GetDocument",
+      "label": "Download document"
+    }
+  ],
+  "deleteDocument": [
+    {
+      "file": "document.php",
+      "region": "DeleteDocument",
+      "label": "Delete document"
+    }
+  ],
+  "createDocumentLink": [
+    {
+      "file": "document.php",
+      "region": "CreateDocumentLink",
+      "label": "Create document link"
+    }
+  ],
+  "searchElementInstanceWaitStates": [
+    {
+      "file": "element_instance.php",
+      "region": "SearchElementInstanceWaitStates",
+      "label": "Search element instance wait states"
+    }
+  ],
+  "searchElementInstances": [
+    {
+      "file": "element_instance.php",
+      "region": "SearchElementInstances",
+      "label": "Search element instances"
+    }
+  ],
+  "getElementInstance": [
+    {
+      "file": "element_instance.php",
+      "region": "GetElementInstance",
+      "label": "Get element instance"
+    }
+  ],
+  "searchElementInstanceIncidents": [
+    {
+      "file": "element_instance.php",
+      "region": "SearchElementInstanceIncidents",
+      "label": "Search for incidents of a specific element instance"
+    }
+  ],
+  "createElementInstanceVariables": [
+    {
+      "file": "element_instance.php",
+      "region": "CreateElementInstanceVariables",
+      "label": "Update element instance variables"
+    }
+  ],
+  "evaluateExpression": [
+    {
+      "file": "evaluation.php",
+      "region": "EvaluateExpression",
+      "label": "Evaluate an expression"
+    }
+  ],
+  "createGlobalTaskListener": [
+    {
+      "file": "global_listener.php",
+      "region": "CreateGlobalTaskListener",
+      "label": "Create global user task listener"
+    }
+  ],
+  "getGlobalTaskListener": [
+    {
+      "file": "global_listener.php",
+      "region": "GetGlobalTaskListener",
+      "label": "Get global user task listener"
+    }
+  ],
+  "updateGlobalTaskListener": [
+    {
+      "file": "global_listener.php",
+      "region": "UpdateGlobalTaskListener",
+      "label": "Update global user task listener"
+    }
+  ],
+  "deleteGlobalTaskListener": [
+    {
+      "file": "global_listener.php",
+      "region": "DeleteGlobalTaskListener",
+      "label": "Delete global user task listener"
+    }
+  ],
+  "searchGlobalTaskListeners": [
+    {
+      "file": "global_listener.php",
+      "region": "SearchGlobalTaskListeners",
+      "label": "Search global user task listeners"
+    }
+  ],
+  "getIncident": [
+    {
+      "file": "incident.php",
+      "region": "GetIncident",
+      "label": "Get incident"
+    }
+  ],
+  "getProcessInstanceStatisticsByDefinition": [
+    {
+      "file": "incident.php",
+      "region": "GetProcessInstanceStatisticsByDefinition",
+      "label": "Get process instance statistics by definition"
+    }
+  ],
+  "getProcessInstanceStatisticsByError": [
+    {
+      "file": "incident.php",
+      "region": "GetProcessInstanceStatisticsByError",
+      "label": "Get process instance statistics by error"
+    }
+  ],
+  "searchJobs": [
+    {
+      "file": "job.php",
+      "region": "SearchJobs",
+      "label": "Search jobs"
+    }
+  ],
+  "updateJob": [
+    {
+      "file": "job.php",
+      "region": "UpdateJob",
+      "label": "Update job"
+    }
+  ],
+  "updateJobsBatchOperation": [
+    {
+      "file": "job.php",
+      "region": "UpdateJobsBatchOperation",
+      "label": "Update jobs (batch)"
+    }
+  ],
+  "getGlobalJobStatistics": [
+    {
+      "file": "job.php",
+      "region": "GetGlobalJobStatistics",
+      "label": "Global job statistics"
+    }
+  ],
+  "getJobTypeStatistics": [
+    {
+      "file": "job.php",
+      "region": "GetJobTypeStatistics",
+      "label": "Get job statistics by type"
+    }
+  ],
+  "getJobWorkerStatistics": [
+    {
+      "file": "job.php",
+      "region": "GetJobWorkerStatistics",
+      "label": "Get job statistics by worker"
+    }
+  ],
+  "getJobTimeSeriesStatistics": [
+    {
+      "file": "job.php",
+      "region": "GetJobTimeSeriesStatistics",
+      "label": "Get time-series metrics for a job type"
+    }
+  ],
+  "getJobErrorStatistics": [
+    {
+      "file": "job.php",
+      "region": "GetJobErrorStatistics",
+      "label": "Get error metrics for a job type"
+    }
+  ],
+  "searchProcessDefinitions": [
+    {
+      "file": "process_definition.php",
+      "region": "SearchProcessDefinitions",
+      "label": "Search process definitions"
+    }
+  ],
+  "getProcessDefinitionMessageSubscriptionStatistics": [
+    {
+      "file": "process_definition.php",
+      "region": "GetProcessDefinitionMessageSubscriptionStatistics",
+      "label": "Get message subscription statistics"
+    }
+  ],
+  "getProcessDefinitionInstanceStatistics": [
+    {
+      "file": "process_definition.php",
+      "region": "GetProcessDefinitionInstanceStatistics",
+      "label": "Get process instance statistics"
+    }
+  ],
+  "getProcessDefinition": [
+    {
+      "file": "process_definition.php",
+      "region": "GetProcessDefinition",
+      "label": "Get process definition"
+    }
+  ],
+  "getStartProcessForm": [
+    {
+      "file": "process_definition.php",
+      "region": "GetStartProcessForm",
+      "label": "Get process start form"
+    }
+  ],
+  "getProcessDefinitionStatistics": [
+    {
+      "file": "process_definition.php",
+      "region": "GetProcessDefinitionStatistics",
+      "label": "Get process definition statistics"
+    }
+  ],
+  "searchProcessDefinitionVariableNames": [
+    {
+      "file": "process_definition.php",
+      "region": "SearchProcessDefinitionVariableNames",
+      "label": "Search process definition variable names"
+    }
+  ],
+  "getProcessDefinitionXML": [
+    {
+      "file": "process_definition.php",
+      "region": "GetProcessDefinitionXML",
+      "label": "Get process definition XML"
+    }
+  ],
+  "getProcessDefinitionInstanceVersionStatistics": [
+    {
+      "file": "process_definition.php",
+      "region": "GetProcessDefinitionInstanceVersionStatistics",
+      "label": "Get process instance statistics by version"
+    }
+  ],
+  "cancelProcessInstancesBatchOperation": [
+    {
+      "file": "process_instance.php",
+      "region": "CancelProcessInstancesBatchOperation",
+      "label": "Cancel process instances (batch)"
+    }
+  ],
+  "deleteProcessInstancesBatchOperation": [
+    {
+      "file": "process_instance.php",
+      "region": "DeleteProcessInstancesBatchOperation",
+      "label": "Delete process instances (batch)"
+    }
+  ],
+  "resolveIncidentsBatchOperation": [
+    {
+      "file": "process_instance.php",
+      "region": "ResolveIncidentsBatchOperation",
+      "label": "Resolve related incidents (batch)"
+    }
+  ],
+  "migrateProcessInstancesBatchOperation": [
+    {
+      "file": "process_instance.php",
+      "region": "MigrateProcessInstancesBatchOperation",
+      "label": "Migrate process instances (batch)"
+    }
+  ],
+  "modifyProcessInstancesBatchOperation": [
+    {
+      "file": "process_instance.php",
+      "region": "ModifyProcessInstancesBatchOperation",
+      "label": "Modify process instances (batch)"
+    }
+  ],
+  "suspendProcessInstance": [
+    {
+      "file": "process_instance.php",
+      "region": "SuspendProcessInstance",
+      "label": "Suspend process instance"
+    }
+  ],
+  "resumeProcessInstance": [
+    {
+      "file": "process_instance.php",
+      "region": "ResumeProcessInstance",
+      "label": "Resume process instance"
+    }
+  ],
+  "assignProcessInstanceBusinessId": [
+    {
+      "file": "process_instance.php",
+      "region": "AssignProcessInstanceBusinessId",
+      "label": "Assign business ID"
+    }
+  ],
+  "suspendProcessInstancesBatchOperation": [
+    {
+      "file": "process_instance.php",
+      "region": "SuspendProcessInstancesBatchOperation",
+      "label": "Suspend process instances (batch)"
+    }
+  ],
+  "resumeProcessInstancesBatchOperation": [
+    {
+      "file": "process_instance.php",
+      "region": "ResumeProcessInstancesBatchOperation",
+      "label": "Resume process instances (batch)"
+    }
+  ],
+  "getProcessInstance": [
+    {
+      "file": "process_instance.php",
+      "region": "GetProcessInstance",
+      "label": "Get process instance"
+    }
+  ],
+  "getProcessInstanceCallHierarchy": [
+    {
+      "file": "process_instance.php",
+      "region": "GetProcessInstanceCallHierarchy",
+      "label": "Get call hierarchy"
+    }
+  ],
+  "deleteProcessInstance": [
+    {
+      "file": "process_instance.php",
+      "region": "DeleteProcessInstance",
+      "label": "Delete process instance"
+    }
+  ],
+  "resolveProcessInstanceIncidents": [
+    {
+      "file": "process_instance.php",
+      "region": "ResolveProcessInstanceIncidents",
+      "label": "Resolve related incidents"
+    }
+  ],
+  "searchProcessInstanceIncidents": [
+    {
+      "file": "process_instance.php",
+      "region": "SearchProcessInstanceIncidents",
+      "label": "Search related incidents"
+    }
+  ],
+  "migrateProcessInstance": [
+    {
+      "file": "process_instance.php",
+      "region": "MigrateProcessInstance",
+      "label": "Migrate process instance"
+    }
+  ],
+  "modifyProcessInstance": [
+    {
+      "file": "process_instance.php",
+      "region": "ModifyProcessInstance",
+      "label": "Modify process instance"
+    }
+  ],
+  "getProcessInstanceSequenceFlows": [
+    {
+      "file": "process_instance.php",
+      "region": "GetProcessInstanceSequenceFlows",
+      "label": "Get sequence flows"
+    }
+  ],
+  "getProcessInstanceStatistics": [
+    {
+      "file": "process_instance.php",
+      "region": "GetProcessInstanceStatistics",
+      "label": "Get element instance statistics"
+    }
+  ],
+  "getProcessInstanceWaitStateStatistics": [
+    {
+      "file": "process_instance.php",
+      "region": "GetProcessInstanceWaitStateStatistics",
+      "label": "Get wait state statistics"
+    }
+  ],
+  "searchResources": [
+    {
+      "file": "resource.php",
+      "region": "SearchResources",
+      "label": "Search resources"
+    }
+  ],
+  "getResource": [
+    {
+      "file": "resource.php",
+      "region": "GetResource",
+      "label": "Get resource"
+    }
+  ],
+  "getResourceContent": [
+    {
+      "file": "resource.php",
+      "region": "GetResourceContent",
+      "label": "Get RPA resource content (deprecated)"
+    }
+  ],
+  "getResourceContentBinary": [
+    {
+      "file": "resource.php",
+      "region": "GetResourceContentBinary",
+      "label": "Get resource content as binary"
+    }
+  ],
+  "deleteResource": [
+    {
+      "file": "resource.php",
+      "region": "DeleteResource",
+      "label": "Delete resource"
+    }
+  ],
+  "searchUserTasks": [
+    {
+      "file": "user_task.php",
+      "region": "SearchUserTasks",
+      "label": "Search user tasks"
+    }
+  ],
+  "getUserTask": [
+    {
+      "file": "user_task.php",
+      "region": "GetUserTask",
+      "label": "Get user task"
+    }
+  ],
+  "updateUserTask": [
+    {
+      "file": "user_task.php",
+      "region": "UpdateUserTask",
+      "label": "Update user task"
+    }
+  ],
+  "unassignUserTask": [
+    {
+      "file": "user_task.php",
+      "region": "UnassignUserTask",
+      "label": "Unassign user task"
+    }
+  ],
+  "searchUserTaskAuditLogs": [
+    {
+      "file": "user_task.php",
+      "region": "SearchUserTaskAuditLogs",
+      "label": "Search user task audit logs"
+    }
+  ],
+  "searchUserTaskEffectiveVariables": [
+    {
+      "file": "user_task.php",
+      "region": "SearchUserTaskEffectiveVariables",
+      "label": "Search user task effective variables"
+    }
+  ],
+  "getUserTaskForm": [
+    {
+      "file": "user_task.php",
+      "region": "GetUserTaskForm",
+      "label": "Get user task form"
+    }
+  ],
+  "searchUserTaskVariables": [
+    {
+      "file": "user_task.php",
+      "region": "SearchUserTaskVariables",
+      "label": "Search user task variables"
+    }
+  ],
+  "searchVariables": [
+    {
+      "file": "variable.php",
+      "region": "SearchVariables",
+      "label": "Search variables"
+    }
+  ],
+  "getVariable": [
+    {
+      "file": "variable.php",
+      "region": "GetVariable",
+      "label": "Get variable"
+    }
   ]
 }

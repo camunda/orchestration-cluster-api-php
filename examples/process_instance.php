@@ -71,3 +71,203 @@ function search_process_instances(CamundaClient $client): void
     }
 }
 // endregion SearchProcessInstances
+
+// region CancelProcessInstancesBatchOperation
+/**
+ * Cancel process instances (batch).
+ */
+function cancel_process_instances_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\ProcessInstanceCancellationBatchOperationRequest $processInstanceCancellationBatchOperationRequest): void
+{
+    $client->cancelProcessInstancesBatchOperation($processInstanceCancellationBatchOperationRequest);
+}
+// endregion CancelProcessInstancesBatchOperation
+
+// region DeleteProcessInstancesBatchOperation
+/**
+ * Delete process instances (batch).
+ */
+function delete_process_instances_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\ProcessInstanceDeletionBatchOperationRequest $processInstanceDeletionBatchOperationRequest): void
+{
+    $client->deleteProcessInstancesBatchOperation($processInstanceDeletionBatchOperationRequest);
+}
+// endregion DeleteProcessInstancesBatchOperation
+
+// region ResolveIncidentsBatchOperation
+/**
+ * Resolve related incidents (batch).
+ */
+function resolve_incidents_batch_operation(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest = null): void
+{
+    $client->resolveIncidentsBatchOperation($processInstanceIncidentResolutionBatchOperationRequest);
+}
+// endregion ResolveIncidentsBatchOperation
+
+// region MigrateProcessInstancesBatchOperation
+/**
+ * Migrate process instances (batch).
+ */
+function migrate_process_instances_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\ProcessInstanceMigrationBatchOperationRequest $processInstanceMigrationBatchOperationRequest): void
+{
+    $client->migrateProcessInstancesBatchOperation($processInstanceMigrationBatchOperationRequest);
+}
+// endregion MigrateProcessInstancesBatchOperation
+
+// region ModifyProcessInstancesBatchOperation
+/**
+ * Modify process instances (batch).
+ */
+function modify_process_instances_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\ProcessInstanceModificationBatchOperationRequest $processInstanceModificationBatchOperationRequest): void
+{
+    $client->modifyProcessInstancesBatchOperation($processInstanceModificationBatchOperationRequest);
+}
+// endregion ModifyProcessInstancesBatchOperation
+
+// region SuspendProcessInstance
+/**
+ * Suspend process instance.
+ */
+function suspend_process_instance(CamundaClient $client, string $processInstanceKey, ?\Camunda\Orchestration\Api\Model\SuspendProcessInstanceRequest $suspendProcessInstanceRequest = null): void
+{
+    $client->suspendProcessInstance($processInstanceKey, $suspendProcessInstanceRequest);
+}
+// endregion SuspendProcessInstance
+
+// region ResumeProcessInstance
+/**
+ * Resume process instance.
+ */
+function resume_process_instance(CamundaClient $client, string $processInstanceKey, ?\Camunda\Orchestration\Api\Model\ResumeProcessInstanceRequest $resumeProcessInstanceRequest = null): void
+{
+    $client->resumeProcessInstance($processInstanceKey, $resumeProcessInstanceRequest);
+}
+// endregion ResumeProcessInstance
+
+// region AssignProcessInstanceBusinessId
+/**
+ * Assign business ID.
+ */
+function assign_process_instance_business_id(CamundaClient $client, string $processInstanceKey, \Camunda\Orchestration\Api\Model\ProcessInstanceBusinessIdAssignmentInstruction $processInstanceBusinessIdAssignmentInstruction): void
+{
+    $client->assignProcessInstanceBusinessId($processInstanceKey, $processInstanceBusinessIdAssignmentInstruction);
+}
+// endregion AssignProcessInstanceBusinessId
+
+// region SuspendProcessInstancesBatchOperation
+/**
+ * Suspend process instances (batch).
+ */
+function suspend_process_instances_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\ProcessInstanceSuspensionBatchOperationRequest $processInstanceSuspensionBatchOperationRequest): void
+{
+    $client->suspendProcessInstancesBatchOperation($processInstanceSuspensionBatchOperationRequest);
+}
+// endregion SuspendProcessInstancesBatchOperation
+
+// region ResumeProcessInstancesBatchOperation
+/**
+ * Resume process instances (batch).
+ */
+function resume_process_instances_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\ProcessInstanceResumptionBatchOperationRequest $processInstanceResumptionBatchOperationRequest): void
+{
+    $client->resumeProcessInstancesBatchOperation($processInstanceResumptionBatchOperationRequest);
+}
+// endregion ResumeProcessInstancesBatchOperation
+
+// region GetProcessInstance
+/**
+ * Get process instance.
+ */
+function get_process_instance(CamundaClient $client, string $processInstanceKey): void
+{
+    $client->getProcessInstance($processInstanceKey);
+}
+// endregion GetProcessInstance
+
+// region GetProcessInstanceCallHierarchy
+/**
+ * Get call hierarchy.
+ */
+function get_process_instance_call_hierarchy(CamundaClient $client, string $processInstanceKey): void
+{
+    $client->getProcessInstanceCallHierarchy($processInstanceKey);
+}
+// endregion GetProcessInstanceCallHierarchy
+
+// region DeleteProcessInstance
+/**
+ * Delete process instance.
+ */
+function delete_process_instance(CamundaClient $client, string $processInstanceKey, ?\Camunda\Orchestration\Api\Model\DeleteProcessInstanceRequest $deleteProcessInstanceRequest = null): void
+{
+    $client->deleteProcessInstance($processInstanceKey, $deleteProcessInstanceRequest);
+}
+// endregion DeleteProcessInstance
+
+// region ResolveProcessInstanceIncidents
+/**
+ * Resolve related incidents.
+ */
+function resolve_process_instance_incidents(CamundaClient $client, string $processInstanceKey): void
+{
+    $client->resolveProcessInstanceIncidents($processInstanceKey);
+}
+// endregion ResolveProcessInstanceIncidents
+
+// region SearchProcessInstanceIncidents
+/**
+ * Search related incidents.
+ */
+function search_process_instance_incidents(CamundaClient $client, string $processInstanceKey, ?\Camunda\Orchestration\Api\Model\IncidentSearchQuery $incidentSearchQuery = null): void
+{
+    $client->searchProcessInstanceIncidents($processInstanceKey, $incidentSearchQuery);
+}
+// endregion SearchProcessInstanceIncidents
+
+// region MigrateProcessInstance
+/**
+ * Migrate process instance.
+ */
+function migrate_process_instance(CamundaClient $client, string $processInstanceKey, \Camunda\Orchestration\Api\Model\ProcessInstanceMigrationInstruction $processInstanceMigrationInstruction): void
+{
+    $client->migrateProcessInstance($processInstanceKey, $processInstanceMigrationInstruction);
+}
+// endregion MigrateProcessInstance
+
+// region ModifyProcessInstance
+/**
+ * Modify process instance.
+ */
+function modify_process_instance(CamundaClient $client, string $processInstanceKey, \Camunda\Orchestration\Api\Model\ProcessInstanceModificationInstruction $processInstanceModificationInstruction): void
+{
+    $client->modifyProcessInstance($processInstanceKey, $processInstanceModificationInstruction);
+}
+// endregion ModifyProcessInstance
+
+// region GetProcessInstanceSequenceFlows
+/**
+ * Get sequence flows.
+ */
+function get_process_instance_sequence_flows(CamundaClient $client, string $processInstanceKey): void
+{
+    $client->getProcessInstanceSequenceFlows($processInstanceKey);
+}
+// endregion GetProcessInstanceSequenceFlows
+
+// region GetProcessInstanceStatistics
+/**
+ * Get element instance statistics.
+ */
+function get_process_instance_statistics(CamundaClient $client, string $processInstanceKey): void
+{
+    $client->getProcessInstanceStatistics($processInstanceKey);
+}
+// endregion GetProcessInstanceStatistics
+
+// region GetProcessInstanceWaitStateStatistics
+/**
+ * Get wait state statistics.
+ */
+function get_process_instance_wait_state_statistics(CamundaClient $client, string $processInstanceKey): void
+{
+    $client->getProcessInstanceWaitStateStatistics($processInstanceKey);
+}
+// endregion GetProcessInstanceWaitStateStatistics

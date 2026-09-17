@@ -169,3 +169,59 @@ jobs:
 
       - name: Run static analysis (PHPStan max)
         run: make phpstan
+
+  examples:
+    needs: bundle-spec
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: json, pcntl, mbstring
+          coverage: none
+          tools: composer:v2
+
+      - name: Set up Java (openapi-generator)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --no-progress
+
+      - name: Install Node dependencies
+        run: npm ci || npm install
+
+      - name: Clear checked-in spec (prevent stale fallback)
+        run: rm -rf external-spec/bundled/*
+
+      - name: Download bundled spec
+        uses: actions/download-artifact@v8
+        with:
+          name: bundled-spec
+          path: external-spec/bundled/
+
+      - name: Generate SDK
+        run: make generate-only
+
+      - name: Validate PHP examples
+        run: make examples
+
+      - name: Check README snippets are up-to-date
+        run: make sync-readme-check
+
+      - name: Check example map integrity
+        run: make example-coverage
+
+      - name: Generate and validate Docusaurus documentation
+        run: make docs-docusaurus

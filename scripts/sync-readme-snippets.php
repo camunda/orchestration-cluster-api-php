@@ -1,141 +1,236 @@
 <?php
 
 /**
- * Synchronize code snippets in README.md from the compilable example files.
- *
- * Replaces the code block that follows each snippet marker in README.md with the
- * corresponding region-tagged code extracted from examples/*.php.
- *
- * Region tags in .php files use `// region RegionName` ... `// endregion RegionName`.
- * Markers in README.md use:
- *
- *     <!-- snippet-source: examples/readme.php | regions: RegionName -->
- *
- * Composite regions: `regions: A+B` concatenates multiple regions (blank-separated).
+ * Synchronize README PHP snippets from region-tagged examples.
  *
  * Usage:
- *   php scripts/sync-readme-snippets.php           # update README.md in-place
- *   php scripts/sync-readme-snippets.php --check    # CI mode: exit 1 if out of sync
+ *   php scripts/sync-readme-snippets.php [--check] [--root <repository-root>]
  */
 
 declare(strict_types=1);
 
-$root = dirname(__DIR__);
-$readmePath = $root . '/README.md';
-$examplesDir = $root . '/examples';
+require_once __DIR__ . '/ExampleSupport.php';
 
-$check = in_array('--check', $argv, true);
+use function Camunda\Orchestration\Scripts\all_example_regions;
+use function Camunda\Orchestration\Scripts\resolve_snippet_source;
+use function Camunda\Orchestration\Scripts\read_text_file;
+use function Camunda\Orchestration\Scripts\split_root_argument;
 
 /**
- * Extract region-tagged code blocks from a PHP example file.
- *
- * @return array<string, string>
+ * @return array{regions: string, sources: string|null}
  */
-function parse_region_tags(string $path): array
+function snippet_marker(string $line): ?array
 {
-    $text = file_get_contents($path);
-    if ($text === false) {
-        return [];
+    if (preg_match(
+        '/^\s*<!--\s*snippet-source:\s*([^|]+?)\s*\|\s*regions:\s*([\w.+-]+)\s*-->\s*$/',
+        $line,
+        $matches,
+    ) === 1) {
+        return ['regions' => $matches[2], 'sources' => $matches[1]];
     }
 
-    $regions = [];
-    $current = null;
-    $buffer = [];
-    foreach (explode("\n", $text) as $line) {
-        $trimmed = trim($line);
-        if (preg_match('/^\/\/\s*region\s+(\w+)\s*$/', $trimmed, $m) === 1) {
-            $current = $m[1];
-            $buffer = [];
-        } elseif (preg_match('/^\/\/\s*endregion\s+(\w+)\s*$/', $trimmed, $m) === 1 && $current === $m[1]) {
-            $regions[$current] = dedent(implode("\n", $buffer));
-            $current = null;
-            $buffer = [];
-        } elseif ($current !== null) {
-            $buffer[] = $line;
-        }
+    if (preg_match('/^\s*<!--\s*snippet:([\w.+-]+)\s*-->\s*$/', $line, $matches) === 1) {
+        return ['regions' => $matches[1], 'sources' => null];
     }
 
-    return $regions;
-}
-
-function dedent(string $block): string
-{
-    $lines = explode("\n", $block);
-    $indent = null;
-    foreach ($lines as $line) {
-        if (trim($line) === '') {
-            continue;
-        }
-        preg_match('/^[ \t]*/', $line, $m);
-        $lead = strlen($m[0]);
-        $indent = $indent === null ? $lead : min($indent, $lead);
-    }
-    if ($indent === null || $indent === 0) {
-        return trim($block, "\n");
-    }
-    $out = array_map(
-        static fn (string $line): string => substr($line, $indent) !== false ? substr($line, $indent) : $line,
-        $lines,
-    );
-
-    return trim(implode("\n", $out), "\n");
+    return null;
 }
 
 /**
- * @param array<string, array<string, string>> $cache
+ * @param array<string, array{content: string, source: string}> $regions
+ * @param array{regions: string, sources: string|null} $marker
+ * @return array{content: string, marker: string}
  */
-function load_regions(string $file, string $examplesDir, array &$cache): array
+function resolve_regions(string $root, array $regions, array $marker): array
 {
-    if (!isset($cache[$file])) {
-        $cache[$file] = parse_region_tags($examplesDir . '/' . basename($file));
-    }
+    $parts = explode('+', $marker['regions']);
+    $content = [];
+    $sources = [];
 
-    return $cache[$file];
-}
-
-$readme = file_get_contents($readmePath);
-if ($readme === false) {
-    fwrite(STDERR, "Cannot read README.md\n");
-    exit(1);
-}
-
-$cache = [];
-$pattern = '/(<!-- snippet-source:\s*(\S+)\s*\|\s*regions:\s*([\w+]+)\s*-->\n)```php\n.*?\n```/s';
-
-$updated = preg_replace_callback($pattern, static function (array $match) use ($examplesDir, &$cache): string {
-    [$full, $marker, $file, $regionSpec] = $match;
-    $regions = load_regions($file, $examplesDir, $cache);
-
-    $parts = [];
-    foreach (explode('+', $regionSpec) as $name) {
+    foreach ($parts as $name) {
         if (!isset($regions[$name])) {
-            fwrite(STDERR, "warning: region '$name' not found in $file\n");
+            throw new RuntimeException("Region '$name' does not exist in examples/.");
+        }
+        $content[] = $regions[$name]['content'];
+        $sources[$regions[$name]['source']] = $regions[$name]['source'];
+    }
+
+    $expectedSources = array_values($sources);
+    sort($expectedSources, SORT_STRING);
+
+    if ($marker['sources'] !== null) {
+        $declaredSources = [];
+        foreach (explode(',', $marker['sources']) as $source) {
+            $resolved = resolve_snippet_source($root, $source);
+            $declaredSources[$resolved] = $resolved;
+        }
+        $declaredSources = array_values($declaredSources);
+        sort($declaredSources, SORT_STRING);
+
+        if ($declaredSources !== $expectedSources) {
+            throw new RuntimeException(
+                "Snippet source does not match the region source for '{$marker['regions']}'."
+            );
+        }
+    }
+
+    return [
+        'content' => implode("\n\n", $content),
+        'marker' => '<!-- snippet-source: ' . implode(',', $expectedSources)
+            . ' | regions: ' . $marker['regions'] . ' -->',
+    ];
+}
+
+/**
+ * @param list<string> $lines
+ * @return list<int>
+ */
+function uninjected_php_blocks(array $lines): array
+{
+    $uninjected = [];
+
+    foreach ($lines as $index => $line) {
+        if (preg_match('/^\s*```php\s*$/i', $line) !== 1) {
             continue;
         }
-        $parts[] = $regions[$name];
+
+        $previous = $index - 1;
+        while ($previous >= 0 && trim($lines[$previous]) === '') {
+            --$previous;
+        }
+        if ($previous >= 0
+            && (snippet_marker($lines[$previous]) !== null
+                || preg_match('/^\s*<!--\s*snippet-exempt:\s*.+?-->\s*$/', $lines[$previous]) === 1)
+        ) {
+            continue;
+        }
+
+        $uninjected[] = $index + 1;
     }
-    $code = implode("\n\n", $parts);
 
-    return $marker . "```php\n" . $code . "\n```";
-}, $readme);
-
-if ($updated === null) {
-    fwrite(STDERR, "Failed to process README.md\n");
-    exit(1);
+    return $uninjected;
 }
 
-if ($check) {
-    if ($updated !== $readme) {
-        fwrite(STDERR, "README.md is out of sync with examples/. Run: php scripts/sync-readme-snippets.php\n");
-        exit(1);
+/**
+ * @param array<string, array{content: string, source: string}> $regions
+ * @return array{content: string, snippets: int}
+ */
+function synchronize_readme(string $root, string $readme, array $regions): array
+{
+    $lines = explode("\n", $readme);
+    $output = [];
+    $errors = [];
+    $snippetCount = 0;
+
+    for ($index = 0, $count = count($lines); $index < $count;) {
+        $marker = snippet_marker($lines[$index]);
+        if ($marker === null) {
+            $output[] = $lines[$index];
+            ++$index;
+            continue;
+        }
+
+        try {
+            $resolved = resolve_regions($root, $regions, $marker);
+        } catch (RuntimeException $error) {
+            $errors[] = 'line ' . ($index + 1) . ': ' . $error->getMessage();
+            $output[] = $lines[$index];
+            ++$index;
+            continue;
+        }
+
+        ++$snippetCount;
+        $output[] = $resolved['marker'];
+        ++$index;
+
+        while ($index < $count && trim($lines[$index]) === '') {
+            $output[] = $lines[$index];
+            ++$index;
+        }
+
+        if ($index >= $count || preg_match('/^\s*```php\s*$/i', $lines[$index]) !== 1) {
+            $errors[] = 'line ' . ($index + 1)
+                . ": snippet '{$marker['regions']}' must be followed by a PHP code fence.";
+            continue;
+        }
+
+        $fence = trim($lines[$index]);
+        $closing = $index + 1;
+        while ($closing < $count && trim($lines[$closing]) !== '```') {
+            ++$closing;
+        }
+        if ($closing >= $count) {
+            $errors[] = "line " . ($index + 1) . ": snippet '{$marker['regions']}' has no closing code fence.";
+            $output[] = $lines[$index];
+            ++$index;
+            continue;
+        }
+
+        $output[] = $fence . "\n" . $resolved['content'] . "\n```";
+        $index = $closing + 1;
     }
-    echo "README.md snippets are in sync.\n";
-    exit(0);
+
+    if ($errors !== []) {
+        throw new RuntimeException("README snippet errors:\n  - " . implode("\n  - ", $errors));
+    }
+
+    $content = implode("\n", $output);
+    $uninjected = uninjected_php_blocks(explode("\n", $content));
+    if ($uninjected !== []) {
+        throw new RuntimeException(
+            'PHP code blocks without a snippet source or exemption at README lines: '
+            . implode(', ', $uninjected)
+            . '. Add a snippet-source marker or <!-- snippet-exempt: reason -->.'
+        );
+    }
+
+    return ['content' => $content, 'snippets' => $snippetCount];
 }
 
-if ($updated !== $readme) {
-    file_put_contents($readmePath, $updated);
-    echo "Updated README.md snippets.\n";
-} else {
-    echo "README.md snippets already up to date.\n";
+/**
+ * @param list<string> $argv
+ */
+function main(array $argv): int
+{
+    try {
+        [$root, $arguments] = split_root_argument($argv, dirname(__DIR__));
+        $check = false;
+        foreach ($arguments as $argument) {
+            if ($argument === '--check') {
+                $check = true;
+                continue;
+            }
+            throw new RuntimeException("Unknown argument: $argument");
+        }
+
+        $readmePath = $root . '/README.md';
+        $readme = read_text_file($readmePath);
+        $result = synchronize_readme($root, $readme, all_example_regions($root));
+
+        if ($check) {
+            if ($result['content'] !== $readme) {
+                fwrite(STDERR, "README.md is out of sync with examples/. Run: php scripts/sync-readme-snippets.php\n");
+                return 1;
+            }
+            echo "README.md snippets are in sync ({$result['snippets']} snippets).\n";
+            return 0;
+        }
+
+        if ($result['content'] === $readme) {
+            echo "README.md snippets are already in sync ({$result['snippets']} snippets).\n";
+            return 0;
+        }
+
+        if (file_put_contents($readmePath, $result['content']) === false) {
+            throw new RuntimeException('Cannot write README.md');
+        }
+        echo "Updated README.md snippets ({$result['snippets']} snippets).\n";
+
+        return 0;
+    } catch (RuntimeException $error) {
+        fwrite(STDERR, $error->getMessage() . "\n");
+        return 1;
+    }
 }
+
+exit(main($argv));
