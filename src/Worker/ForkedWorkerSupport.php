@@ -23,7 +23,7 @@ final class ForkedWorkerSupport
     }
 
     /**
-     * @return array{handledByPid?: string, handledByParentPid?: string, runId?: string}
+     * @return array{handledByPid: string, handledByParentPid: string, runId: string}
      */
     public static function waitForHandledByPidMarker(string $path, int $timeoutSeconds = 5): array
     {
@@ -40,11 +40,22 @@ final class ForkedWorkerSupport
                     } catch (JsonException $error) {
                         throw new RuntimeException("The forked worker PID marker is invalid: {$error->getMessage()}", 0, $error);
                     }
-                    if (is_array($decoded)) {
-                        return $decoded;
+                    if (!is_array($decoded)) {
+                        throw new RuntimeException('The forked worker PID marker payload is not an object.');
                     }
 
-                    throw new RuntimeException('The forked worker PID marker payload is not an object.');
+                    $handledByPid = $decoded['handledByPid'] ?? null;
+                    $handledByParentPid = $decoded['handledByParentPid'] ?? null;
+                    $runId = $decoded['runId'] ?? null;
+                    if (!is_string($handledByPid) || !is_string($handledByParentPid) || !is_string($runId)) {
+                        throw new RuntimeException('The forked worker PID marker has invalid fields.');
+                    }
+
+                    return [
+                        'handledByPid' => $handledByPid,
+                        'handledByParentPid' => $handledByParentPid,
+                        'runId' => $runId,
+                    ];
                 }
 
                 $lastState = 'PID marker is still empty';
@@ -61,24 +72,24 @@ final class ForkedWorkerSupport
     }
 
     /**
-     * @param array{handledByPid?: string, handledByParentPid?: string, runId?: string} $marker
+     * @param array{handledByPid: string, handledByParentPid: string, runId: string} $marker
      */
     public static function validateHandledByPidMarker(array $marker, string $runId, int $parentPid): string
     {
-        if (($marker['runId'] ?? null) !== $runId) {
+        if ($marker['runId'] !== $runId) {
             throw new RuntimeException('The forked worker PID marker does not belong to this run.');
         }
-        if (($marker['handledByParentPid'] ?? null) !== (string) $parentPid) {
+        if ($marker['handledByParentPid'] !== (string) $parentPid) {
             throw new RuntimeException(
                 sprintf(
                     'Expected the forked worker to report parent PID %d, got %s.',
                     $parentPid,
-                    (string) ($marker['handledByParentPid'] ?? 'unknown'),
+                    $marker['handledByParentPid'],
                 ),
             );
         }
 
-        $handledByPid = (string) ($marker['handledByPid'] ?? '');
+        $handledByPid = $marker['handledByPid'];
         if ($handledByPid === '') {
             throw new RuntimeException('The forked worker PID marker has no handledByPid value.');
         }

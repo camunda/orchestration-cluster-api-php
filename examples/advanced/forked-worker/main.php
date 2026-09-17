@@ -26,6 +26,9 @@ function run(): void
     $processId = 'php-sdk-forked-worker-' . $runId;
     $jobType = 'php-sdk-forked-job-' . $runId;
     $parentPid = getmypid();
+    if ($parentPid === false) {
+        throw new \RuntimeException('Cannot determine the parent process PID.');
+    }
     $handledByPidFile = tempnam(sys_get_temp_dir(), 'camunda-php-forked-worker-');
     if ($handledByPidFile === false) {
         throw new \RuntimeException('Cannot allocate a temporary PID marker file.');
@@ -55,14 +58,17 @@ function run(): void
         do {
             $processed = $worker->pollOnce(
                 static function (ActivatedJobResult $_job, JobActionClient $_action) use ($handledByPidFile, $parentPid, $runId): array {
-                    $handledByPid = (string) getmypid();
-                    $marker = ForkedWorkerSupport::encodePidMarker($handledByPid, $parentPid, $runId);
+                    $handledByPid = getmypid();
+                    if ($handledByPid === false) {
+                        throw new \RuntimeException('Cannot determine the forked worker PID.');
+                    }
+                    $marker = ForkedWorkerSupport::encodePidMarker((string) $handledByPid, $parentPid, $runId);
                     if (file_put_contents($handledByPidFile, $marker) === false) {
                         throw new \RuntimeException('Cannot persist the worker PID marker.');
                     }
 
                     return [
-                        'handledByPid' => $handledByPid,
+                        'handledByPid' => (string) $handledByPid,
                     ];
                 },
             );

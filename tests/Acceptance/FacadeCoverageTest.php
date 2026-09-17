@@ -90,6 +90,9 @@ final class FacadeCoverageTest extends TestCase
      */
     private function specOperationsFromMetadata(string $path): array
     {
+        if (!is_file($path) || !is_readable($path)) {
+            throw new RuntimeException('Cannot read spec metadata.');
+        }
         $metadataJson = file_get_contents($path);
         if ($metadataJson === false) {
             throw new RuntimeException('Cannot read spec metadata.');

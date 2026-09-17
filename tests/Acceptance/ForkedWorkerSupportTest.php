@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Tests\Acceptance;
 
+use Camunda\Orchestration\Worker\ForkedWorkerSupport;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Camunda\Orchestration\Worker\ForkedWorkerSupport;
 
 final class ForkedWorkerSupportTest extends TestCase
 {
@@ -34,6 +34,21 @@ final class ForkedWorkerSupportTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('PID marker is invalid');
+
+        try {
+            ForkedWorkerSupport::waitForHandledByPidMarker($path, 0);
+        } finally {
+            unlink($path);
+        }
+    }
+
+    public function testWaitForHandledByPidMarkerRejectsNonStringFields(): void
+    {
+        $path = $this->createTempFile();
+        file_put_contents($path, '{"handledByPid":4242,"handledByParentPid":"1010","runId":"run-1"}');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('PID marker has invalid fields');
 
         try {
             ForkedWorkerSupport::waitForHandledByPidMarker($path, 0);
