@@ -15,6 +15,7 @@ use Camunda\Orchestration\Api\Model\JobActivationResult;
 use Camunda\Orchestration\CamundaClient;
 use Camunda\Orchestration\Semantic\JobKey;
 use Camunda\Orchestration\Worker\JobActionClient;
+use Camunda\Orchestration\Worker\JobHandler;
 use Camunda\Orchestration\Worker\JobWorkerOptions;
 
 // region ActivateJobs
@@ -102,3 +103,105 @@ function complete_job(CamundaClient $client, JobKey $jobKey): void
     $api->completeJob((string) $jobKey);
 }
 // endregion CompleteJob
+
+// region ObjectJobHandler
+final class PaymentJobHandler implements JobHandler
+{
+    public function handle(ActivatedJobResult $job, JobActionClient $action): ?array
+    {
+        $variables = $job->getVariables();
+        if (!isset($variables['paymentId'])) {
+            $action->error('MISSING_PAYMENT_ID', 'The payment job has no payment id.');
+            return null;
+        }
+
+        return ['paymentStatus' => 'approved'];
+    }
+}
+
+function object_job_handler(CamundaClient $client): void
+{
+    $worker = $client->createJobWorker(new JobWorkerOptions(type: 'process-payment'));
+    $worker->run(new PaymentJobHandler());
+}
+// endregion ObjectJobHandler
+
+// region SearchJobs
+/**
+ * Search jobs.
+ */
+function search_jobs(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\JobSearchQuery $jobSearchQuery = null): void
+{
+    $client->searchJobs($jobSearchQuery);
+}
+// endregion SearchJobs
+
+// region UpdateJob
+/**
+ * Update job.
+ */
+function update_job(CamundaClient $client, JobKey $jobKey, \Camunda\Orchestration\Api\Model\JobUpdateRequest $jobUpdateRequest): void
+{
+    $client->updateJob((string) $jobKey, $jobUpdateRequest);
+}
+// endregion UpdateJob
+
+// region UpdateJobsBatchOperation
+/**
+ * Update jobs (batch).
+ */
+function update_jobs_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\JobBatchUpdateRequest $jobBatchUpdateRequest): void
+{
+    $client->updateJobsBatchOperation($jobBatchUpdateRequest);
+}
+// endregion UpdateJobsBatchOperation
+
+// region GetGlobalJobStatistics
+/**
+ * Global job statistics.
+ */
+function get_global_job_statistics(CamundaClient $client, \DateTime $from, \DateTime $to, ?string $jobType = null): void
+{
+    $client->getGlobalJobStatistics($from, $to, $jobType);
+}
+// endregion GetGlobalJobStatistics
+
+// region GetJobTypeStatistics
+/**
+ * Get job statistics by type.
+ */
+function get_job_type_statistics(CamundaClient $client, \Camunda\Orchestration\Api\Model\JobTypeStatisticsQuery $jobTypeStatisticsQuery): void
+{
+    $client->getJobTypeStatistics($jobTypeStatisticsQuery);
+}
+// endregion GetJobTypeStatistics
+
+// region GetJobWorkerStatistics
+/**
+ * Get job statistics by worker.
+ */
+function get_job_worker_statistics(CamundaClient $client, \Camunda\Orchestration\Api\Model\JobWorkerStatisticsQuery $jobWorkerStatisticsQuery): void
+{
+    $client->getJobWorkerStatistics($jobWorkerStatisticsQuery);
+}
+// endregion GetJobWorkerStatistics
+
+// region GetJobTimeSeriesStatistics
+/**
+ * Get time-series metrics for a job type.
+ */
+function get_job_time_series_statistics(CamundaClient $client, \Camunda\Orchestration\Api\Model\JobTimeSeriesStatisticsQuery $jobTimeSeriesStatisticsQuery): void
+{
+    $client->getJobTimeSeriesStatistics($jobTimeSeriesStatisticsQuery);
+}
+// endregion GetJobTimeSeriesStatistics
+
+// region GetJobErrorStatistics
+/**
+ * Get error metrics for a job type.
+ */
+function get_job_error_statistics(CamundaClient $client, \Camunda\Orchestration\Api\Model\JobErrorStatisticsQuery $jobErrorStatisticsQuery): void
+{
+    $client->getJobErrorStatistics($jobErrorStatisticsQuery);
+}
+// endregion GetJobErrorStatistics
