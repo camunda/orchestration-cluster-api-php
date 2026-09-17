@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Tests\Acceptance;
 
-use Camunda\Orchestration\Api\Model\DocumentMetadata;
 use Camunda\Orchestration\Api\Model\DeploymentResult;
+use Camunda\Orchestration\Api\Model\DocumentMetadata;
 use Camunda\Orchestration\CamundaClient;
 use Camunda\Orchestration\Config\ConfigResolver;
 use GuzzleHttp\Client as GuzzleClient;
