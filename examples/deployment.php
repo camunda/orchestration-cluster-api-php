@@ -14,7 +14,10 @@ use Camunda\Orchestration\CamundaClient;
 // region DeployResources
 function deploy_resources(CamundaClient $client): void
 {
-    $result = $client->deployResourcesFromFiles('order-process.bpmn', 'pricing.dmn');
+    $result = $client->deployResourcesFromFiles(
+        __DIR__ . '/resources/order-process.bpmn',
+        __DIR__ . '/resources/pricing.dmn',
+    );
 
     if ($result instanceof DeploymentResult) {
         echo 'Deployment key: ', (string) $result->getDeploymentKey(), "\n";
@@ -31,7 +34,7 @@ function deploy_resources(CamundaClient $client): void
 // region DeploySingleResource
 function deploy_single_resource(CamundaClient $client): void
 {
-    $result = $client->deployResourcesFromFiles(__DIR__ . '/order-process.bpmn');
+    $result = $client->deployResourcesFromFiles(__DIR__ . '/resources/order-process.bpmn');
     // $result is a DeploymentResult (or ProblemDetail on a handled error).
 }
 // endregion DeploySingleResource
