@@ -75,52 +75,22 @@ PHP,
 
     $replacement = 'array_replace($this->config->getOperationHostVariables(), $variables)';
     $callsiteNeedle = 'Configuration::getHostString(';
-    $unpatchedPattern = '/(Configuration::getHostString\(\s*[^,]+,\s*[^,]+,\s*)\$variables(\s*,?\s*\))/m';
-    $patchedPattern = '/(Configuration::getHostString\(\s*[^,]+,\s*[^,]+,\s*)array_replace\(\$this->config->getOperationHostVariables\(\), \$variables\)(\s*,?\s*\))/m';
     $patched = 0;
     foreach (glob($ctx['out_dir'] . '/src/Api/*.php') ?: [] as $file) {
         $source = (string) file_get_contents($file);
-        $expected = substr_count($source, $callsiteNeedle);
-        if ($expected === 0) {
+        if (!str_contains($source, $callsiteNeedle)) {
             continue;
         }
 
-        $count = preg_match_all($unpatchedPattern, $source);
-        if ($count === false) {
-            throw new RuntimeException("hook 0125: invalid unpatched operation-host pattern for $file");
-        }
-
-        $alreadyPatched = preg_match_all($patchedPattern, $source);
-        if ($alreadyPatched === false) {
-            throw new RuntimeException("hook 0125: invalid patched operation-host pattern for $file");
-        }
-
-        if ($count + $alreadyPatched !== $expected) {
-            throw new RuntimeException(
-                "hook 0125: expected to classify $expected operation-specific host call(s) in $file, found $count unpatched and $alreadyPatched patched",
-            );
-        }
-
+        ['source' => $source, 'count' => $count] = patch_operation_host_calls($source, $replacement, $file);
         if ($count === 0) {
-            $patched += $alreadyPatched;
-
             continue;
         }
 
-        $source = preg_replace_callback(
-            $unpatchedPattern,
-            static fn (array $matches): string => $matches[1] . $replacement . $matches[2],
-            $source,
-            -1,
-            $applied,
-        );
-        if (!is_string($source) || $applied !== $count) {
-            throw new RuntimeException("hook 0125: failed to patch $count operation-specific host call(s) in $file");
-        }
         if (file_put_contents($file, $source) === false) {
             throw new RuntimeException("hook 0125: cannot write $file");
         }
-        $patched += $expected;
+        $patched += $count;
     }
 
     fwrite(STDOUT, "  [operation-hosts] configured $patched operation-specific server calls\n");
@@ -138,4 +108,132 @@ function replace_once_operation_hosts(
     }
 
     return substr($source, 0, $position) . $replacement . substr($source, $position + strlen($needle));
+}
+
+/**
+ * @return array{source: string, count: int}
+ */
+function patch_operation_host_calls(string $source, string $replacement, string $file): array
+{
+    $needle = 'Configuration::getHostString(';
+    $offset = 0;
+    $patched = 0;
+    $calls = [];
+
+    while (($position = strpos($source, $needle, $offset)) !== false) {
+        $openParen = $position + strlen($needle) - 1;
+        $closeParen = find_matching_paren_operation_hosts($source, $openParen, $file);
+        $arguments = parse_operation_host_arguments($source, $openParen + 1, $closeParen, $file);
+
+        if (count($arguments) === 3 && str_contains($arguments[2]['value'], '$variables')) {
+            $thirdArgument = trim($arguments[2]['value']);
+            if ($thirdArgument === '$variables') {
+                $calls[] = $arguments[2];
+            } elseif ($thirdArgument !== $replacement) {
+                throw new RuntimeException(
+                    "hook 0125: unsupported operation-host variables argument '$thirdArgument' in $file",
+                );
+            }
+
+            $patched++;
+        }
+
+        $offset = $closeParen + 1;
+    }
+
+    if ($calls === []) {
+        return ['source' => $source, 'count' => $patched];
+    }
+
+    foreach (array_reverse($calls) as $call) {
+        $value = $call['value'];
+        $leading = substr($value, 0, strlen($value) - strlen(ltrim($value)));
+        $trailing = substr($value, strlen(rtrim($value)));
+        $source = substr($source, 0, $call['start'])
+            . $leading
+            . $replacement
+            . $trailing
+            . substr($source, $call['end']);
+    }
+
+    return ['source' => $source, 'count' => $patched];
+}
+
+function find_matching_paren_operation_hosts(string $source, int $openParen, string $file): int
+{
+    $depth = 0;
+    $length = strlen($source);
+
+    for ($index = $openParen; $index < $length; $index++) {
+        $char = $source[$index];
+        if ($char === '(') {
+            $depth++;
+
+            continue;
+        }
+
+        if ($char !== ')') {
+            continue;
+        }
+
+        $depth--;
+        if ($depth === 0) {
+            return $index;
+        }
+    }
+
+    throw new RuntimeException("hook 0125: unterminated operation-host call in $file");
+}
+
+/**
+ * @return list<array{start: int, end: int, value: string}>
+ */
+function parse_operation_host_arguments(string $source, int $start, int $end, string $file): array
+{
+    $arguments = [];
+    $depth = 0;
+    $argumentStart = $start;
+
+    for ($index = $start; $index < $end; $index++) {
+        $char = $source[$index];
+        if ($char === '(' || $char === '[' || $char === '{') {
+            $depth++;
+
+            continue;
+        }
+
+        if ($char === ')' || $char === ']' || $char === '}') {
+            $depth--;
+
+            continue;
+        }
+
+        if ($char !== ',' || $depth !== 0) {
+            continue;
+        }
+
+        $arguments[] = [
+            'start' => $argumentStart,
+            'end' => $index,
+            'value' => substr($source, $argumentStart, $index - $argumentStart),
+        ];
+        $argumentStart = $index + 1;
+    }
+
+    if ($depth !== 0) {
+        throw new RuntimeException("hook 0125: unbalanced operation-host arguments in $file");
+    }
+
+    $arguments[] = [
+        'start' => $argumentStart,
+        'end' => $end,
+        'value' => substr($source, $argumentStart, $end - $argumentStart),
+    ];
+
+    $last = $arguments[array_key_last($arguments)];
+    if (count($arguments) > 1 && trim($last['value']) === '') {
+        array_pop($arguments);
+    }
+
+    return $arguments;
 }
