@@ -93,7 +93,7 @@ PHP,
     }
 
     $unconfiguredBuilder = '$operationHost = Configuration::getHostString($hostSettings, $hostIndex, $variables);';
-    $configuredBuilder = <<<'PHP'
+    $configuredViaVariablesBuilder = <<<'PHP'
 $operationHost = Configuration::getHostString(
                 $hostSettings,
                 $hostIndex,
@@ -102,6 +102,15 @@ $operationHost = Configuration::getHostString(
                     $this->config->getOperationHostVariables(),
                     $variables,
                 ),
+            );
+PHP;
+    $configuredBuilder = <<<'PHP'
+$operationHost = \Camunda\Orchestration\Http\OperationHost::resolveHost(
+                $this->config->getHost(),
+                $hostSettings,
+                $hostIndex,
+                $this->config->getOperationHostVariables(),
+                $variables,
             );
 PHP;
     $legacyConfiguredBuilder = <<<'PHP'
@@ -173,8 +182,15 @@ PHP;
 
         $unconfigured = substr_count($source, $unconfiguredBuilder);
         $configured = substr_count($source, $configuredBuilder);
+        $configuredViaVariables = substr_count($source, $configuredViaVariablesBuilder);
         $legacyConfigured = substr_count($source, $legacyConfiguredBuilder);
         $eagerConfigured = substr_count($source, $eagerConfiguredBuilder);
+        if ($configuredViaVariables > 0) {
+            $source = str_replace($configuredViaVariablesBuilder, $configuredBuilder, $source);
+            $configured = substr_count($source, $configuredBuilder);
+            $configuredViaVariables = 0;
+        }
+
         if ($expected !== $unconfigured + $legacyConfigured + $eagerConfigured + $configured) {
             throw new RuntimeException(
                 "hook 0125: expected $expected operation-specific host builder(s) in $file, found $unconfigured unconfigured, $legacyConfigured legacy configured, $eagerConfigured eager configured, and $configured configured",

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Http;
 
+use Camunda\Orchestration\Api\Configuration as ApiConfiguration;
 use Camunda\Orchestration\Exception\ConfigurationException;
 
 final class OperationHost
@@ -25,6 +26,48 @@ final class OperationHost
         }
 
         return array_replace($derived, $configuredVariables, $variables);
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $hostSettings
+     * @param array<string, string> $configuredVariables
+     * @param array<string, string> $variables
+     */
+    public static function resolveHost(
+        string $restAddress,
+        array $hostSettings,
+        int $hostIndex,
+        array $configuredVariables = [],
+        array $variables = [],
+    ): string {
+        $merged = array_replace($configuredVariables, $variables);
+        $parts = parse_url($restAddress);
+
+        if (self::isAbsolute($parts)) {
+            return ApiConfiguration::getHostString(
+                $hostSettings,
+                $hostIndex,
+                array_replace(self::variables($restAddress), $configuredVariables, $variables),
+            );
+        }
+
+        if (self::isRelativePath($parts, $restAddress)) {
+            if (self::hasAbsoluteOverride($merged)) {
+                return ApiConfiguration::getHostString($hostSettings, $hostIndex, $merged);
+            }
+
+            if (self::hasPartialAbsoluteOverride($merged)) {
+                throw new ConfigurationException(
+                    'Operation-host overrides for a relative CAMUNDA_REST_ADDRESS must include schema, host, and port.',
+                );
+            }
+
+            return $merged['basePath'] ?? self::basePath($parts);
+        }
+
+        throw new ConfigurationException(
+            'CAMUNDA_REST_ADDRESS must be an absolute URL with scheme and host to resolve operation-specific hosts.',
+        );
     }
 
     /**
@@ -72,5 +115,46 @@ final class OperationHost
         $basePath = rtrim((string) preg_replace('#/v\d+$#', '', rtrim($path, '/')), '/');
 
         return $basePath === '' || $basePath === '/' ? '' : $basePath;
+    }
+
+    /**
+     * @param array<string, int|string>|false $parts
+     */
+    private static function isAbsolute(array|false $parts): bool
+    {
+        $scheme = is_array($parts) ? $parts['scheme'] ?? null : null;
+        $host = is_array($parts) ? $parts['host'] ?? null : null;
+
+        return is_string($scheme) && is_string($host) && $scheme !== '' && $host !== '';
+    }
+
+    /**
+     * @param array<string, int|string>|false $parts
+     */
+    private static function isRelativePath(array|false $parts, string $restAddress): bool
+    {
+        if (!is_array($parts) || array_key_exists('scheme', $parts) || array_key_exists('host', $parts)) {
+            return false;
+        }
+
+        $path = $parts['path'] ?? null;
+
+        return is_string($path) && $path !== '' && !str_starts_with($restAddress, '//');
+    }
+
+    /**
+     * @param array<string, string> $variables
+     */
+    private static function hasAbsoluteOverride(array $variables): bool
+    {
+        return isset($variables['schema'], $variables['host'], $variables['port']);
+    }
+
+    /**
+     * @param array<string, string> $variables
+     */
+    private static function hasPartialAbsoluteOverride(array $variables): bool
+    {
+        return isset($variables['schema']) || isset($variables['host']) || isset($variables['port']);
     }
 }

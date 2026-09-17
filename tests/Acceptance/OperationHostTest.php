@@ -81,6 +81,17 @@ final class OperationHostTest extends TestCase
         self::assertSame('http://manual.example.test:8081/manual/cluster/v2/status', (string) $request->getUri());
     }
 
+    public function testRelativeMutatedHostStaysRelativeForClusterAdminOperations(): void
+    {
+        $client = $this->client('https://cluster.example.test/v2');
+        $api = $client->api(ClusterApi::class);
+        $api->getConfig()->setHost('/proxy/v2');
+
+        $request = $api->getClusterStatusRequest();
+
+        self::assertSame('/proxy/cluster/v2/status', (string) $request->getUri());
+    }
+
     public function testExplicitOperationHostVariablesOverrideConfiguredHost(): void
     {
         $client = $this->client('https://cluster.example.test/v2');
@@ -144,6 +155,20 @@ final class OperationHostTest extends TestCase
         );
 
         self::assertSame('http://override.example.test:8082/override/cluster/v2/status', (string) $request->getUri());
+    }
+
+    public function testMalformedMutatedHostStillFailsFastForClusterAdminOperations(): void
+    {
+        $client = $this->client('https://cluster.example.test/v2');
+        $api = $client->api(ClusterApi::class);
+        $api->getConfig()->setHost('https://secret-token@/v2?apiKey=secret-value');
+
+        $this->expectException(ConfigurationException::class);
+        $this->expectExceptionMessage(
+            'CAMUNDA_REST_ADDRESS must be an absolute URL with scheme and host to resolve operation-specific hosts.',
+        );
+
+        $api->getClusterStatusRequest();
     }
 
     public function testOperationHostRejectsRelativeAddress(): void
