@@ -317,9 +317,19 @@ function is_operation_host_call(string $source, string $firstArgument, int $call
     }
 
     $context = substr($source, 0, $callPosition);
+    if (
+        preg_match_all(
+            '/'.preg_quote($firstArgument, '/').'\s*=\s*(.+?);/s',
+            $context,
+            $matches,
+            PREG_OFFSET_CAPTURE,
+        ) !== false
+        && $matches[1] !== []
+    ) {
+        $lastMatch = $matches[1][array_key_last($matches[1])][0];
 
-    return preg_match(
-        '/'.preg_quote($firstArgument, '/').'\s*=\s*\$this->getHostSettingsFor[A-Za-z0-9_]+\(\)\s*;/',
-        $context,
-    ) === 1;
+        return preg_match('/^\s*\$this->getHostSettingsFor[A-Za-z0-9_]+\(\)\s*$/', $lastMatch) === 1;
+    }
+
+    return false;
 }
