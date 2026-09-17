@@ -37,18 +37,14 @@ final class ForkedWorkerSupport
                 if ($marker !== '') {
                     try {
                         $decoded = json_decode($marker, true, flags: JSON_THROW_ON_ERROR);
-                    } catch (JsonException) {
-                        $lastState = 'PID marker is invalid';
-                        usleep(200_000);
-                        continue;
+                    } catch (JsonException $error) {
+                        throw new RuntimeException("The forked worker PID marker is invalid: {$error->getMessage()}", 0, $error);
                     }
                     if (is_array($decoded)) {
                         return $decoded;
                     }
 
-                    $lastState = 'PID marker payload is not an object';
-                    usleep(200_000);
-                    continue;
+                    throw new RuntimeException('The forked worker PID marker payload is not an object.');
                 }
 
                 $lastState = 'PID marker is still empty';
