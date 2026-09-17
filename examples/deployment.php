@@ -9,12 +9,16 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Examples;
 
 use Camunda\Orchestration\Api\Model\DeploymentResult;
+use Camunda\Orchestration\Api\Model\ProblemDetail;
 use Camunda\Orchestration\CamundaClient;
 
 // region DeployResources
-function deploy_resources(CamundaClient $client): void
+function deploy_resources(CamundaClient $client): DeploymentResult|ProblemDetail
 {
-    $result = $client->deployResourcesFromFiles('order-process.bpmn', 'pricing.dmn');
+    $result = $client->deployResourcesFromFiles(
+        __DIR__ . '/resources/order-process.bpmn',
+        __DIR__ . '/resources/pricing.dmn',
+    );
 
     if ($result instanceof DeploymentResult) {
         echo 'Deployment key: ', (string) $result->getDeploymentKey(), "\n";
@@ -25,13 +29,14 @@ function deploy_resources(CamundaClient $client): void
             }
         }
     }
+
+    return $result;
 }
 // endregion DeployResources
 
 // region DeploySingleResource
-function deploy_single_resource(CamundaClient $client): void
+function deploy_single_resource(CamundaClient $client): DeploymentResult|ProblemDetail
 {
-    $result = $client->deployResourcesFromFiles(__DIR__ . '/order-process.bpmn');
-    // $result is a DeploymentResult (or ProblemDetail on a handled error).
+    return $client->deployResourcesFromFiles(__DIR__ . '/resources/order-process.bpmn');
 }
 // endregion DeploySingleResource

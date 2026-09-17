@@ -33,7 +33,7 @@ function readme_sync_client(): void
 {
     $client = CamundaClient::fromEnvironment();
 
-    $result = $client->deployResourcesFromFiles('order-process.bpmn');
+    $result = $client->deployResourcesFromFiles(__DIR__ . '/resources/order-process.bpmn');
     // ...
 }
 // endregion ReadmeSyncClient
@@ -43,7 +43,7 @@ function readme_async_client(): void
 {
     $client = CamundaAsyncClient::fromEnvironment();
 
-    $client->deployResourcesFromFilesAsync('order-process.bpmn')
+    $client->deployResourcesFromFilesAsync(__DIR__ . '/resources/order-process.bpmn')
         ->then(static function ($result): void {
             // handle the DeploymentResult once the request resolves
         })
@@ -163,7 +163,10 @@ function readme_deploy_resources(): void
 {
     $client = CamundaClient::fromEnvironment();
 
-    $result = $client->deployResourcesFromFiles('order-process.bpmn', 'pricing.dmn');
+    $result = $client->deployResourcesFromFiles(
+        __DIR__ . '/resources/order-process.bpmn',
+        __DIR__ . '/resources/pricing.dmn',
+    );
     // $result is a DeploymentResult (or ProblemDetail on a handled error).
 }
 // endregion ReadmeDeployResources

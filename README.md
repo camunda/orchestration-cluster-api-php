@@ -67,7 +67,7 @@ function readme_sync_client(): void
 {
     $client = CamundaClient::fromEnvironment();
 
-    $result = $client->deployResourcesFromFiles('order-process.bpmn');
+    $result = $client->deployResourcesFromFiles(__DIR__ . '/resources/order-process.bpmn');
     // ...
 }
 ```
@@ -78,7 +78,7 @@ function readme_async_client(): void
 {
     $client = CamundaAsyncClient::fromEnvironment();
 
-    $client->deployResourcesFromFilesAsync('order-process.bpmn')
+    $client->deployResourcesFromFilesAsync(__DIR__ . '/resources/order-process.bpmn')
         ->then(static function ($result): void {
             // handle the DeploymentResult once the request resolves
         })
@@ -271,16 +271,29 @@ function custom_http_client(CamundaConfiguration $configuration): CamundaClient
 
 ## Deploying resources
 
+Pass a readable filesystem path for every BPMN, DMN, or Form resource. Anchor
+paths with `__DIR__` so deployment is independent of the shell's current
+working directory. The repository includes [runnable deployment
+resources](examples/resources/); replace those paths with your application's
+models.
+
 <!-- snippet-source: examples/readme.php | regions: ReadmeDeployResources -->
 ```php
 function readme_deploy_resources(): void
 {
     $client = CamundaClient::fromEnvironment();
 
-    $result = $client->deployResourcesFromFiles('order-process.bpmn', 'pricing.dmn');
+    $result = $client->deployResourcesFromFiles(
+        __DIR__ . '/resources/order-process.bpmn',
+        __DIR__ . '/resources/pricing.dmn',
+    );
     // $result is a DeploymentResult (or ProblemDetail on a handled error).
 }
 ```
+
+`deployResourcesFromFiles()` returns a `DeploymentResult` on success and a
+`ProblemDetail` for a handled API error. It throws a `ConfigurationException`
+when a local resource path cannot be read.
 
 ## Job workers
 
