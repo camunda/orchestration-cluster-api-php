@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Tests\Acceptance;
 
-require_once dirname(__DIR__, 2) . '/src/Worker/ForkedWorkerSupport.php';
-
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Camunda\Orchestration\Worker\ForkedWorkerSupport;
