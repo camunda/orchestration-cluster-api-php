@@ -50,6 +50,29 @@ final class FacadeCoverageTest extends TestCase
         }
     }
 
+    public function testSpecOperationsFailsWhenIntegrityCountDoesNotMatch(): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'facade-coverage-metadata-');
+        self::assertIsString($path);
+        file_put_contents($path, (string) json_encode([
+            'operations' => [
+                ['operationId' => 'getWorkflow'],
+            ],
+            'integrity' => [
+                'totalOperations' => 2,
+            ],
+        ], JSON_THROW_ON_ERROR));
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Spec metadata operation count does not match integrity.totalOperations.');
+
+        try {
+            $this->specOperationsFromMetadata($path);
+        } finally {
+            unlink($path);
+        }
+    }
+
     /**
      * @return list<string>
      */
