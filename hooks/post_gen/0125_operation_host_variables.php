@@ -86,6 +86,25 @@ PHP,
 PHP,
             'operation-host variables accessors',
         );
+        $configurationSource = $replaceOnce(
+            $configurationSource,
+            <<<'PHP'
+    public function setHost(string $host): static
+    {
+        $this->host = $host;
+        return $this;
+    }
+PHP,
+            <<<'PHP'
+    public function setHost(string $host): static
+    {
+        $this->host = $host;
+        $this->operationHostVariables = [];
+        return $this;
+    }
+PHP,
+            'host setter',
+        );
 
         if (file_put_contents($configuration, $configurationSource) === false) {
             throw new RuntimeException('hook 0125: cannot write Configuration.php');

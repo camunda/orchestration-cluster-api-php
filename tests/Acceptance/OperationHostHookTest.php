@@ -26,6 +26,11 @@ final class OperationHostHookTest extends TestCase
             self::assertStringContainsString('protected array $operationHostVariables = [];', $configuration);
             self::assertStringContainsString('public function getOperationHostVariables(): array', $configuration);
             self::assertStringContainsString(
+                '$this->host = $host;' . "\n"
+                . '        $this->operationHostVariables = [];',
+                $configuration,
+            );
+            self::assertStringContainsString(
                 '\Camunda\Orchestration\Http\OperationHost::resolveHost(',
                 $api,
             );
@@ -105,6 +110,13 @@ final class OperationHostHookTest extends TestCase
 final class Configuration
 {
     protected bool $ignoreOperationHosts = false;
+    protected string $host = '';
+
+    public function setHost(string $host): static
+    {
+        $this->host = $host;
+        return $this;
+    }
 
     public function getIgnoreOperationHosts(): bool
     {

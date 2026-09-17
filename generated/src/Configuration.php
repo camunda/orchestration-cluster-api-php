@@ -298,6 +298,7 @@ class Configuration
     public function setHost(string $host): static
     {
         $this->host = $host;
+        $this->operationHostVariables = [];
         return $this;
     }
 
