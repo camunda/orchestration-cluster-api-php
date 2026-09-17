@@ -125,18 +125,22 @@ function patch_operation_host_calls(string $source, string $replacement, string 
         $closeParen = find_matching_paren_operation_hosts($source, $openParen, $file);
         $arguments = parse_operation_host_arguments($source, $openParen + 1, $closeParen, $file);
 
-        if (count($arguments) === 3 && uses_operation_host_variables_argument($arguments[2]['value'])) {
-            $thirdArgument = trim($arguments[2]['value']);
-            if ($thirdArgument === '$variables') {
-                $calls[] = $arguments[2];
-            } elseif ($thirdArgument !== $replacement) {
-                throw new RuntimeException(
-                    "hook 0125: unsupported operation-host variables argument '$thirdArgument' in $file",
-                );
-            }
+        if (count($arguments) !== 3 || !is_operation_host_call($source, $arguments[0]['value'], $position)) {
+            $offset = $closeParen + 1;
 
-            $patched++;
+            continue;
         }
+
+        $thirdArgument = trim($arguments[2]['value']);
+        if ($thirdArgument === '$variables') {
+            $calls[] = $arguments[2];
+        } elseif ($thirdArgument !== $replacement) {
+            throw new RuntimeException(
+                "hook 0125: unsupported operation-host variables argument '$thirdArgument' in $file",
+            );
+        }
+
+        $patched++;
 
         $offset = $closeParen + 1;
     }
@@ -301,13 +305,21 @@ function skip_operation_host_string(string $source, int $index, string $quote): 
     return $length - 1;
 }
 
-function uses_operation_host_variables_argument(string $argument): bool
+function is_operation_host_call(string $source, string $firstArgument, int $callPosition): bool
 {
-    foreach (token_get_all('<?php ' . $argument) as $token) {
-        if (is_array($token) && $token[0] === T_VARIABLE && $token[1] === '$variables') {
-            return true;
-        }
+    $firstArgument = trim($firstArgument);
+    if (str_contains($firstArgument, 'getHostSettingsFor')) {
+        return true;
     }
 
-    return false;
+    if (preg_match('/^\$[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$/', $firstArgument) !== 1) {
+        return false;
+    }
+
+    $context = substr($source, max(0, $callPosition - 1000), min($callPosition, 1000));
+
+    return preg_match(
+        '/'.preg_quote($firstArgument, '/').'\s*=\s*\$this->getHostSettingsFor[A-Za-z0-9_]+\(\)\s*;/',
+        $context,
+    ) === 1;
 }
