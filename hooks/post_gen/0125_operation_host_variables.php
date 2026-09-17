@@ -165,6 +165,13 @@ function find_matching_paren_operation_hosts(string $source, int $openParen, str
     $length = strlen($source);
 
     for ($index = $openParen; $index < $length; $index++) {
+        $skipped = skip_operation_host_literal_or_comment($source, $index);
+        if ($skipped !== $index) {
+            $index = $skipped;
+
+            continue;
+        }
+
         $char = $source[$index];
         if ($char === '(') {
             $depth++;
@@ -195,6 +202,13 @@ function parse_operation_host_arguments(string $source, int $start, int $end, st
     $argumentStart = $start;
 
     for ($index = $start; $index < $end; $index++) {
+        $skipped = skip_operation_host_literal_or_comment($source, $index);
+        if ($skipped !== $index) {
+            $index = $skipped;
+
+            continue;
+        }
+
         $char = $source[$index];
         if ($char === '(' || $char === '[' || $char === '{') {
             $depth++;
@@ -236,4 +250,53 @@ function parse_operation_host_arguments(string $source, int $start, int $end, st
     }
 
     return $arguments;
+}
+
+function skip_operation_host_literal_or_comment(string $source, int $index): int
+{
+    $char = $source[$index];
+    $next = $source[$index + 1] ?? '';
+
+    if ($char === '\'' || $char === '"') {
+        return skip_operation_host_string($source, $index, $char);
+    }
+
+    if ($char === '/' && $next === '*') {
+        $end = strpos($source, '*/', $index + 2);
+
+        return $end === false ? strlen($source) - 1 : $end + 1;
+    }
+
+    if ($char === '/' && $next === '/') {
+        $end = strpos($source, "\n", $index + 2);
+
+        return $end === false ? strlen($source) - 1 : $end - 1;
+    }
+
+    if ($char === '#') {
+        $end = strpos($source, "\n", $index + 1);
+
+        return $end === false ? strlen($source) - 1 : $end - 1;
+    }
+
+    return $index;
+}
+
+function skip_operation_host_string(string $source, int $index, string $quote): int
+{
+    $length = strlen($source);
+
+    for ($cursor = $index + 1; $cursor < $length; $cursor++) {
+        if ($source[$cursor] === '\\') {
+            $cursor++;
+
+            continue;
+        }
+
+        if ($source[$cursor] === $quote) {
+            return $cursor;
+        }
+    }
+
+    return $length - 1;
 }
