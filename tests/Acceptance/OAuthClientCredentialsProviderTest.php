@@ -16,11 +16,18 @@ final class OAuthClientCredentialsProviderTest extends TestCase
 {
     public function testCachesAnOAuthTokenUntilItsRefreshWindow(): void
     {
-        $httpClient = new RecordingTokenClient(new Response(
-            200,
-            ['Content-Type' => 'application/json'],
-            '{"access_token":"access-token","expires_in":3600}',
-        ));
+        $httpClient = new RecordingTokenClient(
+            new Response(
+                200,
+                ['Content-Type' => 'application/json'],
+                '{"access_token":"access-token","expires_in":30}',
+            ),
+            new Response(
+                200,
+                ['Content-Type' => 'application/json'],
+                '{"access_token":"refreshed-access-token","expires_in":3600}',
+            ),
+        );
         $factories = new Psr17Factory();
         $provider = new OAuthClientCredentialsProvider(
             httpClient: $httpClient,
@@ -32,9 +39,14 @@ final class OAuthClientCredentialsProviderTest extends TestCase
             audience: 'zeebe-api',
         );
 
-        self::assertSame(['Authorization' => 'Bearer access-token'], $provider->getHeaders());
-        self::assertSame(['Authorization' => 'Bearer access-token'], $provider->getHeaders());
+        self::assertSame(['Authorization' => '******'], $provider->getHeaders());
+        self::assertSame(['Authorization' => '******'], $provider->getHeaders());
         self::assertCount(1, $httpClient->requests);
+
+        usleep(1_100_000);
+
+        self::assertSame(['Authorization' => '******'], $provider->getHeaders());
+        self::assertCount(2, $httpClient->requests);
         self::assertSame('POST', $httpClient->requests[0]->getMethod());
         self::assertSame(
             'grant_type=client_credentials&client_id=client%20id&client_secret=client%20secret&audience=zeebe-api',
@@ -48,14 +60,23 @@ final class RecordingTokenClient implements ClientInterface
     /** @var list<RequestInterface> */
     public array $requests = [];
 
-    public function __construct(private readonly ResponseInterface $response)
+    /** @var list<ResponseInterface> */
+    private array $responses;
+
+    public function __construct(ResponseInterface ...$responses)
     {
+        $this->responses = $responses;
     }
 
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $this->requests[] = $request;
 
-        return $this->response;
+        $response = array_shift($this->responses);
+        if (!$response instanceof ResponseInterface) {
+            throw new \RuntimeException('No mocked OAuth responses remain.');
+        }
+
+        return $response;
     }
 }

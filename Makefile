@@ -32,6 +32,7 @@ test:
 
 itest:
 	CAMUNDA_INTEGRATION=1 vendor/bin/phpunit --testsuite integration
+	$(MAKE) advanced-examples
 
 lint:
 	vendor/bin/php-cs-fixer fix --dry-run --diff
