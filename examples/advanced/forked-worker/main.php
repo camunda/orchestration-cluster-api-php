@@ -72,7 +72,11 @@ function run(): void
         }
 
         $result = ExampleSupport::waitForCompletion($client, $instance);
-        $handledByPid = trim((string) file_get_contents($handledByPidFile));
+        $handledByPid = file_get_contents($handledByPidFile);
+        if ($handledByPid === false) {
+            throw new \RuntimeException('Cannot read the worker PID marker.');
+        }
+        $handledByPid = trim($handledByPid);
         if ($handledByPid === '') {
             throw new \RuntimeException('The forked worker did not record a handler PID.');
         }
