@@ -1,0 +1,86 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Camunda\Orchestration\Tests\Acceptance;
+
+use Camunda\Orchestration\Api\Model\DeploymentResult;
+use Camunda\Orchestration\CamundaClient;
+use Camunda\Orchestration\Config\ConfigResolver;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
+
+final class DeploymentHelperTest extends TestCase
+{
+    /** @var list<RequestInterface> */
+    private array $requests = [];
+
+    private string $resourcePath;
+
+    protected function setUp(): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'orchestration-resource-');
+        self::assertNotFalse($path);
+        $this->resourcePath = $path . '.bpmn';
+        rename($path, $this->resourcePath);
+        file_put_contents($this->resourcePath, '<definitions id="test" />');
+    }
+
+    protected function tearDown(): void
+    {
+        if (is_file($this->resourcePath)) {
+            unlink($this->resourcePath);
+        }
+    }
+
+    public function testDeploymentHelperUsesRepeatedResourcesMultipartField(): void
+    {
+        $client = CamundaClient::fromConfiguration(
+            ConfigResolver::resolve(
+                overrides: [
+                    'CAMUNDA_AUTH_STRATEGY' => 'NONE',
+                    'CAMUNDA_TENANT_ID' => 'acme',
+                ],
+                environment: [],
+            ),
+            $this->httpClient(new Response(
+                200,
+                ['Content-Type' => 'application/json'],
+                (string) json_encode([
+                    'deploymentKey' => '2251799813685249',
+                    'tenantId' => 'acme',
+                    'deployments' => [],
+                ]),
+            )),
+        );
+
+        $deployment = $client->deployResourcesFromFiles($this->resourcePath);
+
+        self::assertInstanceOf(DeploymentResult::class, $deployment);
+        self::assertCount(1, $this->requests);
+        self::assertStringContainsString('multipart/form-data', $this->requests[0]->getHeaderLine('Content-Type'));
+
+        $body = (string) $this->requests[0]->getBody();
+        self::assertStringContainsString('name="resources"', $body);
+        self::assertStringNotContainsString('name="resources[0]"', $body);
+        self::assertStringContainsString('name="tenantId"', $body);
+        self::assertStringContainsString("\r\nacme\r\n", $body);
+    }
+
+    private function httpClient(Response $response): GuzzleClient
+    {
+        $stack = HandlerStack::create(new MockHandler([$response]));
+        $stack->push(function (callable $handler): callable {
+            return function (RequestInterface $request, array $options) use ($handler) {
+                $this->requests[] = $request;
+                return $handler($request, $options);
+            };
+        });
+
+        return new GuzzleClient(['handler' => $stack, 'http_errors' => false]);
+    }
+}
