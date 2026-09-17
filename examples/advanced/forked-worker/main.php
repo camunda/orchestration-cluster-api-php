@@ -24,6 +24,11 @@ function run(): void
     $runId = ExampleSupport::runId();
     $processId = 'php-sdk-forked-worker-' . $runId;
     $jobType = 'php-sdk-forked-job-' . $runId;
+    $parentPid = getmypid();
+    $handledByPidFile = tempnam(sys_get_temp_dir(), 'camunda-php-forked-worker-');
+    if ($handledByPidFile === false) {
+        throw new \RuntimeException('Cannot allocate a temporary PID marker file.');
+    }
     $resource = ExampleSupport::renderBpmn(__DIR__ . '/forked-worker.bpmn', [
         '__PROCESS_ID__' => $processId,
         '__JOB_TYPE__' => $jobType,
@@ -46,9 +51,16 @@ function run(): void
         $deadline = microtime(true) + 30;
         do {
             $processed = $worker->pollOnce(
-                static fn (ActivatedJobResult $job, JobActionClient $action): array => [
-                    'handledByPid' => getmypid(),
-                ],
+                static function (ActivatedJobResult $job, JobActionClient $action) use ($handledByPidFile): array {
+                    $handledByPid = (string) getmypid();
+                    if (file_put_contents($handledByPidFile, $handledByPid) === false) {
+                        throw new \RuntimeException('Cannot persist the worker PID marker.');
+                    }
+
+                    return [
+                        'handledByPid' => $handledByPid,
+                    ];
+                },
             );
             if ($processed === 0) {
                 usleep(200_000);
@@ -60,11 +72,23 @@ function run(): void
         }
 
         $result = ExampleSupport::waitForCompletion($client, $instance);
+        $handledByPid = trim((string) file_get_contents($handledByPidFile));
+        if ($handledByPid === '') {
+            throw new \RuntimeException('The forked worker did not record a handler PID.');
+        }
+        if ($handledByPid === (string) $parentPid) {
+            throw new \RuntimeException(
+                sprintf('Expected a forked worker child process, but job ran in parent PID %d.', $parentPid),
+            );
+        }
         $completed = true;
         printf("Forked worker completed process instance %s (%s).\n", $instance, $result->getState()->value);
     } finally {
         if (!$completed && $instance instanceof ProcessInstanceKey) {
             ExampleSupport::cancelIfActive($client, $instance);
+        }
+        if (is_file($handledByPidFile)) {
+            unlink($handledByPidFile);
         }
         if (is_file($resource)) {
             unlink($resource);

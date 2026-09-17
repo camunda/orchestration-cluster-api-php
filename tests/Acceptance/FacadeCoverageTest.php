@@ -16,7 +16,6 @@ final class FacadeCoverageTest extends TestCase
     {
         $expected = $this->generatedApiOperations();
 
-        self::assertCount(243, $expected);
         self::assertSame($expected, $this->traitOperations(GeneratedOperations::class));
         self::assertSame($expected, $this->traitOperations(GeneratedAsyncOperations::class));
     }

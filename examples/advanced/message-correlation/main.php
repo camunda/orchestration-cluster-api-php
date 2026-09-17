@@ -38,8 +38,12 @@ function run(): void
             ]);
 
             $messageId = 'payment-provider-event-' . $orderId;
-            publishPayment($client, $messageName, $orderId, $messageId);
-            publishPayment($client, $messageName, $orderId, $messageId);
+            if (publishPayment($client, $messageName, $orderId, $messageId)) {
+                throw new \RuntimeException("The initial payment event for $orderId was incorrectly rejected as a duplicate.");
+            }
+            if (!publishPayment($client, $messageName, $orderId, $messageId)) {
+                throw new \RuntimeException("The duplicate payment event for $orderId was incorrectly accepted.");
+            }
         }
 
         foreach ($instances as $instance) {
@@ -64,7 +68,7 @@ function publishPayment(
     string $messageName,
     string $orderId,
     string $messageId,
-): void {
+): bool {
     $request = (new MessagePublicationRequest())
         ->setName($messageName)
         ->setCorrelationKey($orderId)
@@ -78,17 +82,23 @@ function publishPayment(
         $result = $client->publishMessage($request);
     } catch (ApiException $error) {
         if ($error->getCode() === 409) {
-            return;
+            return true;
         }
 
         throw new \RuntimeException("Message publication failed for $orderId: {$error->getMessage()}", 0, $error);
     }
 
-    if ($result instanceof ProblemDetail && $result->getStatus() !== 409) {
+    if ($result instanceof ProblemDetail) {
+        if ($result->getStatus() === 409) {
+            return true;
+        }
+
         throw new \RuntimeException(
             "Message publication failed for $orderId: {$result->getDetail()}",
         );
     }
+
+    return false;
 }
 
 try {
