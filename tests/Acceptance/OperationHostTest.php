@@ -63,6 +63,24 @@ final class OperationHostTest extends TestCase
         OperationHost::variables('/v2');
     }
 
+    public function testOperationHostErrorDoesNotLeakConfiguredAddress(): void
+    {
+        $restAddress = 'https://secret-token@/v2?apiKey=secret-value';
+
+        try {
+            OperationHost::variables($restAddress);
+            self::fail('Expected configuration exception for invalid rest address.');
+        } catch (ConfigurationException $exception) {
+            self::assertSame(
+                'CAMUNDA_REST_ADDRESS must be an absolute URL with scheme and host to resolve operation-specific hosts.',
+                $exception->getMessage(),
+            );
+            self::assertStringNotContainsString($restAddress, $exception->getMessage());
+            self::assertStringNotContainsString('secret-token', $exception->getMessage());
+            self::assertStringNotContainsString('secret-value', $exception->getMessage());
+        }
+    }
+
     private function client(string $restAddress): CamundaClient
     {
         $config = ConfigResolver::resolve(

@@ -81,13 +81,37 @@ $operationHost = Configuration::getHostString(
                 array_replace($this->config->getOperationHostVariables(), $variables),
             );
 PHP;
+    $patchedNeedle = 'array_replace($this->config->getOperationHostVariables(), $variables)';
+    $hostSettingsNeedle = '$hostSettings = $this->getHostSettingsFor';
     $patched = 0;
     foreach (glob($ctx['out_dir'] . '/src/Api/*.php') ?: [] as $file) {
         $source = (string) file_get_contents($file);
-        $count = substr_count($source, $needle);
-        if ($count === 0) {
+        $expected = substr_count($source, $hostSettingsNeedle);
+        if ($expected === 0) {
             continue;
         }
+
+        $count = substr_count($source, $needle);
+        $alreadyPatched = substr_count($source, $patchedNeedle);
+
+        if ($count === 0) {
+            if ($alreadyPatched === $expected) {
+                $patched += $alreadyPatched;
+
+                continue;
+            }
+
+            throw new RuntimeException(
+                "hook 0125: expected to patch $expected operation-specific host call(s) in $file, found none",
+            );
+        }
+
+        if ($count !== $expected || $alreadyPatched !== 0) {
+            throw new RuntimeException(
+                "hook 0125: expected $expected unpatched operation-specific host call(s) in $file, found $count unpatched and $alreadyPatched patched",
+            );
+        }
+
         $source = str_replace($needle, $replacement, $source);
         if (file_put_contents($file, $source) === false) {
             throw new RuntimeException("hook 0125: cannot write $file");
