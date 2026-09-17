@@ -85,10 +85,10 @@ final class ClusterApi
 {
     public function request(): void
     {
-        $hostSettings = $this->getHostSettingsForstatus();
-        $operationHost = Configuration::getHostString(
-            $hostSettings,
-            $hostIndex,
+        $serverSettings = $this->getHostSettingsForstatus();
+        $resolvedHost = Configuration::getHostString(
+            $serverSettings,
+            $hostSelection,
             $variables,
         );
     }
@@ -105,10 +105,10 @@ final class ClusterApi
 {
     public function request(): void
     {
-        $hostSettings = $this->getHostSettingsForstatus();
-        $operationHost = Configuration::getHostString(
-            $hostSettings,
-            $hostIndex,
+        $serverSettings = $this->getHostSettingsForstatus();
+        $resolvedHost = Configuration::getHostString(
+            $serverSettings,
+            $hostSelection,
             array_merge([], $variables),
         );
     }
