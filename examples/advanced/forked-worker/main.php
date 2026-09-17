@@ -54,17 +54,16 @@ function run(): void
         $deadline = microtime(true) + 30;
         do {
             $processed = $worker->pollOnce(
-                static function (ActivatedJobResult $_job, JobActionClient $action) use ($handledByPidFile, $parentPid, $runId): array {
+                static function (ActivatedJobResult $_job, JobActionClient $_action) use ($handledByPidFile, $parentPid, $runId): array {
                     $handledByPid = (string) getmypid();
-                    $action->complete([
-                        'handledByPid' => $handledByPid,
-                    ]);
                     $marker = ForkedWorkerSupport::encodePidMarker($handledByPid, $parentPid, $runId);
                     if (file_put_contents($handledByPidFile, $marker) === false) {
                         throw new \RuntimeException('Cannot persist the worker PID marker.');
                     }
 
-                    return [];
+                    return [
+                        'handledByPid' => $handledByPid,
+                    ];
                 },
             );
             if ($processed === 0) {
