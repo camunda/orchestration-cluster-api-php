@@ -325,15 +325,25 @@ function is_operation_host_call(string $source, string $firstArgument, int $call
 function find_operation_host_assignment(string $source, string $variable): ?string
 {
     $tokens = token_get_all('<?php ' . $source);
-    $lastAssignment = null;
+    $assignments = [];
     $count = count($tokens);
+    $scopeDepth = 0;
 
     for ($index = 0; $index < $count; $index++) {
         $token = $tokens[$index];
+        if (!is_array($token)) {
+            if ($token === '{') {
+                $scopeDepth++;
+            } elseif ($token === '}') {
+                $scopeDepth--;
+            }
+        }
+
         if (!is_array($token) || $token[0] !== T_VARIABLE || $token[1] !== $variable) {
             continue;
         }
 
+        $assignmentScope = $scopeDepth;
         $next = $index + 1;
         while (
             $next < $count
@@ -349,9 +359,18 @@ function find_operation_host_assignment(string $source, string $variable): ?stri
 
         $expression = '';
         $depth = 0;
+        $assignmentEnd = null;
 
         for ($cursor = $next + 1; $cursor < $count; $cursor++) {
             $part = is_array($tokens[$cursor]) ? $tokens[$cursor][1] : $tokens[$cursor];
+            if (!is_array($tokens[$cursor])) {
+                if ($part === '{') {
+                    $scopeDepth++;
+                } elseif ($part === '}') {
+                    $scopeDepth--;
+                }
+            }
+
             if ($part === '(' || $part === '[' || $part === '{') {
                 $depth++;
                 $expression .= $part;
@@ -367,7 +386,11 @@ function find_operation_host_assignment(string $source, string $variable): ?stri
             }
 
             if ($part === ';' && $depth === 0) {
-                $lastAssignment = trim($expression);
+                $assignments[] = [
+                    'depth' => $assignmentScope,
+                    'expression' => trim($expression),
+                ];
+                $assignmentEnd = $cursor;
 
                 break;
             }
@@ -375,8 +398,16 @@ function find_operation_host_assignment(string $source, string $variable): ?stri
             $expression .= $part;
         }
 
-        $index = $next;
+        if (is_int($assignmentEnd)) {
+            $index = $assignmentEnd;
+        }
     }
 
-    return $lastAssignment;
+    for ($index = count($assignments) - 1; $index >= 0; $index--) {
+        if ($assignments[$index]['depth'] === $scopeDepth) {
+            return $assignments[$index]['expression'];
+        }
+    }
+
+    return null;
 }
