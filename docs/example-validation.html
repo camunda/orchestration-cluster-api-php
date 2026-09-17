@@ -1,0 +1,2948 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PHP SDK live example showcase</title>
+  <style>
+    :root { --ink:#ebf2ff; --muted:#a8b7d2; --bg:#080d18; --panel:#101a2d; --line:#2a3b5c; --aqua:#42ddc1; --blue:#8bb7ff; --warn:#f0cd72; --fail:#ff98ae; }
+    * { box-sizing:border-box; } body { margin:0; color:var(--ink); background:radial-gradient(circle at 15% 0,#244b79 0,transparent 32rem),radial-gradient(circle at 86% 8%,#3d285f 0,transparent 30rem),var(--bg); font:16px/1.55 Inter,ui-sans-serif,system-ui,sans-serif; }
+    code,pre { font-family:"SFMono-Regular",Consolas,monospace; } a { color:var(--aqua); } .wrap { width:min(1180px,calc(100% - 2rem)); margin:auto; } .hero { padding:5rem 0 2rem; } .eyebrow { color:var(--aqua); font:700 .75rem/1 monospace; letter-spacing:.13em; text-transform:uppercase; } h1 { max-width:800px; margin:.7rem 0; font-size:clamp(2.8rem,7vw,5.5rem); line-height:.92; letter-spacing:-.06em; } h2,h3 { line-height:1.15; } .hero p,.scenario-card p,.scenario-detail header p,.pending { color:var(--muted); } .run { margin-top:1.5rem; padding:1rem 1.2rem; border:1px solid var(--line); border-radius:12px; background:#0e1728; } .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; } .scenario-card,.scenario-detail { border:1px solid var(--line); border-radius:16px; background:#101a2ddd; box-shadow:0 20px 60px #0005; } .scenario-card { position:relative; padding:1.4rem; overflow:hidden; } .ordinal { float:right; color:#b8a2ff; font:800 1rem monospace; } .scenario-card h3 { margin:0; } .badges,.metrics { display:flex; flex-wrap:wrap; gap:.45rem; } .badges { margin:1rem 0; } .badges span,.status { display:inline-block; border:1px solid #405675; border-radius:999px; padding:.18rem .55rem; color:#c6d8f5; font-size:.74rem; } .status.pass { border-color:#277255; color:#8de9b4; } .status.partial,.status.expected-constraint { border-color:#796326; color:var(--warn); } .status.fail { border-color:#8a4055; color:var(--fail); } .status.not-run,.status.unknown { color:var(--muted); } .scenario-card code { color:var(--aqua); font-size:.76rem; } .toolbar { display:flex; justify-content:space-between; gap:1rem; align-items:end; margin:2.5rem 0 1rem; } input { width:min(380px,100%); padding:.7rem .9rem; border:1px solid var(--line); border-radius:9px; color:var(--ink); background:#0a1323; font:inherit; } .scenario-detail { margin:2rem 0; padding:clamp(1rem,3vw,2rem); } .scenario-detail header code { display:inline-block; margin-top:.8rem; color:var(--aqua); font-size:.8rem; } .metrics { margin:1.2rem 0; padding:1rem 0; border-block:1px solid var(--line); color:var(--muted); } .metrics b { color:var(--blue); font-size:1.3rem; } .evidence { overflow:auto; margin:1.25rem 0; border:1px solid var(--line); border-radius:10px; background:#0b1423; } .evidence h3,.evidence > p { margin:.8rem 1rem; } table { width:100%; border-collapse:collapse; font-size:.78rem; } th,td { padding:.7rem .8rem; border-top:1px solid var(--line); text-align:left; vertical-align:top; } th { color:var(--muted); } td:last-child { color:var(--muted); } .files { display:flex; flex-wrap:wrap; gap:.45rem; padding:0; list-style:none; } .files code { padding:.2rem .45rem; border:1px solid var(--line); border-radius:6px; color:#cddbf3; font-size:.75rem; } .snippet-list { display:grid; gap:.65rem; } .snippet { overflow:hidden; border:1px solid var(--line); border-radius:10px; background:#152139; } .snippet summary { display:flex; justify-content:space-between; gap:1rem; padding:.85rem 1rem; cursor:pointer; } .snippet summary span { display:grid; } .snippet small { color:var(--muted); font:.75rem monospace; } .snippet em { color:var(--aqua); font-size:.75rem; font-style:normal; } pre { overflow:auto; margin:0; padding:1rem; border-top:1px solid var(--line); background:#070c15; font-size:.78rem; } .snippet a { display:inline-block; padding:.6rem 1rem; font-size:.78rem; } footer { padding:2rem 0 4rem; color:var(--muted); font-size:.8rem; } .hidden { display:none; } @media (max-width:700px) { .grid { grid-template-columns:1fr; } .toolbar { display:grid; } }
+  </style>
+</head>
+<body>
+  <header class="wrap hero"><span class="eyebrow">Camunda Orchestration Cluster API / PHP</span><h1>Live example<br>showcase.</h1><p>Every source-backed snippet is indexed below and assigned to one of six live cluster scenarios. Outcomes are captured from the running cluster rather than synthesized for CI.</p><div class="run"><b>Latest run:</b> Recorded against http://localhost:8080/v2 (Camunda 8.10.0-alpha5).<br><b>Snippet validation:</b> PASS - All source-backed snippets passed syntax and PHPStan validation; the gallery maps them to these six live proofs.</div></header>
+  <main class="wrap"><div class="toolbar"><div><span class="eyebrow">Six scenarios</span><h2>Proof, source, and evidence together.</h2></div><input id="filter" type="search" placeholder="Filter snippet or source file"></div><section class="grid">  <article class="scenario-card">
+    <span class="ordinal">01</span>
+    <h3>Bootstrap and discovery</h3>
+    <p>Client construction, semantic values, and platform discovery calls.</p>
+    <div class="badges"><span class="status pass">PASS</span><span>63 snippets</span><span>955 ms</span></div>
+    <code>make example-showcase SCENARIO=bootstrap-and-discovery</code>
+  </article>  <article class="scenario-card">
+    <span class="ordinal">02</span>
+    <h3>Deployment and lifecycle</h3>
+    <p>Resource deployment, decisions, process definitions, instances, and batch operations.</p>
+    <div class="badges"><span class="status pass">PASS</span><span>52 snippets</span><span>28 ms</span></div>
+    <code>make example-showcase SCENARIO=deployment-and-lifecycle</code>
+  </article>  <article class="scenario-card">
+    <span class="ordinal">03</span>
+    <h3>Jobs and workers</h3>
+    <p>Job activation, completion, errors, retries, worker loops, and task listeners.</p>
+    <div class="badges"><span class="status pass">PASS</span><span>18 snippets</span><span>52141 ms</span></div>
+    <code>make example-showcase SCENARIO=jobs-and-workers</code>
+  </article>  <article class="scenario-card">
+    <span class="ordinal">04</span>
+    <h3>Runtime interaction</h3>
+    <p>Ad-hoc execution, elements, expressions, incidents, user tasks, and variables.</p>
+    <div class="badges"><span class="status pass">PASS</span><span>25 snippets</span><span>2169 ms</span></div>
+    <code>make example-showcase SCENARIO=runtime-interaction</code>
+  </article>  <article class="scenario-card">
+    <span class="ordinal">05</span>
+    <h3>Message correlation</h3>
+    <p>Message subscription queries, correlated messages, publication, and signals.</p>
+    <div class="badges"><span class="status pass">PASS</span><span>5 snippets</span><span>563 ms</span></div>
+    <code>make example-showcase SCENARIO=message-correlation</code>
+  </article>  <article class="scenario-card">
+    <span class="ordinal">06</span>
+    <h3>Management and operations</h3>
+    <p>Authorization, identity, tenant, backup, recovery, export, clock, and system APIs.</p>
+    <div class="badges"><span class="status pass">PASS</span><span>106 snippets</span><span>425 ms</span></div>
+    <code>make example-showcase SCENARIO=management-and-operations</code>
+  </article></section>  <section id="bootstrap-and-discovery" class="scenario-detail">
+    <header><span class="eyebrow">Scenario 01</span><h2>Bootstrap and discovery</h2><p>Client construction, semantic values, and platform discovery calls.</p><code>make example-showcase SCENARIO=bootstrap-and-discovery</code></header>
+    <div class="metrics"><span><b>63</b> snippets</span><span><b>12</b> source files</span><span><b>955 ms</b> duration</span></div>
+    <section class="evidence"><h3>Live evidence</h3><p>1 PASS, 0 expected constraints, 0 failures.</p><table><thead><tr><th>Callable</th><th>Outcome</th><th>Time</th><th>Evidence</th></tr></thead><tbody><tr><td><code>sdk-test-drive</code><br><small>examples/advanced/sdk-test-drive/main.php</small></td><td><span class="status pass">PASS</span></td><td>955 ms</td><td>Connected to Camunda 8.10.0-alpha5 with 1 broker(s). Process instance 2251799813707027 reached COMPLETED.</td></tr></tbody></table></section>
+    <h3>Mapped source files</h3><ul class="files"><li><code>examples/admin.php</code></li><li><code>examples/agent_definition.php</code></li><li><code>examples/agent_instance.php</code></li><li><code>examples/audit_log.php</code></li><li><code>examples/client.php</code></li><li><code>examples/cluster.php</code></li><li><code>examples/cluster_variable.php</code></li><li><code>examples/document.php</code></li><li><code>examples/readme.php</code></li><li><code>examples/resource.php</code></li><li><code>examples/secret.php</code></li><li><code>examples/semantic_types.php</code></li></ul>
+    <h3>Snippet gallery</h3><div class="snippet-list">  <details class="snippet" data-search="GetAuthentication examples/admin.php">
+    <summary><span><strong>GetAuthentication</strong><small>examples/admin.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get current user.
+ */
+function get_authentication(CamundaClient $client): void
+{
+    $client-&gt;getAuthentication();
+}</code></pre>
+    <a href="../examples/admin.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetLicense examples/admin.php">
+    <summary><span><strong>GetLicense</strong><small>examples/admin.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get license status.
+ */
+function get_license(CamundaClient $client): void
+{
+    $client-&gt;getLicense();
+}</code></pre>
+    <a href="../examples/admin.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetAgentDefinition examples/agent_definition.php">
+    <summary><span><strong>GetAgentDefinition</strong><small>examples/agent_definition.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get agent definition.
+ */
+function get_agent_definition(CamundaClient $client, string $agentDefinitionKey): void
+{
+    $client-&gt;getAgentDefinition($agentDefinitionKey);
+}</code></pre>
+    <a href="../examples/agent_definition.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchAgentDefinitions examples/agent_definition.php">
+    <summary><span><strong>SearchAgentDefinitions</strong><small>examples/agent_definition.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search agent definitions.
+ */
+function search_agent_definitions(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\AgentDefinitionSearchQuery $agentDefinitionSearchQuery = null): void
+{
+    $client-&gt;searchAgentDefinitions($agentDefinitionSearchQuery);
+}</code></pre>
+    <a href="../examples/agent_definition.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateAgentInstance examples/agent_instance.php">
+    <summary><span><strong>CreateAgentInstance</strong><small>examples/agent_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Create agent instance.
+ */
+function create_agent_instance(CamundaClient $client, \Camunda\Orchestration\Api\Model\AgentInstanceCreationRequest $agentInstanceCreationRequest): void
+{
+    $client-&gt;createAgentInstance($agentInstanceCreationRequest);
+}</code></pre>
+    <a href="../examples/agent_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetAgentInstance examples/agent_instance.php">
+    <summary><span><strong>GetAgentInstance</strong><small>examples/agent_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get agent instance.
+ */
+function get_agent_instance(CamundaClient $client, string $agentInstanceKey): void
+{
+    $client-&gt;getAgentInstance($agentInstanceKey);
+}</code></pre>
+    <a href="../examples/agent_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchAgentInstanceHistory examples/agent_instance.php">
+    <summary><span><strong>SearchAgentInstanceHistory</strong><small>examples/agent_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search agent instance history.
+ */
+function search_agent_instance_history(CamundaClient $client, string $agentInstanceKey, ?\Camunda\Orchestration\Api\Model\AgentInstanceHistorySearchQuery $agentInstanceHistorySearchQuery = null): void
+{
+    $client-&gt;searchAgentInstanceHistory($agentInstanceKey, $agentInstanceHistorySearchQuery);
+}</code></pre>
+    <a href="../examples/agent_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchAgentInstances examples/agent_instance.php">
+    <summary><span><strong>SearchAgentInstances</strong><small>examples/agent_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search agent instances.
+ */
+function search_agent_instances(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\AgentInstanceSearchQuery $agentInstanceSearchQuery = null): void
+{
+    $client-&gt;searchAgentInstances($agentInstanceSearchQuery);
+}</code></pre>
+    <a href="../examples/agent_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="UpdateAgentInstance examples/agent_instance.php">
+    <summary><span><strong>UpdateAgentInstance</strong><small>examples/agent_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update agent instance.
+ */
+function update_agent_instance(CamundaClient $client, string $agentInstanceKey, \Camunda\Orchestration\Api\Model\AgentInstanceUpdateRequest $agentInstanceUpdateRequest): void
+{
+    $client-&gt;updateAgentInstance($agentInstanceKey, $agentInstanceUpdateRequest);
+}</code></pre>
+    <a href="../examples/agent_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetAuditLog examples/audit_log.php">
+    <summary><span><strong>GetAuditLog</strong><small>examples/audit_log.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get audit log.
+ */
+function get_audit_log(CamundaClient $client, string $auditLogKey): void
+{
+    $client-&gt;getAuditLog($auditLogKey);
+}</code></pre>
+    <a href="../examples/audit_log.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetFormByKey examples/audit_log.php">
+    <summary><span><strong>GetFormByKey</strong><small>examples/audit_log.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get form by key.
+ */
+function get_form_by_key(CamundaClient $client, string $formKey): void
+{
+    $client-&gt;getFormByKey($formKey);
+}</code></pre>
+    <a href="../examples/audit_log.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchAuditLogs examples/audit_log.php">
+    <summary><span><strong>SearchAuditLogs</strong><small>examples/audit_log.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search audit logs.
+ */
+function search_audit_logs(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\AuditLogSearchQueryRequest $auditLogSearchQueryRequest = null): void
+{
+    $client-&gt;searchAuditLogs($auditLogSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/audit_log.php">Open source</a>
+  </details>  <details class="snippet" data-search="AsyncClient examples/client.php">
+    <summary><span><strong>AsyncClient</strong><small>examples/client.php</small></span><em>source-backed</em></summary>
+    <pre><code>function async_client(): CamundaAsyncClient
+{
+    return CamundaAsyncClient::fromEnvironment();
+}</code></pre>
+    <a href="../examples/client.php">Open source</a>
+  </details>  <details class="snippet" data-search="BasicAuthClient examples/client.php">
+    <summary><span><strong>BasicAuthClient</strong><small>examples/client.php</small></span><em>source-backed</em></summary>
+    <pre><code>function basic_auth_client(): CamundaClient
+{
+    return CamundaClient::fromEnvironment([
+        &#039;CAMUNDA_REST_ADDRESS&#039; =&gt; &#039;http://localhost:8080&#039;,
+        &#039;CAMUNDA_AUTH_STRATEGY&#039; =&gt; &#039;BASIC&#039;,
+        &#039;CAMUNDA_BASIC_AUTH_USERNAME&#039; =&gt; &#039;demo&#039;,
+        &#039;CAMUNDA_BASIC_AUTH_PASSWORD&#039; =&gt; &#039;demo&#039;,
+    ]);
+}</code></pre>
+    <a href="../examples/client.php">Open source</a>
+  </details>  <details class="snippet" data-search="OAuthClient examples/client.php">
+    <summary><span><strong>OAuthClient</strong><small>examples/client.php</small></span><em>source-backed</em></summary>
+    <pre><code>function oauth_client(): CamundaClient
+{
+    $config = new CamundaConfiguration(
+        restAddress: &#039;https://my-cluster.example.com/v2&#039;,
+        authStrategy: &#039;OAUTH&#039;,
+        clientId: &#039;my-client-id&#039;,
+        clientSecret: &#039;my-client-secret&#039;,
+        tokenAudience: &#039;zeebe.camunda.io&#039;,
+    );
+
+    return CamundaClient::fromConfiguration($config);
+}</code></pre>
+    <a href="../examples/client.php">Open source</a>
+  </details>  <details class="snippet" data-search="SelfManagedOAuth examples/client.php">
+    <summary><span><strong>SelfManagedOAuth</strong><small>examples/client.php</small></span><em>source-backed</em></summary>
+    <pre><code>function self_managed_oauth_client(): CamundaClient
+{
+    return CamundaClient::fromEnvironment([
+        &#039;CAMUNDA_REST_ADDRESS&#039; =&gt; &#039;http://localhost:8080&#039;,
+        &#039;CAMUNDA_AUTH_STRATEGY&#039; =&gt; &#039;OAUTH&#039;,
+        &#039;CAMUNDA_CLIENT_ID&#039; =&gt; &#039;zeebe&#039;,
+        &#039;CAMUNDA_CLIENT_SECRET&#039; =&gt; &#039;secret&#039;,
+        &#039;CAMUNDA_OAUTH_URL&#039; =&gt; &#039;http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token&#039;,
+        &#039;CAMUNDA_TOKEN_AUDIENCE&#039; =&gt; &#039;zeebe-api&#039;,
+    ]);
+}</code></pre>
+    <a href="../examples/client.php">Open source</a>
+  </details>  <details class="snippet" data-search="ZeroConfigClient examples/client.php">
+    <summary><span><strong>ZeroConfigClient</strong><small>examples/client.php</small></span><em>source-backed</em></summary>
+    <pre><code>function zero_config_client(): CamundaClient
+{
+    // Reads CAMUNDA_REST_ADDRESS / ZEEBE_REST_ADDRESS and auto-detects the auth
+    // strategy (NONE / BASIC / OAUTH) from the environment.
+    return CamundaClient::fromEnvironment();
+}</code></pre>
+    <a href="../examples/client.php">Open source</a>
+  </details>  <details class="snippet" data-search="CancelClusterRebalance examples/cluster.php">
+    <summary><span><strong>CancelClusterRebalance</strong><small>examples/cluster.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Cancel a cluster rebalance.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function cancel_cluster_rebalance(CamundaClient $client, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;cancelClusterRebalance($hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/cluster.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetClusterRebalance examples/cluster.php">
+    <summary><span><strong>GetClusterRebalance</strong><small>examples/cluster.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get cluster rebalance status.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function get_cluster_rebalance(CamundaClient $client, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;getClusterRebalance($hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/cluster.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetClusterStatus examples/cluster.php">
+    <summary><span><strong>GetClusterStatus</strong><small>examples/cluster.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get the status of the whole cluster.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function get_cluster_status(CamundaClient $client, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;getClusterStatus($hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/cluster.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetClusterTopology examples/cluster.php">
+    <summary><span><strong>GetClusterTopology</strong><small>examples/cluster.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get the topology of the whole cluster.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function get_cluster_topology(CamundaClient $client, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;getClusterTopology($hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/cluster.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetStatus examples/cluster.php">
+    <summary><span><strong>GetStatus</strong><small>examples/cluster.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get cluster status.
+ */
+function get_status(CamundaClient $client): void
+{
+    $client-&gt;getStatus();
+}</code></pre>
+    <a href="../examples/cluster.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetTopology examples/cluster.php">
+    <summary><span><strong>GetTopology</strong><small>examples/cluster.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get cluster topology.
+ */
+function get_topology(CamundaClient $client): void
+{
+    $client-&gt;getTopology();
+}</code></pre>
+    <a href="../examples/cluster.php">Open source</a>
+  </details>  <details class="snippet" data-search="TriggerClusterRebalance examples/cluster.php">
+    <summary><span><strong>TriggerClusterRebalance</strong><small>examples/cluster.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Trigger a cluster rebalance.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function trigger_cluster_rebalance(CamundaClient $client, ?bool $dryRun = false, ?\Camunda\Orchestration\Api\Model\ClusterRebalanceRequest $clusterRebalanceRequest = null, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;triggerClusterRebalance($dryRun, $clusterRebalanceRequest, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/cluster.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateGlobalClusterVariable examples/cluster_variable.php">
+    <summary><span><strong>CreateGlobalClusterVariable</strong><small>examples/cluster_variable.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Create a global-scoped cluster variable.
+ */
+function create_global_cluster_variable(CamundaClient $client, \Camunda\Orchestration\Api\Model\CreateClusterVariableRequest $createClusterVariableRequest): void
+{
+    $client-&gt;createGlobalClusterVariable($createClusterVariableRequest);
+}</code></pre>
+    <a href="../examples/cluster_variable.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateTenantClusterVariable examples/cluster_variable.php">
+    <summary><span><strong>CreateTenantClusterVariable</strong><small>examples/cluster_variable.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Create a tenant-scoped cluster variable.
+ */
+function create_tenant_cluster_variable(CamundaClient $client, string $tenantId, \Camunda\Orchestration\Api\Model\CreateClusterVariableRequest $createClusterVariableRequest): void
+{
+    $client-&gt;createTenantClusterVariable($tenantId, $createClusterVariableRequest);
+}</code></pre>
+    <a href="../examples/cluster_variable.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteGlobalClusterVariable examples/cluster_variable.php">
+    <summary><span><strong>DeleteGlobalClusterVariable</strong><small>examples/cluster_variable.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete a global-scoped cluster variable.
+ */
+function delete_global_cluster_variable(CamundaClient $client, string $name): void
+{
+    $client-&gt;deleteGlobalClusterVariable($name);
+}</code></pre>
+    <a href="../examples/cluster_variable.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteTenantClusterVariable examples/cluster_variable.php">
+    <summary><span><strong>DeleteTenantClusterVariable</strong><small>examples/cluster_variable.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete a tenant-scoped cluster variable.
+ */
+function delete_tenant_cluster_variable(CamundaClient $client, string $tenantId, string $name): void
+{
+    $client-&gt;deleteTenantClusterVariable($tenantId, $name);
+}</code></pre>
+    <a href="../examples/cluster_variable.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetGlobalClusterVariable examples/cluster_variable.php">
+    <summary><span><strong>GetGlobalClusterVariable</strong><small>examples/cluster_variable.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get a global-scoped cluster variable.
+ */
+function get_global_cluster_variable(CamundaClient $client, string $name): void
+{
+    $client-&gt;getGlobalClusterVariable($name);
+}</code></pre>
+    <a href="../examples/cluster_variable.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetTenantClusterVariable examples/cluster_variable.php">
+    <summary><span><strong>GetTenantClusterVariable</strong><small>examples/cluster_variable.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get a tenant-scoped cluster variable.
+ */
+function get_tenant_cluster_variable(CamundaClient $client, string $tenantId, string $name): void
+{
+    $client-&gt;getTenantClusterVariable($tenantId, $name);
+}</code></pre>
+    <a href="../examples/cluster_variable.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchClusterVariables examples/cluster_variable.php">
+    <summary><span><strong>SearchClusterVariables</strong><small>examples/cluster_variable.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * searchClusterVariables.
+ */
+function search_cluster_variables(CamundaClient $client, ?bool $truncateValues = null, ?\Camunda\Orchestration\Api\Model\ClusterVariableSearchQueryRequest $clusterVariableSearchQueryRequest = null): void
+{
+    $client-&gt;searchClusterVariables($truncateValues, $clusterVariableSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/cluster_variable.php">Open source</a>
+  </details>  <details class="snippet" data-search="UpdateGlobalClusterVariable examples/cluster_variable.php">
+    <summary><span><strong>UpdateGlobalClusterVariable</strong><small>examples/cluster_variable.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update a global-scoped cluster variable.
+ */
+function update_global_cluster_variable(CamundaClient $client, string $name, \Camunda\Orchestration\Api\Model\UpdateClusterVariableRequest $updateClusterVariableRequest): void
+{
+    $client-&gt;updateGlobalClusterVariable($name, $updateClusterVariableRequest);
+}</code></pre>
+    <a href="../examples/cluster_variable.php">Open source</a>
+  </details>  <details class="snippet" data-search="UpdateTenantClusterVariable examples/cluster_variable.php">
+    <summary><span><strong>UpdateTenantClusterVariable</strong><small>examples/cluster_variable.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update a tenant-scoped cluster variable.
+ */
+function update_tenant_cluster_variable(CamundaClient $client, string $tenantId, string $name, \Camunda\Orchestration\Api\Model\UpdateClusterVariableRequest $updateClusterVariableRequest): void
+{
+    $client-&gt;updateTenantClusterVariable($tenantId, $name, $updateClusterVariableRequest);
+}</code></pre>
+    <a href="../examples/cluster_variable.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateDocument examples/document.php">
+    <summary><span><strong>CreateDocument</strong><small>examples/document.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Upload document.
+ */
+function create_document(CamundaClient $client, \SplFileObject $file, ?string $storeId = null, ?DocumentId $documentId = null, ?\Camunda\Orchestration\Api\Model\DocumentMetadata $metadata = null): void
+{
+    $client-&gt;createDocument($file, $storeId, $documentId?-&gt;value(), $metadata);
+}</code></pre>
+    <a href="../examples/document.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateDocumentLink examples/document.php">
+    <summary><span><strong>CreateDocumentLink</strong><small>examples/document.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Create document link.
+ */
+function create_document_link(CamundaClient $client, DocumentId $documentId, ?string $storeId = null, ?string $contentHash = null, ?\Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest = null): void
+{
+    $client-&gt;createDocumentLink((string) $documentId, $storeId, $contentHash, $documentLinkRequest);
+}</code></pre>
+    <a href="../examples/document.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateDocuments examples/document.php">
+    <summary><span><strong>CreateDocuments</strong><small>examples/document.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Upload multiple documents.
+ *
+ * @param list&lt;\SplFileObject&gt; $files
+ * @param list&lt;\Camunda\Orchestration\Api\Model\DocumentMetadata&gt;|null $metadataList
+ */
+function create_documents(CamundaClient $client, array $files, ?string $storeId = null, ?array $metadataList = null): void
+{
+    $client-&gt;createDocuments($files, $storeId, $metadataList);
+}</code></pre>
+    <a href="../examples/document.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteDocument examples/document.php">
+    <summary><span><strong>DeleteDocument</strong><small>examples/document.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete document.
+ */
+function delete_document(CamundaClient $client, DocumentId $documentId, ?string $storeId = null): void
+{
+    $client-&gt;deleteDocument((string) $documentId, $storeId);
+}</code></pre>
+    <a href="../examples/document.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetDocument examples/document.php">
+    <summary><span><strong>GetDocument</strong><small>examples/document.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Download document.
+ */
+function get_document(CamundaClient $client, DocumentId $documentId, ?string $storeId = null, ?string $contentHash = null): void
+{
+    $client-&gt;getDocument((string) $documentId, $storeId, $contentHash);
+}</code></pre>
+    <a href="../examples/document.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeApiAccessor examples/readme.php">
+    <summary><span><strong>ReadmeApiAccessor</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function readme_api_accessor(): void
+{
+    $client = CamundaClient::fromEnvironment();
+    $instruction = new ProcessInstanceCreationInstructionById([
+        &#039;processDefinitionId&#039; =&gt; &#039;order-process&#039;,
+    ]);
+
+    $processInstances = $client-&gt;api(ProcessInstanceApi::class);
+    $result = $processInstances-&gt;createProcessInstance($instruction);
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeAsyncClient examples/readme.php">
+    <summary><span><strong>ReadmeAsyncClient</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function readme_async_client(): void
+{
+    $client = CamundaAsyncClient::fromEnvironment();
+
+    $client-&gt;deployResourcesFromFilesAsync(__DIR__ . &#039;/resources/order-process.bpmn&#039;)
+        -&gt;then(static function ($result): void {
+            // handle the DeploymentResult once the request resolves
+        })
+        -&gt;wait();
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeBasicAuth examples/readme.php">
+    <summary><span><strong>ReadmeBasicAuth</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function readme_basic_auth(): void
+{
+    $client = CamundaClient::fromEnvironment([
+        &#039;CAMUNDA_AUTH_STRATEGY&#039; =&gt; &#039;BASIC&#039;,
+        &#039;CAMUNDA_BASIC_AUTH_USERNAME&#039; =&gt; &#039;demo&#039;,
+        &#039;CAMUNDA_BASIC_AUTH_PASSWORD&#039; =&gt; &#039;demo&#039;,
+    ]);
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeCustomHttpClient examples/readme.php">
+    <summary><span><strong>ReadmeCustomHttpClient</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function custom_http_client(CamundaConfiguration $configuration): CamundaClient
+{
+    // Supplying a Guzzle client replaces the SDK-built stack. Add the SDK auth
+    // middleware and any proxy, tracing, or mTLS options your application needs.
+    $stack = HandlerStack::create();
+    $stack-&gt;push(new AuthMiddleware(AuthProviderFactory::fromConfiguration($configuration)), &#039;camunda_auth&#039;);
+
+    return CamundaClient::fromConfiguration(
+        $configuration,
+        new GuzzleClient([&#039;handler&#039; =&gt; $stack, &#039;http_errors&#039; =&gt; false]),
+    );
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeDeployResources examples/readme.php">
+    <summary><span><strong>ReadmeDeployResources</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function readme_deploy_resources(): void
+{
+    $client = CamundaClient::fromEnvironment();
+
+    $result = $client-&gt;deployResourcesFromFiles(
+        __DIR__ . &#039;/resources/order-process.bpmn&#039;,
+        __DIR__ . &#039;/resources/pricing.dmn&#039;,
+    );
+    // $result is a DeploymentResult (or ProblemDetail on a handled error).
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeEnvFileClient examples/readme.php">
+    <summary><span><strong>ReadmeEnvFileClient</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function env_file_client(): CamundaClient
+{
+    // Set CAMUNDA_LOAD_ENVFILE=true (or a path) before starting PHP. Real
+    // environment variables and explicit overrides still take precedence.
+    return CamundaClient::fromEnvironment();
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeFlatFacade examples/readme.php">
+    <summary><span><strong>ReadmeFlatFacade</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function readme_flat_facade(): void
+{
+    $client = CamundaClient::fromEnvironment();
+    $instruction = new ProcessInstanceCreationInstructionById([
+        &#039;processDefinitionId&#039; =&gt; &#039;order-process&#039;,
+    ]);
+
+    $topology = $client-&gt;getTopology();
+    $result = $client-&gt;createProcessInstance($instruction);
+
+    $async = CamundaAsyncClient::fromEnvironment();
+    $async-&gt;getTopology()
+        -&gt;then(static function ($asyncTopology): void {
+            // handle the asynchronous topology response
+        })
+        -&gt;wait();
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeJobWorker examples/readme.php">
+    <summary><span><strong>ReadmeJobWorker</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function readme_job_worker(): void
+{
+    $client = CamundaClient::fromEnvironment();
+
+    $worker = $client-&gt;createJobWorker(new JobWorkerOptions(
+        type: &#039;payment-processing&#039;,
+        maxJobs: 5,
+        timeoutMs: 30_000,
+    ));
+
+    $worker-&gt;run(function (ActivatedJobResult $job, JobActionClient $action): array {
+        // ... perform the work ...
+        return [&#039;status&#039; =&gt; &#039;paid&#039;];
+    });
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeMtlsClient examples/readme.php">
+    <summary><span><strong>ReadmeMtlsClient</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function mtls_client(): CamundaClient
+{
+    return CamundaClient::fromConfiguration(new CamundaConfiguration(
+        restAddress: &#039;https://my-cluster.example.com/v2&#039;,
+        authStrategy: &#039;OAUTH&#039;,
+        clientId: &#039;my-client-id&#039;,
+        clientSecret: &#039;my-client-secret&#039;,
+        mtlsCertPath: &#039;/run/secrets/client.crt&#039;,
+        mtlsKeyPath: &#039;/run/secrets/client.key&#039;,
+        mtlsCaPath: &#039;/run/secrets/cluster-ca.pem&#039;,
+    ));
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeObjectJobHandler examples/readme.php">
+    <summary><span><strong>ReadmeObjectJobHandler</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>final class PaymentJobHandler implements JobHandler
+{
+    public function handle(ActivatedJobResult $job, JobActionClient $action): ?array
+    {
+        $variables = $job-&gt;getVariables();
+        if (!isset($variables[&#039;paymentId&#039;])) {
+            $action-&gt;error(&#039;MISSING_PAYMENT_ID&#039;, &#039;The payment job has no payment id.&#039;);
+            return null;
+        }
+
+        return [&#039;paymentStatus&#039; =&gt; &#039;approved&#039;];
+    }
+}
+
+function object_job_handler(CamundaClient $client): void
+{
+    $worker = $client-&gt;createJobWorker(new JobWorkerOptions(type: &#039;process-payment&#039;));
+    $worker-&gt;run(new PaymentJobHandler());
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeParallelAsyncReads examples/readme.php">
+    <summary><span><strong>ReadmeParallelAsyncReads</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function parallel_async_reads(CamundaAsyncClient $client): void
+{
+    // Requests are issued before either promise is awaited.
+    $topologyPromise = $client-&gt;getTopology();
+    $definitionsPromise = $client-&gt;searchProcessDefinitions();
+
+    $topology = $topologyPromise-&gt;wait();
+    $definitions = $definitionsPromise-&gt;wait();
+
+    if ($topology instanceof TopologyResponse) {
+        printf(&quot;Connected to %d broker(s).\n&quot;, count($topology-&gt;getBrokers()));
+    }
+    if ($definitions instanceof ProcessDefinitionSearchQueryResult) {
+        printf(&quot;Found %d process definitions.\n&quot;, count($definitions-&gt;getItems()));
+    }
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeProgrammaticConfig examples/readme.php">
+    <summary><span><strong>ReadmeProgrammaticConfig</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function readme_programmatic_config(): void
+{
+    $config = new CamundaConfiguration(
+        restAddress: &#039;https://my-cluster.example.com/v2&#039;,
+        authStrategy: &#039;OAUTH&#039;,
+        clientId: &#039;my-client-id&#039;,
+        clientSecret: &#039;my-client-secret&#039;,
+    );
+
+    $client = CamundaClient::fromConfiguration($config);
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeSemanticTypes examples/readme.php">
+    <summary><span><strong>ReadmeSemanticTypes</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function readme_semantic_types(): void
+{
+    // Identifiers are distinct value objects — you cannot accidentally pass a
+    // process-definition id where a tenant id is expected.
+    $instruction = (new ProcessInstanceCreationInstructionById())
+        -&gt;setProcessDefinitionId(ProcessDefinitionId::of(&#039;order-process&#039;))
+        -&gt;setVariables([&#039;orderId&#039; =&gt; &#039;ORD-42&#039;]);
+
+    // Value objects validate their format on construction and stringify cleanly.
+    $definitionId = new ProcessDefinitionId(&#039;order-process&#039;);
+    echo (string) $definitionId, &quot;\n&quot;;
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeSyncClient examples/readme.php">
+    <summary><span><strong>ReadmeSyncClient</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function readme_sync_client(): void
+{
+    $client = CamundaClient::fromEnvironment();
+
+    $result = $client-&gt;deployResourcesFromFiles(__DIR__ . &#039;/resources/order-process.bpmn&#039;);
+    // ...
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="ReadmeZeroConfig examples/readme.php">
+    <summary><span><strong>ReadmeZeroConfig</strong><small>examples/readme.php</small></span><em>source-backed</em></summary>
+    <pre><code>function readme_zero_config(): void
+{
+    // Reads CAMUNDA_REST_ADDRESS and auto-detects the auth strategy from the
+    // ambient environment (NONE / BASIC / OAUTH).
+    $client = CamundaClient::fromEnvironment();
+}</code></pre>
+    <a href="../examples/readme.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteResource examples/resource.php">
+    <summary><span><strong>DeleteResource</strong><small>examples/resource.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete resource.
+ */
+function delete_resource(CamundaClient $client, ResourceKey $resourceKey, ?\Camunda\Orchestration\Api\Model\DeleteResourceRequest $deleteResourceRequest = null): void
+{
+    $client-&gt;deleteResource($resourceKey, $deleteResourceRequest);
+}</code></pre>
+    <a href="../examples/resource.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetResource examples/resource.php">
+    <summary><span><strong>GetResource</strong><small>examples/resource.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get resource.
+ */
+function get_resource(CamundaClient $client, ResourceKey $resourceKey): void
+{
+    $client-&gt;getResource($resourceKey);
+}</code></pre>
+    <a href="../examples/resource.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetResourceContent examples/resource.php">
+    <summary><span><strong>GetResourceContent</strong><small>examples/resource.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get RPA resource content (deprecated).
+ */
+function get_resource_content(CamundaClient $client, ResourceKey $resourceKey): void
+{
+    $client-&gt;getResourceContent($resourceKey);
+}</code></pre>
+    <a href="../examples/resource.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetResourceContentBinary examples/resource.php">
+    <summary><span><strong>GetResourceContentBinary</strong><small>examples/resource.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get resource content as binary.
+ */
+function get_resource_content_binary(CamundaClient $client, ResourceKey $resourceKey): void
+{
+    $client-&gt;getResourceContentBinary($resourceKey);
+}</code></pre>
+    <a href="../examples/resource.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchResources examples/resource.php">
+    <summary><span><strong>SearchResources</strong><small>examples/resource.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search resources.
+ */
+function search_resources(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\ResourceSearchQuery $resourceSearchQuery = null): void
+{
+    $client-&gt;searchResources($resourceSearchQuery);
+}</code></pre>
+    <a href="../examples/resource.php">Open source</a>
+  </details>  <details class="snippet" data-search="ListSecrets examples/secret.php">
+    <summary><span><strong>ListSecrets</strong><small>examples/secret.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * List secret references.
+ *
+ * @param array&lt;string, mixed&gt;|null $body
+ */
+function list_secrets(CamundaClient $client, ?array $body = null): void
+{
+    $client-&gt;listSecrets($body);
+}</code></pre>
+    <a href="../examples/secret.php">Open source</a>
+  </details>  <details class="snippet" data-search="ResolveSecrets examples/secret.php">
+    <summary><span><strong>ResolveSecrets</strong><small>examples/secret.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Resolve secrets.
+ */
+function resolve_secrets(CamundaClient $client, \Camunda\Orchestration\Api\Model\SecretResolveRequest $secretResolveRequest): void
+{
+    $client-&gt;resolveSecrets($secretResolveRequest);
+}</code></pre>
+    <a href="../examples/secret.php">Open source</a>
+  </details>  <details class="snippet" data-search="ConstructAndValidate examples/semantic_types.php">
+    <summary><span><strong>ConstructAndValidate</strong><small>examples/semantic_types.php</small></span><em>source-backed</em></summary>
+    <pre><code>function construct_and_validate(): void
+{
+    // Constructing validates the value against its documented format.
+    $definitionId = new ProcessDefinitionId(&#039;order-process&#039;);
+    $tenantId = TenantId::of(&#039;acme&#039;);
+
+    echo $definitionId-&gt;value(), &quot;\n&quot;;       // &#039;order-process&#039;
+    echo (string) $tenantId, &quot;\n&quot;;           // &#039;acme&#039; — Stringable
+    echo json_encode($definitionId), &quot;\n&quot;;   // &#039;&quot;order-process&quot;&#039; — JsonSerializable
+}</code></pre>
+    <a href="../examples/semantic_types.php">Open source</a>
+  </details>  <details class="snippet" data-search="Equality examples/semantic_types.php">
+    <summary><span><strong>Equality</strong><small>examples/semantic_types.php</small></span><em>source-backed</em></summary>
+    <pre><code>function equality(ProcessInstanceKey $a, ProcessInstanceKey $b): bool
+{
+    // Value objects compare by value, not identity.
+    return $a-&gt;equals($b);
+}</code></pre>
+    <a href="../examples/semantic_types.php">Open source</a>
+  </details>  <details class="snippet" data-search="TypeSafety examples/semantic_types.php">
+    <summary><span><strong>TypeSafety</strong><small>examples/semantic_types.php</small></span><em>source-backed</em></summary>
+    <pre><code>function type_safety(): ProcessInstanceCreationInstructionById
+{
+    // The setter only accepts a ProcessDefinitionId — passing a TenantId,
+    // a ProcessInstanceKey, or a bare string is rejected by static analysis.
+    return (new ProcessInstanceCreationInstructionById())
+        -&gt;setProcessDefinitionId(new ProcessDefinitionId(&#039;order-process&#039;));
+}</code></pre>
+    <a href="../examples/semantic_types.php">Open source</a>
+  </details></div>
+  </section>  <section id="deployment-and-lifecycle" class="scenario-detail">
+    <header><span class="eyebrow">Scenario 02</span><h2>Deployment and lifecycle</h2><p>Resource deployment, decisions, process definitions, instances, and batch operations.</p><code>make example-showcase SCENARIO=deployment-and-lifecycle</code></header>
+    <div class="metrics"><span><b>52</b> snippets</span><span><b>5</b> source files</span><span><b>28 ms</b> duration</span></div>
+    <section class="evidence"><h3>Live evidence</h3><p>1 PASS, 0 expected constraints, 0 failures.</p><table><thead><tr><th>Callable</th><th>Outcome</th><th>Time</th><th>Evidence</th></tr></thead><tbody><tr><td><code>deployment_showcase</code><br><small>examples/advanced/showcase/main.php</small></td><td><span class="status pass">PASS</span></td><td>28 ms</td><td>Deployed BPMN and DMN resources and evaluated the pricing decision.</td></tr></tbody></table></section>
+    <h3>Mapped source files</h3><ul class="files"><li><code>examples/batch_operation.php</code></li><li><code>examples/decision.php</code></li><li><code>examples/deployment.php</code></li><li><code>examples/process_definition.php</code></li><li><code>examples/process_instance.php</code></li></ul>
+    <h3>Snippet gallery</h3><div class="snippet-list">  <details class="snippet" data-search="CancelBatchOperation examples/batch_operation.php">
+    <summary><span><strong>CancelBatchOperation</strong><small>examples/batch_operation.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Cancel Batch operation.
+ */
+function cancel_batch_operation(CamundaClient $client, string $batchOperationKey): void
+{
+    $client-&gt;cancelBatchOperation($batchOperationKey);
+}</code></pre>
+    <a href="../examples/batch_operation.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetBatchOperation examples/batch_operation.php">
+    <summary><span><strong>GetBatchOperation</strong><small>examples/batch_operation.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get batch operation.
+ */
+function get_batch_operation(CamundaClient $client, string $batchOperationKey): void
+{
+    $client-&gt;getBatchOperation($batchOperationKey);
+}</code></pre>
+    <a href="../examples/batch_operation.php">Open source</a>
+  </details>  <details class="snippet" data-search="ResumeBatchOperation examples/batch_operation.php">
+    <summary><span><strong>ResumeBatchOperation</strong><small>examples/batch_operation.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Resume Batch operation.
+ */
+function resume_batch_operation(CamundaClient $client, string $batchOperationKey): void
+{
+    $client-&gt;resumeBatchOperation($batchOperationKey);
+}</code></pre>
+    <a href="../examples/batch_operation.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchBatchOperationItems examples/batch_operation.php">
+    <summary><span><strong>SearchBatchOperationItems</strong><small>examples/batch_operation.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search batch operation items.
+ */
+function search_batch_operation_items(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\BatchOperationItemSearchQuery $batchOperationItemSearchQuery = null): void
+{
+    $client-&gt;searchBatchOperationItems($batchOperationItemSearchQuery);
+}</code></pre>
+    <a href="../examples/batch_operation.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchBatchOperations examples/batch_operation.php">
+    <summary><span><strong>SearchBatchOperations</strong><small>examples/batch_operation.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search batch operations.
+ */
+function search_batch_operations(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\BatchOperationSearchQuery $batchOperationSearchQuery = null): void
+{
+    $client-&gt;searchBatchOperations($batchOperationSearchQuery);
+}</code></pre>
+    <a href="../examples/batch_operation.php">Open source</a>
+  </details>  <details class="snippet" data-search="SuspendBatchOperation examples/batch_operation.php">
+    <summary><span><strong>SuspendBatchOperation</strong><small>examples/batch_operation.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Suspend Batch operation.
+ */
+function suspend_batch_operation(CamundaClient $client, string $batchOperationKey): void
+{
+    $client-&gt;suspendBatchOperation($batchOperationKey);
+}</code></pre>
+    <a href="../examples/batch_operation.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteDecisionInstance examples/decision.php">
+    <summary><span><strong>DeleteDecisionInstance</strong><small>examples/decision.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete decision instance.
+ */
+function delete_decision_instance(CamundaClient $client, DecisionEvaluationKey $decisionEvaluationKey, ?\Camunda\Orchestration\Api\Model\DeleteDecisionInstanceRequest $deleteDecisionInstanceRequest = null): void
+{
+    $client-&gt;deleteDecisionInstance((string) $decisionEvaluationKey, $deleteDecisionInstanceRequest);
+}</code></pre>
+    <a href="../examples/decision.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteDecisionInstancesBatchOperation examples/decision.php">
+    <summary><span><strong>DeleteDecisionInstancesBatchOperation</strong><small>examples/decision.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete decision instances (batch).
+ */
+function delete_decision_instances_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\DecisionInstanceDeletionBatchOperationRequest $decisionInstanceDeletionBatchOperationRequest): void
+{
+    $client-&gt;deleteDecisionInstancesBatchOperation($decisionInstanceDeletionBatchOperationRequest);
+}</code></pre>
+    <a href="../examples/decision.php">Open source</a>
+  </details>  <details class="snippet" data-search="EvaluateDecision examples/decision.php">
+    <summary><span><strong>EvaluateDecision</strong><small>examples/decision.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Evaluate decision.
+ */
+function evaluate_decision(CamundaClient $client, \Camunda\Orchestration\Api\Model\DecisionEvaluationById|\Camunda\Orchestration\Api\Model\DecisionEvaluationByKey $decisionEvaluationInstruction): void
+{
+    $client-&gt;evaluateDecision($decisionEvaluationInstruction);
+}</code></pre>
+    <a href="../examples/decision.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetDecisionDefinition examples/decision.php">
+    <summary><span><strong>GetDecisionDefinition</strong><small>examples/decision.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get decision definition.
+ */
+function get_decision_definition(CamundaClient $client, DecisionDefinitionKey $decisionDefinitionKey): void
+{
+    $client-&gt;getDecisionDefinition((string) $decisionDefinitionKey);
+}</code></pre>
+    <a href="../examples/decision.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetDecisionDefinitionXML examples/decision.php">
+    <summary><span><strong>GetDecisionDefinitionXML</strong><small>examples/decision.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get decision definition XML.
+ */
+function get_decision_definition_xml(CamundaClient $client, DecisionDefinitionKey $decisionDefinitionKey): void
+{
+    $client-&gt;getDecisionDefinitionXML((string) $decisionDefinitionKey);
+}</code></pre>
+    <a href="../examples/decision.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetDecisionInstance examples/decision.php">
+    <summary><span><strong>GetDecisionInstance</strong><small>examples/decision.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get decision instance.
+ */
+function get_decision_instance(CamundaClient $client, DecisionEvaluationInstanceKey $decisionEvaluationInstanceKey): void
+{
+    $client-&gt;getDecisionInstance((string) $decisionEvaluationInstanceKey);
+}</code></pre>
+    <a href="../examples/decision.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetDecisionRequirements examples/decision.php">
+    <summary><span><strong>GetDecisionRequirements</strong><small>examples/decision.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get decision requirements.
+ */
+function get_decision_requirements(CamundaClient $client, DecisionRequirementsKey $decisionRequirementsKey): void
+{
+    $client-&gt;getDecisionRequirements((string) $decisionRequirementsKey);
+}</code></pre>
+    <a href="../examples/decision.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetDecisionRequirementsXML examples/decision.php">
+    <summary><span><strong>GetDecisionRequirementsXML</strong><small>examples/decision.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get decision requirements XML.
+ */
+function get_decision_requirements_xml(CamundaClient $client, DecisionRequirementsKey $decisionRequirementsKey): void
+{
+    $client-&gt;getDecisionRequirementsXML((string) $decisionRequirementsKey);
+}</code></pre>
+    <a href="../examples/decision.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchDecisionDefinitions examples/decision.php">
+    <summary><span><strong>SearchDecisionDefinitions</strong><small>examples/decision.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search decision definitions.
+ */
+function search_decision_definitions(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\DecisionDefinitionSearchQuery $decisionDefinitionSearchQuery = null): void
+{
+    $client-&gt;searchDecisionDefinitions($decisionDefinitionSearchQuery);
+}</code></pre>
+    <a href="../examples/decision.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchDecisionInstances examples/decision.php">
+    <summary><span><strong>SearchDecisionInstances</strong><small>examples/decision.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search decision instances.
+ */
+function search_decision_instances(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\DecisionInstanceSearchQuery $decisionInstanceSearchQuery = null): void
+{
+    $client-&gt;searchDecisionInstances($decisionInstanceSearchQuery);
+}</code></pre>
+    <a href="../examples/decision.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchDecisionRequirements examples/decision.php">
+    <summary><span><strong>SearchDecisionRequirements</strong><small>examples/decision.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search decision requirements.
+ */
+function search_decision_requirements(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\DecisionRequirementsSearchQuery $decisionRequirementsSearchQuery = null): void
+{
+    $client-&gt;searchDecisionRequirements($decisionRequirementsSearchQuery);
+}</code></pre>
+    <a href="../examples/decision.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeployResources examples/deployment.php">
+    <summary><span><strong>DeployResources</strong><small>examples/deployment.php</small></span><em>source-backed</em></summary>
+    <pre><code>function deploy_resources(CamundaClient $client): DeploymentResult|ProblemDetail
+{
+    $result = $client-&gt;deployResourcesFromFiles(
+        __DIR__ . &#039;/resources/order-process.bpmn&#039;,
+        __DIR__ . &#039;/resources/pricing.dmn&#039;,
+    );
+
+    if ($result instanceof DeploymentResult) {
+        echo &#039;Deployment key: &#039;, (string) $result-&gt;getDeploymentKey(), &quot;\n&quot;;
+        foreach ($result-&gt;getDeployments() as $deployment) {
+            $process = $deployment-&gt;getProcessDefinition();
+            if ($process !== null) {
+                echo &#039;  Process: &#039;, (string) $process-&gt;getProcessDefinitionId(), &quot;\n&quot;;
+            }
+        }
+    }
+
+    return $result;
+}</code></pre>
+    <a href="../examples/deployment.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeploySingleResource examples/deployment.php">
+    <summary><span><strong>DeploySingleResource</strong><small>examples/deployment.php</small></span><em>source-backed</em></summary>
+    <pre><code>function deploy_single_resource(CamundaClient $client): DeploymentResult|ProblemDetail
+{
+    return $client-&gt;deployResourcesFromFiles(__DIR__ . &#039;/resources/order-process.bpmn&#039;);
+}</code></pre>
+    <a href="../examples/deployment.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetProcessDefinition examples/process_definition.php">
+    <summary><span><strong>GetProcessDefinition</strong><small>examples/process_definition.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get process definition.
+ */
+function get_process_definition(CamundaClient $client, ProcessDefinitionKey $processDefinitionKey): void
+{
+    $client-&gt;getProcessDefinition((string) $processDefinitionKey);
+}</code></pre>
+    <a href="../examples/process_definition.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetProcessDefinitionInstanceStatistics examples/process_definition.php">
+    <summary><span><strong>GetProcessDefinitionInstanceStatistics</strong><small>examples/process_definition.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get process instance statistics.
+ */
+function get_process_definition_instance_statistics(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\ProcessDefinitionInstanceStatisticsQuery $processDefinitionInstanceStatisticsQuery = null): void
+{
+    $client-&gt;getProcessDefinitionInstanceStatistics($processDefinitionInstanceStatisticsQuery);
+}</code></pre>
+    <a href="../examples/process_definition.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetProcessDefinitionInstanceVersionStatistics examples/process_definition.php">
+    <summary><span><strong>GetProcessDefinitionInstanceVersionStatistics</strong><small>examples/process_definition.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get process instance statistics by version.
+ */
+function get_process_definition_instance_version_statistics(CamundaClient $client, \Camunda\Orchestration\Api\Model\ProcessDefinitionInstanceVersionStatisticsQuery $processDefinitionInstanceVersionStatisticsQuery): void
+{
+    $client-&gt;getProcessDefinitionInstanceVersionStatistics($processDefinitionInstanceVersionStatisticsQuery);
+}</code></pre>
+    <a href="../examples/process_definition.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetProcessDefinitionMessageSubscriptionStatistics examples/process_definition.php">
+    <summary><span><strong>GetProcessDefinitionMessageSubscriptionStatistics</strong><small>examples/process_definition.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get message subscription statistics.
+ */
+function get_process_definition_message_subscription_statistics(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\ProcessDefinitionMessageSubscriptionStatisticsQuery $processDefinitionMessageSubscriptionStatisticsQuery = null): void
+{
+    $client-&gt;getProcessDefinitionMessageSubscriptionStatistics($processDefinitionMessageSubscriptionStatisticsQuery);
+}</code></pre>
+    <a href="../examples/process_definition.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetProcessDefinitionStatistics examples/process_definition.php">
+    <summary><span><strong>GetProcessDefinitionStatistics</strong><small>examples/process_definition.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get process definition statistics.
+ */
+function get_process_definition_statistics(CamundaClient $client, ProcessDefinitionKey $processDefinitionKey, ?\Camunda\Orchestration\Api\Model\ProcessDefinitionElementStatisticsQuery $processDefinitionElementStatisticsQuery = null): void
+{
+    $client-&gt;getProcessDefinitionStatistics((string) $processDefinitionKey, $processDefinitionElementStatisticsQuery);
+}</code></pre>
+    <a href="../examples/process_definition.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetProcessDefinitionXML examples/process_definition.php">
+    <summary><span><strong>GetProcessDefinitionXML</strong><small>examples/process_definition.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get process definition XML.
+ */
+function get_process_definition_xml(CamundaClient $client, ProcessDefinitionKey $processDefinitionKey): void
+{
+    $client-&gt;getProcessDefinitionXML((string) $processDefinitionKey);
+}</code></pre>
+    <a href="../examples/process_definition.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetStartProcessForm examples/process_definition.php">
+    <summary><span><strong>GetStartProcessForm</strong><small>examples/process_definition.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get process start form.
+ */
+function get_start_process_form(CamundaClient $client, ProcessDefinitionKey $processDefinitionKey): void
+{
+    $client-&gt;getStartProcessForm((string) $processDefinitionKey);
+}</code></pre>
+    <a href="../examples/process_definition.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchProcessDefinitionVariableNames examples/process_definition.php">
+    <summary><span><strong>SearchProcessDefinitionVariableNames</strong><small>examples/process_definition.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search process definition variable names.
+ */
+function search_process_definition_variable_names(CamundaClient $client, ProcessDefinitionKey $processDefinitionKey, ?\Camunda\Orchestration\Api\Model\ProcessDefinitionVariableNameSearchQuery $processDefinitionVariableNameSearchQuery = null): void
+{
+    $client-&gt;searchProcessDefinitionVariableNames((string) $processDefinitionKey, $processDefinitionVariableNameSearchQuery);
+}</code></pre>
+    <a href="../examples/process_definition.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchProcessDefinitions examples/process_definition.php">
+    <summary><span><strong>SearchProcessDefinitions</strong><small>examples/process_definition.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search process definitions.
+ */
+function search_process_definitions(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\ProcessDefinitionSearchQuery $processDefinitionSearchQuery = null): void
+{
+    $client-&gt;searchProcessDefinitions($processDefinitionSearchQuery);
+}</code></pre>
+    <a href="../examples/process_definition.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignProcessInstanceBusinessId examples/process_instance.php">
+    <summary><span><strong>AssignProcessInstanceBusinessId</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Assign business ID.
+ */
+function assign_process_instance_business_id(CamundaClient $client, ProcessInstanceKey $processInstanceKey, \Camunda\Orchestration\Api\Model\ProcessInstanceBusinessIdAssignmentInstruction $processInstanceBusinessIdAssignmentInstruction): void
+{
+    $client-&gt;assignProcessInstanceBusinessId((string) $processInstanceKey, $processInstanceBusinessIdAssignmentInstruction);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="CancelProcessInstance examples/process_instance.php">
+    <summary><span><strong>CancelProcessInstance</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>function cancel_process_instance(CamundaClient $client, ProcessInstanceKey $key): void
+{
+    $api = $client-&gt;api(ProcessInstanceApi::class);
+    $api-&gt;cancelProcessInstance((string) $key);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="CancelProcessInstancesBatchOperation examples/process_instance.php">
+    <summary><span><strong>CancelProcessInstancesBatchOperation</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Cancel process instances (batch).
+ */
+function cancel_process_instances_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\ProcessInstanceCancellationBatchOperationRequest $processInstanceCancellationBatchOperationRequest): void
+{
+    $client-&gt;cancelProcessInstancesBatchOperation($processInstanceCancellationBatchOperationRequest);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateProcessInstance examples/process_instance.php">
+    <summary><span><strong>CreateProcessInstance</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>function create_process_instance(CamundaClient $client): void
+{
+    $api = $client-&gt;api(ProcessInstanceApi::class);
+
+    $instruction = (new ProcessInstanceCreationInstructionById())
+        -&gt;setProcessDefinitionId(ProcessDefinitionId::of(&#039;order-process&#039;))
+        -&gt;setVariables([&#039;orderId&#039; =&gt; &#039;ORD-42&#039;, &#039;total&#039; =&gt; 99.5]);
+
+    $result = $api-&gt;createProcessInstance($instruction);
+
+    if ($result instanceof CreateProcessInstanceResult) {
+        echo &#039;Started instance: &#039;, (string) $result-&gt;getProcessInstanceKey(), &quot;\n&quot;;
+    }
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateProcessInstanceFromArray examples/process_instance.php">
+    <summary><span><strong>CreateProcessInstanceFromArray</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>function create_process_instance_from_array(CamundaClient $client): void
+{
+    $api = $client-&gt;api(ProcessInstanceApi::class);
+
+    // Array construction lifts raw strings into their semantic value objects.
+    $instruction = new ProcessInstanceCreationInstructionById([
+        &#039;processDefinitionId&#039; =&gt; &#039;order-process&#039;,
+        &#039;variables&#039; =&gt; [&#039;orderId&#039; =&gt; &#039;ORD-42&#039;],
+    ]);
+
+    $api-&gt;createProcessInstance($instruction);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteProcessInstance examples/process_instance.php">
+    <summary><span><strong>DeleteProcessInstance</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete process instance.
+ */
+function delete_process_instance(CamundaClient $client, ProcessInstanceKey $processInstanceKey, ?\Camunda\Orchestration\Api\Model\DeleteProcessInstanceRequest $deleteProcessInstanceRequest = null): void
+{
+    $client-&gt;deleteProcessInstance((string) $processInstanceKey, $deleteProcessInstanceRequest);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteProcessInstancesBatchOperation examples/process_instance.php">
+    <summary><span><strong>DeleteProcessInstancesBatchOperation</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete process instances (batch).
+ */
+function delete_process_instances_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\ProcessInstanceDeletionBatchOperationRequest $processInstanceDeletionBatchOperationRequest): void
+{
+    $client-&gt;deleteProcessInstancesBatchOperation($processInstanceDeletionBatchOperationRequest);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetProcessInstance examples/process_instance.php">
+    <summary><span><strong>GetProcessInstance</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get process instance.
+ */
+function get_process_instance(CamundaClient $client, ProcessInstanceKey $processInstanceKey): void
+{
+    $client-&gt;getProcessInstance((string) $processInstanceKey);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetProcessInstanceCallHierarchy examples/process_instance.php">
+    <summary><span><strong>GetProcessInstanceCallHierarchy</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get call hierarchy.
+ */
+function get_process_instance_call_hierarchy(CamundaClient $client, ProcessInstanceKey $processInstanceKey): void
+{
+    $client-&gt;getProcessInstanceCallHierarchy((string) $processInstanceKey);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetProcessInstanceSequenceFlows examples/process_instance.php">
+    <summary><span><strong>GetProcessInstanceSequenceFlows</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get sequence flows.
+ */
+function get_process_instance_sequence_flows(CamundaClient $client, ProcessInstanceKey $processInstanceKey): void
+{
+    $client-&gt;getProcessInstanceSequenceFlows((string) $processInstanceKey);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetProcessInstanceStatistics examples/process_instance.php">
+    <summary><span><strong>GetProcessInstanceStatistics</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get element instance statistics.
+ */
+function get_process_instance_statistics(CamundaClient $client, ProcessInstanceKey $processInstanceKey): void
+{
+    $client-&gt;getProcessInstanceStatistics((string) $processInstanceKey);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetProcessInstanceWaitStateStatistics examples/process_instance.php">
+    <summary><span><strong>GetProcessInstanceWaitStateStatistics</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get wait state statistics.
+ */
+function get_process_instance_wait_state_statistics(CamundaClient $client, ProcessInstanceKey $processInstanceKey): void
+{
+    $client-&gt;getProcessInstanceWaitStateStatistics((string) $processInstanceKey);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="MigrateProcessInstance examples/process_instance.php">
+    <summary><span><strong>MigrateProcessInstance</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Migrate process instance.
+ */
+function migrate_process_instance(CamundaClient $client, ProcessInstanceKey $processInstanceKey, \Camunda\Orchestration\Api\Model\ProcessInstanceMigrationInstruction $processInstanceMigrationInstruction): void
+{
+    $client-&gt;migrateProcessInstance((string) $processInstanceKey, $processInstanceMigrationInstruction);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="MigrateProcessInstancesBatchOperation examples/process_instance.php">
+    <summary><span><strong>MigrateProcessInstancesBatchOperation</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Migrate process instances (batch).
+ */
+function migrate_process_instances_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\ProcessInstanceMigrationBatchOperationRequest $processInstanceMigrationBatchOperationRequest): void
+{
+    $client-&gt;migrateProcessInstancesBatchOperation($processInstanceMigrationBatchOperationRequest);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="ModifyProcessInstance examples/process_instance.php">
+    <summary><span><strong>ModifyProcessInstance</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Modify process instance.
+ */
+function modify_process_instance(CamundaClient $client, ProcessInstanceKey $processInstanceKey, \Camunda\Orchestration\Api\Model\ProcessInstanceModificationInstruction $processInstanceModificationInstruction): void
+{
+    $client-&gt;modifyProcessInstance((string) $processInstanceKey, $processInstanceModificationInstruction);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="ModifyProcessInstancesBatchOperation examples/process_instance.php">
+    <summary><span><strong>ModifyProcessInstancesBatchOperation</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Modify process instances (batch).
+ */
+function modify_process_instances_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\ProcessInstanceModificationBatchOperationRequest $processInstanceModificationBatchOperationRequest): void
+{
+    $client-&gt;modifyProcessInstancesBatchOperation($processInstanceModificationBatchOperationRequest);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="ResolveIncidentsBatchOperation examples/process_instance.php">
+    <summary><span><strong>ResolveIncidentsBatchOperation</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Resolve related incidents (batch).
+ */
+function resolve_incidents_batch_operation(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest = null): void
+{
+    $client-&gt;resolveIncidentsBatchOperation($processInstanceIncidentResolutionBatchOperationRequest);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="ResolveProcessInstanceIncidents examples/process_instance.php">
+    <summary><span><strong>ResolveProcessInstanceIncidents</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Resolve related incidents.
+ */
+function resolve_process_instance_incidents(CamundaClient $client, ProcessInstanceKey $processInstanceKey): void
+{
+    $client-&gt;resolveProcessInstanceIncidents((string) $processInstanceKey);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="ResumeProcessInstance examples/process_instance.php">
+    <summary><span><strong>ResumeProcessInstance</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Resume process instance.
+ */
+function resume_process_instance(CamundaClient $client, ProcessInstanceKey $processInstanceKey, ?\Camunda\Orchestration\Api\Model\ResumeProcessInstanceRequest $resumeProcessInstanceRequest = null): void
+{
+    $client-&gt;resumeProcessInstance((string) $processInstanceKey, $resumeProcessInstanceRequest);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="ResumeProcessInstancesBatchOperation examples/process_instance.php">
+    <summary><span><strong>ResumeProcessInstancesBatchOperation</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Resume process instances (batch).
+ */
+function resume_process_instances_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\ProcessInstanceResumptionBatchOperationRequest $processInstanceResumptionBatchOperationRequest): void
+{
+    $client-&gt;resumeProcessInstancesBatchOperation($processInstanceResumptionBatchOperationRequest);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchProcessInstanceIncidents examples/process_instance.php">
+    <summary><span><strong>SearchProcessInstanceIncidents</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search related incidents.
+ */
+function search_process_instance_incidents(CamundaClient $client, ProcessInstanceKey $processInstanceKey, ?\Camunda\Orchestration\Api\Model\IncidentSearchQuery $incidentSearchQuery = null): void
+{
+    $client-&gt;searchProcessInstanceIncidents((string) $processInstanceKey, $incidentSearchQuery);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchProcessInstances examples/process_instance.php">
+    <summary><span><strong>SearchProcessInstances</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>function search_process_instances(CamundaClient $client): void
+{
+    $api = $client-&gt;api(ProcessInstanceApi::class);
+
+    $result = $api-&gt;searchProcessInstances(new ProcessInstanceSearchQuery());
+
+    if ($result instanceof ProcessInstanceSearchQueryResult) {
+        foreach ($result-&gt;getItems() as $item) {
+            echo (string) $item-&gt;getProcessInstanceKey(), &quot;\n&quot;;
+        }
+    }
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="SuspendProcessInstance examples/process_instance.php">
+    <summary><span><strong>SuspendProcessInstance</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Suspend process instance.
+ */
+function suspend_process_instance(CamundaClient $client, ProcessInstanceKey $processInstanceKey, ?\Camunda\Orchestration\Api\Model\SuspendProcessInstanceRequest $suspendProcessInstanceRequest = null): void
+{
+    $client-&gt;suspendProcessInstance((string) $processInstanceKey, $suspendProcessInstanceRequest);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="SuspendProcessInstancesBatchOperation examples/process_instance.php">
+    <summary><span><strong>SuspendProcessInstancesBatchOperation</strong><small>examples/process_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Suspend process instances (batch).
+ */
+function suspend_process_instances_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\ProcessInstanceSuspensionBatchOperationRequest $processInstanceSuspensionBatchOperationRequest): void
+{
+    $client-&gt;suspendProcessInstancesBatchOperation($processInstanceSuspensionBatchOperationRequest);
+}</code></pre>
+    <a href="../examples/process_instance.php">Open source</a>
+  </details></div>
+  </section>  <section id="jobs-and-workers" class="scenario-detail">
+    <header><span class="eyebrow">Scenario 03</span><h2>Jobs and workers</h2><p>Job activation, completion, errors, retries, worker loops, and task listeners.</p><code>make example-showcase SCENARIO=jobs-and-workers</code></header>
+    <div class="metrics"><span><b>18</b> snippets</span><span><b>2</b> source files</span><span><b>52141 ms</b> duration</span></div>
+    <section class="evidence"><h3>Live evidence</h3><p>7 PASS, 0 expected constraints, 0 failures.</p><table><thead><tr><th>Callable</th><th>Outcome</th><th>Time</th><th>Evidence</th></tr></thead><tbody><tr><td><code>order-worker</code><br><small>examples/advanced/order-worker/main.php</small></td><td><span class="status pass">PASS</span></td><td>1211 ms</td><td>Completed 3 orders: normal=1, out-of-stock=1, retry=2 attempts.</td></tr><tr><td><code>forked-worker</code><br><small>examples/advanced/forked-worker/main.php</small></td><td><span class="status pass">PASS</span></td><td>925 ms</td><td>Forked worker child PID 25802 completed process instance 2251799813707096 (COMPLETED).</td></tr><tr><td><code>job_worker</code><br><small>examples/job.php</small></td><td><span class="status pass">PASS</span></td><td>828 ms</td><td>Completed process instance 2251799813707113 through its bounded worker loop.</td></tr><tr><td><code>readme_job_worker</code><br><small>examples/readme.php</small></td><td><span class="status pass">PASS</span></td><td>626 ms</td><td>Completed process instance 2251799813707204 through its bounded worker loop.</td></tr><tr><td><code>job_worker_with_error_handling</code><br><small>examples/job.php</small></td><td><span class="status pass">PASS</span></td><td>1028 ms</td><td>Completed process instance 2251799813707225 through its bounded worker loop.</td></tr><tr><td><code>forked_job_worker</code><br><small>examples/job.php</small></td><td><span class="status pass">PASS</span></td><td>826 ms</td><td>Completed process instance 2251799813707247 through its bounded worker loop.</td></tr><tr><td><code>object_job_handler</code><br><small>examples/readme.php</small></td><td><span class="status pass">PASS</span></td><td>829 ms</td><td>Completed process instance 2251799813707585 through its bounded worker loop.</td></tr></tbody></table></section>
+    <h3>Mapped source files</h3><ul class="files"><li><code>examples/global_listener.php</code></li><li><code>examples/job.php</code></li></ul>
+    <h3>Snippet gallery</h3><div class="snippet-list">  <details class="snippet" data-search="CreateGlobalTaskListener examples/global_listener.php">
+    <summary><span><strong>CreateGlobalTaskListener</strong><small>examples/global_listener.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Create global user task listener.
+ */
+function create_global_task_listener(CamundaClient $client, \Camunda\Orchestration\Api\Model\CreateGlobalTaskListenerRequest $createGlobalTaskListenerRequest): void
+{
+    $client-&gt;createGlobalTaskListener($createGlobalTaskListenerRequest);
+}</code></pre>
+    <a href="../examples/global_listener.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteGlobalTaskListener examples/global_listener.php">
+    <summary><span><strong>DeleteGlobalTaskListener</strong><small>examples/global_listener.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete global user task listener.
+ */
+function delete_global_task_listener(CamundaClient $client, GlobalListenerId $id): void
+{
+    $client-&gt;deleteGlobalTaskListener((string) $id);
+}</code></pre>
+    <a href="../examples/global_listener.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetGlobalTaskListener examples/global_listener.php">
+    <summary><span><strong>GetGlobalTaskListener</strong><small>examples/global_listener.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get global user task listener.
+ */
+function get_global_task_listener(CamundaClient $client, GlobalListenerId $id): void
+{
+    $client-&gt;getGlobalTaskListener((string) $id);
+}</code></pre>
+    <a href="../examples/global_listener.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchGlobalTaskListeners examples/global_listener.php">
+    <summary><span><strong>SearchGlobalTaskListeners</strong><small>examples/global_listener.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search global user task listeners.
+ */
+function search_global_task_listeners(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\GlobalTaskListenerSearchQueryRequest $globalTaskListenerSearchQueryRequest = null): void
+{
+    $client-&gt;searchGlobalTaskListeners($globalTaskListenerSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/global_listener.php">Open source</a>
+  </details>  <details class="snippet" data-search="UpdateGlobalTaskListener examples/global_listener.php">
+    <summary><span><strong>UpdateGlobalTaskListener</strong><small>examples/global_listener.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update global user task listener.
+ */
+function update_global_task_listener(CamundaClient $client, GlobalListenerId $id, \Camunda\Orchestration\Api\Model\UpdateGlobalTaskListenerRequest $updateGlobalTaskListenerRequest): void
+{
+    $client-&gt;updateGlobalTaskListener((string) $id, $updateGlobalTaskListenerRequest);
+}</code></pre>
+    <a href="../examples/global_listener.php">Open source</a>
+  </details>  <details class="snippet" data-search="ActivateJobs examples/job.php">
+    <summary><span><strong>ActivateJobs</strong><small>examples/job.php</small></span><em>source-backed</em></summary>
+    <pre><code>function activate_jobs(CamundaClient $client): void
+{
+    $api = $client-&gt;api(JobApi::class);
+
+    $request = (new JobActivationRequest())
+        -&gt;setType(&#039;payment-processing&#039;)
+        -&gt;setTimeout(30_000)
+        -&gt;setMaxJobsToActivate(5);
+
+    $result = $api-&gt;activateJobs($request);
+
+    if ($result instanceof JobActivationResult) {
+        foreach ($result-&gt;getJobs() as $job) {
+            echo &#039;Job &#039;, (string) $job-&gt;getJobKey(), &#039;: &#039;, (string) $job-&gt;getType(), &quot;\n&quot;;
+        }
+    }
+}</code></pre>
+    <a href="../examples/job.php">Open source</a>
+  </details>  <details class="snippet" data-search="CompleteJob examples/job.php">
+    <summary><span><strong>CompleteJob</strong><small>examples/job.php</small></span><em>source-backed</em></summary>
+    <pre><code>function complete_job(CamundaClient $client, JobKey $jobKey): void
+{
+    $api = $client-&gt;api(JobApi::class);
+    $api-&gt;completeJob((string) $jobKey);
+}</code></pre>
+    <a href="../examples/job.php">Open source</a>
+  </details>  <details class="snippet" data-search="ForkedJobWorker examples/job.php">
+    <summary><span><strong>ForkedJobWorker</strong><small>examples/job.php</small></span><em>source-backed</em></summary>
+    <pre><code>function forked_job_worker(CamundaClient $client): void
+{
+    // With ext-pcntl, each job is processed in its own child process,
+    // bounded to `maxJobs` concurrent children.
+    $worker = $client-&gt;createJobWorker(new JobWorkerOptions(
+        type: &#039;cpu-intensive-task&#039;,
+        maxJobs: 4,
+        forked: true,
+    ));
+
+    $worker-&gt;run(function (ActivatedJobResult $job, JobActionClient $action): array {
+        return [&#039;result&#039; =&gt; &#039;computed&#039;];
+    });
+}</code></pre>
+    <a href="../examples/job.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetGlobalJobStatistics examples/job.php">
+    <summary><span><strong>GetGlobalJobStatistics</strong><small>examples/job.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Global job statistics.
+ */
+function get_global_job_statistics(CamundaClient $client, \DateTime $from, \DateTime $to, ?string $jobType = null): void
+{
+    $client-&gt;getGlobalJobStatistics($from, $to, $jobType);
+}</code></pre>
+    <a href="../examples/job.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetJobErrorStatistics examples/job.php">
+    <summary><span><strong>GetJobErrorStatistics</strong><small>examples/job.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get error metrics for a job type.
+ */
+function get_job_error_statistics(CamundaClient $client, \Camunda\Orchestration\Api\Model\JobErrorStatisticsQuery $jobErrorStatisticsQuery): void
+{
+    $client-&gt;getJobErrorStatistics($jobErrorStatisticsQuery);
+}</code></pre>
+    <a href="../examples/job.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetJobTimeSeriesStatistics examples/job.php">
+    <summary><span><strong>GetJobTimeSeriesStatistics</strong><small>examples/job.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get time-series metrics for a job type.
+ */
+function get_job_time_series_statistics(CamundaClient $client, \Camunda\Orchestration\Api\Model\JobTimeSeriesStatisticsQuery $jobTimeSeriesStatisticsQuery): void
+{
+    $client-&gt;getJobTimeSeriesStatistics($jobTimeSeriesStatisticsQuery);
+}</code></pre>
+    <a href="../examples/job.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetJobTypeStatistics examples/job.php">
+    <summary><span><strong>GetJobTypeStatistics</strong><small>examples/job.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get job statistics by type.
+ */
+function get_job_type_statistics(CamundaClient $client, \Camunda\Orchestration\Api\Model\JobTypeStatisticsQuery $jobTypeStatisticsQuery): void
+{
+    $client-&gt;getJobTypeStatistics($jobTypeStatisticsQuery);
+}</code></pre>
+    <a href="../examples/job.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetJobWorkerStatistics examples/job.php">
+    <summary><span><strong>GetJobWorkerStatistics</strong><small>examples/job.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get job statistics by worker.
+ */
+function get_job_worker_statistics(CamundaClient $client, \Camunda\Orchestration\Api\Model\JobWorkerStatisticsQuery $jobWorkerStatisticsQuery): void
+{
+    $client-&gt;getJobWorkerStatistics($jobWorkerStatisticsQuery);
+}</code></pre>
+    <a href="../examples/job.php">Open source</a>
+  </details>  <details class="snippet" data-search="JobWorker examples/job.php">
+    <summary><span><strong>JobWorker</strong><small>examples/job.php</small></span><em>source-backed</em></summary>
+    <pre><code>function job_worker(CamundaClient $client): void
+{
+    $worker = $client-&gt;createJobWorker(new JobWorkerOptions(
+        type: &#039;payment-processing&#039;,
+        maxJobs: 5,
+        timeoutMs: 30_000,
+    ));
+
+    // Returning an array auto-completes the job with those variables.
+    $worker-&gt;run(function (ActivatedJobResult $job, JobActionClient $action): array {
+        return [&#039;status&#039; =&gt; &#039;paid&#039;];
+    });
+}</code></pre>
+    <a href="../examples/job.php">Open source</a>
+  </details>  <details class="snippet" data-search="JobWorkerWithErrorHandling examples/job.php">
+    <summary><span><strong>JobWorkerWithErrorHandling</strong><small>examples/job.php</small></span><em>source-backed</em></summary>
+    <pre><code>function job_worker_with_error_handling(CamundaClient $client): void
+{
+    $worker = $client-&gt;createJobWorker(new JobWorkerOptions(type: &#039;email-sending&#039;));
+
+    $worker-&gt;run(function (ActivatedJobResult $job, JobActionClient $action): void {
+        $variables = $job-&gt;getVariables();
+
+        if (!isset($variables[&#039;recipient&#039;])) {
+            // Raise a BPMN error to be caught by an error boundary event.
+            $action-&gt;error(&#039;MISSING_DATA&#039;, &#039;No recipient address provided&#039;);
+            return;
+        }
+
+        try {
+            // ... send the email ...
+            $action-&gt;complete([&#039;sent&#039; =&gt; true]);
+        } catch (\Throwable $e) {
+            // Fail with a retry and back-off.
+            $action-&gt;fail(retries: 2, errorMessage: $e-&gt;getMessage(), retryBackOffMs: 5_000);
+        }
+    });
+}</code></pre>
+    <a href="../examples/job.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchJobs examples/job.php">
+    <summary><span><strong>SearchJobs</strong><small>examples/job.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search jobs.
+ */
+function search_jobs(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\JobSearchQuery $jobSearchQuery = null): void
+{
+    $client-&gt;searchJobs($jobSearchQuery);
+}</code></pre>
+    <a href="../examples/job.php">Open source</a>
+  </details>  <details class="snippet" data-search="UpdateJob examples/job.php">
+    <summary><span><strong>UpdateJob</strong><small>examples/job.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update job.
+ */
+function update_job(CamundaClient $client, JobKey $jobKey, \Camunda\Orchestration\Api\Model\JobUpdateRequest $jobUpdateRequest): void
+{
+    $client-&gt;updateJob((string) $jobKey, $jobUpdateRequest);
+}</code></pre>
+    <a href="../examples/job.php">Open source</a>
+  </details>  <details class="snippet" data-search="UpdateJobsBatchOperation examples/job.php">
+    <summary><span><strong>UpdateJobsBatchOperation</strong><small>examples/job.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update jobs (batch).
+ */
+function update_jobs_batch_operation(CamundaClient $client, \Camunda\Orchestration\Api\Model\JobBatchUpdateRequest $jobBatchUpdateRequest): void
+{
+    $client-&gt;updateJobsBatchOperation($jobBatchUpdateRequest);
+}</code></pre>
+    <a href="../examples/job.php">Open source</a>
+  </details></div>
+  </section>  <section id="runtime-interaction" class="scenario-detail">
+    <header><span class="eyebrow">Scenario 04</span><h2>Runtime interaction</h2><p>Ad-hoc execution, elements, expressions, incidents, user tasks, and variables.</p><code>make example-showcase SCENARIO=runtime-interaction</code></header>
+    <div class="metrics"><span><b>25</b> snippets</span><span><b>6</b> source files</span><span><b>2169 ms</b> duration</span></div>
+    <section class="evidence"><h3>Live evidence</h3><p>1 PASS, 0 expected constraints, 0 failures.</p><table><thead><tr><th>Callable</th><th>Outcome</th><th>Time</th><th>Evidence</th></tr></thead><tbody><tr><td><code>runtime_showcase</code><br><small>examples/advanced/showcase/main.php</small></td><td><span class="status pass">PASS</span></td><td>2163 ms</td><td>Assigned and completed a user task, then induced, resolved, and cleaned up an incident.</td></tr></tbody></table></section>
+    <h3>Mapped source files</h3><ul class="files"><li><code>examples/adhoc.php</code></li><li><code>examples/element_instance.php</code></li><li><code>examples/evaluation.php</code></li><li><code>examples/incident.php</code></li><li><code>examples/user_task.php</code></li><li><code>examples/variable.php</code></li></ul>
+    <h3>Snippet gallery</h3><div class="snippet-list">  <details class="snippet" data-search="ActivateAdHocSubProcessActivities examples/adhoc.php">
+    <summary><span><strong>ActivateAdHocSubProcessActivities</strong><small>examples/adhoc.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Activate activities within an ad-hoc sub-process.
+ */
+function activate_ad_hoc_sub_process_activities(CamundaClient $client, string $adHocSubProcessInstanceKey, \Camunda\Orchestration\Api\Model\AdHocSubProcessActivateActivitiesInstruction $adHocSubProcessActivateActivitiesInstruction): void
+{
+    $client-&gt;activateAdHocSubProcessActivities($adHocSubProcessInstanceKey, $adHocSubProcessActivateActivitiesInstruction);
+}</code></pre>
+    <a href="../examples/adhoc.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateElementInstanceVariables examples/element_instance.php">
+    <summary><span><strong>CreateElementInstanceVariables</strong><small>examples/element_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update element instance variables.
+ */
+function create_element_instance_variables(CamundaClient $client, ElementInstanceKey $elementInstanceKey, \Camunda\Orchestration\Api\Model\SetVariableRequest $setVariableRequest): void
+{
+    $client-&gt;createElementInstanceVariables((string) $elementInstanceKey, $setVariableRequest);
+}</code></pre>
+    <a href="../examples/element_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetElementInstance examples/element_instance.php">
+    <summary><span><strong>GetElementInstance</strong><small>examples/element_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get element instance.
+ */
+function get_element_instance(CamundaClient $client, ElementInstanceKey $elementInstanceKey): void
+{
+    $client-&gt;getElementInstance((string) $elementInstanceKey);
+}</code></pre>
+    <a href="../examples/element_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchElementInstanceIncidents examples/element_instance.php">
+    <summary><span><strong>SearchElementInstanceIncidents</strong><small>examples/element_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search for incidents of a specific element instance.
+ */
+function search_element_instance_incidents(CamundaClient $client, ElementInstanceKey $elementInstanceKey, \Camunda\Orchestration\Api\Model\IncidentSearchQuery $incidentSearchQuery): void
+{
+    $client-&gt;searchElementInstanceIncidents((string) $elementInstanceKey, $incidentSearchQuery);
+}</code></pre>
+    <a href="../examples/element_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchElementInstanceWaitStates examples/element_instance.php">
+    <summary><span><strong>SearchElementInstanceWaitStates</strong><small>examples/element_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search element instance wait states.
+ */
+function search_element_instance_wait_states(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\ElementInstanceWaitStateQuery $elementInstanceWaitStateQuery = null): void
+{
+    $client-&gt;searchElementInstanceWaitStates($elementInstanceWaitStateQuery);
+}</code></pre>
+    <a href="../examples/element_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchElementInstances examples/element_instance.php">
+    <summary><span><strong>SearchElementInstances</strong><small>examples/element_instance.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search element instances.
+ */
+function search_element_instances(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\ElementInstanceSearchQuery $elementInstanceSearchQuery = null): void
+{
+    $client-&gt;searchElementInstances($elementInstanceSearchQuery);
+}</code></pre>
+    <a href="../examples/element_instance.php">Open source</a>
+  </details>  <details class="snippet" data-search="EvaluateConditionals examples/evaluation.php">
+    <summary><span><strong>EvaluateConditionals</strong><small>examples/evaluation.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Evaluate root level conditional start events.
+ */
+function evaluate_conditionals(CamundaClient $client, \Camunda\Orchestration\Api\Model\ConditionalEvaluationInstruction $conditionalEvaluationInstruction): void
+{
+    $client-&gt;evaluateConditionals($conditionalEvaluationInstruction);
+}</code></pre>
+    <a href="../examples/evaluation.php">Open source</a>
+  </details>  <details class="snippet" data-search="EvaluateExpression examples/evaluation.php">
+    <summary><span><strong>EvaluateExpression</strong><small>examples/evaluation.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Evaluate an expression.
+ */
+function evaluate_expression(CamundaClient $client, \Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest $expressionEvaluationRequest): void
+{
+    $client-&gt;evaluateExpression($expressionEvaluationRequest);
+}</code></pre>
+    <a href="../examples/evaluation.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetIncident examples/incident.php">
+    <summary><span><strong>GetIncident</strong><small>examples/incident.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get incident.
+ */
+function get_incident(CamundaClient $client, IncidentKey $incidentKey): void
+{
+    $client-&gt;getIncident((string) $incidentKey);
+}</code></pre>
+    <a href="../examples/incident.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetProcessInstanceStatisticsByDefinition examples/incident.php">
+    <summary><span><strong>GetProcessInstanceStatisticsByDefinition</strong><small>examples/incident.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get process instance statistics by definition.
+ */
+function get_process_instance_statistics_by_definition(CamundaClient $client, \Camunda\Orchestration\Api\Model\IncidentProcessInstanceStatisticsByDefinitionQuery $incidentProcessInstanceStatisticsByDefinitionQuery): void
+{
+    $client-&gt;getProcessInstanceStatisticsByDefinition($incidentProcessInstanceStatisticsByDefinitionQuery);
+}</code></pre>
+    <a href="../examples/incident.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetProcessInstanceStatisticsByError examples/incident.php">
+    <summary><span><strong>GetProcessInstanceStatisticsByError</strong><small>examples/incident.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get process instance statistics by error.
+ */
+function get_process_instance_statistics_by_error(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\IncidentProcessInstanceStatisticsByErrorQuery $incidentProcessInstanceStatisticsByErrorQuery = null): void
+{
+    $client-&gt;getProcessInstanceStatisticsByError($incidentProcessInstanceStatisticsByErrorQuery);
+}</code></pre>
+    <a href="../examples/incident.php">Open source</a>
+  </details>  <details class="snippet" data-search="ResolveIncident examples/incident.php">
+    <summary><span><strong>ResolveIncident</strong><small>examples/incident.php</small></span><em>source-backed</em></summary>
+    <pre><code>function resolve_incident(CamundaClient $client, IncidentKey $key): void
+{
+    $api = $client-&gt;api(IncidentApi::class);
+    $api-&gt;resolveIncident((string) $key);
+}</code></pre>
+    <a href="../examples/incident.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchIncidents examples/incident.php">
+    <summary><span><strong>SearchIncidents</strong><small>examples/incident.php</small></span><em>source-backed</em></summary>
+    <pre><code>function search_incidents(CamundaClient $client): void
+{
+    $api = $client-&gt;api(IncidentApi::class);
+
+    $result = $api-&gt;searchIncidents(new IncidentSearchQuery());
+
+    if ($result instanceof IncidentSearchQueryResult) {
+        foreach ($result-&gt;getItems() as $incident) {
+            echo (string) $incident-&gt;getIncidentKey(), &#039;: &#039;, $incident-&gt;getErrorType()-&gt;value, &quot;\n&quot;;
+        }
+    }
+}</code></pre>
+    <a href="../examples/incident.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignUserTask examples/user_task.php">
+    <summary><span><strong>AssignUserTask</strong><small>examples/user_task.php</small></span><em>source-backed</em></summary>
+    <pre><code>function assign_user_task(CamundaClient $client, UserTaskKey $key): void
+{
+    $api = $client-&gt;api(UserTaskApi::class);
+
+    $request = (new UserTaskAssignmentRequest())
+        -&gt;setAssignee(&#039;demo&#039;);
+
+    $api-&gt;assignUserTask((string) $key, $request);
+}</code></pre>
+    <a href="../examples/user_task.php">Open source</a>
+  </details>  <details class="snippet" data-search="CompleteUserTask examples/user_task.php">
+    <summary><span><strong>CompleteUserTask</strong><small>examples/user_task.php</small></span><em>source-backed</em></summary>
+    <pre><code>function complete_user_task(CamundaClient $client, UserTaskKey $key): void
+{
+    $api = $client-&gt;api(UserTaskApi::class);
+
+    $request = (new UserTaskCompletionRequest())
+        -&gt;setVariables([&#039;approved&#039; =&gt; true]);
+
+    $api-&gt;completeUserTask((string) $key, $request);
+}</code></pre>
+    <a href="../examples/user_task.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetUserTask examples/user_task.php">
+    <summary><span><strong>GetUserTask</strong><small>examples/user_task.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get user task.
+ */
+function get_user_task(CamundaClient $client, UserTaskKey $userTaskKey): void
+{
+    $client-&gt;getUserTask((string) $userTaskKey);
+}</code></pre>
+    <a href="../examples/user_task.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetUserTaskForm examples/user_task.php">
+    <summary><span><strong>GetUserTaskForm</strong><small>examples/user_task.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get user task form.
+ */
+function get_user_task_form(CamundaClient $client, UserTaskKey $userTaskKey): void
+{
+    $client-&gt;getUserTaskForm((string) $userTaskKey);
+}</code></pre>
+    <a href="../examples/user_task.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchUserTaskAuditLogs examples/user_task.php">
+    <summary><span><strong>SearchUserTaskAuditLogs</strong><small>examples/user_task.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search user task audit logs.
+ */
+function search_user_task_audit_logs(CamundaClient $client, UserTaskKey $userTaskKey, ?\Camunda\Orchestration\Api\Model\UserTaskAuditLogSearchQueryRequest $userTaskAuditLogSearchQueryRequest = null): void
+{
+    $client-&gt;searchUserTaskAuditLogs((string) $userTaskKey, $userTaskAuditLogSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/user_task.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchUserTaskEffectiveVariables examples/user_task.php">
+    <summary><span><strong>SearchUserTaskEffectiveVariables</strong><small>examples/user_task.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search user task effective variables.
+ */
+function search_user_task_effective_variables(CamundaClient $client, UserTaskKey $userTaskKey, ?bool $truncateValues = null, ?\Camunda\Orchestration\Api\Model\UserTaskEffectiveVariableSearchQueryRequest $userTaskEffectiveVariableSearchQueryRequest = null): void
+{
+    $client-&gt;searchUserTaskEffectiveVariables((string) $userTaskKey, $truncateValues, $userTaskEffectiveVariableSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/user_task.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchUserTaskVariables examples/user_task.php">
+    <summary><span><strong>SearchUserTaskVariables</strong><small>examples/user_task.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search user task variables.
+ */
+function search_user_task_variables(CamundaClient $client, UserTaskKey $userTaskKey, ?bool $truncateValues = null, ?\Camunda\Orchestration\Api\Model\UserTaskVariableSearchQueryRequest $userTaskVariableSearchQueryRequest = null): void
+{
+    $client-&gt;searchUserTaskVariables((string) $userTaskKey, $truncateValues, $userTaskVariableSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/user_task.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchUserTasks examples/user_task.php">
+    <summary><span><strong>SearchUserTasks</strong><small>examples/user_task.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search user tasks.
+ */
+function search_user_tasks(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\UserTaskSearchQuery $userTaskSearchQuery = null): void
+{
+    $client-&gt;searchUserTasks($userTaskSearchQuery);
+}</code></pre>
+    <a href="../examples/user_task.php">Open source</a>
+  </details>  <details class="snippet" data-search="UnassignUserTask examples/user_task.php">
+    <summary><span><strong>UnassignUserTask</strong><small>examples/user_task.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Unassign user task.
+ */
+function unassign_user_task(CamundaClient $client, UserTaskKey $userTaskKey): void
+{
+    $client-&gt;unassignUserTask((string) $userTaskKey);
+}</code></pre>
+    <a href="../examples/user_task.php">Open source</a>
+  </details>  <details class="snippet" data-search="UpdateUserTask examples/user_task.php">
+    <summary><span><strong>UpdateUserTask</strong><small>examples/user_task.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update user task.
+ */
+function update_user_task(CamundaClient $client, UserTaskKey $userTaskKey, ?\Camunda\Orchestration\Api\Model\UserTaskUpdateRequest $userTaskUpdateRequest = null): void
+{
+    $client-&gt;updateUserTask((string) $userTaskKey, $userTaskUpdateRequest);
+}</code></pre>
+    <a href="../examples/user_task.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetVariable examples/variable.php">
+    <summary><span><strong>GetVariable</strong><small>examples/variable.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get variable.
+ */
+function get_variable(CamundaClient $client, VariableKey $variableKey): void
+{
+    $client-&gt;getVariable((string) $variableKey);
+}</code></pre>
+    <a href="../examples/variable.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchVariables examples/variable.php">
+    <summary><span><strong>SearchVariables</strong><small>examples/variable.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search variables.
+ */
+function search_variables(CamundaClient $client, ?bool $truncateValues = null, ?\Camunda\Orchestration\Api\Model\VariableSearchQuery $variableSearchQuery = null): void
+{
+    $client-&gt;searchVariables($truncateValues, $variableSearchQuery);
+}</code></pre>
+    <a href="../examples/variable.php">Open source</a>
+  </details></div>
+  </section>  <section id="message-correlation" class="scenario-detail">
+    <header><span class="eyebrow">Scenario 05</span><h2>Message correlation</h2><p>Message subscription queries, correlated messages, publication, and signals.</p><code>make example-showcase SCENARIO=message-correlation</code></header>
+    <div class="metrics"><span><b>5</b> snippets</span><span><b>1</b> source files</span><span><b>563 ms</b> duration</span></div>
+    <section class="evidence"><h3>Live evidence</h3><p>1 PASS, 0 expected constraints, 0 failures.</p><table><thead><tr><th>Callable</th><th>Outcome</th><th>Time</th><th>Evidence</th></tr></thead><tbody><tr><td><code>message-correlation</code><br><small>examples/advanced/message-correlation/main.php</small></td><td><span class="status pass">PASS</span></td><td>563 ms</td><td>Correlated and completed 3 payment processes.</td></tr></tbody></table></section>
+    <h3>Mapped source files</h3><ul class="files"><li><code>examples/message_signal.php</code></li></ul>
+    <h3>Snippet gallery</h3><div class="snippet-list">  <details class="snippet" data-search="BroadcastSignal examples/message_signal.php">
+    <summary><span><strong>BroadcastSignal</strong><small>examples/message_signal.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Broadcast signal.
+ */
+function broadcast_signal(CamundaClient $client, \Camunda\Orchestration\Api\Model\SignalBroadcastRequest $signalBroadcastRequest): void
+{
+    $client-&gt;broadcastSignal($signalBroadcastRequest);
+}</code></pre>
+    <a href="../examples/message_signal.php">Open source</a>
+  </details>  <details class="snippet" data-search="CorrelateMessage examples/message_signal.php">
+    <summary><span><strong>CorrelateMessage</strong><small>examples/message_signal.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Correlate message.
+ */
+function correlate_message(CamundaClient $client, \Camunda\Orchestration\Api\Model\MessageCorrelationRequest $messageCorrelationRequest): void
+{
+    $client-&gt;correlateMessage($messageCorrelationRequest);
+}</code></pre>
+    <a href="../examples/message_signal.php">Open source</a>
+  </details>  <details class="snippet" data-search="PublishMessage examples/message_signal.php">
+    <summary><span><strong>PublishMessage</strong><small>examples/message_signal.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Publish message.
+ */
+function publish_message(CamundaClient $client, \Camunda\Orchestration\Api\Model\MessagePublicationRequest $messagePublicationRequest): void
+{
+    $client-&gt;publishMessage($messagePublicationRequest);
+}</code></pre>
+    <a href="../examples/message_signal.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchCorrelatedMessageSubscriptions examples/message_signal.php">
+    <summary><span><strong>SearchCorrelatedMessageSubscriptions</strong><small>examples/message_signal.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search correlated message subscriptions.
+ */
+function search_correlated_message_subscriptions(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\CorrelatedMessageSubscriptionSearchQuery $correlatedMessageSubscriptionSearchQuery = null): void
+{
+    $client-&gt;searchCorrelatedMessageSubscriptions($correlatedMessageSubscriptionSearchQuery);
+}</code></pre>
+    <a href="../examples/message_signal.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchMessageSubscriptions examples/message_signal.php">
+    <summary><span><strong>SearchMessageSubscriptions</strong><small>examples/message_signal.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search message subscriptions.
+ */
+function search_message_subscriptions(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\MessageSubscriptionSearchQuery $messageSubscriptionSearchQuery = null): void
+{
+    $client-&gt;searchMessageSubscriptions($messageSubscriptionSearchQuery);
+}</code></pre>
+    <a href="../examples/message_signal.php">Open source</a>
+  </details></div>
+  </section>  <section id="management-and-operations" class="scenario-detail">
+    <header><span class="eyebrow">Scenario 06</span><h2>Management and operations</h2><p>Authorization, identity, tenant, backup, recovery, export, clock, and system APIs.</p><code>make example-showcase SCENARIO=management-and-operations</code></header>
+    <div class="metrics"><span><b>106</b> snippets</span><span><b>11</b> source files</span><span><b>425 ms</b> duration</span></div>
+    <section class="evidence"><h3>Live evidence</h3><p>1 PASS, 0 expected constraints, 0 failures.</p><table><thead><tr><th>Callable</th><th>Outcome</th><th>Time</th><th>Evidence</th></tr></thead><tbody><tr><td><code>management_showcase</code><br><small>examples/advanced/showcase/main.php</small></td><td><span class="status pass">PASS</span></td><td>425 ms</td><td>Read system configuration and exporting status, then paused and resumed exporting on 1 broker(s).</td></tr></tbody></table></section>
+    <h3>Mapped source files</h3><ul class="files"><li><code>examples/authorization.php</code></li><li><code>examples/backup.php</code></li><li><code>examples/clock.php</code></li><li><code>examples/exporting.php</code></li><li><code>examples/group.php</code></li><li><code>examples/mapping_rule.php</code></li><li><code>examples/recovery.php</code></li><li><code>examples/role.php</code></li><li><code>examples/system.php</code></li><li><code>examples/tenant.php</code></li><li><code>examples/user.php</code></li></ul>
+    <h3>Snippet gallery</h3><div class="snippet-list">  <details class="snippet" data-search="CreateAuthorization examples/authorization.php">
+    <summary><span><strong>CreateAuthorization</strong><small>examples/authorization.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Create authorization.
+ */
+function create_authorization(CamundaClient $client, \Camunda\Orchestration\Api\Model\AuthorizationIdBasedRequest|\Camunda\Orchestration\Api\Model\AuthorizationPropertyBasedRequest $authorizationRequest): void
+{
+    $client-&gt;createAuthorization($authorizationRequest);
+}</code></pre>
+    <a href="../examples/authorization.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteAuthorization examples/authorization.php">
+    <summary><span><strong>DeleteAuthorization</strong><small>examples/authorization.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete authorization.
+ */
+function delete_authorization(CamundaClient $client, string $authorizationKey): void
+{
+    $client-&gt;deleteAuthorization($authorizationKey);
+}</code></pre>
+    <a href="../examples/authorization.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetAuthorization examples/authorization.php">
+    <summary><span><strong>GetAuthorization</strong><small>examples/authorization.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get authorization.
+ */
+function get_authorization(CamundaClient $client, string $authorizationKey): void
+{
+    $client-&gt;getAuthorization($authorizationKey);
+}</code></pre>
+    <a href="../examples/authorization.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchAuthorizations examples/authorization.php">
+    <summary><span><strong>SearchAuthorizations</strong><small>examples/authorization.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search authorizations.
+ */
+function search_authorizations(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\AuthorizationSearchQuery $authorizationSearchQuery = null): void
+{
+    $client-&gt;searchAuthorizations($authorizationSearchQuery);
+}</code></pre>
+    <a href="../examples/authorization.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchOwnAuthorizations examples/authorization.php">
+    <summary><span><strong>SearchOwnAuthorizations</strong><small>examples/authorization.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search own authorizations.
+ */
+function search_own_authorizations(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\AuthorizationSearchQuery $authorizationSearchQuery = null): void
+{
+    $client-&gt;searchOwnAuthorizations($authorizationSearchQuery);
+}</code></pre>
+    <a href="../examples/authorization.php">Open source</a>
+  </details>  <details class="snippet" data-search="UpdateAuthorization examples/authorization.php">
+    <summary><span><strong>UpdateAuthorization</strong><small>examples/authorization.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update authorization.
+ */
+function update_authorization(CamundaClient $client, string $authorizationKey, \Camunda\Orchestration\Api\Model\AuthorizationIdBasedRequest|\Camunda\Orchestration\Api\Model\AuthorizationPropertyBasedRequest $authorizationRequest): void
+{
+    $client-&gt;updateAuthorization($authorizationKey, $authorizationRequest);
+}</code></pre>
+    <a href="../examples/authorization.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteHistoryBackup examples/backup.php">
+    <summary><span><strong>DeleteHistoryBackup</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete a history backup.
+ */
+function delete_history_backup(CamundaClient $client, int $backupId): void
+{
+    $client-&gt;deleteHistoryBackup($backupId);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteHistoryBackupAsClusterAdmin examples/backup.php">
+    <summary><span><strong>DeleteHistoryBackupAsClusterAdmin</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete a cluster history backup.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function delete_history_backup_as_cluster_admin(CamundaClient $client, int $backupId, ?string $physicalTenantId = null, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;deleteHistoryBackupAsClusterAdmin($backupId, $physicalTenantId, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteRuntimeBackup examples/backup.php">
+    <summary><span><strong>DeleteRuntimeBackup</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete a runtime backup.
+ */
+function delete_runtime_backup(CamundaClient $client, int $backupId): void
+{
+    $client-&gt;deleteRuntimeBackup($backupId);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteRuntimeBackupAsClusterAdmin examples/backup.php">
+    <summary><span><strong>DeleteRuntimeBackupAsClusterAdmin</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete a cluster runtime backup.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function delete_runtime_backup_as_cluster_admin(CamundaClient $client, int $backupId, ?string $physicalTenantId = null, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;deleteRuntimeBackupAsClusterAdmin($backupId, $physicalTenantId, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteRuntimeBackupState examples/backup.php">
+    <summary><span><strong>DeleteRuntimeBackupState</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete runtime backup state.
+ */
+function delete_runtime_backup_state(CamundaClient $client): void
+{
+    $client-&gt;deleteRuntimeBackupState();
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteRuntimeBackupStateAsClusterAdmin examples/backup.php">
+    <summary><span><strong>DeleteRuntimeBackupStateAsClusterAdmin</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete cluster runtime backup state.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function delete_runtime_backup_state_as_cluster_admin(CamundaClient $client, ?string $physicalTenantId = null, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;deleteRuntimeBackupStateAsClusterAdmin($physicalTenantId, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetHistoryBackup examples/backup.php">
+    <summary><span><strong>GetHistoryBackup</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get a history backup.
+ */
+function get_history_backup(CamundaClient $client, int $backupId): void
+{
+    $client-&gt;getHistoryBackup($backupId);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetHistoryBackupAsClusterAdmin examples/backup.php">
+    <summary><span><strong>GetHistoryBackupAsClusterAdmin</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get a cluster history backup.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function get_history_backup_as_cluster_admin(CamundaClient $client, int $backupId, ?string $physicalTenantId = null, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;getHistoryBackupAsClusterAdmin($backupId, $physicalTenantId, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetRuntimeBackup examples/backup.php">
+    <summary><span><strong>GetRuntimeBackup</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get a runtime backup.
+ */
+function get_runtime_backup(CamundaClient $client, int $backupId): void
+{
+    $client-&gt;getRuntimeBackup($backupId);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetRuntimeBackupAsClusterAdmin examples/backup.php">
+    <summary><span><strong>GetRuntimeBackupAsClusterAdmin</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get a cluster runtime backup.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function get_runtime_backup_as_cluster_admin(CamundaClient $client, int $backupId, ?string $physicalTenantId = null, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;getRuntimeBackupAsClusterAdmin($backupId, $physicalTenantId, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetRuntimeBackupState examples/backup.php">
+    <summary><span><strong>GetRuntimeBackupState</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get runtime backup state.
+ */
+function get_runtime_backup_state(CamundaClient $client): void
+{
+    $client-&gt;getRuntimeBackupState();
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetRuntimeBackupStateAsClusterAdmin examples/backup.php">
+    <summary><span><strong>GetRuntimeBackupStateAsClusterAdmin</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get cluster runtime backup state.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function get_runtime_backup_state_as_cluster_admin(CamundaClient $client, ?string $physicalTenantId = null, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;getRuntimeBackupStateAsClusterAdmin($physicalTenantId, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="ListHistoryBackups examples/backup.php">
+    <summary><span><strong>ListHistoryBackups</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * List history backups.
+ */
+function list_history_backups(CamundaClient $client, ?string $prefix = null, ?bool $verbose = true): void
+{
+    $client-&gt;listHistoryBackups($prefix, $verbose);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="ListHistoryBackupsAsClusterAdmin examples/backup.php">
+    <summary><span><strong>ListHistoryBackupsAsClusterAdmin</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * List cluster history backups.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function list_history_backups_as_cluster_admin(CamundaClient $client, ?string $physicalTenantId = null, ?string $prefix = null, ?bool $verbose = true, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;listHistoryBackupsAsClusterAdmin($physicalTenantId, $prefix, $verbose, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="ListRuntimeBackups examples/backup.php">
+    <summary><span><strong>ListRuntimeBackups</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * List runtime backups.
+ */
+function list_runtime_backups(CamundaClient $client, ?string $prefix = null): void
+{
+    $client-&gt;listRuntimeBackups($prefix);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="ListRuntimeBackupsAsClusterAdmin examples/backup.php">
+    <summary><span><strong>ListRuntimeBackupsAsClusterAdmin</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * List cluster runtime backups.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function list_runtime_backups_as_cluster_admin(CamundaClient $client, ?string $physicalTenantId = null, ?string $prefix = null, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;listRuntimeBackupsAsClusterAdmin($physicalTenantId, $prefix, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="SyncRuntimeBackupState examples/backup.php">
+    <summary><span><strong>SyncRuntimeBackupState</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Sync runtime backup state.
+ */
+function sync_runtime_backup_state(CamundaClient $client): void
+{
+    $client-&gt;syncRuntimeBackupState();
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="SyncRuntimeBackupStateAsClusterAdmin examples/backup.php">
+    <summary><span><strong>SyncRuntimeBackupStateAsClusterAdmin</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Sync cluster runtime backup state.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function sync_runtime_backup_state_as_cluster_admin(CamundaClient $client, ?string $physicalTenantId = null, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;syncRuntimeBackupStateAsClusterAdmin($physicalTenantId, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="TakeHistoryBackup examples/backup.php">
+    <summary><span><strong>TakeHistoryBackup</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Take a history backup.
+ */
+function take_history_backup(CamundaClient $client, \Camunda\Orchestration\Api\Model\TakeHistoryBackupRequest $takeHistoryBackupRequest): void
+{
+    $client-&gt;takeHistoryBackup($takeHistoryBackupRequest);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="TakeHistoryBackupAsClusterAdmin examples/backup.php">
+    <summary><span><strong>TakeHistoryBackupAsClusterAdmin</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Take a cluster history backup.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function take_history_backup_as_cluster_admin(CamundaClient $client, \Camunda\Orchestration\Api\Model\TakeHistoryBackupRequest $takeHistoryBackupRequest, ?string $physicalTenantId = null, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;takeHistoryBackupAsClusterAdmin($takeHistoryBackupRequest, $physicalTenantId, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="TakeRuntimeBackup examples/backup.php">
+    <summary><span><strong>TakeRuntimeBackup</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Take a runtime backup.
+ */
+function take_runtime_backup(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\TakeRuntimeBackupRequest $takeRuntimeBackupRequest = null): void
+{
+    $client-&gt;takeRuntimeBackup($takeRuntimeBackupRequest);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="TakeRuntimeBackupAsClusterAdmin examples/backup.php">
+    <summary><span><strong>TakeRuntimeBackupAsClusterAdmin</strong><small>examples/backup.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Take a cluster runtime backup.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function take_runtime_backup_as_cluster_admin(CamundaClient $client, ?string $physicalTenantId = null, ?\Camunda\Orchestration\Api\Model\TakeRuntimeBackupRequest $takeRuntimeBackupRequest = null, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;takeRuntimeBackupAsClusterAdmin($physicalTenantId, $takeRuntimeBackupRequest, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/backup.php">Open source</a>
+  </details>  <details class="snippet" data-search="PinClock examples/clock.php">
+    <summary><span><strong>PinClock</strong><small>examples/clock.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Pin internal clock (alpha).
+ */
+function pin_clock(CamundaClient $client, \Camunda\Orchestration\Api\Model\ClockPinRequest $clockPinRequest): void
+{
+    $client-&gt;pinClock($clockPinRequest);
+}</code></pre>
+    <a href="../examples/clock.php">Open source</a>
+  </details>  <details class="snippet" data-search="ResetClock examples/clock.php">
+    <summary><span><strong>ResetClock</strong><small>examples/clock.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Reset internal clock (alpha).
+ */
+function reset_clock(CamundaClient $client): void
+{
+    $client-&gt;resetClock();
+}</code></pre>
+    <a href="../examples/clock.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetClusterExportingStatus examples/exporting.php">
+    <summary><span><strong>GetClusterExportingStatus</strong><small>examples/exporting.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get cluster exporting status.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function get_cluster_exporting_status(CamundaClient $client, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;getClusterExportingStatus($hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/exporting.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetExportingStatus examples/exporting.php">
+    <summary><span><strong>GetExportingStatus</strong><small>examples/exporting.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get exporting status.
+ */
+function get_exporting_status(CamundaClient $client): void
+{
+    $client-&gt;getExportingStatus();
+}</code></pre>
+    <a href="../examples/exporting.php">Open source</a>
+  </details>  <details class="snippet" data-search="PauseClusterExporting examples/exporting.php">
+    <summary><span><strong>PauseClusterExporting</strong><small>examples/exporting.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Pause cluster exporting.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function pause_cluster_exporting(CamundaClient $client, ?bool $soft = false, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;pauseClusterExporting($soft, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/exporting.php">Open source</a>
+  </details>  <details class="snippet" data-search="PauseExporting examples/exporting.php">
+    <summary><span><strong>PauseExporting</strong><small>examples/exporting.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Pause exporting.
+ */
+function pause_exporting(CamundaClient $client, ?bool $soft = false): void
+{
+    $client-&gt;pauseExporting($soft);
+}</code></pre>
+    <a href="../examples/exporting.php">Open source</a>
+  </details>  <details class="snippet" data-search="ResumeClusterExporting examples/exporting.php">
+    <summary><span><strong>ResumeClusterExporting</strong><small>examples/exporting.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Resume cluster exporting.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function resume_cluster_exporting(CamundaClient $client, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;resumeClusterExporting($hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/exporting.php">Open source</a>
+  </details>  <details class="snippet" data-search="ResumeExporting examples/exporting.php">
+    <summary><span><strong>ResumeExporting</strong><small>examples/exporting.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Resume exporting.
+ */
+function resume_exporting(CamundaClient $client): void
+{
+    $client-&gt;resumeExporting();
+}</code></pre>
+    <a href="../examples/exporting.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignClientToGroup examples/group.php">
+    <summary><span><strong>AssignClientToGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Assign a client to a group.
+ */
+function assign_client_to_group(CamundaClient $client, string $groupId, string $clientId): void
+{
+    $client-&gt;assignClientToGroup($groupId, $clientId);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignMappingRuleToGroup examples/group.php">
+    <summary><span><strong>AssignMappingRuleToGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Assign a mapping rule to a group.
+ */
+function assign_mapping_rule_to_group(CamundaClient $client, string $groupId, string $mappingRuleId): void
+{
+    $client-&gt;assignMappingRuleToGroup($groupId, $mappingRuleId);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignUserToGroup examples/group.php">
+    <summary><span><strong>AssignUserToGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Assign a user to a group.
+ */
+function assign_user_to_group(CamundaClient $client, string $groupId, string $username): void
+{
+    $client-&gt;assignUserToGroup($groupId, $username);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateGroup examples/group.php">
+    <summary><span><strong>CreateGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Create group.
+ */
+function create_group(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\GroupCreateRequest $groupCreateRequest = null): void
+{
+    $client-&gt;createGroup($groupCreateRequest);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteGroup examples/group.php">
+    <summary><span><strong>DeleteGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete group.
+ */
+function delete_group(CamundaClient $client, string $groupId): void
+{
+    $client-&gt;deleteGroup($groupId);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetGroup examples/group.php">
+    <summary><span><strong>GetGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get group.
+ */
+function get_group(CamundaClient $client, string $groupId): void
+{
+    $client-&gt;getGroup($groupId);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchClientsForGroup examples/group.php">
+    <summary><span><strong>SearchClientsForGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search group clients.
+ */
+function search_clients_for_group(CamundaClient $client, string $groupId, ?\Camunda\Orchestration\Api\Model\GroupClientSearchQueryRequest $groupClientSearchQueryRequest = null): void
+{
+    $client-&gt;searchClientsForGroup($groupId, $groupClientSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchGroups examples/group.php">
+    <summary><span><strong>SearchGroups</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search groups.
+ */
+function search_groups(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\GroupSearchQueryRequest $groupSearchQueryRequest = null): void
+{
+    $client-&gt;searchGroups($groupSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchMappingRulesForGroup examples/group.php">
+    <summary><span><strong>SearchMappingRulesForGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search group mapping rules.
+ */
+function search_mapping_rules_for_group(CamundaClient $client, string $groupId, ?\Camunda\Orchestration\Api\Model\MappingRuleSearchQueryRequest $mappingRuleSearchQueryRequest = null): void
+{
+    $client-&gt;searchMappingRulesForGroup($groupId, $mappingRuleSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchRolesForGroup examples/group.php">
+    <summary><span><strong>SearchRolesForGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search group roles.
+ */
+function search_roles_for_group(CamundaClient $client, string $groupId, ?\Camunda\Orchestration\Api\Model\RoleSearchQueryRequest $roleSearchQueryRequest = null): void
+{
+    $client-&gt;searchRolesForGroup($groupId, $roleSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchUsersForGroup examples/group.php">
+    <summary><span><strong>SearchUsersForGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search group users.
+ */
+function search_users_for_group(CamundaClient $client, string $groupId, ?\Camunda\Orchestration\Api\Model\GroupUserSearchQueryRequest $groupUserSearchQueryRequest = null): void
+{
+    $client-&gt;searchUsersForGroup($groupId, $groupUserSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="UnassignClientFromGroup examples/group.php">
+    <summary><span><strong>UnassignClientFromGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Unassign a client from a group.
+ */
+function unassign_client_from_group(CamundaClient $client, string $groupId, string $clientId): void
+{
+    $client-&gt;unassignClientFromGroup($groupId, $clientId);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="UnassignMappingRuleFromGroup examples/group.php">
+    <summary><span><strong>UnassignMappingRuleFromGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Unassign a mapping rule from a group.
+ */
+function unassign_mapping_rule_from_group(CamundaClient $client, string $groupId, string $mappingRuleId): void
+{
+    $client-&gt;unassignMappingRuleFromGroup($groupId, $mappingRuleId);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="UnassignUserFromGroup examples/group.php">
+    <summary><span><strong>UnassignUserFromGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Unassign a user from a group.
+ */
+function unassign_user_from_group(CamundaClient $client, string $groupId, string $username): void
+{
+    $client-&gt;unassignUserFromGroup($groupId, $username);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="UpdateGroup examples/group.php">
+    <summary><span><strong>UpdateGroup</strong><small>examples/group.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update group.
+ */
+function update_group(CamundaClient $client, string $groupId, \Camunda\Orchestration\Api\Model\GroupUpdateRequest $groupUpdateRequest): void
+{
+    $client-&gt;updateGroup($groupId, $groupUpdateRequest);
+}</code></pre>
+    <a href="../examples/group.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateMappingRule examples/mapping_rule.php">
+    <summary><span><strong>CreateMappingRule</strong><small>examples/mapping_rule.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Create mapping rule.
+ */
+function create_mapping_rule(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\MappingRuleCreateRequest $mappingRuleCreateRequest = null): void
+{
+    $client-&gt;createMappingRule($mappingRuleCreateRequest);
+}</code></pre>
+    <a href="../examples/mapping_rule.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteMappingRule examples/mapping_rule.php">
+    <summary><span><strong>DeleteMappingRule</strong><small>examples/mapping_rule.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete a mapping rule.
+ */
+function delete_mapping_rule(CamundaClient $client, string $mappingRuleId): void
+{
+    $client-&gt;deleteMappingRule($mappingRuleId);
+}</code></pre>
+    <a href="../examples/mapping_rule.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetMappingRule examples/mapping_rule.php">
+    <summary><span><strong>GetMappingRule</strong><small>examples/mapping_rule.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get a mapping rule.
+ */
+function get_mapping_rule(CamundaClient $client, string $mappingRuleId): void
+{
+    $client-&gt;getMappingRule($mappingRuleId);
+}</code></pre>
+    <a href="../examples/mapping_rule.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchMappingRule examples/mapping_rule.php">
+    <summary><span><strong>SearchMappingRule</strong><small>examples/mapping_rule.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search mapping rules.
+ */
+function search_mapping_rule(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\MappingRuleSearchQueryRequest $mappingRuleSearchQueryRequest = null): void
+{
+    $client-&gt;searchMappingRule($mappingRuleSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/mapping_rule.php">Open source</a>
+  </details>  <details class="snippet" data-search="UpdateMappingRule examples/mapping_rule.php">
+    <summary><span><strong>UpdateMappingRule</strong><small>examples/mapping_rule.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update mapping rule.
+ */
+function update_mapping_rule(CamundaClient $client, string $mappingRuleId, ?\Camunda\Orchestration\Api\Model\MappingRuleUpdateRequest $mappingRuleUpdateRequest = null): void
+{
+    $client-&gt;updateMappingRule($mappingRuleId, $mappingRuleUpdateRequest);
+}</code></pre>
+    <a href="../examples/mapping_rule.php">Open source</a>
+  </details>  <details class="snippet" data-search="ChangeClusterMode examples/recovery.php">
+    <summary><span><strong>ChangeClusterMode</strong><small>examples/recovery.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Change cluster mode.
+ */
+function change_cluster_mode(CamundaClient $client, \Camunda\Orchestration\Api\Model\Mode $mode, ?bool $dryRun = false): void
+{
+    $client-&gt;changeClusterMode($mode, $dryRun);
+}</code></pre>
+    <a href="../examples/recovery.php">Open source</a>
+  </details>  <details class="snippet" data-search="ChangeClusterModeAsClusterAdmin examples/recovery.php">
+    <summary><span><strong>ChangeClusterModeAsClusterAdmin</strong><small>examples/recovery.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Change cluster mode as cluster admin.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function change_cluster_mode_as_cluster_admin(CamundaClient $client, \Camunda\Orchestration\Api\Model\Mode $mode, ?string $physicalTenantId = null, ?bool $dryRun = false, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;changeClusterModeAsClusterAdmin($mode, $physicalTenantId, $dryRun, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/recovery.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetRestoreStatus examples/recovery.php">
+    <summary><span><strong>GetRestoreStatus</strong><small>examples/recovery.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get the status of the in-progress restore.
+ */
+function get_restore_status(CamundaClient $client): void
+{
+    $client-&gt;getRestoreStatus();
+}</code></pre>
+    <a href="../examples/recovery.php">Open source</a>
+  </details>  <details class="snippet" data-search="Restore examples/recovery.php">
+    <summary><span><strong>Restore</strong><small>examples/recovery.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Restore from a backup.
+ */
+function restore(CamundaClient $client, \Camunda\Orchestration\Api\Model\RestoreRequest $restoreRequest, ?bool $dryRun = false): void
+{
+    $client-&gt;restore($restoreRequest, $dryRun);
+}</code></pre>
+    <a href="../examples/recovery.php">Open source</a>
+  </details>  <details class="snippet" data-search="RestoreAsClusterAdmin examples/recovery.php">
+    <summary><span><strong>RestoreAsClusterAdmin</strong><small>examples/recovery.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Restore as cluster admin.
+ * @param array&lt;string, mixed&gt; $variables
+ */
+function restore_as_cluster_admin(CamundaClient $client, \Camunda\Orchestration\Api\Model\ClusterRestoreRequest $clusterRestoreRequest, ?string $physicalTenantId = null, ?bool $dryRun = false, ?int $hostIndex = null, array $variables = []): void
+{
+    $client-&gt;restoreAsClusterAdmin($clusterRestoreRequest, $physicalTenantId, $dryRun, $hostIndex, $variables);
+}</code></pre>
+    <a href="../examples/recovery.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignRoleToClient examples/role.php">
+    <summary><span><strong>AssignRoleToClient</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Assign a role to a client.
+ */
+function assign_role_to_client(CamundaClient $client, string $roleId, string $clientId): void
+{
+    $client-&gt;assignRoleToClient($roleId, $clientId);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignRoleToGroup examples/role.php">
+    <summary><span><strong>AssignRoleToGroup</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Assign a role to a group.
+ */
+function assign_role_to_group(CamundaClient $client, string $roleId, string $groupId): void
+{
+    $client-&gt;assignRoleToGroup($roleId, $groupId);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignRoleToMappingRule examples/role.php">
+    <summary><span><strong>AssignRoleToMappingRule</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Assign a role to a mapping rule.
+ */
+function assign_role_to_mapping_rule(CamundaClient $client, string $roleId, string $mappingRuleId): void
+{
+    $client-&gt;assignRoleToMappingRule($roleId, $mappingRuleId);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignRoleToUser examples/role.php">
+    <summary><span><strong>AssignRoleToUser</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Assign a role to a user.
+ */
+function assign_role_to_user(CamundaClient $client, string $roleId, string $username): void
+{
+    $client-&gt;assignRoleToUser($roleId, $username);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateRole examples/role.php">
+    <summary><span><strong>CreateRole</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Create role.
+ */
+function create_role(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\RoleCreateRequest $roleCreateRequest = null): void
+{
+    $client-&gt;createRole($roleCreateRequest);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteRole examples/role.php">
+    <summary><span><strong>DeleteRole</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete role.
+ */
+function delete_role(CamundaClient $client, string $roleId): void
+{
+    $client-&gt;deleteRole($roleId);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetRole examples/role.php">
+    <summary><span><strong>GetRole</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get role.
+ */
+function get_role(CamundaClient $client, string $roleId): void
+{
+    $client-&gt;getRole($roleId);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchClientsForRole examples/role.php">
+    <summary><span><strong>SearchClientsForRole</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search role clients.
+ */
+function search_clients_for_role(CamundaClient $client, string $roleId, ?\Camunda\Orchestration\Api\Model\RoleClientSearchQueryRequest $roleClientSearchQueryRequest = null): void
+{
+    $client-&gt;searchClientsForRole($roleId, $roleClientSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchGroupsForRole examples/role.php">
+    <summary><span><strong>SearchGroupsForRole</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search role groups.
+ */
+function search_groups_for_role(CamundaClient $client, string $roleId, ?\Camunda\Orchestration\Api\Model\RoleGroupSearchQueryRequest $roleGroupSearchQueryRequest = null): void
+{
+    $client-&gt;searchGroupsForRole($roleId, $roleGroupSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchMappingRulesForRole examples/role.php">
+    <summary><span><strong>SearchMappingRulesForRole</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search role mapping rules.
+ */
+function search_mapping_rules_for_role(CamundaClient $client, string $roleId, ?\Camunda\Orchestration\Api\Model\MappingRuleSearchQueryRequest $mappingRuleSearchQueryRequest = null): void
+{
+    $client-&gt;searchMappingRulesForRole($roleId, $mappingRuleSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchRoles examples/role.php">
+    <summary><span><strong>SearchRoles</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search roles.
+ */
+function search_roles(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\RoleSearchQueryRequest $roleSearchQueryRequest = null): void
+{
+    $client-&gt;searchRoles($roleSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchUsersForRole examples/role.php">
+    <summary><span><strong>SearchUsersForRole</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search role users.
+ */
+function search_users_for_role(CamundaClient $client, string $roleId, ?\Camunda\Orchestration\Api\Model\RoleUserSearchQueryRequest $roleUserSearchQueryRequest = null): void
+{
+    $client-&gt;searchUsersForRole($roleId, $roleUserSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="UnassignRoleFromClient examples/role.php">
+    <summary><span><strong>UnassignRoleFromClient</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Unassign a role from a client.
+ */
+function unassign_role_from_client(CamundaClient $client, string $roleId, string $clientId): void
+{
+    $client-&gt;unassignRoleFromClient($roleId, $clientId);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="UnassignRoleFromGroup examples/role.php">
+    <summary><span><strong>UnassignRoleFromGroup</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Unassign a role from a group.
+ */
+function unassign_role_from_group(CamundaClient $client, string $roleId, string $groupId): void
+{
+    $client-&gt;unassignRoleFromGroup($roleId, $groupId);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="UnassignRoleFromMappingRule examples/role.php">
+    <summary><span><strong>UnassignRoleFromMappingRule</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Unassign a role from a mapping rule.
+ */
+function unassign_role_from_mapping_rule(CamundaClient $client, string $roleId, string $mappingRuleId): void
+{
+    $client-&gt;unassignRoleFromMappingRule($roleId, $mappingRuleId);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="UnassignRoleFromUser examples/role.php">
+    <summary><span><strong>UnassignRoleFromUser</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Unassign a role from a user.
+ */
+function unassign_role_from_user(CamundaClient $client, string $roleId, string $username): void
+{
+    $client-&gt;unassignRoleFromUser($roleId, $username);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="UpdateRole examples/role.php">
+    <summary><span><strong>UpdateRole</strong><small>examples/role.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update role.
+ */
+function update_role(CamundaClient $client, string $roleId, \Camunda\Orchestration\Api\Model\RoleUpdateRequest $roleUpdateRequest): void
+{
+    $client-&gt;updateRole($roleId, $roleUpdateRequest);
+}</code></pre>
+    <a href="../examples/role.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateAdminUser examples/system.php">
+    <summary><span><strong>CreateAdminUser</strong><small>examples/system.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Create admin user.
+ */
+function create_admin_user(CamundaClient $client, \Camunda\Orchestration\Api\Model\UserRequest $userRequest): void
+{
+    $client-&gt;createAdminUser($userRequest);
+}</code></pre>
+    <a href="../examples/system.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetSystemConfiguration examples/system.php">
+    <summary><span><strong>GetSystemConfiguration</strong><small>examples/system.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * System configuration (alpha).
+ */
+function get_system_configuration(CamundaClient $client): void
+{
+    $client-&gt;getSystemConfiguration();
+}</code></pre>
+    <a href="../examples/system.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetUsageMetrics examples/system.php">
+    <summary><span><strong>GetUsageMetrics</strong><small>examples/system.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get usage metrics.
+ */
+function get_usage_metrics(CamundaClient $client, \DateTime $startTime, \DateTime $endTime, ?string $tenantId = null, ?bool $withTenants = false): void
+{
+    $client-&gt;getUsageMetrics($startTime, $endTime, $tenantId, $withTenants);
+}</code></pre>
+    <a href="../examples/system.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignClientToTenant examples/tenant.php">
+    <summary><span><strong>AssignClientToTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Assign a client to a tenant.
+ */
+function assign_client_to_tenant(CamundaClient $client, string $tenantId, string $clientId): void
+{
+    $client-&gt;assignClientToTenant($tenantId, $clientId);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignGroupToTenant examples/tenant.php">
+    <summary><span><strong>AssignGroupToTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Assign a group to a tenant.
+ */
+function assign_group_to_tenant(CamundaClient $client, string $tenantId, string $groupId): void
+{
+    $client-&gt;assignGroupToTenant($tenantId, $groupId);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignMappingRuleToTenant examples/tenant.php">
+    <summary><span><strong>AssignMappingRuleToTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Assign a mapping rule to a tenant.
+ */
+function assign_mapping_rule_to_tenant(CamundaClient $client, string $tenantId, string $mappingRuleId): void
+{
+    $client-&gt;assignMappingRuleToTenant($tenantId, $mappingRuleId);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignRoleToTenant examples/tenant.php">
+    <summary><span><strong>AssignRoleToTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Assign a role to a tenant.
+ */
+function assign_role_to_tenant(CamundaClient $client, string $tenantId, string $roleId): void
+{
+    $client-&gt;assignRoleToTenant($tenantId, $roleId);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="AssignUserToTenant examples/tenant.php">
+    <summary><span><strong>AssignUserToTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Assign a user to a tenant.
+ */
+function assign_user_to_tenant(CamundaClient $client, string $tenantId, string $username): void
+{
+    $client-&gt;assignUserToTenant($tenantId, $username);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateTenant examples/tenant.php">
+    <summary><span><strong>CreateTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Create tenant.
+ */
+function create_tenant(CamundaClient $client, \Camunda\Orchestration\Api\Model\TenantCreateRequest $tenantCreateRequest): void
+{
+    $client-&gt;createTenant($tenantCreateRequest);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteTenant examples/tenant.php">
+    <summary><span><strong>DeleteTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete tenant.
+ */
+function delete_tenant(CamundaClient $client, string $tenantId): void
+{
+    $client-&gt;deleteTenant($tenantId);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetTenant examples/tenant.php">
+    <summary><span><strong>GetTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get tenant.
+ */
+function get_tenant(CamundaClient $client, string $tenantId): void
+{
+    $client-&gt;getTenant($tenantId);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchClientsForTenant examples/tenant.php">
+    <summary><span><strong>SearchClientsForTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search clients for tenant.
+ */
+function search_clients_for_tenant(CamundaClient $client, string $tenantId, ?\Camunda\Orchestration\Api\Model\TenantClientSearchQueryRequest $tenantClientSearchQueryRequest = null): void
+{
+    $client-&gt;searchClientsForTenant($tenantId, $tenantClientSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchGroupIdsForTenant examples/tenant.php">
+    <summary><span><strong>SearchGroupIdsForTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search groups for tenant.
+ */
+function search_group_ids_for_tenant(CamundaClient $client, string $tenantId, ?\Camunda\Orchestration\Api\Model\TenantGroupSearchQueryRequest $tenantGroupSearchQueryRequest = null): void
+{
+    $client-&gt;searchGroupIdsForTenant($tenantId, $tenantGroupSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchMappingRulesForTenant examples/tenant.php">
+    <summary><span><strong>SearchMappingRulesForTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search mapping rules for tenant.
+ */
+function search_mapping_rules_for_tenant(CamundaClient $client, string $tenantId, ?\Camunda\Orchestration\Api\Model\MappingRuleSearchQueryRequest $mappingRuleSearchQueryRequest = null): void
+{
+    $client-&gt;searchMappingRulesForTenant($tenantId, $mappingRuleSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchRolesForTenant examples/tenant.php">
+    <summary><span><strong>SearchRolesForTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search roles for tenant.
+ */
+function search_roles_for_tenant(CamundaClient $client, string $tenantId, ?\Camunda\Orchestration\Api\Model\RoleSearchQueryRequest $roleSearchQueryRequest = null): void
+{
+    $client-&gt;searchRolesForTenant($tenantId, $roleSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchTenants examples/tenant.php">
+    <summary><span><strong>SearchTenants</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search tenants.
+ */
+function search_tenants(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\TenantSearchQueryRequest $tenantSearchQueryRequest = null): void
+{
+    $client-&gt;searchTenants($tenantSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchUsersForTenant examples/tenant.php">
+    <summary><span><strong>SearchUsersForTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search users for tenant.
+ */
+function search_users_for_tenant(CamundaClient $client, string $tenantId, ?\Camunda\Orchestration\Api\Model\TenantUserSearchQueryRequest $tenantUserSearchQueryRequest = null): void
+{
+    $client-&gt;searchUsersForTenant($tenantId, $tenantUserSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="UnassignClientFromTenant examples/tenant.php">
+    <summary><span><strong>UnassignClientFromTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Unassign a client from a tenant.
+ */
+function unassign_client_from_tenant(CamundaClient $client, string $tenantId, string $clientId): void
+{
+    $client-&gt;unassignClientFromTenant($tenantId, $clientId);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="UnassignGroupFromTenant examples/tenant.php">
+    <summary><span><strong>UnassignGroupFromTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Unassign a group from a tenant.
+ */
+function unassign_group_from_tenant(CamundaClient $client, string $tenantId, string $groupId): void
+{
+    $client-&gt;unassignGroupFromTenant($tenantId, $groupId);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="UnassignMappingRuleFromTenant examples/tenant.php">
+    <summary><span><strong>UnassignMappingRuleFromTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Unassign a mapping rule from a tenant.
+ */
+function unassign_mapping_rule_from_tenant(CamundaClient $client, string $tenantId, string $mappingRuleId): void
+{
+    $client-&gt;unassignMappingRuleFromTenant($tenantId, $mappingRuleId);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="UnassignRoleFromTenant examples/tenant.php">
+    <summary><span><strong>UnassignRoleFromTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Unassign a role from a tenant.
+ */
+function unassign_role_from_tenant(CamundaClient $client, string $tenantId, string $roleId): void
+{
+    $client-&gt;unassignRoleFromTenant($tenantId, $roleId);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="UnassignUserFromTenant examples/tenant.php">
+    <summary><span><strong>UnassignUserFromTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Unassign a user from a tenant.
+ */
+function unassign_user_from_tenant(CamundaClient $client, string $tenantId, string $username): void
+{
+    $client-&gt;unassignUserFromTenant($tenantId, $username);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="UpdateTenant examples/tenant.php">
+    <summary><span><strong>UpdateTenant</strong><small>examples/tenant.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update tenant.
+ */
+function update_tenant(CamundaClient $client, string $tenantId, \Camunda\Orchestration\Api\Model\TenantUpdateRequest $tenantUpdateRequest): void
+{
+    $client-&gt;updateTenant($tenantId, $tenantUpdateRequest);
+}</code></pre>
+    <a href="../examples/tenant.php">Open source</a>
+  </details>  <details class="snippet" data-search="CreateUser examples/user.php">
+    <summary><span><strong>CreateUser</strong><small>examples/user.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Create user.
+ */
+function create_user(CamundaClient $client, \Camunda\Orchestration\Api\Model\UserRequest $userRequest): void
+{
+    $client-&gt;createUser($userRequest);
+}</code></pre>
+    <a href="../examples/user.php">Open source</a>
+  </details>  <details class="snippet" data-search="DeleteUser examples/user.php">
+    <summary><span><strong>DeleteUser</strong><small>examples/user.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Delete user.
+ */
+function delete_user(CamundaClient $client, string $username): void
+{
+    $client-&gt;deleteUser($username);
+}</code></pre>
+    <a href="../examples/user.php">Open source</a>
+  </details>  <details class="snippet" data-search="GetUser examples/user.php">
+    <summary><span><strong>GetUser</strong><small>examples/user.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Get user.
+ */
+function get_user(CamundaClient $client, string $username): void
+{
+    $client-&gt;getUser($username);
+}</code></pre>
+    <a href="../examples/user.php">Open source</a>
+  </details>  <details class="snippet" data-search="SearchUsers examples/user.php">
+    <summary><span><strong>SearchUsers</strong><small>examples/user.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Search users.
+ */
+function search_users(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\UserSearchQueryRequest $userSearchQueryRequest = null): void
+{
+    $client-&gt;searchUsers($userSearchQueryRequest);
+}</code></pre>
+    <a href="../examples/user.php">Open source</a>
+  </details>  <details class="snippet" data-search="UpdateUser examples/user.php">
+    <summary><span><strong>UpdateUser</strong><small>examples/user.php</small></span><em>source-backed</em></summary>
+    <pre><code>/**
+ * Update user.
+ */
+function update_user(CamundaClient $client, string $username, \Camunda\Orchestration\Api\Model\UserUpdateRequest $userUpdateRequest): void
+{
+    $client-&gt;updateUser($username, $userUpdateRequest);
+}</code></pre>
+    <a href="../examples/user.php">Open source</a>
+  </details></div>
+  </section></main>
+  <footer class="wrap">Generated from <code>examples/scenario-map.json</code>, source regions, and <code>docs/example-validation-results.json</code>. Do not edit this file by hand.</footer>
+  <script>document.getElementById('filter').addEventListener('input', function () { const n=this.value.toLowerCase().trim(); document.querySelectorAll('.snippet').forEach((e) => e.classList.toggle('hidden', n !== '' && !e.dataset.search.toLowerCase().includes(n))); });</script>
+</body>
+</html>

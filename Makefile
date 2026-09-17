@@ -1,4 +1,4 @@
-.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan examples advanced-examples check sync-readme sync-readme-check docs-md docs-docusaurus config-reference config-reference-check example-coverage
+.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan examples advanced-examples example-showcase example-report check sync-readme sync-readme-check docs-md docs-docusaurus config-reference config-reference-check example-coverage
 
 # Git ref/branch/tag/SHA in https://github.com/camunda/camunda.git to fetch the OpenAPI
 # spec from. Override like: `make generate SPEC_REF=stable/8.9`
@@ -77,6 +77,12 @@ advanced-examples:
 	php examples/advanced/order-worker/main.php
 	php examples/advanced/message-correlation/main.php
 	php examples/advanced/forked-worker/main.php
+
+example-showcase:
+	php examples/advanced/showcase/main.php $(if $(SCENARIO),--scenario=$(SCENARIO),)
+
+example-report:
+	php scripts/generate-example-validation-report.php
 
 docker-start:
 	docker compose -f docker/docker-compose.yaml up -d
