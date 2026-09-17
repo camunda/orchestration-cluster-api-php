@@ -59,6 +59,9 @@ return static function (array $ctx): void {
         }
 
         if ($src !== $orig) {
+            if (str_contains($file, '/src/Model/')) {
+                $src = patch_semantic_union_set_if_exists($src);
+            }
             file_put_contents($file, $src);
             ++$touched;
         }
@@ -109,6 +112,40 @@ function retype_union_name(string $src, string $name): string
     );
 
     return $src;
+}
+
+function patch_semantic_union_set_if_exists(string $src): string
+{
+    $needle = "        \$this->container[\$variableName] = \$fields[\$variableName] ?? \$defaultValue;";
+    if (!str_contains($src, $needle)) {
+        return $src;
+    }
+
+    $replacement = <<<'PHP'
+        $value = $fields[$variableName] ?? $defaultValue;
+        $semanticType = static::$openAPITypes[$variableName] ?? null;
+        if (is_string($semanticType)) {
+            $isArray = str_ends_with($semanticType, '[]');
+            $elementType = $isArray ? substr($semanticType, 0, -2) : $semanticType;
+            if (
+                is_string($elementType)
+                && is_subclass_of($elementType, \Camunda\Orchestration\Semantic\SemanticKey::class)
+            ) {
+                if (is_string($value)) {
+                    $value = new $elementType($value);
+                } elseif ($isArray && is_array($value)) {
+                    foreach ($value as $index => $item) {
+                        if (is_string($item)) {
+                            $value[$index] = new $elementType($item);
+                        }
+                    }
+                }
+            }
+        }
+        $this->container[$variableName] = $value;
+PHP;
+
+    return str_replace($needle, $replacement, $src);
 }
 
 function semantic_union_preg_quote_replacement(string $s): string

@@ -248,7 +248,27 @@ class DeleteResourceResponse implements ModelInterface, ArrayAccess, JsonSeriali
             $this->openAPINullablesSetToNull[] = $variableName;
         }
 
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $value = $fields[$variableName] ?? $defaultValue;
+        $semanticType = static::$openAPITypes[$variableName] ?? null;
+        if (is_string($semanticType)) {
+            $isArray = str_ends_with($semanticType, '[]');
+            $elementType = $isArray ? substr($semanticType, 0, -2) : $semanticType;
+            if (
+                is_string($elementType)
+                && is_subclass_of($elementType, \Camunda\Orchestration\Semantic\SemanticKey::class)
+            ) {
+                if (is_string($value)) {
+                    $value = new $elementType($value);
+                } elseif ($isArray && is_array($value)) {
+                    foreach ($value as $index => $item) {
+                        if (is_string($item)) {
+                            $value[$index] = new $elementType($item);
+                        }
+                    }
+                }
+            }
+        }
+        $this->container[$variableName] = $value;
     }
 
     /**
