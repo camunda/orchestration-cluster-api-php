@@ -81,6 +81,23 @@ final class OperationHostTest extends TestCase
         self::assertSame('http://manual.example.test:8081/manual/cluster/v2/status', (string) $request->getUri());
     }
 
+    public function testRelativeMutatedHostKeepsPathPrefixWhenAbsoluteOverrideOmitsBasePath(): void
+    {
+        $client = $this->client('https://cluster.example.test/v2');
+        $api = $client->api(ClusterApi::class);
+        $api->getConfig()
+            ->setHost('/proxy/v2')
+            ->setOperationHostVariables([
+                'schema' => 'http',
+                'host' => 'manual.example.test',
+                'port' => '8081',
+            ]);
+
+        $request = $api->getClusterStatusRequest();
+
+        self::assertSame('http://manual.example.test:8081/proxy/cluster/v2/status', (string) $request->getUri());
+    }
+
     public function testRelativeMutatedHostStaysRelativeForClusterAdminOperations(): void
     {
         $client = $this->client('https://cluster.example.test/v2');

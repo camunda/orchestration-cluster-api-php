@@ -53,7 +53,11 @@ final class OperationHost
 
         if (self::isRelativePath($parts, $restAddress)) {
             if (self::hasAbsoluteOverride($merged)) {
-                return ApiConfiguration::getHostString($hostSettings, $hostIndex, $merged);
+                return ApiConfiguration::getHostString(
+                    $hostSettings,
+                    $hostIndex,
+                    array_replace(['basePath' => self::basePath($parts)], $merged),
+                );
             }
 
             if (self::hasPartialAbsoluteOverride($merged)) {
