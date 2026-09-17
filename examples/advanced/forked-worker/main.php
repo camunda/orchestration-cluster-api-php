@@ -79,7 +79,12 @@ function run(): void
         $marker = ForkedWorkerSupport::waitForHandledByPidMarker($handledByPidFile);
         $handledByPid = ForkedWorkerSupport::validateHandledByPidMarker($marker, $runId, $parentPid);
         $completed = true;
-        printf("Forked worker completed process instance %s (%s).\n", $instance, $result->getState()->value);
+        printf(
+            "Forked worker child PID %s completed process instance %s (%s).\n",
+            $handledByPid,
+            $instance,
+            $result->getState()->value,
+        );
     } catch (\Throwable $error) {
         $failure = $error;
     } finally {
