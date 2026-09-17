@@ -19,21 +19,21 @@ final class DeploymentHelperTest extends TestCase
     /** @var list<RequestInterface> */
     private array $requests = [];
 
-    private string $resourcePath;
+    /** @var list<string> */
+    private array $resourcePaths = [];
 
     protected function setUp(): void
     {
-        $path = tempnam(sys_get_temp_dir(), 'orchestration-resource-');
-        self::assertNotFalse($path);
-        $this->resourcePath = $path . '.bpmn';
-        rename($path, $this->resourcePath);
-        file_put_contents($this->resourcePath, '<definitions id="test" />');
+        $this->createResourceFile('<definitions id="test-1" />');
+        $this->createResourceFile('<definitions id="test-2" />');
     }
 
     protected function tearDown(): void
     {
-        if (is_file($this->resourcePath)) {
-            unlink($this->resourcePath);
+        foreach ($this->resourcePaths as $resourcePath) {
+            if (is_file($resourcePath)) {
+                unlink($resourcePath);
+            }
         }
     }
 
@@ -58,17 +58,30 @@ final class DeploymentHelperTest extends TestCase
             )),
         );
 
-        $deployment = $client->deployResourcesFromFiles($this->resourcePath);
+        $deployment = $client->deployResourcesFromFiles(...$this->resourcePaths);
 
         self::assertInstanceOf(DeploymentResult::class, $deployment);
         self::assertCount(1, $this->requests);
         self::assertStringContainsString('multipart/form-data', $this->requests[0]->getHeaderLine('Content-Type'));
 
         $body = (string) $this->requests[0]->getBody();
-        self::assertStringContainsString('name="resources"', $body);
+        self::assertSame(2, substr_count($body, 'name="resources"'));
         self::assertStringNotContainsString('name="resources[0]"', $body);
+        self::assertStringNotContainsString('name="resources[1]"', $body);
+        self::assertStringContainsString('test-1', $body);
+        self::assertStringContainsString('test-2', $body);
         self::assertStringContainsString('name="tenantId"', $body);
         self::assertStringContainsString("\r\nacme\r\n", $body);
+    }
+
+    private function createResourceFile(string $contents): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'orchestration-resource-');
+        self::assertNotFalse($path);
+        $resourcePath = $path . '.bpmn';
+        rename($path, $resourcePath);
+        file_put_contents($resourcePath, $contents);
+        $this->resourcePaths[] = $resourcePath;
     }
 
     private function httpClient(Response $response): GuzzleClient
