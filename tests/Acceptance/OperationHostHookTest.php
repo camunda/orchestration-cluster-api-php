@@ -85,6 +85,8 @@ final class ClusterApi
 {
     public function request(): void
     {
+        $primaryHosts = $this->getPrimaryHosts();
+        $ignoredHost = Configuration::getHostString($primaryHosts, $hostSelection, $variablesMap);
         $serverSettings = $this->getHostSettingsForstatus();
         $resolvedHost = Configuration::getHostString(
             $serverSettings,
