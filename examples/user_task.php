@@ -37,3 +37,83 @@ function assign_user_task(CamundaClient $client, UserTaskKey $key): void
     $api->assignUserTask((string) $key, $request);
 }
 // endregion AssignUserTask
+
+// region SearchUserTasks
+/**
+ * Search user tasks.
+ */
+function search_user_tasks(CamundaClient $client, ?\Camunda\Orchestration\Api\Model\UserTaskSearchQuery $userTaskSearchQuery = null): void
+{
+    $client->searchUserTasks($userTaskSearchQuery);
+}
+// endregion SearchUserTasks
+
+// region GetUserTask
+/**
+ * Get user task.
+ */
+function get_user_task(CamundaClient $client, string $userTaskKey): void
+{
+    $client->getUserTask($userTaskKey);
+}
+// endregion GetUserTask
+
+// region UpdateUserTask
+/**
+ * Update user task.
+ */
+function update_user_task(CamundaClient $client, string $userTaskKey, ?\Camunda\Orchestration\Api\Model\UserTaskUpdateRequest $userTaskUpdateRequest = null): void
+{
+    $client->updateUserTask($userTaskKey, $userTaskUpdateRequest);
+}
+// endregion UpdateUserTask
+
+// region UnassignUserTask
+/**
+ * Unassign user task.
+ */
+function unassign_user_task(CamundaClient $client, string $userTaskKey): void
+{
+    $client->unassignUserTask($userTaskKey);
+}
+// endregion UnassignUserTask
+
+// region SearchUserTaskAuditLogs
+/**
+ * Search user task audit logs.
+ */
+function search_user_task_audit_logs(CamundaClient $client, string $userTaskKey, ?\Camunda\Orchestration\Api\Model\UserTaskAuditLogSearchQueryRequest $userTaskAuditLogSearchQueryRequest = null): void
+{
+    $client->searchUserTaskAuditLogs($userTaskKey, $userTaskAuditLogSearchQueryRequest);
+}
+// endregion SearchUserTaskAuditLogs
+
+// region SearchUserTaskEffectiveVariables
+/**
+ * Search user task effective variables.
+ */
+function search_user_task_effective_variables(CamundaClient $client, string $userTaskKey, ?bool $truncateValues = null, ?\Camunda\Orchestration\Api\Model\UserTaskEffectiveVariableSearchQueryRequest $userTaskEffectiveVariableSearchQueryRequest = null): void
+{
+    $client->searchUserTaskEffectiveVariables($userTaskKey, $truncateValues, $userTaskEffectiveVariableSearchQueryRequest);
+}
+// endregion SearchUserTaskEffectiveVariables
+
+// region GetUserTaskForm
+/**
+ * Get user task form.
+ */
+function get_user_task_form(CamundaClient $client, string $userTaskKey): void
+{
+    $client->getUserTaskForm($userTaskKey);
+}
+// endregion GetUserTaskForm
+
+// region SearchUserTaskVariables
+/**
+ * Search user task variables.
+ */
+function search_user_task_variables(CamundaClient $client, string $userTaskKey, ?bool $truncateValues = null, ?\Camunda\Orchestration\Api\Model\UserTaskVariableSearchQueryRequest $userTaskVariableSearchQueryRequest = null): void
+{
+    $client->searchUserTaskVariables($userTaskKey, $truncateValues, $userTaskVariableSearchQueryRequest);
+}
+// endregion SearchUserTaskVariables
