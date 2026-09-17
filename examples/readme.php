@@ -13,13 +13,20 @@ namespace Camunda\Orchestration\Examples;
 
 use Camunda\Orchestration\Api\Api\ProcessInstanceApi;
 use Camunda\Orchestration\Api\Model\ActivatedJobResult;
+use Camunda\Orchestration\Api\Model\ProcessDefinitionSearchQueryResult;
 use Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById;
+use Camunda\Orchestration\Api\Model\TopologyResponse;
+use Camunda\Orchestration\Auth\AuthProviderFactory;
 use Camunda\Orchestration\CamundaAsyncClient;
 use Camunda\Orchestration\CamundaClient;
 use Camunda\Orchestration\Config\CamundaConfiguration;
+use Camunda\Orchestration\Http\AuthMiddleware;
 use Camunda\Orchestration\Semantic\ProcessDefinitionId;
 use Camunda\Orchestration\Worker\JobActionClient;
+use Camunda\Orchestration\Worker\JobHandler;
 use Camunda\Orchestration\Worker\JobWorkerOptions;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\HandlerStack;
 
 // region ReadmeSyncClient
 function readme_sync_client(): void
@@ -43,6 +50,25 @@ function readme_async_client(): void
         ->wait();
 }
 // endregion ReadmeAsyncClient
+
+// region ReadmeParallelAsyncReads
+function parallel_async_reads(CamundaAsyncClient $client): void
+{
+    // Requests are issued before either promise is awaited.
+    $topologyPromise = $client->getTopology();
+    $definitionsPromise = $client->searchProcessDefinitions();
+
+    $topology = $topologyPromise->wait();
+    $definitions = $definitionsPromise->wait();
+
+    if ($topology instanceof TopologyResponse) {
+        printf("Connected to %d broker(s).\n", count($topology->getBrokers()));
+    }
+    if ($definitions instanceof ProcessDefinitionSearchQueryResult) {
+        printf("Found %d process definitions.\n", count($definitions->getItems()));
+    }
+}
+// endregion ReadmeParallelAsyncReads
 
 // region ReadmeSemanticTypes
 function readme_semantic_types(): void
@@ -93,6 +119,45 @@ function readme_basic_auth(): void
 }
 // endregion ReadmeBasicAuth
 
+// region ReadmeEnvFileClient
+function env_file_client(): CamundaClient
+{
+    // Set CAMUNDA_LOAD_ENVFILE=true (or a path) before starting PHP. Real
+    // environment variables and explicit overrides still take precedence.
+    return CamundaClient::fromEnvironment();
+}
+// endregion ReadmeEnvFileClient
+
+// region ReadmeMtlsClient
+function mtls_client(): CamundaClient
+{
+    return CamundaClient::fromConfiguration(new CamundaConfiguration(
+        restAddress: 'https://my-cluster.example.com/v2',
+        authStrategy: 'OAUTH',
+        clientId: 'my-client-id',
+        clientSecret: 'my-client-secret',
+        mtlsCertPath: '/run/secrets/client.crt',
+        mtlsKeyPath: '/run/secrets/client.key',
+        mtlsCaPath: '/run/secrets/cluster-ca.pem',
+    ));
+}
+// endregion ReadmeMtlsClient
+
+// region ReadmeCustomHttpClient
+function custom_http_client(CamundaConfiguration $configuration): CamundaClient
+{
+    // Supplying a Guzzle client replaces the SDK-built stack. Add the SDK auth
+    // middleware and any proxy, tracing, or mTLS options your application needs.
+    $stack = HandlerStack::create();
+    $stack->push(new AuthMiddleware(AuthProviderFactory::fromConfiguration($configuration)), 'camunda_auth');
+
+    return CamundaClient::fromConfiguration(
+        $configuration,
+        new GuzzleClient(['handler' => $stack, 'http_errors' => false]),
+    );
+}
+// endregion ReadmeCustomHttpClient
+
 // region ReadmeDeployResources
 function readme_deploy_resources(): void
 {
@@ -120,6 +185,28 @@ function readme_job_worker(): void
     });
 }
 // endregion ReadmeJobWorker
+
+// region ReadmeObjectJobHandler
+final class PaymentJobHandler implements JobHandler
+{
+    public function handle(ActivatedJobResult $job, JobActionClient $action): ?array
+    {
+        $variables = $job->getVariables();
+        if (!isset($variables['paymentId'])) {
+            $action->error('MISSING_PAYMENT_ID', 'The payment job has no payment id.');
+            return null;
+        }
+
+        return ['paymentStatus' => 'approved'];
+    }
+}
+
+function object_job_handler(CamundaClient $client): void
+{
+    $worker = $client->createJobWorker(new JobWorkerOptions(type: 'process-payment'));
+    $worker->run(new PaymentJobHandler());
+}
+// endregion ReadmeObjectJobHandler
 
 // region ReadmeFlatFacade
 function readme_flat_facade(): void
