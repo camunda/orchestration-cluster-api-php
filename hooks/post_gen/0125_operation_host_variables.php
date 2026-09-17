@@ -87,6 +87,46 @@ $operationHost = Configuration::getHostString(
             );
 PHP;
     $hostSettingsAssignment = '$hostSettings = $this->getHostSettingsFor';
+    $unconfiguredUrl = <<<'PHP'
+                "url" => "{schema}://{host}:{port}",
+                "description" => "No description provided",
+                "variables" => [
+                    "host" => [
+                    "description" => "The hostname of the Orchestration Cluster REST Gateway.",
+                    "default_value" => "localhost",
+                    ],
+                    "port" => [
+                    "description" => "The port of the Orchestration Cluster REST API server.",
+                    "default_value" => "8080",
+                    ],
+                    "schema" => [
+                    "description" => "The schema of the Orchestration Cluster REST API server.",
+                    "default_value" => "http",
+                    ]
+                ]
+PHP;
+    $configuredUrl = <<<'PHP'
+                "url" => "{schema}://{host}:{port}{basePath}",
+                "description" => "No description provided",
+                "variables" => [
+                    "host" => [
+                    "description" => "The hostname of the Orchestration Cluster REST Gateway.",
+                    "default_value" => "localhost",
+                    ],
+                    "port" => [
+                    "description" => "The port of the Orchestration Cluster REST API server.",
+                    "default_value" => "8080",
+                    ],
+                    "schema" => [
+                    "description" => "The schema of the Orchestration Cluster REST API server.",
+                    "default_value" => "http",
+                    ],
+                    "basePath" => [
+                    "description" => "The path prefix of the Orchestration Cluster REST Gateway.",
+                    "default_value" => "",
+                    ]
+                ]
+PHP;
     $operationHostBuilders = 0;
     foreach (glob($outDir . '/src/Api/*.php') ?: [] as $file) {
         $source = (string) file_get_contents($file);
@@ -105,9 +145,22 @@ PHP;
 
         if ($unconfigured > 0) {
             $source = str_replace($unconfiguredBuilder, $configuredBuilder, $source);
-            if (file_put_contents($file, $source) === false) {
-                throw new RuntimeException("hook 0125: cannot write $file");
-            }
+        }
+
+        $unconfiguredUrls = substr_count($source, $unconfiguredUrl);
+        $configuredUrls = substr_count($source, $configuredUrl);
+        if ($expected !== $unconfiguredUrls + $configuredUrls) {
+            throw new RuntimeException(
+                "hook 0125: expected $expected operation-specific host URL template(s) in $file, found $unconfiguredUrls unconfigured and $configuredUrls configured",
+            );
+        }
+
+        if ($unconfiguredUrls > 0) {
+            $source = str_replace($unconfiguredUrl, $configuredUrl, $source);
+        }
+
+        if (($unconfigured > 0 || $unconfiguredUrls > 0) && file_put_contents($file, $source) === false) {
+            throw new RuntimeException("hook 0125: cannot write $file");
         }
 
         $operationHostBuilders += $expected;

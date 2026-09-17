@@ -32,6 +32,14 @@ final class OperationHostHookTest extends TestCase
                 $api,
             );
             self::assertStringContainsString(
+                '"url" => "{schema}://{host}:{port}{basePath}"',
+                $api,
+            );
+            self::assertStringContainsString(
+                '"basePath" => [',
+                $api,
+            );
+            self::assertStringContainsString(
                 'Configuration::getHostString($primaryHosts, $hostSelection, $variablesMap)',
                 $api,
             );
@@ -111,6 +119,30 @@ final class ClusterApi
         $hostSettings = $this->getHostSettingsForstatus();
         $operationHost = Configuration::getHostString($hostSettings, $hostIndex, $variables);
     }
+
+    protected function getHostSettingsForstatus(): array
+    {
+        return [
+            [
+                "url" => "{schema}://{host}:{port}",
+                "description" => "No description provided",
+                "variables" => [
+                    "host" => [
+                    "description" => "The hostname of the Orchestration Cluster REST Gateway.",
+                    "default_value" => "localhost",
+                    ],
+                    "port" => [
+                    "description" => "The port of the Orchestration Cluster REST API server.",
+                    "default_value" => "8080",
+                    ],
+                    "schema" => [
+                    "description" => "The schema of the Orchestration Cluster REST API server.",
+                    "default_value" => "http",
+                    ]
+                ]
+            ]
+        ];
+    }
 }
 PHP;
     }
@@ -130,6 +162,30 @@ final class ClusterApi
             $hostIndex,
             array_merge([], $variables),
         );
+    }
+
+    protected function getHostSettingsForstatus(): array
+    {
+        return [
+            [
+                "url" => "{schema}://{host}:{port}",
+                "description" => "No description provided",
+                "variables" => [
+                    "host" => [
+                    "description" => "The hostname of the Orchestration Cluster REST Gateway.",
+                    "default_value" => "localhost",
+                    ],
+                    "port" => [
+                    "description" => "The port of the Orchestration Cluster REST API server.",
+                    "default_value" => "8080",
+                    ],
+                    "schema" => [
+                    "description" => "The schema of the Orchestration Cluster REST API server.",
+                    "default_value" => "http",
+                    ]
+                ]
+            ]
+        ];
     }
 }
 PHP;

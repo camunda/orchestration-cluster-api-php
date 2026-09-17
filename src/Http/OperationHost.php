@@ -9,7 +9,7 @@ use Camunda\Orchestration\Exception\ConfigurationException;
 final class OperationHost
 {
     /**
-     * @return array{schema: string, host: string, port: string}
+     * @return array{schema: string, host: string, port: string, basePath: string}
      */
     public static function variables(string $restAddress): array
     {
@@ -36,6 +36,22 @@ final class OperationHost
             'schema' => $scheme,
             'host' => $host,
             'port' => (string) $port,
+            'basePath' => self::basePath($parts),
         ];
+    }
+
+    /**
+     * @param array<string, int|string>|false $parts
+     */
+    private static function basePath(array|false $parts): string
+    {
+        $path = is_array($parts) ? $parts['path'] ?? '' : '';
+        if (!is_string($path) || $path === '' || $path === '/v2') {
+            return '';
+        }
+
+        $basePath = rtrim((string) preg_replace('#/v\d+$#', '', rtrim($path, '/')), '/');
+
+        return $basePath === '' || $basePath === '/' ? '' : $basePath;
     }
 }
