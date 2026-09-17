@@ -6,9 +6,11 @@ namespace Camunda\Orchestration\Examples\Advanced\ForkedWorker;
 
 require_once dirname(__DIR__, 3) . '/vendor/autoload.php';
 require_once dirname(__DIR__) . '/internal/ExampleSupport.php';
+require_once dirname(__DIR__) . '/internal/ForkedWorkerSupport.php';
 
 use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\Examples\Advanced\Internal\ExampleSupport;
+use Camunda\Orchestration\Examples\Advanced\Internal\ForkedWorkerSupport;
 use Camunda\Orchestration\Semantic\ProcessInstanceKey;
 use Camunda\Orchestration\Worker\JobActionClient;
 use Camunda\Orchestration\Worker\JobWorkerOptions;
@@ -55,11 +57,7 @@ function run(): void
             $processed = $worker->pollOnce(
                 static function (ActivatedJobResult $job, JobActionClient $action) use ($handledByPidFile, $parentPid, $runId): array {
                     $handledByPid = (string) getmypid();
-                    $marker = json_encode([
-                        'handledByPid' => $handledByPid,
-                        'handledByParentPid' => (string) $parentPid,
-                        'runId' => $runId,
-                    ], JSON_THROW_ON_ERROR);
+                    $marker = ForkedWorkerSupport::encodePidMarker($handledByPid, $parentPid, $runId);
                     if (file_put_contents($handledByPidFile, $marker) === false) {
                         throw new \RuntimeException('Cannot persist the worker PID marker.');
                     }
@@ -79,25 +77,8 @@ function run(): void
         }
 
         $result = ExampleSupport::waitForCompletion($client, $instance);
-        $marker = waitForHandledByPidMarker($handledByPidFile);
-        if (($marker['runId'] ?? null) !== $runId) {
-            throw new \RuntimeException('The forked worker PID marker does not belong to this run.');
-        }
-        if (($marker['handledByParentPid'] ?? null) !== (string) $parentPid) {
-            throw new \RuntimeException(
-                sprintf(
-                    'Expected the forked worker to report parent PID %d, got %s.',
-                    $parentPid,
-                    (string) ($marker['handledByParentPid'] ?? 'unknown'),
-                ),
-            );
-        }
-        $handledByPid = (string) ($marker['handledByPid'] ?? '');
-        if ($handledByPid === (string) $parentPid) {
-            throw new \RuntimeException(
-                sprintf('Expected a forked worker child process, but job ran in parent PID %d.', $parentPid),
-            );
-        }
+        $marker = ForkedWorkerSupport::waitForHandledByPidMarker($handledByPidFile);
+        $handledByPid = ForkedWorkerSupport::validateHandledByPidMarker($marker, $runId, $parentPid);
         $completed = true;
         printf("Forked worker completed process instance %s (%s).\n", $instance, $result->getState()->value);
     } catch (\Throwable $error) {
@@ -114,8 +95,8 @@ function run(): void
         }
 
         foreach ([
-            cleanupFile($handledByPidFile, 'worker PID marker'),
-            cleanupFile($resource, 'BPMN resource'),
+            ForkedWorkerSupport::cleanupFile($handledByPidFile, 'worker PID marker'),
+            ForkedWorkerSupport::cleanupFile($resource, 'BPMN resource'),
         ] as $cleanupError) {
             if ($cleanupError !== null) {
                 $cleanupErrors[] = $cleanupError;
@@ -136,57 +117,6 @@ function run(): void
         }
         throw $failure;
     }
-}
-
-function cleanupFile(string $path, string $label): ?string
-{
-    if (is_file($path) && !unlink($path)) {
-        return "Cannot remove temporary $label file: $path";
-    }
-
-    return null;
-}
-
-/**
- * @return array{handledByPid?: string, handledByParentPid?: string, runId?: string}
- */
-function waitForHandledByPidMarker(string $path, int $timeoutSeconds = 5): array
-{
-    $deadline = microtime(true) + $timeoutSeconds;
-    $lastState = 'PID marker not yet recorded';
-
-    do {
-        $marker = file_get_contents($path);
-        if ($marker !== false) {
-            $marker = trim($marker);
-            if ($marker !== '') {
-                try {
-                    $decoded = json_decode($marker, true, flags: JSON_THROW_ON_ERROR);
-                } catch (\JsonException) {
-                    $lastState = 'PID marker is invalid';
-                    usleep(200_000);
-                    continue;
-                }
-                if (is_array($decoded)) {
-                    return $decoded;
-                }
-
-                $lastState = 'PID marker payload is not an object';
-                usleep(200_000);
-                continue;
-            }
-
-            $lastState = 'PID marker is still empty';
-        } else {
-            $lastState = 'PID marker is not readable';
-        }
-
-        usleep(200_000);
-    } while (microtime(true) < $deadline);
-
-    throw new \RuntimeException(
-        "The forked worker did not record a handler PID within $timeoutSeconds seconds ($lastState).",
-    );
 }
 
 try {

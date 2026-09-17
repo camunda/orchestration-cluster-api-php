@@ -30,6 +30,26 @@ final class FacadeCoverageTest extends TestCase
         $this->specOperationsFromMetadata(dirname(__DIR__, 2) . '/external-spec/bundled/does-not-exist.json');
     }
 
+    public function testSpecOperationsFailsWhenIntegrityCountIsMissing(): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'facade-coverage-metadata-');
+        self::assertIsString($path);
+        file_put_contents($path, (string) json_encode([
+            'operations' => [
+                ['operationId' => 'getWorkflow'],
+            ],
+        ], JSON_THROW_ON_ERROR));
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Spec metadata has no integrity.totalOperations count.');
+
+        try {
+            $this->specOperationsFromMetadata($path);
+        } finally {
+            unlink($path);
+        }
+    }
+
     /**
      * @return list<string>
      */
