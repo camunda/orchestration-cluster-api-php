@@ -106,7 +106,7 @@ class FormDataProcessor
             $currentName .= $currentPrefix . $key;
 
             if (is_array($val) && !empty($val)) {
-                if (self::containsOnlyFileValues($val)) {
+                if ($currentName === 'resources' && self::containsOnlyFileValues($val)) {
                     $result[$currentName] = array_values($val);
                 } else {
                     $currentName .= $currentSuffix;

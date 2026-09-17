@@ -17,7 +17,7 @@ return static function (array $ctx): void {
     }
 
     $source = (string) file_get_contents($file);
-    $hasNewFlatten = str_contains($source, 'if (self::containsOnlyFileValues($val)) {');
+    $hasNewFlatten = str_contains($source, 'if ($currentName === \'resources\' && self::containsOnlyFileValues($val)) {');
     $hasOldHelper = str_contains($source, 'private static function containsFileValue');
     $hasNewHelper = str_contains($source, 'private static function containsOnlyFileValues');
     if ($hasNewFlatten && $hasNewHelper && !$hasOldHelper) {
@@ -27,7 +27,7 @@ return static function (array $ctx): void {
 
     $flattenReplacement = <<<'PHP'
             if (is_array($val) && !empty($val)) {
-                if (self::containsOnlyFileValues($val)) {
+                if ($currentName === 'resources' && self::containsOnlyFileValues($val)) {
                     $result[$currentName] = array_values($val);
                 } else {
                     $currentName .= $currentSuffix;
@@ -46,6 +46,16 @@ PHP,
             if (is_array($val) && !empty($val)) {
                 if (array_is_list($val) && self::containsFileValue($val)) {
                     $result[$currentName] = $val;
+                } else {
+                    $currentName .= $currentSuffix;
+                    $result += self::flatten($val, $currentName);
+                }
+            } else {
+PHP,
+        <<<'PHP'
+            if (is_array($val) && !empty($val)) {
+                if (self::containsOnlyFileValues($val)) {
+                    $result[$currentName] = array_values($val);
                 } else {
                     $currentName .= $currentSuffix;
                     $result += self::flatten($val, $currentName);

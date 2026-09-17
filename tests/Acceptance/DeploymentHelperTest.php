@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Tests\Acceptance;
 
+use Camunda\Orchestration\Api\Model\DocumentMetadata;
 use Camunda\Orchestration\Api\Model\DeploymentResult;
 use Camunda\Orchestration\CamundaClient;
 use Camunda\Orchestration\Config\ConfigResolver;
@@ -100,6 +101,48 @@ final class DeploymentHelperTest extends TestCase
         $this->assertRepeatedResourceParts((string) $this->requests[0]->getBody());
         self::assertStringNotContainsString('name="resources[2]"', (string) $this->requests[0]->getBody());
         self::assertStringNotContainsString('name="resources[5]"', (string) $this->requests[0]->getBody());
+    }
+
+    public function testCreateDocumentsPreservesSparseFileIndexesForMetadataAlignment(): void
+    {
+        $client = CamundaClient::fromConfiguration(
+            ConfigResolver::resolve(
+                overrides: [
+                    'CAMUNDA_AUTH_STRATEGY' => 'NONE',
+                ],
+                environment: [],
+            ),
+            $this->httpClient(new Response(
+                200,
+                ['Content-Type' => 'application/json'],
+                (string) json_encode([
+                    'items' => [],
+                ]),
+            )),
+        );
+
+        $client->createDocuments(
+            files: [
+                2 => new \SplFileObject($this->resourcePaths[0], 'r'),
+                5 => new \SplFileObject($this->resourcePaths[1], 'r'),
+            ],
+            metadataList: [
+                2 => new DocumentMetadata(['fileName' => 'first.bpmn']),
+                5 => new DocumentMetadata(['fileName' => 'second.bpmn']),
+            ],
+        );
+
+        self::assertCount(1, $this->requests);
+        self::assertStringContainsString('multipart/form-data', $this->requests[0]->getHeaderLine('Content-Type'));
+
+        $body = (string) $this->requests[0]->getBody();
+        self::assertStringContainsString('name="files[2]"', $body);
+        self::assertStringContainsString('name="files[5]"', $body);
+        self::assertStringContainsString('name="metadataList[2][fileName]"', $body);
+        self::assertStringContainsString("\r\nfirst.bpmn\r\n", $body);
+        self::assertStringContainsString('name="metadataList[5][fileName]"', $body);
+        self::assertStringContainsString("\r\nsecond.bpmn\r\n", $body);
+        self::assertStringNotContainsString('name="files"', $body);
     }
 
     private function createResourceFile(string $contents): void
