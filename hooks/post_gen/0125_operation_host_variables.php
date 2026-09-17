@@ -125,7 +125,7 @@ function patch_operation_host_calls(string $source, string $replacement, string 
         $closeParen = find_matching_paren_operation_hosts($source, $openParen, $file);
         $arguments = parse_operation_host_arguments($source, $openParen + 1, $closeParen, $file);
 
-        if (count($arguments) === 3 && str_contains($arguments[2]['value'], '$variables')) {
+        if (count($arguments) === 3 && uses_operation_host_variables_argument($arguments[2]['value'])) {
             $thirdArgument = trim($arguments[2]['value']);
             if ($thirdArgument === '$variables') {
                 $calls[] = $arguments[2];
@@ -299,4 +299,15 @@ function skip_operation_host_string(string $source, int $index, string $quote): 
     }
 
     return $length - 1;
+}
+
+function uses_operation_host_variables_argument(string $argument): bool
+{
+    foreach (token_get_all('<?php ' . $argument) as $token) {
+        if (is_array($token) && $token[0] === T_VARIABLE && $token[1] === '$variables') {
+            return true;
+        }
+    }
+
+    return false;
 }
