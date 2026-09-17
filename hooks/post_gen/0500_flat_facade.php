@@ -210,7 +210,7 @@ function write_trait(string $target, string $traitName, string $flavour, string 
         . " * @internal\n"
         . " */\n"
         . "trait {$traitName}\n"
-        . "{\n\n";
+        . "{\n";
 
     file_put_contents($target, $header . $methods . "}\n");
 }
