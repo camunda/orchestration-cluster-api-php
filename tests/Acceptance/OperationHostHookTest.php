@@ -11,7 +11,7 @@ final class OperationHostHookTest extends TestCase
 {
     public function testHookPatchesOperationHostCallsites(): void
     {
-        $dir = $this->createGeneratedFixture($this->unpatchedApiSource());
+        $dir = $this->createGeneratedFixture($this->multilineUnpatchedApiSource());
 
         try {
             $hook = require dirname(__DIR__, 2) . '/hooks/post_gen/0125_operation_host_variables.php';
@@ -35,13 +35,13 @@ final class OperationHostHookTest extends TestCase
 
     public function testHookFailsWhenOperationHostCallsiteShapeChanges(): void
     {
-        $dir = $this->createGeneratedFixture($this->changedApiSource());
+        $dir = $this->createGeneratedFixture($this->divergentApiSource());
 
         try {
             $hook = require dirname(__DIR__, 2) . '/hooks/post_gen/0125_operation_host_variables.php';
 
             $this->expectException(RuntimeException::class);
-            $this->expectExceptionMessage('hook 0125: expected to patch 1 operation-specific host call(s)');
+            $this->expectExceptionMessage('hook 0125: expected to classify 1 operation-specific host call(s)');
 
             $hook(['out_dir' => $dir]);
         } finally {
@@ -76,23 +76,7 @@ final class Configuration
 PHP;
     }
 
-    private function unpatchedApiSource(): string
-    {
-        return <<<'PHP'
-<?php
-
-final class ClusterApi
-{
-    public function request(): void
-    {
-        $hostSettings = $this->getHostSettingsForstatus();
-        $operationHost = Configuration::getHostString($hostSettings, $hostIndex, $variables);
-    }
-}
-PHP;
-    }
-
-    private function changedApiSource(): string
+    private function multilineUnpatchedApiSource(): string
     {
         return <<<'PHP'
 <?php
@@ -106,6 +90,26 @@ final class ClusterApi
             $hostSettings,
             $hostIndex,
             $variables,
+        );
+    }
+}
+PHP;
+    }
+
+    private function divergentApiSource(): string
+    {
+        return <<<'PHP'
+<?php
+
+final class ClusterApi
+{
+    public function request(): void
+    {
+        $hostSettings = $this->getHostSettingsForstatus();
+        $operationHost = Configuration::getHostString(
+            $hostSettings,
+            $hostIndex,
+            array_merge([], $variables),
         );
     }
 }

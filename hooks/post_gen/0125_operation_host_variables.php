@@ -81,42 +81,40 @@ $operationHost = Configuration::getHostString(
                 array_replace($this->config->getOperationHostVariables(), $variables),
             );
 PHP;
-    $patchedNeedle = 'array_replace($this->config->getOperationHostVariables(), $variables)';
-    $hostSettingsNeedle = '$hostSettings = $this->getHostSettingsFor';
+    $callsiteNeedle = '$operationHost = Configuration::getHostString(';
+    $unpatchedPattern = '/\$operationHost = Configuration::getHostString\(\s*\$hostSettings,\s*\$hostIndex,\s*\$variables,\s*\);/m';
+    $patchedPattern = '/\$operationHost = Configuration::getHostString\(\s*\$hostSettings,\s*\$hostIndex,\s*array_replace\(\$this->config->getOperationHostVariables\(\), \$variables\),\s*\);/m';
     $patched = 0;
     foreach (glob($ctx['out_dir'] . '/src/Api/*.php') ?: [] as $file) {
         $source = (string) file_get_contents($file);
-        $expected = substr_count($source, $hostSettingsNeedle);
+        $expected = substr_count($source, $callsiteNeedle);
         if ($expected === 0) {
             continue;
         }
 
-        $count = substr_count($source, $needle);
-        $alreadyPatched = substr_count($source, $patchedNeedle);
+        $count = preg_match_all($unpatchedPattern, $source);
+        $alreadyPatched = preg_match_all($patchedPattern, $source);
+
+        if (!is_int($count) || !is_int($alreadyPatched) || $count + $alreadyPatched !== $expected) {
+            throw new RuntimeException(
+                "hook 0125: expected to classify $expected operation-specific host call(s) in $file, found $count unpatched and $alreadyPatched patched",
+            );
+        }
 
         if ($count === 0) {
-            if ($alreadyPatched === $expected) {
-                $patched += $alreadyPatched;
+            $patched += $alreadyPatched;
 
-                continue;
-            }
-
-            throw new RuntimeException(
-                "hook 0125: expected to patch $expected operation-specific host call(s) in $file, found none",
-            );
+            continue;
         }
 
-        if ($count !== $expected || $alreadyPatched !== 0) {
-            throw new RuntimeException(
-                "hook 0125: expected $expected unpatched operation-specific host call(s) in $file, found $count unpatched and $alreadyPatched patched",
-            );
+        $source = preg_replace_callback($unpatchedPattern, static fn (): string => $replacement, $source, -1, $applied);
+        if (!is_string($source) || $applied !== $count) {
+            throw new RuntimeException("hook 0125: failed to patch $count operation-specific host call(s) in $file");
         }
-
-        $source = str_replace($needle, $replacement, $source);
         if (file_put_contents($file, $source) === false) {
             throw new RuntimeException("hook 0125: cannot write $file");
         }
-        $patched += $count;
+        $patched += $expected;
     }
 
     fwrite(STDOUT, "  [operation-hosts] configured $patched operation-specific server calls\n");
