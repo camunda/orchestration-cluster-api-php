@@ -34,6 +34,35 @@ final class OperationHostTest extends TestCase
         self::assertSame('https://cluster.example.test/gateway/cluster/v2/status', (string) $request->getUri());
     }
 
+    public function testMutatedApiConfigHostIsUsedForClusterAdminOperations(): void
+    {
+        $client = $this->client('https://cluster.example.test/v2');
+        $api = $client->api(ClusterApi::class);
+        $api->getConfig()->setHost('https://override.example.test/proxy/v2');
+
+        $request = $api->getClusterStatusRequest();
+
+        self::assertSame('https://override.example.test/proxy/cluster/v2/status', (string) $request->getUri());
+    }
+
+    public function testExplicitOperationHostVariablesStillOverrideMutatedHost(): void
+    {
+        $client = $this->client('https://cluster.example.test/v2');
+        $api = $client->api(ClusterApi::class);
+        $api->getConfig()
+            ->setHost('https://override.example.test/proxy/v2')
+            ->setOperationHostVariables([
+                'schema' => 'http',
+                'host' => 'manual.example.test',
+                'port' => '8081',
+                'basePath' => '/manual',
+            ]);
+
+        $request = $api->getClusterStatusRequest();
+
+        self::assertSame('http://manual.example.test:8081/manual/cluster/v2/status', (string) $request->getUri());
+    }
+
     public function testExplicitOperationHostVariablesOverrideConfiguredHost(): void
     {
         $client = $this->client('https://cluster.example.test/v2');

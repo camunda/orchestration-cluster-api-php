@@ -12,7 +12,6 @@ use Camunda\Orchestration\Config\CamundaConfiguration;
 use Camunda\Orchestration\Config\ConfigResolver;
 use Camunda\Orchestration\Exception\ConfigurationException;
 use Camunda\Orchestration\Http\AuthMiddleware;
-use Camunda\Orchestration\Http\OperationHost;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\HandlerStack;
@@ -49,7 +48,6 @@ final class CamundaAsyncClient
     ) {
         $this->apiConfig = (new ApiConfiguration())
             ->setHost($config->restAddress)
-            ->setOperationHostVariables(OperationHost::variables($config->restAddress))
             ->setUserAgent('camunda-orchestration-php/' . Version::VALUE);
     }
 

@@ -497,7 +497,11 @@ class ExportingApi
             $operationHost = Configuration::getHostString(
                 $hostSettings,
                 $hostIndex,
-                array_replace($this->config->getOperationHostVariables(), $variables),
+                array_replace(
+                    \Camunda\Orchestration\Http\OperationHost::variables($this->config->getHost()),
+                    $this->config->getOperationHostVariables(),
+                    $variables,
+                ),
             );
         }
         $query = ObjectSerializer::buildQuery($queryParams);
@@ -1143,7 +1147,11 @@ class ExportingApi
             $operationHost = Configuration::getHostString(
                 $hostSettings,
                 $hostIndex,
-                array_replace($this->config->getOperationHostVariables(), $variables),
+                array_replace(
+                    \Camunda\Orchestration\Http\OperationHost::variables($this->config->getHost()),
+                    $this->config->getOperationHostVariables(),
+                    $variables,
+                ),
             );
         }
         $query = ObjectSerializer::buildQuery($queryParams);
@@ -1719,7 +1727,11 @@ class ExportingApi
             $operationHost = Configuration::getHostString(
                 $hostSettings,
                 $hostIndex,
-                array_replace($this->config->getOperationHostVariables(), $variables),
+                array_replace(
+                    \Camunda\Orchestration\Http\OperationHost::variables($this->config->getHost()),
+                    $this->config->getOperationHostVariables(),
+                    $variables,
+                ),
             );
         }
         $query = ObjectSerializer::buildQuery($queryParams);

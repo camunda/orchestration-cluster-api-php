@@ -97,6 +97,17 @@ PHP,
 $operationHost = Configuration::getHostString(
                 $hostSettings,
                 $hostIndex,
+                array_replace(
+                    \Camunda\Orchestration\Http\OperationHost::variables($this->config->getHost()),
+                    $this->config->getOperationHostVariables(),
+                    $variables,
+                ),
+            );
+PHP;
+    $legacyConfiguredBuilder = <<<'PHP'
+$operationHost = Configuration::getHostString(
+                $hostSettings,
+                $hostIndex,
                 array_replace($this->config->getOperationHostVariables(), $variables),
             );
 PHP;
@@ -151,14 +162,19 @@ PHP;
 
         $unconfigured = substr_count($source, $unconfiguredBuilder);
         $configured = substr_count($source, $configuredBuilder);
-        if ($expected !== $unconfigured + $configured) {
+        $legacyConfigured = substr_count($source, $legacyConfiguredBuilder);
+        if ($expected !== $unconfigured + $legacyConfigured + $configured) {
             throw new RuntimeException(
-                "hook 0125: expected $expected operation-specific host builder(s) in $file, found $unconfigured unconfigured and $configured configured",
+                "hook 0125: expected $expected operation-specific host builder(s) in $file, found $unconfigured unconfigured, $legacyConfigured legacy configured, and $configured configured",
             );
         }
 
         if ($unconfigured > 0) {
             $source = str_replace($unconfiguredBuilder, $configuredBuilder, $source);
+        }
+
+        if ($legacyConfigured > 0) {
+            $source = str_replace($legacyConfiguredBuilder, $configuredBuilder, $source);
         }
 
         $unconfiguredUrls = substr_count($source, $unconfiguredUrl);
@@ -173,7 +189,7 @@ PHP;
             $source = str_replace($unconfiguredUrl, $configuredUrl, $source);
         }
 
-        if (($unconfigured > 0 || $unconfiguredUrls > 0) && file_put_contents($file, $source) === false) {
+        if (($unconfigured > 0 || $legacyConfigured > 0 || $unconfiguredUrls > 0) && file_put_contents($file, $source) === false) {
             throw new RuntimeException("hook 0125: cannot write $file");
         }
 
