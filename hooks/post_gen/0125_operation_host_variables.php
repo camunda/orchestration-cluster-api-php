@@ -93,9 +93,16 @@ PHP;
         }
 
         $count = preg_match_all($unpatchedPattern, $source);
-        $alreadyPatched = preg_match_all($patchedPattern, $source);
+        if ($count === false) {
+            throw new RuntimeException("hook 0125: invalid unpatched operation-host pattern for $file");
+        }
 
-        if (!is_int($count) || !is_int($alreadyPatched) || $count + $alreadyPatched !== $expected) {
+        $alreadyPatched = preg_match_all($patchedPattern, $source);
+        if ($alreadyPatched === false) {
+            throw new RuntimeException("hook 0125: invalid patched operation-host pattern for $file");
+        }
+
+        if ($count + $alreadyPatched !== $expected) {
             throw new RuntimeException(
                 "hook 0125: expected to classify $expected operation-specific host call(s) in $file, found $count unpatched and $alreadyPatched patched",
             );
