@@ -54,7 +54,7 @@ function run(): void
         $deadline = microtime(true) + 30;
         do {
             $processed = $worker->pollOnce(
-                static function (ActivatedJobResult $job, JobActionClient $action) use ($handledByPidFile, $parentPid, $runId): array {
+                static function (ActivatedJobResult $_job, JobActionClient $_action) use ($handledByPidFile, $parentPid, $runId): array {
                     $handledByPid = (string) getmypid();
                     $marker = ForkedWorkerSupport::encodePidMarker($handledByPid, $parentPid, $runId);
                     if (file_put_contents($handledByPidFile, $marker) === false) {
