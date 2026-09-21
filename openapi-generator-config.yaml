@@ -14,7 +14,7 @@ outputDir: generated
 additionalProperties:
   invokerPackage: Camunda\Orchestration\Api
   packageName: Camunda\Orchestration\Api
-  composerPackageName: camunda/orchestration-cluster-api-client
+  composerPackageName: camunda8/orchestration-cluster-api-client
   artifactVersion: 0.1.0
   srcBasePath: src
   variableNamingConvention: camelCase

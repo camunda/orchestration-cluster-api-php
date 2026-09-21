@@ -12,7 +12,7 @@ Instructions below extend those guidelines and take precedence if there is any c
 
 ### Role & boundary
 
-This repo is the **PHP SDK Generator** for the Camunda 8 Orchestration Cluster API. It produces the `camunda/orchestration-cluster-api` Composer package by generating a low-level client into `generated/` from an OpenAPI spec, then layering a hand-written runtime and a semantic value-object type system on top via post-generation hooks.
+This repo is the **PHP SDK Generator** for the Camunda 8 Orchestration Cluster API. It produces the `camunda8/orchestration-cluster-api` Composer package by generating a low-level client into `generated/` from an OpenAPI spec, then layering a hand-written runtime and a semantic value-object type system on top via post-generation hooks.
 
 - **Project type**: PHP SDK generator + client library
 - **Source language**: PHP 8.2+

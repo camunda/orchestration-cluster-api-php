@@ -1,5 +1,5 @@
 {
-    "name": "camunda/orchestration-cluster-api",
+    "name": "camunda8/orchestration-cluster-api",
     "description": "A fully typed PHP SDK for the Camunda 8 Orchestration Cluster REST API.",
     "keywords": ["camunda", "camunda8", "zeebe", "bpmn", "workflow", "orchestration", "sdk", "rest", "api"],
     "homepage": "https://github.com/camunda/orchestration-cluster-api-php",
