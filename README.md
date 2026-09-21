@@ -2,8 +2,8 @@
 
 <!-- WARNING: The content and specific structure of this file drives Docusaurus generation in camunda-docs. Also, code examples are injected during build. Please refer to AGENTS.md before editing. -->
 <!-- docs:cut:start -->
-[![Packagist Version](https://img.shields.io/packagist/v/camunda/orchestration-cluster-api)](https://packagist.org/packages/camunda/orchestration-cluster-api)
-[![PHP Version](https://img.shields.io/packagist/php-v/camunda/orchestration-cluster-api)](https://packagist.org/packages/camunda/orchestration-cluster-api)
+[![Packagist Version](https://img.shields.io/packagist/v/camunda8/orchestration-cluster-api)](https://packagist.org/packages/camunda8/orchestration-cluster-api)
+[![PHP Version](https://img.shields.io/packagist/php-v/camunda8/orchestration-cluster-api)](https://packagist.org/packages/camunda8/orchestration-cluster-api)
 <!-- docs:cut:end -->
 
 A fully typed PHP client for the [Camunda 8 Orchestration Cluster REST API](https://docs.camunda.io/docs/apis-tools/camunda-api-rest/camunda-api-rest-overview/). Fully compliant with the Camunda OpenAPI spec, with a hand-written runtime for authentication, configuration, and job workers.
@@ -43,7 +43,7 @@ helps close that gap.
 The stable version tracks the latest supported Camunda server release.
 
 ```bash
-composer require camunda/orchestration-cluster-api
+composer require camunda8/orchestration-cluster-api
 ```
 
 ### Versioning
