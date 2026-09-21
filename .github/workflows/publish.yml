@@ -93,4 +93,8 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # SDK major tracks the Camunda server minor (spec ref stable/8.10 -> major 10).
+          # Consumed by @camunda8/sdk-infra release.config.base.cjs to pick the promoted
+          # stable major (dist-tag `latest`) and align main's alpha prereleases.
+          CAMUNDA_SDK_CURRENT_STABLE_MAJOR: ${{ vars.CAMUNDA_SDK_CURRENT_STABLE_MAJOR }}
         run: npx semantic-release
