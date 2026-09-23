@@ -105,9 +105,9 @@ class AgentInstanceUpdateRequestTest extends TestCase
     }
 
     /**
-     * Test attribute "jobLease"
+     * Test attribute "jobLeaseToken"
      */
-    public function testPropertyJobLease()
+    public function testPropertyJobLeaseToken()
     {
         // TODO: implement
         self::markTestIncomplete('Not implemented');

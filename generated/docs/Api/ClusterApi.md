@@ -8,6 +8,7 @@ All URIs are relative to http://localhost:8080/v2, except if the operation defin
 | [**getClusterRebalance()**](ClusterApi.md#getClusterRebalance) | **GET** /cluster/v2/rebalance | Report the cluster&#39;s current leadership balance |
 | [**getClusterStatus()**](ClusterApi.md#getClusterStatus) | **GET** /cluster/v2/status | Get the status of the whole cluster |
 | [**getClusterTopology()**](ClusterApi.md#getClusterTopology) | **GET** /cluster/v2/topology | Get the topology of the whole cluster |
+| [**getClusterUpgradeStatus()**](ClusterApi.md#getClusterUpgradeStatus) | **GET** /cluster/v2/status/upgrade | Get the upgrade-readiness status of the whole cluster |
 | [**getStatus()**](ClusterApi.md#getStatus) | **GET** /status | Get physical tenant status |
 | [**getTopology()**](ClusterApi.md#getTopology) | **GET** /topology | Get cluster topology |
 | [**triggerClusterRebalance()**](ClusterApi.md#triggerClusterRebalance) | **POST** /cluster/v2/rebalance | Trigger a cluster-wide leadership rebalance |
@@ -327,6 +328,79 @@ This endpoint does not need any parameter.
 
 - **Content-Type**: Not defined
 - **Accept**: `application/json`, `application/problem+json`
+
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
+[[Back to README]](../../README.md)
+
+## `getClusterUpgradeStatus()`
+
+```php
+getClusterUpgradeStatus(): \Camunda\Orchestration\Api\Model\ClusterUpgradeStatusResponse
+```
+### URI(s):
+- {schema}://{host}:{port} 
+    - Variables:
+      - host: The hostname of the Orchestration Cluster REST Gateway.
+        - Default value: localhost
+
+      - port: The port of the Orchestration Cluster REST API server.
+        - Default value: 8080
+
+      - schema: The schema of the Orchestration Cluster REST API server.
+        - Default value: http
+
+Get the upgrade-readiness status of the whole cluster
+
+Reports one overall upgrade-readiness status for the whole cluster, folded over every physical tenant and condition. `MIGRATED` only once every known condition has migrated for every known physical tenant; `MIGRATION_IN_PROGRESS` when at least one is confirmed not yet migrated; `UNKNOWN` otherwise (including before anything has been reported yet). No per-tenant or per-condition detail is reported here; see the `upgradeReadiness` actuator endpoint for that.
+
+### Example
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+
+$apiInstance = new Camunda\Orchestration\Api\Api\ClusterApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client()
+);
+
+$hostIndex = 0;
+$variables = [
+    'host' => 'YOUR_VALUE',
+    'port' => 'YOUR_VALUE',
+    'schema' => 'YOUR_VALUE',
+];
+
+try {
+    $result = $apiInstance->getClusterUpgradeStatus($hostIndex, $variables);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ClusterApi->getClusterUpgradeStatus: ', $e->getMessage(), PHP_EOL;
+}
+```
+
+### Parameters
+
+This endpoint does not need any parameter.
+| hostIndex | null|int | Host index. Defaults to null. If null, then the library will use $this->hostIndex instead | [optional] |
+| variables | array | Associative array of variables to pass to the host. Defaults to empty array. | [optional] |
+
+### Return type
+
+[**\Camunda\Orchestration\Api\Model\ClusterUpgradeStatusResponse**](../Model/ClusterUpgradeStatusResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
 
 [[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
 [[Back to Model list]](../../README.md#models)

@@ -55,6 +55,17 @@ function get_cluster_topology(CamundaClient $client, ?int $hostIndex = null, arr
 }
 // endregion GetClusterTopology
 
+// region GetClusterUpgradeStatus
+/**
+ * Get the upgrade-readiness status of the whole cluster.
+ * @param array<string, mixed> $variables
+ */
+function get_cluster_upgrade_status(CamundaClient $client, ?int $hostIndex = null, array $variables = []): void
+{
+    $client->getClusterUpgradeStatus($hostIndex, $variables);
+}
+// endregion GetClusterUpgradeStatus
+
 // region TriggerClusterRebalance
 /**
  * Trigger a cluster rebalance.

@@ -1,6 +1,6 @@
 <?php
 /**
- * JobUpdateRequest
+ * ClusterUpgradeStatusResponse
  *
  * PHP version 8.1
  *
@@ -34,14 +34,15 @@ use ReturnTypeWillChange;
 use Camunda\Orchestration\Api\ObjectSerializer;
 
 /**
- * JobUpdateRequest Class Doc Comment
+ * ClusterUpgradeStatusResponse Class Doc Comment
  *
+ * @description The upgrade-readiness status of the whole cluster.
  * @package  Camunda\Orchestration\Api
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  * @implements ArrayAccess<string, mixed>
  */
-class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
+class ClusterUpgradeStatusResponse implements ModelInterface, ArrayAccess, JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -50,7 +51,7 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      *
      * @var string
      */
-    protected static string $openAPIModelName = 'JobUpdateRequest';
+    protected static string $openAPIModelName = 'ClusterUpgradeStatusResponse';
 
     /**
      * Array of property to type mappings. Used for (de)serialization
@@ -58,9 +59,7 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      * @var array<string, string>
      */
     protected static array $openAPITypes = [
-        'changeset' => '\Camunda\Orchestration\Api\Model\JobChangeset',
-        'operationReference' => 'int',
-        'jobLeaseToken' => '\Camunda\Orchestration\Semantic\JobLeaseToken'
+        'status' => 'string'
     ];
 
     /**
@@ -69,9 +68,7 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      * @var array<string, string|null>
      */
     protected static array $openAPIFormats = [
-        'changeset' => null,
-        'operationReference' => 'int64',
-        'jobLeaseToken' => 'JobLeaseToken'
+        'status' => null
     ];
 
     /**
@@ -80,9 +77,7 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      * @var array<string, bool>
      */
     protected static array $openAPINullables = [
-        'changeset' => false,
-        'operationReference' => false,
-        'jobLeaseToken' => true
+        'status' => false
     ];
 
     /**
@@ -161,9 +156,7 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      * @var array<string, string>
      */
     protected static array $attributeMap = [
-        'changeset' => 'changeset',
-        'operationReference' => 'operationReference',
-        'jobLeaseToken' => 'jobLeaseToken'
+        'status' => 'status'
     ];
 
     /**
@@ -172,9 +165,7 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      * @var array<string, string>
      */
     protected static array $setters = [
-        'changeset' => 'setChangeset',
-        'operationReference' => 'setOperationReference',
-        'jobLeaseToken' => 'setJobLeaseToken'
+        'status' => 'setStatus'
     ];
 
     /**
@@ -183,9 +174,7 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      * @var array<string, string>
      */
     protected static array $getters = [
-        'changeset' => 'getChangeset',
-        'operationReference' => 'getOperationReference',
-        'jobLeaseToken' => 'getJobLeaseToken'
+        'status' => 'getStatus'
     ];
 
     /**
@@ -220,6 +209,23 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
         return self::$openAPIModelName;
     }
 
+    public const STATUS_MIGRATED = 'MIGRATED';
+    public const STATUS_MIGRATION_IN_PROGRESS = 'MIGRATION_IN_PROGRESS';
+    public const STATUS_UNKNOWN = 'UNKNOWN';
+
+    /**
+     * Gets allowable values of the enum
+     *
+     * @return string[]
+     */
+    public static function getStatusAllowableValues()
+    {
+        return [
+            self::STATUS_MIGRATED,
+            self::STATUS_MIGRATION_IN_PROGRESS,
+            self::STATUS_UNKNOWN,
+        ];
+    }
 
     /**
      * Associative array for storing property values
@@ -235,9 +241,7 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function __construct(?array $data = null)
     {
-        $this->setIfExists('changeset', $data ?? [], null);
-        $this->setIfExists('operationReference', $data ?? [], null);
-        $this->setIfExists('jobLeaseToken', $data ?? [], null);
+        $this->setIfExists('status', $data ?? [], null);
     }
 
     /**
@@ -255,16 +259,7 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
             $this->openAPINullablesSetToNull[] = $variableName;
         }
 
-        $value = $fields[$variableName] ?? $defaultValue;
-        $semanticType = static::$openAPITypes[$variableName] ?? null;
-        if (
-            is_string($value)
-            && is_string($semanticType)
-            && is_subclass_of($semanticType, \Camunda\Orchestration\Semantic\SemanticKey::class)
-        ) {
-            $value = new $semanticType($value);
-        }
-        $this->container[$variableName] = $value;
+        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
     }
 
     /**
@@ -274,15 +269,16 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
     {
         $invalidProperties = [];
 
-        if ($this->container['changeset'] === null) {
-            $invalidProperties[] = "'changeset' can't be null";
+        if ($this->container['status'] === null) {
+            $invalidProperties[] = "'status' can't be null";
         }
-        if (!is_null($this->container['operationReference']) && ($this->container['operationReference'] < 1)) {
-            $invalidProperties[] = "invalid value for 'operationReference', must be bigger than or equal to 1.";
-        }
-
-        if (!is_null((string) $this->container['jobLeaseToken']) && (mb_strlen((string) $this->container['jobLeaseToken']) < 1)) {
-            $invalidProperties[] = "invalid value for 'jobLeaseToken', the character length must be bigger than or equal to 1.";
+        $allowedValues = self::getStatusAllowableValues();
+        if (!is_null($this->container['status']) && !in_array($this->container['status'], $allowedValues, true)) {
+            $invalidProperties[] = sprintf(
+                "invalid value '%s' for 'status', must be one of '%s'",
+                $this->container['status'],
+                implode("', '", $allowedValues)
+            );
         }
 
         return $invalidProperties;
@@ -298,83 +294,38 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
 
 
     /**
-     * Gets changeset
+     * Gets status
      *
-     * @return \Camunda\Orchestration\Api\Model\JobChangeset
+     * @return string
      */
-    public function getChangeset(): \Camunda\Orchestration\Api\Model\JobChangeset
+    public function getStatus(): string
     {
-        return $this->container['changeset'];
+        return $this->container['status'];
     }
 
     /**
-     * Sets changeset
+     * Sets status
      *
-     * @param \Camunda\Orchestration\Api\Model\JobChangeset $changeset changeset
+     * @param string $status `MIGRATED` once every known upgrade-readiness condition is met for every known physical tenant; `MIGRATION_IN_PROGRESS` when at least one is confirmed not yet migrated; `UNKNOWN` otherwise.
      *
      * @return $this
      */
-    public function setChangeset(\Camunda\Orchestration\Api\Model\JobChangeset $changeset): static
+    public function setStatus(string $status): static
     {
-        if (is_null($changeset)) {
-            throw new InvalidArgumentException('non-nullable changeset cannot be null');
+        if (is_null($status)) {
+            throw new InvalidArgumentException('non-nullable status cannot be null');
         }
-        $this->container['changeset'] = $changeset;
-
-        return $this;
-    }
-
-    /**
-     * Gets operationReference
-     *
-     * @return int|null
-     */
-    public function getOperationReference(): ?int
-    {
-        return $this->container['operationReference'];
-    }
-
-    /**
-     * Sets operationReference
-     *
-     * @param int|null $operationReference A reference key chosen by the user that will be part of all records resulting from this operation. Must be > 0 if provided.
-     *
-     * @return $this
-     */
-    public function setOperationReference(?int $operationReference): static
-    {
-        if (is_null($operationReference)) {
-            throw new InvalidArgumentException('non-nullable operationReference cannot be null');
+        $allowedValues = self::getStatusAllowableValues();
+        if (!in_array($status, $allowedValues, true)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    "Invalid value '%s' for 'status', must be one of '%s'",
+                    $status,
+                    implode("', '", $allowedValues)
+                )
+            );
         }
-        if (($operationReference < 1)) {
-            throw new InvalidArgumentException('invalid value for $operationReference when calling JobUpdateRequest., must be bigger than or equal to 1.');
-        }
-
-        $this->container['operationReference'] = $operationReference;
-
-        return $this;
-    }
-
-    /**
-     * Gets jobLeaseToken
-     *
-     * @return string|null
-     */
-    public function getJobLeaseToken(): ?\Camunda\Orchestration\Semantic\JobLeaseToken
-    {
-        return $this->container['jobLeaseToken'];
-    }
-
-    /**
-     * Sets jobLeaseToken
-     *
-     * @param string|null $jobLeaseToken The token identifying a leased job's activation, obtained from `ActivatedJobResult.jobLeaseToken`. For a leased job, a supplied token is validated to prove the command comes from the worker that holds the current lease; a command carrying a stale token is rejected, fencing the job against a superseded activation (for example, after the job timed out or failed and was re-activated by another worker). An update without a token always applies to support operator and bulk updates of leased jobs. Note that this is different from lifecycle requests like complete, fail, and throw-error that always require a token for leased jobs. A job that was activated without a lease requires no token.
-     *
-     * @return $this
-     */
-    public function setJobLeaseToken(?\Camunda\Orchestration\Semantic\JobLeaseToken $jobLeaseToken): static
-    {
-        $this->container['jobLeaseToken'] = $jobLeaseToken;
+        $this->container['status'] = $status;
 
         return $this;
     }

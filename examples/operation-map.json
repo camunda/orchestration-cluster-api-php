@@ -1113,6 +1113,13 @@
       "label": "Get the topology of the whole cluster"
     }
   ],
+  "getClusterUpgradeStatus": [
+    {
+      "file": "cluster.php",
+      "region": "GetClusterUpgradeStatus",
+      "label": "Get the upgrade-readiness status of the whole cluster"
+    }
+  ],
   "restoreAsClusterAdmin": [
     {
       "file": "recovery.php",

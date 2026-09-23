@@ -36,7 +36,7 @@ use Camunda\Orchestration\Api\ObjectSerializer;
 /**
  * SecretListResult Class Doc Comment
  *
- * @description The secret references the caller is authorized to see.  Unbounded for now: the response carries the configured stores&#39; full enumeration for the physical tenant. Pagination is expected to land here before GA. This is an alpha endpoint, so that is not yet a breaking-contract concern.
+ * @description The secret references the caller is authorized to see.  Unbounded: the response carries the configured stores&#39; full enumeration for the physical tenant.
  * @package  Camunda\Orchestration\Api
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech

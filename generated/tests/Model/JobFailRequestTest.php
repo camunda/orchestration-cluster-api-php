@@ -114,9 +114,9 @@ class JobFailRequestTest extends TestCase
     }
 
     /**
-     * Test attribute "leaseToken"
+     * Test attribute "jobLeaseToken"
      */
-    public function testPropertyLeaseToken()
+    public function testPropertyJobLeaseToken()
     {
         // TODO: implement
         self::markTestIncomplete('Not implemented');

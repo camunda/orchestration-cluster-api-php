@@ -64,7 +64,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
         'agentInstanceKey' => '\Camunda\Orchestration\Semantic\AgentInstanceKey',
         'elementInstanceKey' => '\Camunda\Orchestration\Semantic\ElementInstanceKey',
         'jobKey' => '\Camunda\Orchestration\Semantic\JobKey',
-        'jobLease' => '\Camunda\Orchestration\Semantic\JobLeaseToken',
+        'jobLeaseToken' => '\Camunda\Orchestration\Semantic\JobLeaseToken',
         'loopIteration' => 'int',
         'role' => '\Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleEnum',
         'content' => '\Camunda\Orchestration\Api\Model\AgentInstanceMessageContent[]',
@@ -90,7 +90,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
         'agentInstanceKey' => null,
         'elementInstanceKey' => null,
         'jobKey' => null,
-        'jobLease' => 'JobLeaseToken',
+        'jobLeaseToken' => 'JobLeaseToken',
         'loopIteration' => 'int32',
         'role' => null,
         'content' => null,
@@ -116,7 +116,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
         'agentInstanceKey' => false,
         'elementInstanceKey' => false,
         'jobKey' => false,
-        'jobLease' => false,
+        'jobLeaseToken' => false,
         'loopIteration' => false,
         'role' => false,
         'content' => false,
@@ -212,7 +212,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
         'agentInstanceKey' => 'agentInstanceKey',
         'elementInstanceKey' => 'elementInstanceKey',
         'jobKey' => 'jobKey',
-        'jobLease' => 'jobLease',
+        'jobLeaseToken' => 'jobLeaseToken',
         'loopIteration' => 'loopIteration',
         'role' => 'role',
         'content' => 'content',
@@ -238,7 +238,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
         'agentInstanceKey' => 'setAgentInstanceKey',
         'elementInstanceKey' => 'setElementInstanceKey',
         'jobKey' => 'setJobKey',
-        'jobLease' => 'setJobLease',
+        'jobLeaseToken' => 'setJobLeaseToken',
         'loopIteration' => 'setLoopIteration',
         'role' => 'setRole',
         'content' => 'setContent',
@@ -264,7 +264,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
         'agentInstanceKey' => 'getAgentInstanceKey',
         'elementInstanceKey' => 'getElementInstanceKey',
         'jobKey' => 'getJobKey',
-        'jobLease' => 'getJobLease',
+        'jobLeaseToken' => 'getJobLeaseToken',
         'loopIteration' => 'getLoopIteration',
         'role' => 'getRole',
         'content' => 'getContent',
@@ -331,7 +331,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
         $this->setIfExists('agentInstanceKey', $data ?? [], null);
         $this->setIfExists('elementInstanceKey', $data ?? [], null);
         $this->setIfExists('jobKey', $data ?? [], null);
-        $this->setIfExists('jobLease', $data ?? [], null);
+        $this->setIfExists('jobLeaseToken', $data ?? [], null);
         $this->setIfExists('loopIteration', $data ?? [], null);
         $this->setIfExists('role', $data ?? [], null);
         $this->setIfExists('content', $data ?? [], null);
@@ -403,11 +403,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
         if ($this->container['jobKey'] === null) {
             $invalidProperties[] = "'jobKey' can't be null";
         }
-        if ($this->container['jobLease'] === null) {
-            $invalidProperties[] = "'jobLease' can't be null";
+        if ($this->container['jobLeaseToken'] === null) {
+            $invalidProperties[] = "'jobLeaseToken' can't be null";
         }
-        if ((mb_strlen((string) $this->container['jobLease']) < 1)) {
-            $invalidProperties[] = "invalid value for 'jobLease', the character length must be bigger than or equal to 1.";
+        if ((mb_strlen((string) $this->container['jobLeaseToken']) < 1)) {
+            $invalidProperties[] = "invalid value for 'jobLeaseToken', the character length must be bigger than or equal to 1.";
         }
 
         if ($this->container['loopIteration'] === null) {
@@ -583,25 +583,25 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
     }
 
     /**
-     * Gets jobLease
+     * Gets jobLeaseToken
      *
      * @return string
      */
-    public function getJobLease(): \Camunda\Orchestration\Semantic\JobLeaseToken
+    public function getJobLeaseToken(): \Camunda\Orchestration\Semantic\JobLeaseToken
     {
-        return $this->container['jobLease'];
+        return $this->container['jobLeaseToken'];
     }
 
     /**
-     * Sets jobLease
+     * Sets jobLeaseToken
      *
-     * @param string $jobLease The lease token of the activation that produced this item.
+     * @param string $jobLeaseToken The lease token of the activation that produced this item.
      *
      * @return $this
      */
-    public function setJobLease(\Camunda\Orchestration\Semantic\JobLeaseToken $jobLease): static
+    public function setJobLeaseToken(\Camunda\Orchestration\Semantic\JobLeaseToken $jobLeaseToken): static
     {
-        $this->container['jobLease'] = $jobLease;
+        $this->container['jobLeaseToken'] = $jobLeaseToken;
 
         return $this;
     }
