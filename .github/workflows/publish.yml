@@ -89,10 +89,14 @@ jobs:
         run: make phpstan
 
       # Packagist resolves versions from git tags; semantic-release stamps
-      # src/Version.php and pushes the tag (see release.config.cjs).
+      # src/Version.php and pushes the tag (see release.config.cjs). On success
+      # scripts/notify-packagist.sh pings the Packagist update-package API so the
+      # new version syncs immediately — requires the PACKAGIST_* credentials below.
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGIST_USERNAME: ${{ vars.PACKAGIST_USERNAME }}
+          PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
           # SDK major tracks the Camunda server minor (spec ref stable/8.10 -> major 10).
           # Consumed by @camunda8/sdk-infra release.config.base.cjs to pick the promoted
           # stable major (dist-tag `latest`) and align main's alpha prereleases.

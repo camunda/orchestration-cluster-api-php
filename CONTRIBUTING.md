@@ -75,6 +75,13 @@ This repo uses [Conventional Commits](https://www.conventionalcommits.org/) enfo
 - `feat:` / `fix:` drive minor / patch releases.
 - Breaking changes (`!` or a `BREAKING CHANGE:` footer) drive a major release; the SDK major tracks the Camunda server minor (`n` ↔ `8.n`).
 
+Packagist sync is driven from CI (no persistent webhook): on a successful release, `scripts/notify-packagist.sh` calls the Packagist `update-package` API. It needs two repo/org settings to be configured:
+
+- `PACKAGIST_USERNAME` — Actions **variable**: the Packagist account name.
+- `PACKAGIST_TOKEN` — Actions **secret**: the Packagist **SAFE** API token.
+
+When they are absent the release still succeeds; the notification is skipped and Packagist picks up the tag on its next periodic crawl.
+
 ## Coding standards
 
 - Keep `src/`, `examples/`, and `tests/` green at PHPStan level `max`.
