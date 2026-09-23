@@ -29,11 +29,12 @@ response_body="$(mktemp)"
 trap 'rm -f "${response_body}"' EXIT
 
 http_code="$(curl -sS -o "${response_body}" -w '%{http_code}' \
+  --connect-timeout 10 --max-time 30 \
   -X POST \
   -H 'Content-Type: application/json' \
   -H 'User-Agent: camunda-orchestration-cluster-api-php-release (mailto:info@camunda.com)' \
   "https://packagist.org/api/update-package?username=${PACKAGIST_USERNAME}&apiToken=${PACKAGIST_TOKEN}" \
-  -d "{\"repository\":\"${REPO_URL}\"}" || echo "000")"
+  -d "{\"repository\":{\"url\":\"${REPO_URL}\"}}" || echo "000")"
 
 echo "[notify-packagist] HTTP ${http_code}: $(cat "${response_body}")" >&2
 
