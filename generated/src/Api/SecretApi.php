@@ -129,7 +129,7 @@ class SecretApi
     /**
      * Operation listSecrets
      *
-     * List secrets (alpha)
+     * List secrets
      *
      * @param  object|null $body body (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listSecrets'] to see the possible values for this operation
@@ -150,7 +150,7 @@ class SecretApi
     /**
      * Operation listSecretsWithHttpInfo
      *
-     * List secrets (alpha)
+     * List secrets
      *
      * @param  object|null $body (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listSecrets'] to see the possible values for this operation
@@ -290,7 +290,7 @@ class SecretApi
     /**
      * Operation listSecretsAsync
      *
-     * List secrets (alpha)
+     * List secrets
      *
      * @param  object|null $body (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listSecrets'] to see the possible values for this operation
@@ -314,7 +314,7 @@ class SecretApi
     /**
      * Operation listSecretsAsyncWithHttpInfo
      *
-     * List secrets (alpha)
+     * List secrets
      *
      * @param  object|null $body (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listSecrets'] to see the possible values for this operation
@@ -472,7 +472,7 @@ class SecretApi
     /**
      * Operation resolveSecrets
      *
-     * Resolve secrets (alpha)
+     * Resolve secrets
      *
      * @param  \Camunda\Orchestration\Api\Model\SecretResolveRequest $secretResolveRequest secretResolveRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resolveSecrets'] to see the possible values for this operation
@@ -493,7 +493,7 @@ class SecretApi
     /**
      * Operation resolveSecretsWithHttpInfo
      *
-     * Resolve secrets (alpha)
+     * Resolve secrets
      *
      * @param  \Camunda\Orchestration\Api\Model\SecretResolveRequest $secretResolveRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resolveSecrets'] to see the possible values for this operation
@@ -633,7 +633,7 @@ class SecretApi
     /**
      * Operation resolveSecretsAsync
      *
-     * Resolve secrets (alpha)
+     * Resolve secrets
      *
      * @param  \Camunda\Orchestration\Api\Model\SecretResolveRequest $secretResolveRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resolveSecrets'] to see the possible values for this operation
@@ -657,7 +657,7 @@ class SecretApi
     /**
      * Operation resolveSecretsAsyncWithHttpInfo
      *
-     * Resolve secrets (alpha)
+     * Resolve secrets
      *
      * @param  \Camunda\Orchestration\Api\Model\SecretResolveRequest $secretResolveRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resolveSecrets'] to see the possible values for this operation

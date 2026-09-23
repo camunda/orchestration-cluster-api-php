@@ -84,6 +84,9 @@ class ClusterApi
         'getClusterTopology' => [
             'application/json',
         ],
+        'getClusterUpgradeStatus' => [
+            'application/json',
+        ],
         'getStatus' => [
             'application/json',
         ],
@@ -1700,6 +1703,346 @@ class ClusterApi
      * @return array an array of host settings
      */
     protected function getHostSettingsForgetClusterTopology(): array
+    {
+        return [
+            [
+                "url" => "{schema}://{host}:{port}{basePath}",
+                "description" => "No description provided",
+                "variables" => [
+                    "host" => [
+                    "description" => "The hostname of the Orchestration Cluster REST Gateway.",
+                    "default_value" => "localhost",
+                    ],
+                    "port" => [
+                    "description" => "The port of the Orchestration Cluster REST API server.",
+                    "default_value" => "8080",
+                    ],
+                    "schema" => [
+                    "description" => "The schema of the Orchestration Cluster REST API server.",
+                    "default_value" => "http",
+                    ],
+                    "basePath" => [
+                    "description" => "The path prefix of the Orchestration Cluster REST Gateway.",
+                    "default_value" => "",
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Operation getClusterUpgradeStatus
+     *
+     * Get the upgrade-readiness status of the whole cluster
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: {schema}://{host}:{port}
+     *  Variables:
+     *    - host: The hostname of the Orchestration Cluster REST Gateway.
+     *    - port: The port of the Orchestration Cluster REST API server.
+     *    - schema: The schema of the Orchestration Cluster REST API server.
+     *
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getClusterUpgradeStatus'] to see the possible values for this operation
+     *
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws InvalidArgumentException
+     * @return \Camunda\Orchestration\Api\Model\ClusterUpgradeStatusResponse
+     */
+    public function getClusterUpgradeStatus(
+        ?int $hostIndex = null,
+        array $variables = [],
+        string $contentType = self::contentTypes['getClusterUpgradeStatus'][0]
+    ): \Camunda\Orchestration\Api\Model\ClusterUpgradeStatusResponse
+    {
+        list($response) = $this->getClusterUpgradeStatusWithHttpInfo($hostIndex, $variables, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation getClusterUpgradeStatusWithHttpInfo
+     *
+     * Get the upgrade-readiness status of the whole cluster
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: {schema}://{host}:{port}
+     *  Variables:
+     *    - host: The hostname of the Orchestration Cluster REST Gateway.
+     *    - port: The port of the Orchestration Cluster REST API server.
+     *    - schema: The schema of the Orchestration Cluster REST API server.
+     *
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getClusterUpgradeStatus'] to see the possible values for this operation
+     *
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws InvalidArgumentException
+     * @return array{0: \Camunda\Orchestration\Api\Model\ClusterUpgradeStatusResponse, 1: int, 2: array<string, string[]>} [response data, HTTP status code, HTTP response headers]
+     */
+    public function getClusterUpgradeStatusWithHttpInfo(
+        ?int $hostIndex = null,
+        array $variables = [],
+        string $contentType = self::contentTypes['getClusterUpgradeStatus'][0]
+    ): array
+    {
+        $request = $this->getClusterUpgradeStatusRequest($hostIndex, $variables, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            switch($statusCode) {
+                case 200:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ClusterUpgradeStatusResponse',
+                        $request,
+                        $response,
+                    );
+            }
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            return $this->handleResponseWithDataType(
+                '\Camunda\Orchestration\Api\Model\ClusterUpgradeStatusResponse',
+                $request,
+                $response,
+            );
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ClusterUpgradeStatusResponse',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+            }
+        
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation getClusterUpgradeStatusAsync
+     *
+     * Get the upgrade-readiness status of the whole cluster
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: {schema}://{host}:{port}
+     *  Variables:
+     *    - host: The hostname of the Orchestration Cluster REST Gateway.
+     *    - port: The port of the Orchestration Cluster REST API server.
+     *    - schema: The schema of the Orchestration Cluster REST API server.
+     *
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getClusterUpgradeStatus'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return PromiseInterface
+     */
+    public function getClusterUpgradeStatusAsync(
+        ?int $hostIndex = null,
+        array $variables = [],
+        string $contentType = self::contentTypes['getClusterUpgradeStatus'][0]
+    ): PromiseInterface
+    {
+        return $this->getClusterUpgradeStatusAsyncWithHttpInfo($hostIndex, $variables, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation getClusterUpgradeStatusAsyncWithHttpInfo
+     *
+     * Get the upgrade-readiness status of the whole cluster
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: {schema}://{host}:{port}
+     *  Variables:
+     *    - host: The hostname of the Orchestration Cluster REST Gateway.
+     *    - port: The port of the Orchestration Cluster REST API server.
+     *    - schema: The schema of the Orchestration Cluster REST API server.
+     *
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getClusterUpgradeStatus'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return PromiseInterface
+     */
+    public function getClusterUpgradeStatusAsyncWithHttpInfo(
+        ?int $hostIndex = null,
+        array $variables = [],
+        string $contentType = self::contentTypes['getClusterUpgradeStatus'][0]
+    ): PromiseInterface
+    {
+        $returnType = '\Camunda\Orchestration\Api\Model\ClusterUpgradeStatusResponse';
+        $request = $this->getClusterUpgradeStatusRequest($hostIndex, $variables, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    if (in_array($returnType, ['\SplFileObject', '\Psr\Http\Message\StreamInterface'])) {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'getClusterUpgradeStatus'
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: {schema}://{host}:{port}
+     *  Variables:
+     *    - host: The hostname of the Orchestration Cluster REST Gateway.
+     *    - port: The port of the Orchestration Cluster REST API server.
+     *    - schema: The schema of the Orchestration Cluster REST API server.
+     *
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getClusterUpgradeStatus'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function getClusterUpgradeStatusRequest(
+        ?int $hostIndex = null,
+        array $variables = [],
+        string $contentType = self::contentTypes['getClusterUpgradeStatus'][0]
+    ): Request
+    {
+
+        $resourcePath = '/cluster/v2/status/upgrade';
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', ],
+            $contentType,
+            $multipart
+        );
+
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        if ($this->config->getIgnoreOperationHosts()) {
+            $operationHost = $this->config->getHost();
+        } else {
+            # Preserve the original behavior of server indexing.
+            if ($hostIndex === null) {
+                $hostIndex = $this->hostIndex;
+            }
+
+            $hostSettings = $this->getHostSettingsForgetClusterUpgradeStatus();
+
+            if ($hostIndex < 0 || $hostIndex >= count($hostSettings)) {
+                throw new InvalidArgumentException("Invalid index {$hostIndex} when selecting the host. Must be less than ".count($hostSettings));
+            }
+            $operationHost = \Camunda\Orchestration\Http\OperationHost::resolveHost(
+                $this->config->getHost(),
+                $hostSettings,
+                $hostIndex,
+                $this->config->getOperationHostVariables(),
+                $variables,
+            );
+        }
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'GET',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Returns an array of host settings for Operation getClusterUpgradeStatus
+     *
+     * @return array an array of host settings
+     */
+    protected function getHostSettingsForgetClusterUpgradeStatus(): array
     {
         return [
             [

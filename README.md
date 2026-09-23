@@ -347,7 +347,7 @@ function object_job_handler(CamundaClient $client): void
 
 ## Accessing every operation
 
-Every one of the 243 API operations is exposed as a method directly on the client — the
+Every one of the 244 API operations is exposed as a method directly on the client — the
 flat facade — so you rarely need to reach for an API group:
 
 <!-- snippet-source: examples/readme.php | regions: ReadmeFlatFacade -->

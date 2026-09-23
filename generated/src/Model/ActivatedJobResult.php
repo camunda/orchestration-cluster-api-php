@@ -80,7 +80,7 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
         'rootProcessInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
         'businessId' => '\Camunda\Orchestration\Semantic\BusinessId',
         'priority' => 'int',
-        'leaseToken' => '\Camunda\Orchestration\Semantic\JobLeaseToken'
+        'jobLeaseToken' => '\Camunda\Orchestration\Semantic\JobLeaseToken'
     ];
 
     /**
@@ -111,7 +111,7 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
         'rootProcessInstanceKey' => null,
         'businessId' => 'BusinessId',
         'priority' => 'int32',
-        'leaseToken' => 'JobLeaseToken'
+        'jobLeaseToken' => 'JobLeaseToken'
     ];
 
     /**
@@ -142,7 +142,7 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
         'rootProcessInstanceKey' => true,
         'businessId' => true,
         'priority' => false,
-        'leaseToken' => true
+        'jobLeaseToken' => true
     ];
 
     /**
@@ -243,7 +243,7 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
         'rootProcessInstanceKey' => 'rootProcessInstanceKey',
         'businessId' => 'businessId',
         'priority' => 'priority',
-        'leaseToken' => 'leaseToken'
+        'jobLeaseToken' => 'jobLeaseToken'
     ];
 
     /**
@@ -274,7 +274,7 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
         'rootProcessInstanceKey' => 'setRootProcessInstanceKey',
         'businessId' => 'setBusinessId',
         'priority' => 'setPriority',
-        'leaseToken' => 'setLeaseToken'
+        'jobLeaseToken' => 'setJobLeaseToken'
     ];
 
     /**
@@ -305,7 +305,7 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
         'rootProcessInstanceKey' => 'getRootProcessInstanceKey',
         'businessId' => 'getBusinessId',
         'priority' => 'getPriority',
-        'leaseToken' => 'getLeaseToken'
+        'jobLeaseToken' => 'getJobLeaseToken'
     ];
 
     /**
@@ -377,7 +377,7 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
         $this->setIfExists('rootProcessInstanceKey', $data ?? [], null);
         $this->setIfExists('businessId', $data ?? [], null);
         $this->setIfExists('priority', $data ?? [], null);
-        $this->setIfExists('leaseToken', $data ?? [], null);
+        $this->setIfExists('jobLeaseToken', $data ?? [], null);
     }
 
     /**
@@ -512,11 +512,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
         if ($this->container['priority'] === null) {
             $invalidProperties[] = "'priority' can't be null";
         }
-        if ($this->container['leaseToken'] === null && !$this->isNullableSetToNull('leaseToken')) {
-            $invalidProperties[] = "'leaseToken' is required";
+        if ($this->container['jobLeaseToken'] === null && !$this->isNullableSetToNull('jobLeaseToken')) {
+            $invalidProperties[] = "'jobLeaseToken' is required";
         }
-        if (!is_null((string) $this->container['leaseToken']) && (mb_strlen((string) $this->container['leaseToken']) < 1)) {
-            $invalidProperties[] = "invalid value for 'leaseToken', the character length must be bigger than or equal to 1.";
+        if (!is_null((string) $this->container['jobLeaseToken']) && (mb_strlen((string) $this->container['jobLeaseToken']) < 1)) {
+            $invalidProperties[] = "invalid value for 'jobLeaseToken', the character length must be bigger than or equal to 1.";
         }
 
         return $invalidProperties;
@@ -1109,25 +1109,25 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     }
 
     /**
-     * Gets leaseToken
+     * Gets jobLeaseToken
      *
      * @return string|null
      */
-    public function getLeaseToken(): ?\Camunda\Orchestration\Semantic\JobLeaseToken
+    public function getJobLeaseToken(): ?\Camunda\Orchestration\Semantic\JobLeaseToken
     {
-        return $this->container['leaseToken'];
+        return $this->container['jobLeaseToken'];
     }
 
     /**
-     * Sets leaseToken
+     * Sets jobLeaseToken
      *
-     * @param string|null $leaseToken The lease token identifying this activation. This is `null` when the job was activated without a lease.
+     * @param string|null $jobLeaseToken The lease token identifying this activation. This is `null` when the job was activated without a lease.
      *
      * @return $this
      */
-    public function setLeaseToken(?\Camunda\Orchestration\Semantic\JobLeaseToken $leaseToken): static
+    public function setJobLeaseToken(?\Camunda\Orchestration\Semantic\JobLeaseToken $jobLeaseToken): static
     {
-        $this->container['leaseToken'] = $leaseToken;
+        $this->container['jobLeaseToken'] = $jobLeaseToken;
 
         return $this;
     }

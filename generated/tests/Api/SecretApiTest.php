@@ -72,7 +72,7 @@ class SecretApiTest extends TestCase
     /**
      * Test case for listSecrets
      *
-     * List secrets (alpha).
+     * List secrets.
      *
      */
     public function testListSecrets()
@@ -84,7 +84,7 @@ class SecretApiTest extends TestCase
     /**
      * Test case for resolveSecrets
      *
-     * Resolve secrets (alpha).
+     * Resolve secrets.
      *
      */
     public function testResolveSecrets()

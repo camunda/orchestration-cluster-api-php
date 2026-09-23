@@ -62,7 +62,7 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
         'errorMessage' => 'string',
         'retryBackOff' => 'int',
         'variables' => 'array<string,mixed>',
-        'leaseToken' => '\Camunda\Orchestration\Semantic\JobLeaseToken'
+        'jobLeaseToken' => '\Camunda\Orchestration\Semantic\JobLeaseToken'
     ];
 
     /**
@@ -75,7 +75,7 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
         'errorMessage' => null,
         'retryBackOff' => 'int64',
         'variables' => null,
-        'leaseToken' => 'JobLeaseToken'
+        'jobLeaseToken' => 'JobLeaseToken'
     ];
 
     /**
@@ -88,7 +88,7 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
         'errorMessage' => false,
         'retryBackOff' => false,
         'variables' => false,
-        'leaseToken' => true
+        'jobLeaseToken' => true
     ];
 
     /**
@@ -171,7 +171,7 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
         'errorMessage' => 'errorMessage',
         'retryBackOff' => 'retryBackOff',
         'variables' => 'variables',
-        'leaseToken' => 'leaseToken'
+        'jobLeaseToken' => 'jobLeaseToken'
     ];
 
     /**
@@ -184,7 +184,7 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
         'errorMessage' => 'setErrorMessage',
         'retryBackOff' => 'setRetryBackOff',
         'variables' => 'setVariables',
-        'leaseToken' => 'setLeaseToken'
+        'jobLeaseToken' => 'setJobLeaseToken'
     ];
 
     /**
@@ -197,7 +197,7 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
         'errorMessage' => 'getErrorMessage',
         'retryBackOff' => 'getRetryBackOff',
         'variables' => 'getVariables',
-        'leaseToken' => 'getLeaseToken'
+        'jobLeaseToken' => 'getJobLeaseToken'
     ];
 
     /**
@@ -251,7 +251,7 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
         $this->setIfExists('errorMessage', $data ?? [], null);
         $this->setIfExists('retryBackOff', $data ?? [], 0);
         $this->setIfExists('variables', $data ?? [], null);
-        $this->setIfExists('leaseToken', $data ?? [], null);
+        $this->setIfExists('jobLeaseToken', $data ?? [], null);
     }
 
     /**
@@ -288,8 +288,8 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
     {
         $invalidProperties = [];
 
-        if (!is_null((string) $this->container['leaseToken']) && (mb_strlen((string) $this->container['leaseToken']) < 1)) {
-            $invalidProperties[] = "invalid value for 'leaseToken', the character length must be bigger than or equal to 1.";
+        if (!is_null((string) $this->container['jobLeaseToken']) && (mb_strlen((string) $this->container['jobLeaseToken']) < 1)) {
+            $invalidProperties[] = "invalid value for 'jobLeaseToken', the character length must be bigger than or equal to 1.";
         }
 
         return $invalidProperties;
@@ -413,25 +413,25 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
     }
 
     /**
-     * Gets leaseToken
+     * Gets jobLeaseToken
      *
      * @return string|null
      */
-    public function getLeaseToken(): ?\Camunda\Orchestration\Semantic\JobLeaseToken
+    public function getJobLeaseToken(): ?\Camunda\Orchestration\Semantic\JobLeaseToken
     {
-        return $this->container['leaseToken'];
+        return $this->container['jobLeaseToken'];
     }
 
     /**
-     * Sets leaseToken
+     * Sets jobLeaseToken
      *
-     * @param string|null $leaseToken The token identifying a leased job's activation, obtained from `ActivatedJobResult.leaseToken`. For a leased job, the matching token must be supplied to prove the command comes from the worker that holds the current lease; a command with no token is rejected. A command carrying a stale token is likewise rejected, fencing the job against a superseded activation (for example, after the job timed out or failed and was re-activated by another worker). A job that was activated without a lease requires no token.
+     * @param string|null $jobLeaseToken The token identifying a leased job's activation, obtained from `ActivatedJobResult.jobLeaseToken`. For a leased job, the matching token must be supplied to prove the command comes from the worker that holds the current lease; a command with no token is rejected. A command carrying a stale token is likewise rejected, fencing the job against a superseded activation (for example, after the job timed out or failed and was re-activated by another worker). A job that was activated without a lease requires no token.
      *
      * @return $this
      */
-    public function setLeaseToken(?\Camunda\Orchestration\Semantic\JobLeaseToken $leaseToken): static
+    public function setJobLeaseToken(?\Camunda\Orchestration\Semantic\JobLeaseToken $jobLeaseToken): static
     {
-        $this->container['leaseToken'] = $leaseToken;
+        $this->container['jobLeaseToken'] = $jobLeaseToken;
 
         return $this;
     }

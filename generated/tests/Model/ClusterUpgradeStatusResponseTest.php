@@ -1,6 +1,6 @@
 <?php
 /**
- * JobErrorRequestTest
+ * ClusterUpgradeStatusResponseTest
  *
  * PHP version 8.1
  *
@@ -30,14 +30,14 @@ namespace Camunda\Orchestration\Api\Test\Model;
 use PHPUnit\Framework\TestCase;
 
 /**
- * JobErrorRequestTest Class Doc Comment
+ * ClusterUpgradeStatusResponseTest Class Doc Comment
  *
- * @description JobErrorRequest
+ * @description The upgrade-readiness status of the whole cluster.
  * @package     Camunda\Orchestration\Api
  * @author      OpenAPI Generator team
  * @link        https://openapi-generator.tech
  */
-class JobErrorRequestTest extends TestCase
+class ClusterUpgradeStatusResponseTest extends TestCase
 {
 
     /**
@@ -69,45 +69,18 @@ class JobErrorRequestTest extends TestCase
     }
 
     /**
-     * Test "JobErrorRequest"
+     * Test "ClusterUpgradeStatusResponse"
      */
-    public function testJobErrorRequest()
+    public function testClusterUpgradeStatusResponse()
     {
         // TODO: implement
         self::markTestIncomplete('Not implemented');
     }
 
     /**
-     * Test attribute "errorCode"
+     * Test attribute "status"
      */
-    public function testPropertyErrorCode()
-    {
-        // TODO: implement
-        self::markTestIncomplete('Not implemented');
-    }
-
-    /**
-     * Test attribute "errorMessage"
-     */
-    public function testPropertyErrorMessage()
-    {
-        // TODO: implement
-        self::markTestIncomplete('Not implemented');
-    }
-
-    /**
-     * Test attribute "variables"
-     */
-    public function testPropertyVariables()
-    {
-        // TODO: implement
-        self::markTestIncomplete('Not implemented');
-    }
-
-    /**
-     * Test attribute "jobLeaseToken"
-     */
-    public function testPropertyJobLeaseToken()
+    public function testPropertyStatus()
     {
         // TODO: implement
         self::markTestIncomplete('Not implemented');

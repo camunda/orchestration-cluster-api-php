@@ -61,7 +61,7 @@ class AgentInstanceCreationRequest implements ModelInterface, ArrayAccess, JsonS
     protected static array $openAPITypes = [
         'elementInstanceKey' => '\Camunda\Orchestration\Semantic\ElementInstanceKey',
         'jobKey' => '\Camunda\Orchestration\Semantic\JobKey',
-        'jobLease' => '\Camunda\Orchestration\Semantic\JobLeaseToken',
+        'jobLeaseToken' => '\Camunda\Orchestration\Semantic\JobLeaseToken',
         'history' => '\Camunda\Orchestration\Api\Model\AgentInstanceHistoryItem[]'
     ];
 
@@ -73,7 +73,7 @@ class AgentInstanceCreationRequest implements ModelInterface, ArrayAccess, JsonS
     protected static array $openAPIFormats = [
         'elementInstanceKey' => null,
         'jobKey' => null,
-        'jobLease' => 'JobLeaseToken',
+        'jobLeaseToken' => 'JobLeaseToken',
         'history' => null
     ];
 
@@ -85,7 +85,7 @@ class AgentInstanceCreationRequest implements ModelInterface, ArrayAccess, JsonS
     protected static array $openAPINullables = [
         'elementInstanceKey' => false,
         'jobKey' => false,
-        'jobLease' => false,
+        'jobLeaseToken' => false,
         'history' => false
     ];
 
@@ -167,7 +167,7 @@ class AgentInstanceCreationRequest implements ModelInterface, ArrayAccess, JsonS
     protected static array $attributeMap = [
         'elementInstanceKey' => 'elementInstanceKey',
         'jobKey' => 'jobKey',
-        'jobLease' => 'jobLease',
+        'jobLeaseToken' => 'jobLeaseToken',
         'history' => 'history'
     ];
 
@@ -179,7 +179,7 @@ class AgentInstanceCreationRequest implements ModelInterface, ArrayAccess, JsonS
     protected static array $setters = [
         'elementInstanceKey' => 'setElementInstanceKey',
         'jobKey' => 'setJobKey',
-        'jobLease' => 'setJobLease',
+        'jobLeaseToken' => 'setJobLeaseToken',
         'history' => 'setHistory'
     ];
 
@@ -191,7 +191,7 @@ class AgentInstanceCreationRequest implements ModelInterface, ArrayAccess, JsonS
     protected static array $getters = [
         'elementInstanceKey' => 'getElementInstanceKey',
         'jobKey' => 'getJobKey',
-        'jobLease' => 'getJobLease',
+        'jobLeaseToken' => 'getJobLeaseToken',
         'history' => 'getHistory'
     ];
 
@@ -244,7 +244,7 @@ class AgentInstanceCreationRequest implements ModelInterface, ArrayAccess, JsonS
     {
         $this->setIfExists('elementInstanceKey', $data ?? [], null);
         $this->setIfExists('jobKey', $data ?? [], null);
-        $this->setIfExists('jobLease', $data ?? [], null);
+        $this->setIfExists('jobLeaseToken', $data ?? [], null);
         $this->setIfExists('history', $data ?? [], null);
     }
 
@@ -288,11 +288,11 @@ class AgentInstanceCreationRequest implements ModelInterface, ArrayAccess, JsonS
         if ($this->container['jobKey'] === null) {
             $invalidProperties[] = "'jobKey' can't be null";
         }
-        if ($this->container['jobLease'] === null) {
-            $invalidProperties[] = "'jobLease' can't be null";
+        if ($this->container['jobLeaseToken'] === null) {
+            $invalidProperties[] = "'jobLeaseToken' can't be null";
         }
-        if ((mb_strlen((string) $this->container['jobLease']) < 1)) {
-            $invalidProperties[] = "invalid value for 'jobLease', the character length must be bigger than or equal to 1.";
+        if ((mb_strlen((string) $this->container['jobLeaseToken']) < 1)) {
+            $invalidProperties[] = "invalid value for 'jobLeaseToken', the character length must be bigger than or equal to 1.";
         }
 
         if ($this->container['history'] === null) {
@@ -363,25 +363,25 @@ class AgentInstanceCreationRequest implements ModelInterface, ArrayAccess, JsonS
     }
 
     /**
-     * Gets jobLease
+     * Gets jobLeaseToken
      *
      * @return string
      */
-    public function getJobLease(): \Camunda\Orchestration\Semantic\JobLeaseToken
+    public function getJobLeaseToken(): \Camunda\Orchestration\Semantic\JobLeaseToken
     {
-        return $this->container['jobLease'];
+        return $this->container['jobLeaseToken'];
     }
 
     /**
-     * Sets jobLease
+     * Sets jobLeaseToken
      *
-     * @param string $jobLease Opaque lease token received from the job activation response. Disambiguates this activation from any other activation of the same job: if the job is later retried, history items submitted under a superseded lease are discarded rather than committed.
+     * @param string $jobLeaseToken Opaque lease token received from the job activation response. Disambiguates this activation from any other activation of the same job: if the job is later retried, history items submitted under a superseded lease are discarded rather than committed.
      *
      * @return $this
      */
-    public function setJobLease(\Camunda\Orchestration\Semantic\JobLeaseToken $jobLease): static
+    public function setJobLeaseToken(\Camunda\Orchestration\Semantic\JobLeaseToken $jobLeaseToken): static
     {
-        $this->container['jobLease'] = $jobLease;
+        $this->container['jobLeaseToken'] = $jobLeaseToken;
 
         return $this;
     }

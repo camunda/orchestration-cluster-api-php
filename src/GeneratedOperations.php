@@ -937,6 +937,30 @@ trait GeneratedOperations
     }
 
     /**
+     * Operation getClusterUpgradeStatus
+     *
+     * Get the upgrade-readiness status of the whole cluster
+     *
+     * This operation contains host(s) defined in the OpenAPI spec. Use 'hostIndex' to select the host.
+     * if needed, use the 'variables' parameter to pass variables to the host.
+     * URL: {schema}://{host}:{port}
+     *  Variables:
+     *    - host: The hostname of the Orchestration Cluster REST Gateway.
+     *    - port: The port of the Orchestration Cluster REST API server.
+     *    - schema: The schema of the Orchestration Cluster REST API server.
+     *
+     * @param  null|int $hostIndex Host index. Defaults to null. If null, then the library will use $this->hostIndex instead
+     * @param  array<string, mixed> $variables Associative array of variables to pass to the host. Defaults to empty array.
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getClusterUpgradeStatus'] to see the possible values for this operation
+     *
+     * @return \Camunda\Orchestration\Api\Model\ClusterUpgradeStatusResponse
+     */
+    public function getClusterUpgradeStatus(?int $hostIndex = null, array $variables = [], string $contentType = \Camunda\Orchestration\Api\Api\ClusterApi::contentTypes['getClusterUpgradeStatus'][0]): \Camunda\Orchestration\Api\Model\ClusterUpgradeStatusResponse
+    {
+        return $this->api(\Camunda\Orchestration\Api\Api\ClusterApi::class)->getClusterUpgradeStatus($hostIndex, $variables, $contentType);
+    }
+
+    /**
      * Operation getStatus
      *
      * Get physical tenant status
@@ -3298,7 +3322,7 @@ trait GeneratedOperations
     /**
      * Operation listSecrets
      *
-     * List secrets (alpha)
+     * List secrets
      *
      * @param  array<string, mixed>|null $body body (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listSecrets'] to see the possible values for this operation
@@ -3313,7 +3337,7 @@ trait GeneratedOperations
     /**
      * Operation resolveSecrets
      *
-     * Resolve secrets (alpha)
+     * Resolve secrets
      *
      * @param  \Camunda\Orchestration\Api\Model\SecretResolveRequest $secretResolveRequest secretResolveRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resolveSecrets'] to see the possible values for this operation

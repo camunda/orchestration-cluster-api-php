@@ -98,7 +98,7 @@ class BatchOperationResponse implements ModelInterface, ArrayAccess, JsonSeriali
     protected static array $openAPINullables = [
         'batchOperationKey' => false,
         'state' => false,
-        'batchOperationType' => false,
+        'batchOperationType' => true,
         'startDate' => true,
         'endDate' => true,
         'actorType' => true,
@@ -336,8 +336,8 @@ class BatchOperationResponse implements ModelInterface, ArrayAccess, JsonSeriali
         if ($this->container['state'] === null) {
             $invalidProperties[] = "'state' can't be null";
         }
-        if ($this->container['batchOperationType'] === null) {
-            $invalidProperties[] = "'batchOperationType' can't be null";
+        if ($this->container['batchOperationType'] === null && !$this->isNullableSetToNull('batchOperationType')) {
+            $invalidProperties[] = "'batchOperationType' is required";
         }
         if ($this->container['startDate'] === null && !$this->isNullableSetToNull('startDate')) {
             $invalidProperties[] = "'startDate' is required";
@@ -429,9 +429,9 @@ class BatchOperationResponse implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets batchOperationType
      *
-     * @return \Camunda\Orchestration\Api\Model\BatchOperationTypeEnum
+     * @return \Camunda\Orchestration\Api\Model\BatchOperationTypeEnum|null
      */
-    public function getBatchOperationType(): \Camunda\Orchestration\Api\Model\BatchOperationTypeEnum
+    public function getBatchOperationType(): ?\Camunda\Orchestration\Api\Model\BatchOperationTypeEnum
     {
         return $this->container['batchOperationType'];
     }
@@ -439,14 +439,21 @@ class BatchOperationResponse implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets batchOperationType
      *
-     * @param \Camunda\Orchestration\Api\Model\BatchOperationTypeEnum $batchOperationType batchOperationType
+     * @param \Camunda\Orchestration\Api\Model\BatchOperationTypeEnum|null $batchOperationType The type of the batch operation. This is `null` for batch operations whose type was never recorded in secondary storage, such as legacy Operate batch operations.
      *
      * @return $this
      */
-    public function setBatchOperationType(\Camunda\Orchestration\Api\Model\BatchOperationTypeEnum $batchOperationType): static
+    public function setBatchOperationType(?\Camunda\Orchestration\Api\Model\BatchOperationTypeEnum $batchOperationType): static
     {
         if (is_null($batchOperationType)) {
-            throw new InvalidArgumentException('non-nullable batchOperationType cannot be null');
+            array_push($this->openAPINullablesSetToNull, 'batchOperationType');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('batchOperationType', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
         }
         $this->container['batchOperationType'] = $batchOperationType;
 

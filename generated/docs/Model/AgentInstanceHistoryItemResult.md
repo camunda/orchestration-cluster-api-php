@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **agentInstanceKey** | **string** | The key of the agent instance this item belongs to. |
 **elementInstanceKey** | **string** | The key of the AI Agent Task or ad-hoc sub-process element instance under which this item was produced. |
 **jobKey** | **string** | The key of the job activation during which this item was produced. |
-**jobLease** | **string** | The lease token of the activation that produced this item. |
+**jobLeaseToken** | **string** | The lease token of the activation that produced this item. |
 **loopIteration** | **int** | The loop iteration this item belongs to. |
 **role** | [**\Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleEnum**](AgentInstanceHistoryRoleEnum.md) | The role of this history item in the conversation. |
 **content** | [**\Camunda\Orchestration\Api\Model\AgentInstanceMessageContent[]**](AgentInstanceMessageContent.md) | The content blocks of this history item. |

@@ -256,6 +256,7 @@ docs/Model/ClusterStatusResponse.md
 docs/Model/ClusterTakeHistoryBackupResponse.md
 docs/Model/ClusterTakeRuntimeBackupResponse.md
 docs/Model/ClusterTopologyResponse.md
+docs/Model/ClusterUpgradeStatusResponse.md
 docs/Model/ClusterVariableKindEnum.md
 docs/Model/ClusterVariableKindExactMatch.md
 docs/Model/ClusterVariableKindFilterProperty.md
@@ -1001,6 +1002,7 @@ src/Model/ClusterStatusResponse.php
 src/Model/ClusterTakeHistoryBackupResponse.php
 src/Model/ClusterTakeRuntimeBackupResponse.php
 src/Model/ClusterTopologyResponse.php
+src/Model/ClusterUpgradeStatusResponse.php
 src/Model/ClusterVariableKindEnum.php
 src/Model/ClusterVariableKindExactMatch.php
 src/Model/ClusterVariableKindFilterProperty.php
@@ -1742,6 +1744,7 @@ tests/Model/ClusterStatusResponseTest.php
 tests/Model/ClusterTakeHistoryBackupResponseTest.php
 tests/Model/ClusterTakeRuntimeBackupResponseTest.php
 tests/Model/ClusterTopologyResponseTest.php
+tests/Model/ClusterUpgradeStatusResponseTest.php
 tests/Model/ClusterVariableKindEnumTest.php
 tests/Model/ClusterVariableKindExactMatchTest.php
 tests/Model/ClusterVariableKindFilterPropertyTest.php

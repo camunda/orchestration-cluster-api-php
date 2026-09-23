@@ -118,6 +118,18 @@ class ClusterApiTest extends TestCase
     }
 
     /**
+     * Test case for getClusterUpgradeStatus
+     *
+     * Get the upgrade-readiness status of the whole cluster.
+     *
+     */
+    public function testGetClusterUpgradeStatus()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
      * Test case for getStatus
      *
      * Get physical tenant status.

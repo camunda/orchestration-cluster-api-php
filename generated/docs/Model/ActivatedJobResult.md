@@ -26,6 +26,6 @@ Name | Type | Description | Notes
 **rootProcessInstanceKey** | **string** | The key of the root process instance. The root process instance is the top-level ancestor in the process instance hierarchy. This field is only present for data belonging to process instance hierarchies created in version 8.9 or later. |
 **businessId** | **string** | The business ID of the owning process instance, inherited when the job was created. This is &#x60;null&#x60; for jobs created before version 8.10 and for jobs whose owning process instance has no business ID. |
 **priority** | **int** | The priority of the job. Higher values indicate higher priority. Jobs created before 8.10 have no stored priority; the API returns 0 for such jobs. |
-**leaseToken** | **string** | The lease token identifying this activation. This is &#x60;null&#x60; when the job was activated without a lease. |
+**jobLeaseToken** | **string** | The lease token identifying this activation. This is &#x60;null&#x60; when the job was activated without a lease. |
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)

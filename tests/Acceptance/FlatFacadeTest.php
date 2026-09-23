@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * The flat facade exposes all 243 generated operations directly on the clients
+ * The flat facade exposes all 244 generated operations directly on the clients
  * (e.g. `$client->getTopology()`), forwarding to the underlying API groups.
  */
 final class FlatFacadeTest extends TestCase
