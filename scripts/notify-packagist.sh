@@ -38,7 +38,7 @@ http_code="$(curl -sS -o "${response_body}" -w '%{http_code}' \
 
 echo "[notify-packagist] HTTP ${http_code}: $(cat "${response_body}")" >&2
 
-if [[ "${http_code}" != "200" ]]; then
+if [[ ! "${http_code}" =~ ^2[0-9][0-9]$ ]]; then
   echo "[notify-packagist] WARNING: Packagist update was not accepted (HTTP ${http_code}). The tag is published; Packagist will pick it up on its next crawl." >&2
   exit 0
 fi
