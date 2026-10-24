@@ -24,7 +24,11 @@ return static function (array $ctx): void {
     }
     $src = (string) file_get_contents($file);
 
-    if (str_contains($src, 'serializeEmptyObjectAsObject')) {
+    // Idempotency: `generate.php --skip-openapi-generator` reruns the hooks against the
+    // already-patched, checked-in serializer. Detect *this hook's own output* — the
+    // `isObjectShapedType` helper it inserts below — and skip instead of failing on the
+    // now-rewritten `is_array` anchor.
+    if (str_contains($src, 'isObjectShapedType')) {
         fwrite(STDOUT, "  [empty-object] ObjectSerializer already emits {} for empty object maps\n");
         return;
     }
@@ -71,8 +75,8 @@ PHP;
         if ($type === null) {
             return false;
         }
-        $type = ltrim(strtolower($type), '\\');
-        if ($type === 'object' || $type === 'stdclass' || $type === '\\stdclass') {
+        $type = strtolower(ltrim($type, '\\'));
+        if ($type === 'object' || $type === 'stdclass') {
             return true;
         }
         // Map types: array<string,...> / map[string,...] — but not list types such as

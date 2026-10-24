@@ -149,8 +149,8 @@ class ObjectSerializer
         if ($type === null) {
             return false;
         }
-        $type = ltrim(strtolower($type), '\\');
-        if ($type === 'object' || $type === 'stdclass' || $type === '\\stdclass') {
+        $type = strtolower(ltrim($type, '\\'));
+        if ($type === 'object' || $type === 'stdclass') {
             return true;
         }
         // Map types: array<string,...> / map[string,...] — but not list types such as
