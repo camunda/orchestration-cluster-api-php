@@ -40,7 +40,7 @@ final class OAuthClientCredentialsProviderTest extends TestCase
         );
 
         self::assertSame(['Authorization' => 'Bearer ' . 'access-token'], $provider->getHeaders());
-        self::assertSame(['Authorization' => 'Bearer ' . 'access-token'], $provider->getHeaders());
+        self::assertSame('Bearer access-token', $provider->getHeaders()['Authorization']);
         self::assertCount(1, $httpClient->requests);
 
         usleep(1_100_000);

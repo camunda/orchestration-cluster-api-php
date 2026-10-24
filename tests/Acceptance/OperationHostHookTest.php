@@ -77,8 +77,11 @@ final class OperationHostHookTest extends TestCase
 
     public function testHookCanBeRequiredMoreThanOnce(): void
     {
+        $hook = self::operationHostHook();
+
+        self::assertInstanceOf(Closure::class, $hook);
         self::assertInstanceOf(Closure::class, self::operationHostHook());
-        self::assertInstanceOf(Closure::class, self::operationHostHook());
+        self::assertNotSame($hook, self::operationHostHook());
     }
 
     /**
