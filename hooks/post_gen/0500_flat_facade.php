@@ -24,6 +24,23 @@ return static function (array $ctx): void {
     // defined by the client facades or the ApiAccessors trait.
     $reserved = ['api', 'configuration'];
 
+    // Tenant-aware operations: when the caller omits tenantId, inject the
+    // configured default (CAMUNDA_TENANT_ID) so the request is scoped to the
+    // default tenant. This matches the behaviour of the JS, Python and C# SDKs.
+    //
+    // Map: operation name => [body parameter variable name (without $), whether
+    // the model's setTenantId() takes a plain string rather than a TenantId].
+    // The body model must expose getTenantId()/setTenantId().
+    $tenantAwareBodyOps = [
+        'createProcessInstance' => ['processInstanceCreationInstruction', false],
+        'evaluateDecision' => ['decisionEvaluationInstruction', false],
+        'publishMessage' => ['messagePublicationRequest', false],
+        'correlateMessage' => ['messageCorrelationRequest', false],
+        'broadcastSignal' => ['signalBroadcastRequest', false],
+        'evaluateConditionals' => ['conditionalEvaluationInstruction', false],
+        'evaluateExpression' => ['expressionEvaluationRequest', true],
+    ];
+
     $syncMethods = '';
     $asyncMethods = '';
     $seen = [];
@@ -61,7 +78,19 @@ return static function (array $ctx): void {
             $isVoid = in_array($return, ['void', 'never'], true);
             $call = "\$this->api({$fqcn}::class)->{$name}({$args})";
 
-            $syncBody = $isVoid ? "        {$call};\n" : "        return {$call};\n";
+            $tenantInjection = tenant_injection($name, $tenantAwareBodyOps);
+            // createDeployment takes tenantId as a direct query parameter rather
+            // than inside a body model; default it when the caller omits it.
+            if ($name === 'createDeployment') {
+                $tenantInjection = <<<'PHP'
+        if ($tenantId === null && $this->config->tenantIds !== []) {
+            $tenantId = $this->config->tenantIds[0];
+        }
+
+PHP;
+            }
+            $syncBody = $tenantInjection;
+            $syncBody .= $isVoid ? "        {$call};\n" : "        return {$call};\n";
             $syncMethods .= $doc
                 . "    public function {$name}({$params}): {$return}\n"
                 . "    {\n"
@@ -73,6 +102,7 @@ return static function (array $ctx): void {
                 $asyncMethods .= $asyncDoc
                     . "    public function {$name}({$params}): \\GuzzleHttp\\Promise\\PromiseInterface\n"
                     . "    {\n"
+                    . $tenantInjection
                     . "        return \$this->api({$fqcn}::class)->{$name}Async({$args});\n"
                     . "    }\n\n";
             }
@@ -155,6 +185,38 @@ function split_top_level(string $params): array
 function normalize_return(string $return): string
 {
     return trim(preg_replace('/\s+/', ' ', $return) ?? $return);
+}
+
+/**
+ * Emit the tenant-default injection prelude for tenant-aware operations.
+ *
+ * When the caller leaves tenantId null on the body model, inject the configured
+ * default tenant (from CAMUNDA_TENANT_ID) before forwarding. The body model is
+ * mutated in place so the forwarded call carries the tenant.
+ *
+ * @param array<string, array{0: string, 1: bool}> $tenantAwareBodyOps
+ */
+function tenant_injection(string $operationName, array $tenantAwareBodyOps): string
+{
+    if (!isset($tenantAwareBodyOps[$operationName])) {
+        return '';
+    }
+
+    [$param, $isStringTenant] = $tenantAwareBodyOps[$operationName];
+
+    $valueExpr = $isStringTenant
+        ? '$defaultTenantId'
+        : 'new \\Camunda\\Orchestration\\Semantic\\TenantId($defaultTenantId)';
+
+    return <<<PHP
+        if (\$this->config->tenantIds !== []) {
+            \$defaultTenantId = \$this->config->tenantIds[0];
+            if (\${$param}->getTenantId() === null) {
+                \${$param}->setTenantId({$valueExpr});
+            }
+        }
+
+PHP;
 }
 
 /**
