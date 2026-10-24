@@ -34,6 +34,7 @@ final class OAuthClientCredentialsProvider implements AuthProvider
     ) {
     }
 
+    /** @return array{Authorization: string} */
     public function getHeaders(): array
     {
         return ['Authorization' => 'Bearer ' . $this->token()];
