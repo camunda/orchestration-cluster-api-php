@@ -327,7 +327,7 @@ class ObjectSerializer
             return $value;
         }
 
-        if ('boolean' === $openApiType && is_bool($value)) {
+        if (is_bool($value)) {
             $value = self::convertBoolToQueryStringFormat($value);
         }
 

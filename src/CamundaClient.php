@@ -52,7 +52,8 @@ final class CamundaClient
     ) {
         $this->apiConfig = (new ApiConfiguration())
             ->setHost($config->restAddress)
-            ->setUserAgent('camunda-orchestration-php/' . Version::VALUE);
+            ->setUserAgent('camunda-orchestration-php/' . Version::VALUE)
+            ->setBooleanFormatForQueryString(ApiConfiguration::BOOLEAN_FORMAT_STRING);
     }
 
     /**
