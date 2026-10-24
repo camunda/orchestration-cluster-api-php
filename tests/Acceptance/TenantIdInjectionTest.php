@@ -344,6 +344,110 @@ final class TenantIdInjectionTest extends TestCase
         self::assertSame('acme', $payload['tenantId']);
     }
 
+    public function testCallerModelIsNotMutatedByTenantInjection(): void
+    {
+        $client = $this->clientWith(new Response(
+            200,
+            ['Content-Type' => 'application/json'],
+            (string) json_encode([
+                'processInstanceKey' => '2251799813685249',
+                'tenantId' => 'acme',
+            ]),
+        ));
+
+        $instruction = new ProcessInstanceCreationInstructionByKey([
+            'processDefinitionKey' => '2251799813685249',
+        ]);
+
+        $client->createProcessInstance($instruction);
+
+        self::assertCount(1, $this->requests);
+        self::assertSame('acme', $this->decodeBody($this->requests[0])['tenantId']);
+        // The facade must forward a clone: the caller-owned model stays
+        // tenantless so it can be reused with other clients.
+        self::assertNull($instruction->getTenantId());
+    }
+
+    public function testReusedTenantlessModelDoesNotLeakTenantAcrossClients(): void
+    {
+        $acmeClient = $this->clientWith(new Response(
+            200,
+            ['Content-Type' => 'application/json'],
+            (string) json_encode([
+                'processInstanceKey' => '2251799813685249',
+                'tenantId' => 'acme',
+            ]),
+        ));
+        $globexClient = CamundaClient::fromConfiguration(
+            ConfigResolver::resolve(
+                overrides: [
+                    'CAMUNDA_AUTH_STRATEGY' => 'NONE',
+                    'CAMUNDA_TENANT_ID' => 'globex',
+                ],
+                environment: [],
+            ),
+            $this->mockHttpClient(new Response(
+                200,
+                ['Content-Type' => 'application/json'],
+                (string) json_encode([
+                    'processInstanceKey' => '2251799813685250',
+                    'tenantId' => 'globex',
+                ]),
+            )),
+        );
+
+        $instruction = new ProcessInstanceCreationInstructionByKey([
+            'processDefinitionKey' => '2251799813685249',
+        ]);
+
+        $acmeClient->createProcessInstance($instruction);
+        $globexClient->createProcessInstance($instruction);
+
+        self::assertCount(2, $this->requests);
+        self::assertSame('acme', $this->decodeBody($this->requests[0])['tenantId']);
+        self::assertSame('globex', $this->decodeBody($this->requests[1])['tenantId']);
+    }
+
+    public function testAsyncReusedTenantlessModelDoesNotLeakTenantAcrossClients(): void
+    {
+        $acmeClient = $this->asyncClientWith(new Response(
+            200,
+            ['Content-Type' => 'application/json'],
+            (string) json_encode([
+                'processInstanceKey' => '2251799813685249',
+                'tenantId' => 'acme',
+            ]),
+        ));
+        $globexClient = CamundaAsyncClient::fromConfiguration(
+            ConfigResolver::resolve(
+                overrides: [
+                    'CAMUNDA_AUTH_STRATEGY' => 'NONE',
+                    'CAMUNDA_TENANT_ID' => 'globex',
+                ],
+                environment: [],
+            ),
+            $this->mockHttpClient(new Response(
+                200,
+                ['Content-Type' => 'application/json'],
+                (string) json_encode([
+                    'processInstanceKey' => '2251799813685250',
+                    'tenantId' => 'globex',
+                ]),
+            )),
+        );
+
+        $instruction = new ProcessInstanceCreationInstructionByKey([
+            'processDefinitionKey' => '2251799813685249',
+        ]);
+
+        $acmeClient->createProcessInstance($instruction)->wait();
+        $globexClient->createProcessInstance($instruction)->wait();
+
+        self::assertCount(2, $this->requests);
+        self::assertSame('acme', $this->decodeBody($this->requests[0])['tenantId']);
+        self::assertSame('globex', $this->decodeBody($this->requests[1])['tenantId']);
+    }
+
     private function clientWith(Response $response): CamundaClient
     {
         return CamundaClient::fromConfiguration(

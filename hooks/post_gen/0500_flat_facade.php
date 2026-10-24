@@ -190,9 +190,12 @@ function normalize_return(string $return): string
 /**
  * Emit the tenant-default injection prelude for tenant-aware operations.
  *
- * When the caller leaves tenantId null on the body model, inject the configured
- * default tenant (from CAMUNDA_TENANT_ID) before forwarding. The body model is
- * mutated in place so the forwarded call carries the tenant.
+ * When the caller leaves tenantId null on the body model, forward a clone
+ * carrying the configured default tenant (from CAMUNDA_TENANT_ID). The model
+ * is cloned before the default is applied so the caller-owned instance is
+ * never mutated: reusing one tenantless model across clients with different
+ * configured defaults must not leak the first client's tenant into the next
+ * call.
  *
  * @param array<string, array{0: string, 1: bool}> $tenantAwareBodyOps
  */
@@ -205,15 +208,13 @@ function tenant_injection(string $operationName, array $tenantAwareBodyOps): str
     [$param, $isStringTenant] = $tenantAwareBodyOps[$operationName];
 
     $valueExpr = $isStringTenant
-        ? '$defaultTenantId'
-        : 'new \\Camunda\\Orchestration\\Semantic\\TenantId($defaultTenantId)';
+        ? '$this->config->tenantIds[0]'
+        : 'new \\Camunda\\Orchestration\\Semantic\\TenantId($this->config->tenantIds[0])';
 
     return <<<PHP
-        if (\$this->config->tenantIds !== []) {
-            \$defaultTenantId = \$this->config->tenantIds[0];
-            if (\${$param}->getTenantId() === null) {
-                \${$param}->setTenantId({$valueExpr});
-            }
+        if (\$this->config->tenantIds !== [] && \${$param}->getTenantId() === null) {
+            \${$param} = clone \${$param};
+            \${$param}->setTenantId({$valueExpr});
         }
 
 PHP;
