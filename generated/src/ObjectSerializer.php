@@ -85,6 +85,11 @@ class ObjectSerializer
         }
 
         if (is_array($data)) {
+            if ($data === [] && self::isObjectShapedType($type)) {
+                // An empty map declared as an object in the OpenAPI schema must
+                // serialize as `{}`, not `[]` — the server rejects JSON arrays here.
+                return new \stdClass();
+            }
             foreach ($data as $property => $value) {
                 $data[$property] = self::sanitizeForSerialization($value);
             }
@@ -128,6 +133,29 @@ class ObjectSerializer
         } else {
             return (string)$data;
         }
+    }
+
+    /**
+     * Whether the declared OpenAPI type denotes a JSON object (a map), as opposed to a
+     * JSON array (a list). Object-shaped types are `object` and string-keyed maps
+     * (`array<string,mixed>`, `array<string,Model>`, `map[string,mixed]`, …).
+     *
+     * @param string|null $type the OpenAPITools type of the data
+     *
+     * @return bool true when an empty value must serialize as `{}` rather than `[]`
+     */
+    private static function isObjectShapedType(?string $type): bool
+    {
+        if ($type === null) {
+            return false;
+        }
+        $type = ltrim(strtolower($type), '\\');
+        if ($type === 'object' || $type === 'stdclass' || $type === '\\stdclass') {
+            return true;
+        }
+        // Map types: array<string,...> / map[string,...] — but not list types such as
+        // `array`, `string[]` or `\Model[]`, which are JSON arrays.
+        return (bool) preg_match('/^(array|map)\s*[<\[]\s*string\s*[,>\]]/i', $type);
     }
 
     /**
