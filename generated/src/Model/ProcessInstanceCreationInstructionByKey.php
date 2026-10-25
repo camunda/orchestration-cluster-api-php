@@ -120,6 +120,15 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -179,6 +188,20 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -314,6 +337,10 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -381,6 +408,70 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
 
 
     /**
+<<<<<<< HEAD
+=======
+     * Gets processDefinitionKey
+     *
+     * @return string
+     */
+    public function getProcessDefinitionKey(): \Camunda\Orchestration\Semantic\ProcessDefinitionKey
+    {
+        return $this->container['processDefinitionKey'];
+    }
+
+    /**
+     * Sets processDefinitionKey
+     *
+     * @param string $processDefinitionKey The unique key identifying the process definition, for example, returned for a process in the deploy resources endpoint.
+     *
+     * @return $this
+     */
+    public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
+    {
+        $this->container['processDefinitionKey'] = $processDefinitionKey;
+        if ($processDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['processDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionKey'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets processDefinitionVersion
+     *
+     * @return int|null
+     */
+    public function getProcessDefinitionVersion(): ?int
+    {
+        return $this->container['processDefinitionVersion'];
+    }
+
+    /**
+     * Sets processDefinitionVersion
+     *
+     * @param int|null $processDefinitionVersion As the version is already identified by the `processDefinitionKey`, the value of this field is ignored. It's here for backwards-compatibility only as previous releases accepted it in request bodies.
+     *
+     * @return $this
+     */
+    public function setProcessDefinitionVersion(?int $processDefinitionVersion): static
+    {
+        if (is_null($processDefinitionVersion)) {
+            throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
+        }
+        $this->container['processDefinitionVersion'] = $processDefinitionVersion;
+        if ($processDefinitionVersion === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersion']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+>>>>>>> 3dbb98d (fix: omit unset optional fields from serialized request bodies (#62))
      * Gets variables
      *
      * @return array<string,mixed>|null
@@ -403,11 +494,83 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable variables cannot be null');
         }
         $this->container['variables'] = $variables;
+        if ($variables === null) {
+            unset($this->openAPIFieldsSet['variables']);
+        } else {
+            $this->openAPIFieldsSet['variables'] = true;
+        }
 
         return $this;
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Gets startInstructions
+     *
+     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceCreationStartInstruction[]|null
+     */
+    public function getStartInstructions(): ?array
+    {
+        return $this->container['startInstructions'];
+    }
+
+    /**
+     * Sets startInstructions
+     *
+     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceCreationStartInstruction[]|null $startInstructions List of start instructions. By default, the process instance will start at the start event. If provided, the process instance will apply start instructions after it has been created.
+     *
+     * @return $this
+     */
+    public function setStartInstructions(?array $startInstructions): static
+    {
+        if (is_null($startInstructions)) {
+            throw new InvalidArgumentException('non-nullable startInstructions cannot be null');
+        }
+        $this->container['startInstructions'] = $startInstructions;
+        if ($startInstructions === null) {
+            unset($this->openAPIFieldsSet['startInstructions']);
+        } else {
+            $this->openAPIFieldsSet['startInstructions'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets runtimeInstructions
+     *
+     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceCreationTerminateInstruction[]|null
+     */
+    public function getRuntimeInstructions(): ?array
+    {
+        return $this->container['runtimeInstructions'];
+    }
+
+    /**
+     * Sets runtimeInstructions
+     *
+     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceCreationTerminateInstruction[]|null $runtimeInstructions Runtime instructions (alpha). List of instructions that affect the runtime behavior of the process instance. Refer to specific instruction types for more details.  This parameter is an alpha feature and may be subject to change in future releases.
+     *
+     * @return $this
+     */
+    public function setRuntimeInstructions(?array $runtimeInstructions): static
+    {
+        if (is_null($runtimeInstructions)) {
+            throw new InvalidArgumentException('non-nullable runtimeInstructions cannot be null');
+        }
+        $this->container['runtimeInstructions'] = $runtimeInstructions;
+        if ($runtimeInstructions === null) {
+            unset($this->openAPIFieldsSet['runtimeInstructions']);
+        } else {
+            $this->openAPIFieldsSet['runtimeInstructions'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+>>>>>>> 3dbb98d (fix: omit unset optional fields from serialized request bodies (#62))
      * Gets tenantId
      *
      * @return string|null
@@ -427,6 +590,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     public function setTenantId(?\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -458,6 +626,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
         }
 
         $this->container['operationReference'] = $operationReference;
+        if ($operationReference === null) {
+            unset($this->openAPIFieldsSet['operationReference']);
+        } else {
+            $this->openAPIFieldsSet['operationReference'] = true;
+        }
 
         return $this;
     }
@@ -539,11 +712,51 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable awaitCompletion cannot be null');
         }
         $this->container['awaitCompletion'] = $awaitCompletion;
+        if ($awaitCompletion === null) {
+            unset($this->openAPIFieldsSet['awaitCompletion']);
+        } else {
+            $this->openAPIFieldsSet['awaitCompletion'] = true;
+        }
 
         return $this;
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Gets requestTimeout
+     *
+     * @return int|null
+     */
+    public function getRequestTimeout(): ?int
+    {
+        return $this->container['requestTimeout'];
+    }
+
+    /**
+     * Sets requestTimeout
+     *
+     * @param int|null $requestTimeout Timeout (in ms) the request waits for the process to complete. By default or when set to 0, the generic request timeout configured in the cluster is applied.
+     *
+     * @return $this
+     */
+    public function setRequestTimeout(?int $requestTimeout): static
+    {
+        if (is_null($requestTimeout)) {
+            throw new InvalidArgumentException('non-nullable requestTimeout cannot be null');
+        }
+        $this->container['requestTimeout'] = $requestTimeout;
+        if ($requestTimeout === null) {
+            unset($this->openAPIFieldsSet['requestTimeout']);
+        } else {
+            $this->openAPIFieldsSet['requestTimeout'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+>>>>>>> 3dbb98d (fix: omit unset optional fields from serialized request bodies (#62))
      * Gets fetchVariables
      *
      * @return string[]|null
@@ -566,6 +779,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable fetchVariables cannot be null');
         }
         $this->container['fetchVariables'] = $fetchVariables;
+        if ($fetchVariables === null) {
+            unset($this->openAPIFieldsSet['fetchVariables']);
+        } else {
+            $this->openAPIFieldsSet['fetchVariables'] = true;
+        }
 
         return $this;
     }
@@ -623,6 +841,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('invalid value for $tags when calling ProcessInstanceCreationInstructionByKey., number of items must be less than or equal to 10.');
         }
         $this->container['tags'] = $tags;
+        if ($tags === null) {
+            unset($this->openAPIFieldsSet['tags']);
+        } else {
+            $this->openAPIFieldsSet['tags'] = true;
+        }
 
         return $this;
     }
@@ -647,6 +870,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
         $this->container['businessId'] = $businessId;
+        if ($businessId === null) {
+            unset($this->openAPIFieldsSet['businessId']);
+        } else {
+            $this->openAPIFieldsSet['businessId'] = true;
+        }
 
         return $this;
     }
@@ -740,6 +968,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -753,6 +986,7 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

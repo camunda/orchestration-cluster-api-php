@@ -93,6 +93,15 @@ class DecisionEvaluationByKey implements ModelInterface, ArrayAccess, JsonSerial
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -152,6 +161,20 @@ class DecisionEvaluationByKey implements ModelInterface, ArrayAccess, JsonSerial
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -251,6 +274,10 @@ class DecisionEvaluationByKey implements ModelInterface, ArrayAccess, JsonSerial
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -321,6 +348,11 @@ class DecisionEvaluationByKey implements ModelInterface, ArrayAccess, JsonSerial
     public function setDecisionDefinitionKey(\Camunda\Orchestration\Semantic\DecisionDefinitionKey $decisionDefinitionKey): static
     {
         $this->container['decisionDefinitionKey'] = $decisionDefinitionKey;
+        if ($decisionDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['decisionDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['decisionDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -348,6 +380,11 @@ class DecisionEvaluationByKey implements ModelInterface, ArrayAccess, JsonSerial
             throw new InvalidArgumentException('non-nullable variables cannot be null');
         }
         $this->container['variables'] = $variables;
+        if ($variables === null) {
+            unset($this->openAPIFieldsSet['variables']);
+        } else {
+            $this->openAPIFieldsSet['variables'] = true;
+        }
 
         return $this;
     }
@@ -372,6 +409,11 @@ class DecisionEvaluationByKey implements ModelInterface, ArrayAccess, JsonSerial
     public function setTenantId(?\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -414,6 +456,11 @@ class DecisionEvaluationByKey implements ModelInterface, ArrayAccess, JsonSerial
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -427,6 +474,7 @@ class DecisionEvaluationByKey implements ModelInterface, ArrayAccess, JsonSerial
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

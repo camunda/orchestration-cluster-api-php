@@ -101,6 +101,11 @@ class ObjectSerializer
             if ($data instanceof ModelInterface) {
                 $formats = $data::openAPIFormats();
                 foreach ($data::openAPITypes() as $property => $openAPIType) {
+                    if (method_exists($data, 'isFieldSet') && !$data->isFieldSet($property)) {
+                        // The caller never provided this optional field — omit it from
+                        // the request body instead of emitting its spec default.
+                        continue;
+                    }
                     $getter = $data::getters()[$property];
                     $value = $data->$getter();
                     if ($value !== null && !in_array($openAPIType, ['\DateTime', '\SplFileObject', 'array', 'bool', 'boolean', 'byte', 'float', 'int', 'integer', 'mixed', 'number', 'object', 'string', 'void'], true)) {

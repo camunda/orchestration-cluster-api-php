@@ -136,6 +136,15 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -195,6 +204,20 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -350,6 +373,10 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -399,6 +426,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable businessId cannot be null');
         }
         $this->container['businessId'] = $businessId;
+        if ($businessId === null) {
+            unset($this->openAPIFieldsSet['businessId']);
+        } else {
+            $this->openAPIFieldsSet['businessId'] = true;
+        }
 
         return $this;
     }
@@ -426,6 +458,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable messageSubscriptionKey cannot be null');
         }
         $this->container['messageSubscriptionKey'] = $messageSubscriptionKey;
+        if ($messageSubscriptionKey === null) {
+            unset($this->openAPIFieldsSet['messageSubscriptionKey']);
+        } else {
+            $this->openAPIFieldsSet['messageSubscriptionKey'] = true;
+        }
 
         return $this;
     }
@@ -453,6 +490,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');
         }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
+        if ($processDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['processDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -480,6 +522,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable processDefinitionId cannot be null');
         }
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -507,6 +554,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
         }
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -534,6 +586,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable elementId cannot be null');
         }
         $this->container['elementId'] = $elementId;
+        if ($elementId === null) {
+            unset($this->openAPIFieldsSet['elementId']);
+        } else {
+            $this->openAPIFieldsSet['elementId'] = true;
+        }
 
         return $this;
     }
@@ -561,6 +618,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable elementInstanceKey cannot be null');
         }
         $this->container['elementInstanceKey'] = $elementInstanceKey;
+        if ($elementInstanceKey === null) {
+            unset($this->openAPIFieldsSet['elementInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['elementInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -588,6 +650,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable messageSubscriptionState cannot be null');
         }
         $this->container['messageSubscriptionState'] = $messageSubscriptionState;
+        if ($messageSubscriptionState === null) {
+            unset($this->openAPIFieldsSet['messageSubscriptionState']);
+        } else {
+            $this->openAPIFieldsSet['messageSubscriptionState'] = true;
+        }
 
         return $this;
     }
@@ -615,6 +682,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable lastUpdatedDate cannot be null');
         }
         $this->container['lastUpdatedDate'] = $lastUpdatedDate;
+        if ($lastUpdatedDate === null) {
+            unset($this->openAPIFieldsSet['lastUpdatedDate']);
+        } else {
+            $this->openAPIFieldsSet['lastUpdatedDate'] = true;
+        }
 
         return $this;
     }
@@ -642,6 +714,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable messageName cannot be null');
         }
         $this->container['messageName'] = $messageName;
+        if ($messageName === null) {
+            unset($this->openAPIFieldsSet['messageName']);
+        } else {
+            $this->openAPIFieldsSet['messageName'] = true;
+        }
 
         return $this;
     }
@@ -669,6 +746,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable correlationKey cannot be null');
         }
         $this->container['correlationKey'] = $correlationKey;
+        if ($correlationKey === null) {
+            unset($this->openAPIFieldsSet['correlationKey']);
+        } else {
+            $this->openAPIFieldsSet['correlationKey'] = true;
+        }
 
         return $this;
     }
@@ -696,6 +778,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable tenantId cannot be null');
         }
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -723,6 +810,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable messageSubscriptionType cannot be null');
         }
         $this->container['messageSubscriptionType'] = $messageSubscriptionType;
+        if ($messageSubscriptionType === null) {
+            unset($this->openAPIFieldsSet['messageSubscriptionType']);
+        } else {
+            $this->openAPIFieldsSet['messageSubscriptionType'] = true;
+        }
 
         return $this;
     }
@@ -750,6 +842,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable processDefinitionName cannot be null');
         }
         $this->container['processDefinitionName'] = $processDefinitionName;
+        if ($processDefinitionName === null) {
+            unset($this->openAPIFieldsSet['processDefinitionName']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionName'] = true;
+        }
 
         return $this;
     }
@@ -777,6 +874,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
         }
         $this->container['processDefinitionVersion'] = $processDefinitionVersion;
+        if ($processDefinitionVersion === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersion']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
+        }
 
         return $this;
     }
@@ -804,6 +906,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable toolName cannot be null');
         }
         $this->container['toolName'] = $toolName;
+        if ($toolName === null) {
+            unset($this->openAPIFieldsSet['toolName']);
+        } else {
+            $this->openAPIFieldsSet['toolName'] = true;
+        }
 
         return $this;
     }
@@ -831,6 +938,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable inboundConnectorType cannot be null');
         }
         $this->container['inboundConnectorType'] = $inboundConnectorType;
+        if ($inboundConnectorType === null) {
+            unset($this->openAPIFieldsSet['inboundConnectorType']);
+        } else {
+            $this->openAPIFieldsSet['inboundConnectorType'] = true;
+        }
 
         return $this;
     }
@@ -873,6 +985,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -886,6 +1003,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

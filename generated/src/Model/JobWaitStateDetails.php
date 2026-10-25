@@ -102,6 +102,15 @@ class JobWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializab
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -161,6 +170,20 @@ class JobWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializab
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -272,6 +295,10 @@ class JobWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializab
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -348,6 +375,11 @@ class JobWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable waitStateType cannot be null');
         }
         $this->container['waitStateType'] = $waitStateType;
+        if ($waitStateType === null) {
+            unset($this->openAPIFieldsSet['waitStateType']);
+        } else {
+            $this->openAPIFieldsSet['waitStateType'] = true;
+        }
 
         return $this;
     }
@@ -372,6 +404,11 @@ class JobWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializab
     public function setJobKey(\Camunda\Orchestration\Semantic\JobKey $jobKey): static
     {
         $this->container['jobKey'] = $jobKey;
+        if ($jobKey === null) {
+            unset($this->openAPIFieldsSet['jobKey']);
+        } else {
+            $this->openAPIFieldsSet['jobKey'] = true;
+        }
 
         return $this;
     }
@@ -399,6 +436,11 @@ class JobWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable jobType cannot be null');
         }
         $this->container['jobType'] = $jobType;
+        if ($jobType === null) {
+            unset($this->openAPIFieldsSet['jobType']);
+        } else {
+            $this->openAPIFieldsSet['jobType'] = true;
+        }
 
         return $this;
     }
@@ -426,6 +468,11 @@ class JobWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable jobKind cannot be null');
         }
         $this->container['jobKind'] = $jobKind;
+        if ($jobKind === null) {
+            unset($this->openAPIFieldsSet['jobKind']);
+        } else {
+            $this->openAPIFieldsSet['jobKind'] = true;
+        }
 
         return $this;
     }
@@ -460,6 +507,11 @@ class JobWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializab
             }
         }
         $this->container['listenerEventType'] = $listenerEventType;
+        if ($listenerEventType === null) {
+            unset($this->openAPIFieldsSet['listenerEventType']);
+        } else {
+            $this->openAPIFieldsSet['listenerEventType'] = true;
+        }
 
         return $this;
     }
@@ -494,6 +546,11 @@ class JobWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializab
             }
         }
         $this->container['retries'] = $retries;
+        if ($retries === null) {
+            unset($this->openAPIFieldsSet['retries']);
+        } else {
+            $this->openAPIFieldsSet['retries'] = true;
+        }
 
         return $this;
     }
@@ -536,6 +593,11 @@ class JobWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializab
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -549,6 +611,7 @@ class JobWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializab
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

@@ -96,6 +96,15 @@ class ExpressionEvaluationResult implements ModelInterface, ArrayAccess, JsonSer
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -155,6 +164,20 @@ class ExpressionEvaluationResult implements ModelInterface, ArrayAccess, JsonSer
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -258,6 +281,10 @@ class ExpressionEvaluationResult implements ModelInterface, ArrayAccess, JsonSer
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -319,6 +346,11 @@ class ExpressionEvaluationResult implements ModelInterface, ArrayAccess, JsonSer
             throw new InvalidArgumentException('non-nullable expression cannot be null');
         }
         $this->container['expression'] = $expression;
+        if ($expression === null) {
+            unset($this->openAPIFieldsSet['expression']);
+        } else {
+            $this->openAPIFieldsSet['expression'] = true;
+        }
 
         return $this;
     }
@@ -353,6 +385,11 @@ class ExpressionEvaluationResult implements ModelInterface, ArrayAccess, JsonSer
             }
         }
         $this->container['result'] = $result;
+        if ($result === null) {
+            unset($this->openAPIFieldsSet['result']);
+        } else {
+            $this->openAPIFieldsSet['result'] = true;
+        }
 
         return $this;
     }
@@ -380,6 +417,11 @@ class ExpressionEvaluationResult implements ModelInterface, ArrayAccess, JsonSer
             throw new InvalidArgumentException('non-nullable warnings cannot be null');
         }
         $this->container['warnings'] = $warnings;
+        if ($warnings === null) {
+            unset($this->openAPIFieldsSet['warnings']);
+        } else {
+            $this->openAPIFieldsSet['warnings'] = true;
+        }
 
         return $this;
     }
@@ -407,6 +449,11 @@ class ExpressionEvaluationResult implements ModelInterface, ArrayAccess, JsonSer
             throw new InvalidArgumentException('non-nullable referencedSecrets cannot be null');
         }
         $this->container['referencedSecrets'] = $referencedSecrets;
+        if ($referencedSecrets === null) {
+            unset($this->openAPIFieldsSet['referencedSecrets']);
+        } else {
+            $this->openAPIFieldsSet['referencedSecrets'] = true;
+        }
 
         return $this;
     }
@@ -449,6 +496,11 @@ class ExpressionEvaluationResult implements ModelInterface, ArrayAccess, JsonSer
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -462,6 +514,7 @@ class ExpressionEvaluationResult implements ModelInterface, ArrayAccess, JsonSer
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**
