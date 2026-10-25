@@ -43,8 +43,12 @@ return static function (array $ctx): void {
     // schema name -> [property => SemanticKeyName]
     $map = [];
     foreach ($schemas as $schemaName => $schema) {
-        $props = $schema['properties'] ?? null;
-        if (!is_array($props)) {
+        // Collect the schema's effective properties, following `allOf` `$ref`s to
+        // parent schemas so semantic types survive on inherited properties (the
+        // spec shares creation fields via a `ProcessInstanceCreationInstructionBase`
+        // parent — openapi-generator flattens them into each variant as `string`).
+        $props = collect_schema_properties($schemas, $schemaName);
+        if ($props === []) {
             continue;
         }
         foreach ($props as $propName => $propSchema) {
@@ -134,6 +138,71 @@ return static function (array $ctx): void {
 
     fwrite(STDOUT, "  [retype] retyped $retyped properties across $modelsTouched models\n");
 };
+
+/**
+ * Collect a schema's effective properties, merging in the properties inherited
+ * through every `allOf` `$ref`'d parent schema, recursively.
+ *
+ * The spec shares the common process-instance creation fields (`tenantId`,
+ * `businessId`, …) via a `ProcessInstanceCreationInstructionBase` parent that the
+ * `…ById` / `…ByKey` / `…ByVersionTag` variants extend with `allOf`. Reading only
+ * each schema's own `properties` misses those inherited fields, so their semantic
+ * value objects would be silently dropped. The schema's own properties (including
+ * those declared in an inline `allOf` fragment) take precedence over inherited ones.
+ *
+ * @param array<string, mixed> $schemas components.schemas keyed by name
+ * @param array<string, bool>  $visited guards against cyclic `allOf` chains
+ * @return array<string, mixed> property name => property schema
+ */
+function collect_schema_properties(array $schemas, string $schemaName, array $visited = []): array
+{
+    if (isset($visited[$schemaName])) {
+        return [];
+    }
+    $schema = $schemas[$schemaName] ?? null;
+    if (!is_array($schema)) {
+        return [];
+    }
+    $visited[$schemaName] = true;
+
+    return merge_schema_properties($schemas, $schema, $visited);
+}
+
+/**
+ * Merge the properties declared directly on a schema fragment with those inherited
+ * through its `allOf` `$ref`s. Own (and inline-fragment) properties win over inherited.
+ *
+ * @param array<string, mixed> $schemas
+ * @param array<string, mixed> $schema
+ * @param array<string, bool>  $visited
+ * @return array<string, mixed>
+ */
+function merge_schema_properties(array $schemas, array $schema, array $visited): array
+{
+    $inherited = [];
+    $own = [];
+
+    if (isset($schema['allOf']) && is_array($schema['allOf'])) {
+        foreach ($schema['allOf'] as $frag) {
+            if (!is_array($frag)) {
+                continue;
+            }
+            if (isset($frag['$ref']) && is_string($frag['$ref'])) {
+                $parent = basename_ref($frag['$ref']);
+                $inherited = array_merge($inherited, collect_schema_properties($schemas, $parent, $visited));
+            } else {
+                // An inline `allOf` fragment contributes the schema's own properties.
+                $own = array_merge($own, merge_schema_properties($schemas, $frag, $visited));
+            }
+        }
+    }
+
+    if (isset($schema['properties']) && is_array($schema['properties'])) {
+        $own = array_merge($own, $schema['properties']);
+    }
+
+    return array_merge($inherited, $own);
+}
 
 /**
  * Resolve a property schema to a single referenced component name, or null.
