@@ -103,6 +103,15 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -162,6 +171,20 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -273,6 +296,10 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -340,6 +367,11 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
             throw new InvalidArgumentException('non-nullable enabled cannot be null');
         }
         $this->container['enabled'] = $enabled;
+        if ($enabled === null) {
+            unset($this->openAPIFieldsSet['enabled']);
+        } else {
+            $this->openAPIFieldsSet['enabled'] = true;
+        }
 
         return $this;
     }
@@ -367,6 +399,11 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
             throw new InvalidArgumentException('non-nullable exportInterval cannot be null');
         }
         $this->container['exportInterval'] = $exportInterval;
+        if ($exportInterval === null) {
+            unset($this->openAPIFieldsSet['exportInterval']);
+        } else {
+            $this->openAPIFieldsSet['exportInterval'] = true;
+        }
 
         return $this;
     }
@@ -394,6 +431,11 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
             throw new InvalidArgumentException('non-nullable maxWorkerNameLength cannot be null');
         }
         $this->container['maxWorkerNameLength'] = $maxWorkerNameLength;
+        if ($maxWorkerNameLength === null) {
+            unset($this->openAPIFieldsSet['maxWorkerNameLength']);
+        } else {
+            $this->openAPIFieldsSet['maxWorkerNameLength'] = true;
+        }
 
         return $this;
     }
@@ -421,6 +463,11 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
             throw new InvalidArgumentException('non-nullable maxJobTypeLength cannot be null');
         }
         $this->container['maxJobTypeLength'] = $maxJobTypeLength;
+        if ($maxJobTypeLength === null) {
+            unset($this->openAPIFieldsSet['maxJobTypeLength']);
+        } else {
+            $this->openAPIFieldsSet['maxJobTypeLength'] = true;
+        }
 
         return $this;
     }
@@ -448,6 +495,11 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
             throw new InvalidArgumentException('non-nullable maxTenantIdLength cannot be null');
         }
         $this->container['maxTenantIdLength'] = $maxTenantIdLength;
+        if ($maxTenantIdLength === null) {
+            unset($this->openAPIFieldsSet['maxTenantIdLength']);
+        } else {
+            $this->openAPIFieldsSet['maxTenantIdLength'] = true;
+        }
 
         return $this;
     }
@@ -475,6 +527,11 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
             throw new InvalidArgumentException('non-nullable maxUniqueKeys cannot be null');
         }
         $this->container['maxUniqueKeys'] = $maxUniqueKeys;
+        if ($maxUniqueKeys === null) {
+            unset($this->openAPIFieldsSet['maxUniqueKeys']);
+        } else {
+            $this->openAPIFieldsSet['maxUniqueKeys'] = true;
+        }
 
         return $this;
     }
@@ -517,6 +574,11 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -530,6 +592,7 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

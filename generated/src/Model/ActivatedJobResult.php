@@ -153,6 +153,15 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -212,6 +221,20 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -391,6 +414,10 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -554,6 +581,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('non-nullable type cannot be null');
         }
         $this->container['type'] = $type;
+        if ($type === null) {
+            unset($this->openAPIFieldsSet['type']);
+        } else {
+            $this->openAPIFieldsSet['type'] = true;
+        }
 
         return $this;
     }
@@ -578,6 +610,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setProcessDefinitionId(\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -605,6 +642,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
         }
         $this->container['processDefinitionVersion'] = $processDefinitionVersion;
+        if ($processDefinitionVersion === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersion']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
+        }
 
         return $this;
     }
@@ -629,6 +671,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setElementId(\Camunda\Orchestration\Semantic\ElementId $elementId): static
     {
         $this->container['elementId'] = $elementId;
+        if ($elementId === null) {
+            unset($this->openAPIFieldsSet['elementId']);
+        } else {
+            $this->openAPIFieldsSet['elementId'] = true;
+        }
 
         return $this;
     }
@@ -656,6 +703,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('non-nullable customHeaders cannot be null');
         }
         $this->container['customHeaders'] = $customHeaders;
+        if ($customHeaders === null) {
+            unset($this->openAPIFieldsSet['customHeaders']);
+        } else {
+            $this->openAPIFieldsSet['customHeaders'] = true;
+        }
 
         return $this;
     }
@@ -683,6 +735,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('non-nullable worker cannot be null');
         }
         $this->container['worker'] = $worker;
+        if ($worker === null) {
+            unset($this->openAPIFieldsSet['worker']);
+        } else {
+            $this->openAPIFieldsSet['worker'] = true;
+        }
 
         return $this;
     }
@@ -710,6 +767,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('non-nullable retries cannot be null');
         }
         $this->container['retries'] = $retries;
+        if ($retries === null) {
+            unset($this->openAPIFieldsSet['retries']);
+        } else {
+            $this->openAPIFieldsSet['retries'] = true;
+        }
 
         return $this;
     }
@@ -737,6 +799,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('non-nullable deadline cannot be null');
         }
         $this->container['deadline'] = $deadline;
+        if ($deadline === null) {
+            unset($this->openAPIFieldsSet['deadline']);
+        } else {
+            $this->openAPIFieldsSet['deadline'] = true;
+        }
 
         return $this;
     }
@@ -764,6 +831,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('non-nullable variables cannot be null');
         }
         $this->container['variables'] = $variables;
+        if ($variables === null) {
+            unset($this->openAPIFieldsSet['variables']);
+        } else {
+            $this->openAPIFieldsSet['variables'] = true;
+        }
 
         return $this;
     }
@@ -788,6 +860,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setTenantId(\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -815,6 +892,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('non-nullable physicalTenantId cannot be null');
         }
         $this->container['physicalTenantId'] = $physicalTenantId;
+        if ($physicalTenantId === null) {
+            unset($this->openAPIFieldsSet['physicalTenantId']);
+        } else {
+            $this->openAPIFieldsSet['physicalTenantId'] = true;
+        }
 
         return $this;
     }
@@ -839,6 +921,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setJobKey(\Camunda\Orchestration\Semantic\JobKey $jobKey): static
     {
         $this->container['jobKey'] = $jobKey;
+        if ($jobKey === null) {
+            unset($this->openAPIFieldsSet['jobKey']);
+        } else {
+            $this->openAPIFieldsSet['jobKey'] = true;
+        }
 
         return $this;
     }
@@ -863,6 +950,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setProcessInstanceKey(\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -887,6 +979,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
         $this->container['processDefinitionKey'] = $processDefinitionKey;
+        if ($processDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['processDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -911,6 +1008,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setElementInstanceKey(\Camunda\Orchestration\Semantic\ElementInstanceKey $elementInstanceKey): static
     {
         $this->container['elementInstanceKey'] = $elementInstanceKey;
+        if ($elementInstanceKey === null) {
+            unset($this->openAPIFieldsSet['elementInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['elementInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -938,6 +1040,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('non-nullable kind cannot be null');
         }
         $this->container['kind'] = $kind;
+        if ($kind === null) {
+            unset($this->openAPIFieldsSet['kind']);
+        } else {
+            $this->openAPIFieldsSet['kind'] = true;
+        }
 
         return $this;
     }
@@ -965,6 +1072,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('non-nullable listenerEventType cannot be null');
         }
         $this->container['listenerEventType'] = $listenerEventType;
+        if ($listenerEventType === null) {
+            unset($this->openAPIFieldsSet['listenerEventType']);
+        } else {
+            $this->openAPIFieldsSet['listenerEventType'] = true;
+        }
 
         return $this;
     }
@@ -999,6 +1111,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             }
         }
         $this->container['userTask'] = $userTask;
+        if ($userTask === null) {
+            unset($this->openAPIFieldsSet['userTask']);
+        } else {
+            $this->openAPIFieldsSet['userTask'] = true;
+        }
 
         return $this;
     }
@@ -1029,6 +1146,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('invalid value for $tags when calling ActivatedJobResult., number of items must be less than or equal to 10.');
         }
         $this->container['tags'] = $tags;
+        if ($tags === null) {
+            unset($this->openAPIFieldsSet['tags']);
+        } else {
+            $this->openAPIFieldsSet['tags'] = true;
+        }
 
         return $this;
     }
@@ -1053,6 +1175,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
+        if ($rootProcessInstanceKey === null) {
+            unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['rootProcessInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -1077,6 +1204,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
         $this->container['businessId'] = $businessId;
+        if ($businessId === null) {
+            unset($this->openAPIFieldsSet['businessId']);
+        } else {
+            $this->openAPIFieldsSet['businessId'] = true;
+        }
 
         return $this;
     }
@@ -1104,6 +1236,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('non-nullable priority cannot be null');
         }
         $this->container['priority'] = $priority;
+        if ($priority === null) {
+            unset($this->openAPIFieldsSet['priority']);
+        } else {
+            $this->openAPIFieldsSet['priority'] = true;
+        }
 
         return $this;
     }
@@ -1128,6 +1265,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setJobLeaseToken(?\Camunda\Orchestration\Semantic\JobLeaseToken $jobLeaseToken): static
     {
         $this->container['jobLeaseToken'] = $jobLeaseToken;
+        if ($jobLeaseToken === null) {
+            unset($this->openAPIFieldsSet['jobLeaseToken']);
+        } else {
+            $this->openAPIFieldsSet['jobLeaseToken'] = true;
+        }
 
         return $this;
     }
@@ -1170,6 +1312,11 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -1183,6 +1330,7 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

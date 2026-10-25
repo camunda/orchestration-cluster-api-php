@@ -97,6 +97,15 @@ class ClusterRebalanceRequest implements ModelInterface, ArrayAccess, JsonSerial
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -156,6 +165,20 @@ class ClusterRebalanceRequest implements ModelInterface, ArrayAccess, JsonSerial
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -259,6 +282,10 @@ class ClusterRebalanceRequest implements ModelInterface, ArrayAccess, JsonSerial
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -320,6 +347,11 @@ class ClusterRebalanceRequest implements ModelInterface, ArrayAccess, JsonSerial
         }
 
         $this->container['replicationLagThreshold'] = $replicationLagThreshold;
+        if ($replicationLagThreshold === null) {
+            unset($this->openAPIFieldsSet['replicationLagThreshold']);
+        } else {
+            $this->openAPIFieldsSet['replicationLagThreshold'] = true;
+        }
 
         return $this;
     }
@@ -347,6 +379,11 @@ class ClusterRebalanceRequest implements ModelInterface, ArrayAccess, JsonSerial
             throw new InvalidArgumentException('non-nullable replicationTimeout cannot be null');
         }
         $this->container['replicationTimeout'] = $replicationTimeout;
+        if ($replicationTimeout === null) {
+            unset($this->openAPIFieldsSet['replicationTimeout']);
+        } else {
+            $this->openAPIFieldsSet['replicationTimeout'] = true;
+        }
 
         return $this;
     }
@@ -378,6 +415,11 @@ class ClusterRebalanceRequest implements ModelInterface, ArrayAccess, JsonSerial
         }
 
         $this->container['maxTransferAttempts'] = $maxTransferAttempts;
+        if ($maxTransferAttempts === null) {
+            unset($this->openAPIFieldsSet['maxTransferAttempts']);
+        } else {
+            $this->openAPIFieldsSet['maxTransferAttempts'] = true;
+        }
 
         return $this;
     }
@@ -405,6 +447,11 @@ class ClusterRebalanceRequest implements ModelInterface, ArrayAccess, JsonSerial
             throw new InvalidArgumentException('non-nullable leaderWaitTimeout cannot be null');
         }
         $this->container['leaderWaitTimeout'] = $leaderWaitTimeout;
+        if ($leaderWaitTimeout === null) {
+            unset($this->openAPIFieldsSet['leaderWaitTimeout']);
+        } else {
+            $this->openAPIFieldsSet['leaderWaitTimeout'] = true;
+        }
 
         return $this;
     }
@@ -447,6 +494,11 @@ class ClusterRebalanceRequest implements ModelInterface, ArrayAccess, JsonSerial
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -460,6 +512,7 @@ class ClusterRebalanceRequest implements ModelInterface, ArrayAccess, JsonSerial
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

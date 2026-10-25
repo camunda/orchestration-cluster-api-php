@@ -100,6 +100,15 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -159,6 +168,20 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -266,6 +289,10 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -315,6 +342,11 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable ownerId cannot be null');
         }
         $this->container['ownerId'] = $ownerId;
+        if ($ownerId === null) {
+            unset($this->openAPIFieldsSet['ownerId']);
+        } else {
+            $this->openAPIFieldsSet['ownerId'] = true;
+        }
 
         return $this;
     }
@@ -342,6 +374,11 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable ownerType cannot be null');
         }
         $this->container['ownerType'] = $ownerType;
+        if ($ownerType === null) {
+            unset($this->openAPIFieldsSet['ownerType']);
+        } else {
+            $this->openAPIFieldsSet['ownerType'] = true;
+        }
 
         return $this;
     }
@@ -369,6 +406,11 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable resourceIds cannot be null');
         }
         $this->container['resourceIds'] = $resourceIds;
+        if ($resourceIds === null) {
+            unset($this->openAPIFieldsSet['resourceIds']);
+        } else {
+            $this->openAPIFieldsSet['resourceIds'] = true;
+        }
 
         return $this;
     }
@@ -396,6 +438,11 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable resourcePropertyNames cannot be null');
         }
         $this->container['resourcePropertyNames'] = $resourcePropertyNames;
+        if ($resourcePropertyNames === null) {
+            unset($this->openAPIFieldsSet['resourcePropertyNames']);
+        } else {
+            $this->openAPIFieldsSet['resourcePropertyNames'] = true;
+        }
 
         return $this;
     }
@@ -423,6 +470,11 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable resourceType cannot be null');
         }
         $this->container['resourceType'] = $resourceType;
+        if ($resourceType === null) {
+            unset($this->openAPIFieldsSet['resourceType']);
+        } else {
+            $this->openAPIFieldsSet['resourceType'] = true;
+        }
 
         return $this;
     }
@@ -465,6 +517,11 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -478,6 +535,7 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

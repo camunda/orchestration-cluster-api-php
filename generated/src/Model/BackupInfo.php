@@ -97,6 +97,15 @@ class BackupInfo implements ModelInterface, ArrayAccess, JsonSerializable
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -156,6 +165,20 @@ class BackupInfo implements ModelInterface, ArrayAccess, JsonSerializable
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -259,6 +282,10 @@ class BackupInfo implements ModelInterface, ArrayAccess, JsonSerializable
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -328,6 +355,11 @@ class BackupInfo implements ModelInterface, ArrayAccess, JsonSerializable
         }
 
         $this->container['backupId'] = $backupId;
+        if ($backupId === null) {
+            unset($this->openAPIFieldsSet['backupId']);
+        } else {
+            $this->openAPIFieldsSet['backupId'] = true;
+        }
 
         return $this;
     }
@@ -355,6 +387,11 @@ class BackupInfo implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable state cannot be null');
         }
         $this->container['state'] = $state;
+        if ($state === null) {
+            unset($this->openAPIFieldsSet['state']);
+        } else {
+            $this->openAPIFieldsSet['state'] = true;
+        }
 
         return $this;
     }
@@ -389,6 +426,11 @@ class BackupInfo implements ModelInterface, ArrayAccess, JsonSerializable
             }
         }
         $this->container['failureReason'] = $failureReason;
+        if ($failureReason === null) {
+            unset($this->openAPIFieldsSet['failureReason']);
+        } else {
+            $this->openAPIFieldsSet['failureReason'] = true;
+        }
 
         return $this;
     }
@@ -416,6 +458,11 @@ class BackupInfo implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable details cannot be null');
         }
         $this->container['details'] = $details;
+        if ($details === null) {
+            unset($this->openAPIFieldsSet['details']);
+        } else {
+            $this->openAPIFieldsSet['details'] = true;
+        }
 
         return $this;
     }
@@ -458,6 +505,11 @@ class BackupInfo implements ModelInterface, ArrayAccess, JsonSerializable
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -471,6 +523,7 @@ class BackupInfo implements ModelInterface, ArrayAccess, JsonSerializable
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

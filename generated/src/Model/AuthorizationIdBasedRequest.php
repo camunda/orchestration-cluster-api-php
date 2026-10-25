@@ -99,6 +99,15 @@ class AuthorizationIdBasedRequest implements ModelInterface, ArrayAccess, JsonSe
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -158,6 +167,20 @@ class AuthorizationIdBasedRequest implements ModelInterface, ArrayAccess, JsonSe
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -265,6 +288,10 @@ class AuthorizationIdBasedRequest implements ModelInterface, ArrayAccess, JsonSe
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -329,6 +356,11 @@ class AuthorizationIdBasedRequest implements ModelInterface, ArrayAccess, JsonSe
             throw new InvalidArgumentException('non-nullable ownerId cannot be null');
         }
         $this->container['ownerId'] = $ownerId;
+        if ($ownerId === null) {
+            unset($this->openAPIFieldsSet['ownerId']);
+        } else {
+            $this->openAPIFieldsSet['ownerId'] = true;
+        }
 
         return $this;
     }
@@ -356,6 +388,11 @@ class AuthorizationIdBasedRequest implements ModelInterface, ArrayAccess, JsonSe
             throw new InvalidArgumentException('non-nullable ownerType cannot be null');
         }
         $this->container['ownerType'] = $ownerType;
+        if ($ownerType === null) {
+            unset($this->openAPIFieldsSet['ownerType']);
+        } else {
+            $this->openAPIFieldsSet['ownerType'] = true;
+        }
 
         return $this;
     }
@@ -383,6 +420,11 @@ class AuthorizationIdBasedRequest implements ModelInterface, ArrayAccess, JsonSe
             throw new InvalidArgumentException('non-nullable resourceId cannot be null');
         }
         $this->container['resourceId'] = $resourceId;
+        if ($resourceId === null) {
+            unset($this->openAPIFieldsSet['resourceId']);
+        } else {
+            $this->openAPIFieldsSet['resourceId'] = true;
+        }
 
         return $this;
     }
@@ -410,6 +452,11 @@ class AuthorizationIdBasedRequest implements ModelInterface, ArrayAccess, JsonSe
             throw new InvalidArgumentException('non-nullable resourceType cannot be null');
         }
         $this->container['resourceType'] = $resourceType;
+        if ($resourceType === null) {
+            unset($this->openAPIFieldsSet['resourceType']);
+        } else {
+            $this->openAPIFieldsSet['resourceType'] = true;
+        }
 
         return $this;
     }
@@ -437,6 +484,11 @@ class AuthorizationIdBasedRequest implements ModelInterface, ArrayAccess, JsonSe
             throw new InvalidArgumentException('non-nullable permissionTypes cannot be null');
         }
         $this->container['permissionTypes'] = $permissionTypes;
+        if ($permissionTypes === null) {
+            unset($this->openAPIFieldsSet['permissionTypes']);
+        } else {
+            $this->openAPIFieldsSet['permissionTypes'] = true;
+        }
 
         return $this;
     }
@@ -479,6 +531,11 @@ class AuthorizationIdBasedRequest implements ModelInterface, ArrayAccess, JsonSe
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -492,6 +549,7 @@ class AuthorizationIdBasedRequest implements ModelInterface, ArrayAccess, JsonSe
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

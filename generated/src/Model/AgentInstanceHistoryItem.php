@@ -121,6 +121,15 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -180,6 +189,20 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -315,6 +338,10 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -397,6 +424,11 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
     public function setHistoryItemId(\Camunda\Orchestration\Semantic\HistoryItemId $historyItemId): static
     {
         $this->container['historyItemId'] = $historyItemId;
+        if ($historyItemId === null) {
+            unset($this->openAPIFieldsSet['historyItemId']);
+        } else {
+            $this->openAPIFieldsSet['historyItemId'] = true;
+        }
 
         return $this;
     }
@@ -428,6 +460,11 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
         }
 
         $this->container['loopIteration'] = $loopIteration;
+        if ($loopIteration === null) {
+            unset($this->openAPIFieldsSet['loopIteration']);
+        } else {
+            $this->openAPIFieldsSet['loopIteration'] = true;
+        }
 
         return $this;
     }
@@ -455,6 +492,11 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable role cannot be null');
         }
         $this->container['role'] = $role;
+        if ($role === null) {
+            unset($this->openAPIFieldsSet['role']);
+        } else {
+            $this->openAPIFieldsSet['role'] = true;
+        }
 
         return $this;
     }
@@ -482,6 +524,11 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable content cannot be null');
         }
         $this->container['content'] = $content;
+        if ($content === null) {
+            unset($this->openAPIFieldsSet['content']);
+        } else {
+            $this->openAPIFieldsSet['content'] = true;
+        }
 
         return $this;
     }
@@ -516,6 +563,11 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
             }
         }
         $this->container['toolCalls'] = $toolCalls;
+        if ($toolCalls === null) {
+            unset($this->openAPIFieldsSet['toolCalls']);
+        } else {
+            $this->openAPIFieldsSet['toolCalls'] = true;
+        }
 
         return $this;
     }
@@ -550,6 +602,11 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
             }
         }
         $this->container['metrics'] = $metrics;
+        if ($metrics === null) {
+            unset($this->openAPIFieldsSet['metrics']);
+        } else {
+            $this->openAPIFieldsSet['metrics'] = true;
+        }
 
         return $this;
     }
@@ -577,6 +634,11 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable producedAt cannot be null');
         }
         $this->container['producedAt'] = $producedAt;
+        if ($producedAt === null) {
+            unset($this->openAPIFieldsSet['producedAt']);
+        } else {
+            $this->openAPIFieldsSet['producedAt'] = true;
+        }
 
         return $this;
     }
@@ -611,6 +673,11 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
             }
         }
         $this->container['tools'] = $tools;
+        if ($tools === null) {
+            unset($this->openAPIFieldsSet['tools']);
+        } else {
+            $this->openAPIFieldsSet['tools'] = true;
+        }
 
         return $this;
     }
@@ -638,6 +705,11 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable model cannot be null');
         }
         $this->container['model'] = $model;
+        if ($model === null) {
+            unset($this->openAPIFieldsSet['model']);
+        } else {
+            $this->openAPIFieldsSet['model'] = true;
+        }
 
         return $this;
     }
@@ -665,6 +737,11 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable provider cannot be null');
         }
         $this->container['provider'] = $provider;
+        if ($provider === null) {
+            unset($this->openAPIFieldsSet['provider']);
+        } else {
+            $this->openAPIFieldsSet['provider'] = true;
+        }
 
         return $this;
     }
@@ -692,6 +769,11 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable limits cannot be null');
         }
         $this->container['limits'] = $limits;
+        if ($limits === null) {
+            unset($this->openAPIFieldsSet['limits']);
+        } else {
+            $this->openAPIFieldsSet['limits'] = true;
+        }
 
         return $this;
     }
@@ -726,6 +808,11 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
             }
         }
         $this->container['systemPrompt'] = $systemPrompt;
+        if ($systemPrompt === null) {
+            unset($this->openAPIFieldsSet['systemPrompt']);
+        } else {
+            $this->openAPIFieldsSet['systemPrompt'] = true;
+        }
 
         return $this;
     }
@@ -768,6 +855,11 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -781,6 +873,7 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

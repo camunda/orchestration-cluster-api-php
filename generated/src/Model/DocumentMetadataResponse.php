@@ -106,6 +106,15 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -165,6 +174,20 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -280,6 +303,10 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -367,6 +394,11 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable contentType cannot be null');
         }
         $this->container['contentType'] = $contentType;
+        if ($contentType === null) {
+            unset($this->openAPIFieldsSet['contentType']);
+        } else {
+            $this->openAPIFieldsSet['contentType'] = true;
+        }
 
         return $this;
     }
@@ -394,6 +426,11 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable fileName cannot be null');
         }
         $this->container['fileName'] = $fileName;
+        if ($fileName === null) {
+            unset($this->openAPIFieldsSet['fileName']);
+        } else {
+            $this->openAPIFieldsSet['fileName'] = true;
+        }
 
         return $this;
     }
@@ -428,6 +465,11 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
             }
         }
         $this->container['expiresAt'] = $expiresAt;
+        if ($expiresAt === null) {
+            unset($this->openAPIFieldsSet['expiresAt']);
+        } else {
+            $this->openAPIFieldsSet['expiresAt'] = true;
+        }
 
         return $this;
     }
@@ -455,6 +497,11 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable size cannot be null');
         }
         $this->container['size'] = $size;
+        if ($size === null) {
+            unset($this->openAPIFieldsSet['size']);
+        } else {
+            $this->openAPIFieldsSet['size'] = true;
+        }
 
         return $this;
     }
@@ -479,6 +526,11 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
     public function setProcessDefinitionId(?\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -503,6 +555,11 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
     public function setProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -530,6 +587,11 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable customProperties cannot be null');
         }
         $this->container['customProperties'] = $customProperties;
+        if ($customProperties === null) {
+            unset($this->openAPIFieldsSet['customProperties']);
+        } else {
+            $this->openAPIFieldsSet['customProperties'] = true;
+        }
 
         return $this;
     }
@@ -572,6 +634,11 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -585,6 +652,7 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

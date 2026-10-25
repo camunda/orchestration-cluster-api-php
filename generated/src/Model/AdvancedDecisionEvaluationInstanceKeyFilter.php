@@ -100,6 +100,15 @@ class AdvancedDecisionEvaluationInstanceKeyFilter implements ModelInterface, Arr
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -159,6 +168,20 @@ class AdvancedDecisionEvaluationInstanceKeyFilter implements ModelInterface, Arr
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -266,6 +289,10 @@ class AdvancedDecisionEvaluationInstanceKeyFilter implements ModelInterface, Arr
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -349,6 +376,11 @@ class AdvancedDecisionEvaluationInstanceKeyFilter implements ModelInterface, Arr
         }
 
         $this->container['eq'] = $eq;
+        if ($eq === null) {
+            unset($this->openAPIFieldsSet['eq']);
+        } else {
+            $this->openAPIFieldsSet['eq'] = true;
+        }
 
         return $this;
     }
@@ -386,6 +418,11 @@ class AdvancedDecisionEvaluationInstanceKeyFilter implements ModelInterface, Arr
         }
 
         $this->container['neq'] = $neq;
+        if ($neq === null) {
+            unset($this->openAPIFieldsSet['neq']);
+        } else {
+            $this->openAPIFieldsSet['neq'] = true;
+        }
 
         return $this;
     }
@@ -413,6 +450,11 @@ class AdvancedDecisionEvaluationInstanceKeyFilter implements ModelInterface, Arr
             throw new InvalidArgumentException('non-nullable exists cannot be null');
         }
         $this->container['exists'] = $exists;
+        if ($exists === null) {
+            unset($this->openAPIFieldsSet['exists']);
+        } else {
+            $this->openAPIFieldsSet['exists'] = true;
+        }
 
         return $this;
     }
@@ -440,6 +482,11 @@ class AdvancedDecisionEvaluationInstanceKeyFilter implements ModelInterface, Arr
             throw new InvalidArgumentException('non-nullable in cannot be null');
         }
         $this->container['in'] = $in;
+        if ($in === null) {
+            unset($this->openAPIFieldsSet['in']);
+        } else {
+            $this->openAPIFieldsSet['in'] = true;
+        }
 
         return $this;
     }
@@ -467,6 +514,11 @@ class AdvancedDecisionEvaluationInstanceKeyFilter implements ModelInterface, Arr
             throw new InvalidArgumentException('non-nullable notIn cannot be null');
         }
         $this->container['notIn'] = $notIn;
+        if ($notIn === null) {
+            unset($this->openAPIFieldsSet['notIn']);
+        } else {
+            $this->openAPIFieldsSet['notIn'] = true;
+        }
 
         return $this;
     }
@@ -509,6 +561,11 @@ class AdvancedDecisionEvaluationInstanceKeyFilter implements ModelInterface, Arr
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -522,6 +579,7 @@ class AdvancedDecisionEvaluationInstanceKeyFilter implements ModelInterface, Arr
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

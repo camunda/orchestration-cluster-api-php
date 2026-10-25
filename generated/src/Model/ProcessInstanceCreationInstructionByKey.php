@@ -120,6 +120,15 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -179,6 +188,20 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -314,6 +337,10 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -400,6 +427,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
         $this->container['processDefinitionKey'] = $processDefinitionKey;
+        if ($processDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['processDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -427,6 +459,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
         }
         $this->container['processDefinitionVersion'] = $processDefinitionVersion;
+        if ($processDefinitionVersion === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersion']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
+        }
 
         return $this;
     }
@@ -454,6 +491,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable variables cannot be null');
         }
         $this->container['variables'] = $variables;
+        if ($variables === null) {
+            unset($this->openAPIFieldsSet['variables']);
+        } else {
+            $this->openAPIFieldsSet['variables'] = true;
+        }
 
         return $this;
     }
@@ -481,6 +523,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable startInstructions cannot be null');
         }
         $this->container['startInstructions'] = $startInstructions;
+        if ($startInstructions === null) {
+            unset($this->openAPIFieldsSet['startInstructions']);
+        } else {
+            $this->openAPIFieldsSet['startInstructions'] = true;
+        }
 
         return $this;
     }
@@ -508,6 +555,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable runtimeInstructions cannot be null');
         }
         $this->container['runtimeInstructions'] = $runtimeInstructions;
+        if ($runtimeInstructions === null) {
+            unset($this->openAPIFieldsSet['runtimeInstructions']);
+        } else {
+            $this->openAPIFieldsSet['runtimeInstructions'] = true;
+        }
 
         return $this;
     }
@@ -532,6 +584,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     public function setTenantId(?\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -563,6 +620,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
         }
 
         $this->container['operationReference'] = $operationReference;
+        if ($operationReference === null) {
+            unset($this->openAPIFieldsSet['operationReference']);
+        } else {
+            $this->openAPIFieldsSet['operationReference'] = true;
+        }
 
         return $this;
     }
@@ -590,6 +652,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable awaitCompletion cannot be null');
         }
         $this->container['awaitCompletion'] = $awaitCompletion;
+        if ($awaitCompletion === null) {
+            unset($this->openAPIFieldsSet['awaitCompletion']);
+        } else {
+            $this->openAPIFieldsSet['awaitCompletion'] = true;
+        }
 
         return $this;
     }
@@ -617,6 +684,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable requestTimeout cannot be null');
         }
         $this->container['requestTimeout'] = $requestTimeout;
+        if ($requestTimeout === null) {
+            unset($this->openAPIFieldsSet['requestTimeout']);
+        } else {
+            $this->openAPIFieldsSet['requestTimeout'] = true;
+        }
 
         return $this;
     }
@@ -644,6 +716,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable fetchVariables cannot be null');
         }
         $this->container['fetchVariables'] = $fetchVariables;
+        if ($fetchVariables === null) {
+            unset($this->openAPIFieldsSet['fetchVariables']);
+        } else {
+            $this->openAPIFieldsSet['fetchVariables'] = true;
+        }
 
         return $this;
     }
@@ -674,6 +751,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('invalid value for $tags when calling ProcessInstanceCreationInstructionByKey., number of items must be less than or equal to 10.');
         }
         $this->container['tags'] = $tags;
+        if ($tags === null) {
+            unset($this->openAPIFieldsSet['tags']);
+        } else {
+            $this->openAPIFieldsSet['tags'] = true;
+        }
 
         return $this;
     }
@@ -698,6 +780,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
         $this->container['businessId'] = $businessId;
+        if ($businessId === null) {
+            unset($this->openAPIFieldsSet['businessId']);
+        } else {
+            $this->openAPIFieldsSet['businessId'] = true;
+        }
 
         return $this;
     }
@@ -740,6 +827,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -753,6 +845,7 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

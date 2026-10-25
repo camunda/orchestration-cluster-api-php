@@ -96,6 +96,15 @@ class DocumentCreationFailureDetail implements ModelInterface, ArrayAccess, Json
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -155,6 +164,20 @@ class DocumentCreationFailureDetail implements ModelInterface, ArrayAccess, Json
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -258,6 +281,10 @@ class DocumentCreationFailureDetail implements ModelInterface, ArrayAccess, Json
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -319,6 +346,11 @@ class DocumentCreationFailureDetail implements ModelInterface, ArrayAccess, Json
             throw new InvalidArgumentException('non-nullable fileName cannot be null');
         }
         $this->container['fileName'] = $fileName;
+        if ($fileName === null) {
+            unset($this->openAPIFieldsSet['fileName']);
+        } else {
+            $this->openAPIFieldsSet['fileName'] = true;
+        }
 
         return $this;
     }
@@ -346,6 +378,11 @@ class DocumentCreationFailureDetail implements ModelInterface, ArrayAccess, Json
             throw new InvalidArgumentException('non-nullable status cannot be null');
         }
         $this->container['status'] = $status;
+        if ($status === null) {
+            unset($this->openAPIFieldsSet['status']);
+        } else {
+            $this->openAPIFieldsSet['status'] = true;
+        }
 
         return $this;
     }
@@ -373,6 +410,11 @@ class DocumentCreationFailureDetail implements ModelInterface, ArrayAccess, Json
             throw new InvalidArgumentException('non-nullable title cannot be null');
         }
         $this->container['title'] = $title;
+        if ($title === null) {
+            unset($this->openAPIFieldsSet['title']);
+        } else {
+            $this->openAPIFieldsSet['title'] = true;
+        }
 
         return $this;
     }
@@ -400,6 +442,11 @@ class DocumentCreationFailureDetail implements ModelInterface, ArrayAccess, Json
             throw new InvalidArgumentException('non-nullable detail cannot be null');
         }
         $this->container['detail'] = $detail;
+        if ($detail === null) {
+            unset($this->openAPIFieldsSet['detail']);
+        } else {
+            $this->openAPIFieldsSet['detail'] = true;
+        }
 
         return $this;
     }
@@ -442,6 +489,11 @@ class DocumentCreationFailureDetail implements ModelInterface, ArrayAccess, Json
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -455,6 +507,7 @@ class DocumentCreationFailureDetail implements ModelInterface, ArrayAccess, Json
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

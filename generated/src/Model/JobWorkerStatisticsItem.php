@@ -97,6 +97,15 @@ class JobWorkerStatisticsItem implements ModelInterface, ArrayAccess, JsonSerial
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -156,6 +165,20 @@ class JobWorkerStatisticsItem implements ModelInterface, ArrayAccess, JsonSerial
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -259,6 +282,10 @@ class JobWorkerStatisticsItem implements ModelInterface, ArrayAccess, JsonSerial
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -320,6 +347,11 @@ class JobWorkerStatisticsItem implements ModelInterface, ArrayAccess, JsonSerial
             throw new InvalidArgumentException('non-nullable worker cannot be null');
         }
         $this->container['worker'] = $worker;
+        if ($worker === null) {
+            unset($this->openAPIFieldsSet['worker']);
+        } else {
+            $this->openAPIFieldsSet['worker'] = true;
+        }
 
         return $this;
     }
@@ -347,6 +379,11 @@ class JobWorkerStatisticsItem implements ModelInterface, ArrayAccess, JsonSerial
             throw new InvalidArgumentException('non-nullable created cannot be null');
         }
         $this->container['created'] = $created;
+        if ($created === null) {
+            unset($this->openAPIFieldsSet['created']);
+        } else {
+            $this->openAPIFieldsSet['created'] = true;
+        }
 
         return $this;
     }
@@ -374,6 +411,11 @@ class JobWorkerStatisticsItem implements ModelInterface, ArrayAccess, JsonSerial
             throw new InvalidArgumentException('non-nullable completed cannot be null');
         }
         $this->container['completed'] = $completed;
+        if ($completed === null) {
+            unset($this->openAPIFieldsSet['completed']);
+        } else {
+            $this->openAPIFieldsSet['completed'] = true;
+        }
 
         return $this;
     }
@@ -401,6 +443,11 @@ class JobWorkerStatisticsItem implements ModelInterface, ArrayAccess, JsonSerial
             throw new InvalidArgumentException('non-nullable failed cannot be null');
         }
         $this->container['failed'] = $failed;
+        if ($failed === null) {
+            unset($this->openAPIFieldsSet['failed']);
+        } else {
+            $this->openAPIFieldsSet['failed'] = true;
+        }
 
         return $this;
     }
@@ -443,6 +490,11 @@ class JobWorkerStatisticsItem implements ModelInterface, ArrayAccess, JsonSerial
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -456,6 +508,7 @@ class JobWorkerStatisticsItem implements ModelInterface, ArrayAccess, JsonSerial
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**
