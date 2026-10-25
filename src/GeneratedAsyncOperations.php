@@ -1101,6 +1101,10 @@ trait GeneratedAsyncOperations
      */
     public function evaluateConditionals(\Camunda\Orchestration\Api\Model\ConditionalEvaluationInstruction $conditionalEvaluationInstruction, string $contentType = \Camunda\Orchestration\Api\Api\ConditionalApi::contentTypes['evaluateConditionals'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
+        if ($this->config->tenantIds !== [] && $conditionalEvaluationInstruction->getTenantId() === null) {
+            $conditionalEvaluationInstruction = clone $conditionalEvaluationInstruction;
+            $conditionalEvaluationInstruction->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));
+        }
         return $this->api(\Camunda\Orchestration\Api\Api\ConditionalApi::class)->evaluateConditionalsAsync($conditionalEvaluationInstruction, $contentType);
     }
 
@@ -1115,6 +1119,10 @@ trait GeneratedAsyncOperations
      */
     public function evaluateDecision(\Camunda\Orchestration\Api\Model\DecisionEvaluationById|\Camunda\Orchestration\Api\Model\DecisionEvaluationByKey $decisionEvaluationInstruction, string $contentType = \Camunda\Orchestration\Api\Api\DecisionDefinitionApi::contentTypes['evaluateDecision'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
+        if ($this->config->tenantIds !== [] && $decisionEvaluationInstruction->getTenantId() === null) {
+            $decisionEvaluationInstruction = clone $decisionEvaluationInstruction;
+            $decisionEvaluationInstruction->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));
+        }
         return $this->api(\Camunda\Orchestration\Api\Api\DecisionDefinitionApi::class)->evaluateDecisionAsync($decisionEvaluationInstruction, $contentType);
     }
 
@@ -1533,6 +1541,10 @@ trait GeneratedAsyncOperations
      */
     public function evaluateExpression(\Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest $expressionEvaluationRequest, string $contentType = \Camunda\Orchestration\Api\Api\ExpressionApi::contentTypes['evaluateExpression'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
+        if ($this->config->tenantIds !== [] && $expressionEvaluationRequest->getTenantId() === null) {
+            $expressionEvaluationRequest = clone $expressionEvaluationRequest;
+            $expressionEvaluationRequest->setTenantId($this->config->tenantIds[0]);
+        }
         return $this->api(\Camunda\Orchestration\Api\Api\ExpressionApi::class)->evaluateExpressionAsync($expressionEvaluationRequest, $contentType);
     }
 
@@ -2182,6 +2194,10 @@ trait GeneratedAsyncOperations
      */
     public function correlateMessage(\Camunda\Orchestration\Api\Model\MessageCorrelationRequest $messageCorrelationRequest, string $contentType = \Camunda\Orchestration\Api\Api\MessageApi::contentTypes['correlateMessage'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
+        if ($this->config->tenantIds !== [] && $messageCorrelationRequest->getTenantId() === null) {
+            $messageCorrelationRequest = clone $messageCorrelationRequest;
+            $messageCorrelationRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));
+        }
         return $this->api(\Camunda\Orchestration\Api\Api\MessageApi::class)->correlateMessageAsync($messageCorrelationRequest, $contentType);
     }
 
@@ -2196,6 +2212,10 @@ trait GeneratedAsyncOperations
      */
     public function publishMessage(\Camunda\Orchestration\Api\Model\MessagePublicationRequest $messagePublicationRequest, string $contentType = \Camunda\Orchestration\Api\Api\MessageApi::contentTypes['publishMessage'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
+        if ($this->config->tenantIds !== [] && $messagePublicationRequest->getTenantId() === null) {
+            $messagePublicationRequest = clone $messagePublicationRequest;
+            $messagePublicationRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));
+        }
         return $this->api(\Camunda\Orchestration\Api\Api\MessageApi::class)->publishMessageAsync($messagePublicationRequest, $contentType);
     }
 
@@ -2410,6 +2430,10 @@ trait GeneratedAsyncOperations
      */
     public function createProcessInstance(\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction, string $contentType = \Camunda\Orchestration\Api\Api\ProcessInstanceApi::contentTypes['createProcessInstance'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
+        if ($this->config->tenantIds !== [] && $processInstanceCreationInstruction->getTenantId() === null) {
+            $processInstanceCreationInstruction = clone $processInstanceCreationInstruction;
+            $processInstanceCreationInstruction->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));
+        }
         return $this->api(\Camunda\Orchestration\Api\Api\ProcessInstanceApi::class)->createProcessInstanceAsync($processInstanceCreationInstruction, $contentType);
     }
 
@@ -2792,6 +2816,9 @@ trait GeneratedAsyncOperations
      */
     public function createDeployment(array $resources, ?string $tenantId = null, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['createDeployment'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
+        if ($tenantId === null && $this->config->tenantIds !== []) {
+            $tenantId = $this->config->tenantIds[0];
+        }
         return $this->api(\Camunda\Orchestration\Api\Api\ResourceApi::class)->createDeploymentAsync($resources, $tenantId, $contentType);
     }
 
@@ -3171,6 +3198,10 @@ trait GeneratedAsyncOperations
      */
     public function broadcastSignal(\Camunda\Orchestration\Api\Model\SignalBroadcastRequest $signalBroadcastRequest, string $contentType = \Camunda\Orchestration\Api\Api\SignalApi::contentTypes['broadcastSignal'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
+        if ($this->config->tenantIds !== [] && $signalBroadcastRequest->getTenantId() === null) {
+            $signalBroadcastRequest = clone $signalBroadcastRequest;
+            $signalBroadcastRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));
+        }
         return $this->api(\Camunda\Orchestration\Api\Api\SignalApi::class)->broadcastSignalAsync($signalBroadcastRequest, $contentType);
     }
 
