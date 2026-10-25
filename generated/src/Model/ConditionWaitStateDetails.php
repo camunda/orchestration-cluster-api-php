@@ -93,6 +93,15 @@ class ConditionWaitStateDetails implements ModelInterface, ArrayAccess, JsonSeri
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -152,6 +161,20 @@ class ConditionWaitStateDetails implements ModelInterface, ArrayAccess, JsonSeri
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -266,6 +289,10 @@ class ConditionWaitStateDetails implements ModelInterface, ArrayAccess, JsonSeri
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -324,6 +351,11 @@ class ConditionWaitStateDetails implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable waitStateType cannot be null');
         }
         $this->container['waitStateType'] = $waitStateType;
+        if ($waitStateType === null) {
+            unset($this->openAPIFieldsSet['waitStateType']);
+        } else {
+            $this->openAPIFieldsSet['waitStateType'] = true;
+        }
 
         return $this;
     }
@@ -351,6 +383,11 @@ class ConditionWaitStateDetails implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable expression cannot be null');
         }
         $this->container['expression'] = $expression;
+        if ($expression === null) {
+            unset($this->openAPIFieldsSet['expression']);
+        } else {
+            $this->openAPIFieldsSet['expression'] = true;
+        }
 
         return $this;
     }
@@ -387,6 +424,11 @@ class ConditionWaitStateDetails implements ModelInterface, ArrayAccess, JsonSeri
             );
         }
         $this->container['events'] = $events;
+        if ($events === null) {
+            unset($this->openAPIFieldsSet['events']);
+        } else {
+            $this->openAPIFieldsSet['events'] = true;
+        }
 
         return $this;
     }
@@ -429,6 +471,11 @@ class ConditionWaitStateDetails implements ModelInterface, ArrayAccess, JsonSeri
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -442,6 +489,7 @@ class ConditionWaitStateDetails implements ModelInterface, ArrayAccess, JsonSeri
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

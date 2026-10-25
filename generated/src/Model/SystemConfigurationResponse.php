@@ -100,6 +100,15 @@ class SystemConfigurationResponse implements ModelInterface, ArrayAccess, JsonSe
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -159,6 +168,20 @@ class SystemConfigurationResponse implements ModelInterface, ArrayAccess, JsonSe
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -266,6 +289,10 @@ class SystemConfigurationResponse implements ModelInterface, ArrayAccess, JsonSe
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -330,6 +357,11 @@ class SystemConfigurationResponse implements ModelInterface, ArrayAccess, JsonSe
             throw new InvalidArgumentException('non-nullable jobMetrics cannot be null');
         }
         $this->container['jobMetrics'] = $jobMetrics;
+        if ($jobMetrics === null) {
+            unset($this->openAPIFieldsSet['jobMetrics']);
+        } else {
+            $this->openAPIFieldsSet['jobMetrics'] = true;
+        }
 
         return $this;
     }
@@ -357,6 +389,11 @@ class SystemConfigurationResponse implements ModelInterface, ArrayAccess, JsonSe
             throw new InvalidArgumentException('non-nullable components cannot be null');
         }
         $this->container['components'] = $components;
+        if ($components === null) {
+            unset($this->openAPIFieldsSet['components']);
+        } else {
+            $this->openAPIFieldsSet['components'] = true;
+        }
 
         return $this;
     }
@@ -384,6 +421,11 @@ class SystemConfigurationResponse implements ModelInterface, ArrayAccess, JsonSe
             throw new InvalidArgumentException('non-nullable deployment cannot be null');
         }
         $this->container['deployment'] = $deployment;
+        if ($deployment === null) {
+            unset($this->openAPIFieldsSet['deployment']);
+        } else {
+            $this->openAPIFieldsSet['deployment'] = true;
+        }
 
         return $this;
     }
@@ -411,6 +453,11 @@ class SystemConfigurationResponse implements ModelInterface, ArrayAccess, JsonSe
             throw new InvalidArgumentException('non-nullable authentication cannot be null');
         }
         $this->container['authentication'] = $authentication;
+        if ($authentication === null) {
+            unset($this->openAPIFieldsSet['authentication']);
+        } else {
+            $this->openAPIFieldsSet['authentication'] = true;
+        }
 
         return $this;
     }
@@ -438,6 +485,11 @@ class SystemConfigurationResponse implements ModelInterface, ArrayAccess, JsonSe
             throw new InvalidArgumentException('non-nullable cloud cannot be null');
         }
         $this->container['cloud'] = $cloud;
+        if ($cloud === null) {
+            unset($this->openAPIFieldsSet['cloud']);
+        } else {
+            $this->openAPIFieldsSet['cloud'] = true;
+        }
 
         return $this;
     }
@@ -480,6 +532,11 @@ class SystemConfigurationResponse implements ModelInterface, ArrayAccess, JsonSe
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -493,6 +550,7 @@ class SystemConfigurationResponse implements ModelInterface, ArrayAccess, JsonSe
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

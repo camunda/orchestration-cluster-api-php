@@ -103,6 +103,15 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -162,6 +171,20 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -273,6 +296,10 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -329,6 +356,11 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
             }
         }
         $this->container['inputTokens'] = $inputTokens;
+        if ($inputTokens === null) {
+            unset($this->openAPIFieldsSet['inputTokens']);
+        } else {
+            $this->openAPIFieldsSet['inputTokens'] = true;
+        }
 
         return $this;
     }
@@ -363,6 +395,11 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
             }
         }
         $this->container['outputTokens'] = $outputTokens;
+        if ($outputTokens === null) {
+            unset($this->openAPIFieldsSet['outputTokens']);
+        } else {
+            $this->openAPIFieldsSet['outputTokens'] = true;
+        }
 
         return $this;
     }
@@ -397,6 +434,11 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
             }
         }
         $this->container['reasoningTokenCount'] = $reasoningTokenCount;
+        if ($reasoningTokenCount === null) {
+            unset($this->openAPIFieldsSet['reasoningTokenCount']);
+        } else {
+            $this->openAPIFieldsSet['reasoningTokenCount'] = true;
+        }
 
         return $this;
     }
@@ -431,6 +473,11 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
             }
         }
         $this->container['cacheCreationTokenCount'] = $cacheCreationTokenCount;
+        if ($cacheCreationTokenCount === null) {
+            unset($this->openAPIFieldsSet['cacheCreationTokenCount']);
+        } else {
+            $this->openAPIFieldsSet['cacheCreationTokenCount'] = true;
+        }
 
         return $this;
     }
@@ -465,6 +512,11 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
             }
         }
         $this->container['cacheReadTokenCount'] = $cacheReadTokenCount;
+        if ($cacheReadTokenCount === null) {
+            unset($this->openAPIFieldsSet['cacheReadTokenCount']);
+        } else {
+            $this->openAPIFieldsSet['cacheReadTokenCount'] = true;
+        }
 
         return $this;
     }
@@ -499,6 +551,11 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
             }
         }
         $this->container['durationMs'] = $durationMs;
+        if ($durationMs === null) {
+            unset($this->openAPIFieldsSet['durationMs']);
+        } else {
+            $this->openAPIFieldsSet['durationMs'] = true;
+        }
 
         return $this;
     }
@@ -541,6 +598,11 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -554,6 +616,7 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

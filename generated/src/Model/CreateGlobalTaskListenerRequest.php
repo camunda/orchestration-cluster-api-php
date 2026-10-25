@@ -102,6 +102,15 @@ class CreateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -161,6 +170,20 @@ class CreateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -272,6 +295,10 @@ class CreateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -345,6 +372,11 @@ class CreateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
             throw new InvalidArgumentException('non-nullable type cannot be null');
         }
         $this->container['type'] = $type;
+        if ($type === null) {
+            unset($this->openAPIFieldsSet['type']);
+        } else {
+            $this->openAPIFieldsSet['type'] = true;
+        }
 
         return $this;
     }
@@ -372,6 +404,11 @@ class CreateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
             throw new InvalidArgumentException('non-nullable retries cannot be null');
         }
         $this->container['retries'] = $retries;
+        if ($retries === null) {
+            unset($this->openAPIFieldsSet['retries']);
+        } else {
+            $this->openAPIFieldsSet['retries'] = true;
+        }
 
         return $this;
     }
@@ -399,6 +436,11 @@ class CreateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
             throw new InvalidArgumentException('non-nullable afterNonGlobal cannot be null');
         }
         $this->container['afterNonGlobal'] = $afterNonGlobal;
+        if ($afterNonGlobal === null) {
+            unset($this->openAPIFieldsSet['afterNonGlobal']);
+        } else {
+            $this->openAPIFieldsSet['afterNonGlobal'] = true;
+        }
 
         return $this;
     }
@@ -426,6 +468,11 @@ class CreateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
             throw new InvalidArgumentException('non-nullable priority cannot be null');
         }
         $this->container['priority'] = $priority;
+        if ($priority === null) {
+            unset($this->openAPIFieldsSet['priority']);
+        } else {
+            $this->openAPIFieldsSet['priority'] = true;
+        }
 
         return $this;
     }
@@ -453,6 +500,11 @@ class CreateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
             throw new InvalidArgumentException('non-nullable eventTypes cannot be null');
         }
         $this->container['eventTypes'] = $eventTypes;
+        if ($eventTypes === null) {
+            unset($this->openAPIFieldsSet['eventTypes']);
+        } else {
+            $this->openAPIFieldsSet['eventTypes'] = true;
+        }
 
         return $this;
     }
@@ -477,6 +529,11 @@ class CreateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
     public function setId(\Camunda\Orchestration\Semantic\GlobalListenerId $id): static
     {
         $this->container['id'] = $id;
+        if ($id === null) {
+            unset($this->openAPIFieldsSet['id']);
+        } else {
+            $this->openAPIFieldsSet['id'] = true;
+        }
 
         return $this;
     }
@@ -519,6 +576,11 @@ class CreateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -532,6 +594,7 @@ class CreateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

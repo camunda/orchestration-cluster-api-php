@@ -130,6 +130,15 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -189,6 +198,20 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -336,6 +359,10 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -385,6 +412,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable agentInstanceKey cannot be null');
         }
         $this->container['agentInstanceKey'] = $agentInstanceKey;
+        if ($agentInstanceKey === null) {
+            unset($this->openAPIFieldsSet['agentInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['agentInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -412,6 +444,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable agentDefinitionKey cannot be null');
         }
         $this->container['agentDefinitionKey'] = $agentDefinitionKey;
+        if ($agentDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['agentDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['agentDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -439,6 +476,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable status cannot be null');
         }
         $this->container['status'] = $status;
+        if ($status === null) {
+            unset($this->openAPIFieldsSet['status']);
+        } else {
+            $this->openAPIFieldsSet['status'] = true;
+        }
 
         return $this;
     }
@@ -466,6 +508,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable elementId cannot be null');
         }
         $this->container['elementId'] = $elementId;
+        if ($elementId === null) {
+            unset($this->openAPIFieldsSet['elementId']);
+        } else {
+            $this->openAPIFieldsSet['elementId'] = true;
+        }
 
         return $this;
     }
@@ -493,6 +540,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
         }
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -520,6 +572,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable rootProcessInstanceKey cannot be null');
         }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
+        if ($rootProcessInstanceKey === null) {
+            unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['rootProcessInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -547,6 +604,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');
         }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
+        if ($processDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['processDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -574,6 +636,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable tenantId cannot be null');
         }
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -601,6 +668,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable creationDate cannot be null');
         }
         $this->container['creationDate'] = $creationDate;
+        if ($creationDate === null) {
+            unset($this->openAPIFieldsSet['creationDate']);
+        } else {
+            $this->openAPIFieldsSet['creationDate'] = true;
+        }
 
         return $this;
     }
@@ -628,6 +700,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable lastUpdatedDate cannot be null');
         }
         $this->container['lastUpdatedDate'] = $lastUpdatedDate;
+        if ($lastUpdatedDate === null) {
+            unset($this->openAPIFieldsSet['lastUpdatedDate']);
+        } else {
+            $this->openAPIFieldsSet['lastUpdatedDate'] = true;
+        }
 
         return $this;
     }
@@ -655,6 +732,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable completionDate cannot be null');
         }
         $this->container['completionDate'] = $completionDate;
+        if ($completionDate === null) {
+            unset($this->openAPIFieldsSet['completionDate']);
+        } else {
+            $this->openAPIFieldsSet['completionDate'] = true;
+        }
 
         return $this;
     }
@@ -682,6 +764,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable elementInstanceKeys cannot be null');
         }
         $this->container['elementInstanceKeys'] = $elementInstanceKeys;
+        if ($elementInstanceKeys === null) {
+            unset($this->openAPIFieldsSet['elementInstanceKeys']);
+        } else {
+            $this->openAPIFieldsSet['elementInstanceKeys'] = true;
+        }
 
         return $this;
     }
@@ -709,6 +796,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable processDefinitionId cannot be null');
         }
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -736,6 +828,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
         }
         $this->container['processDefinitionVersion'] = $processDefinitionVersion;
+        if ($processDefinitionVersion === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersion']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
+        }
 
         return $this;
     }
@@ -763,6 +860,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable processDefinitionVersionTag cannot be null');
         }
         $this->container['processDefinitionVersionTag'] = $processDefinitionVersionTag;
+        if ($processDefinitionVersionTag === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersionTag']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersionTag'] = true;
+        }
 
         return $this;
     }
@@ -805,6 +907,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -818,6 +925,7 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

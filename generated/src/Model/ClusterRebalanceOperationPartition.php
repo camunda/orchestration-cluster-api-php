@@ -103,6 +103,15 @@ class ClusterRebalanceOperationPartition implements ModelInterface, ArrayAccess,
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -162,6 +171,20 @@ class ClusterRebalanceOperationPartition implements ModelInterface, ArrayAccess,
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -341,6 +364,10 @@ class ClusterRebalanceOperationPartition implements ModelInterface, ArrayAccess,
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -426,6 +453,11 @@ class ClusterRebalanceOperationPartition implements ModelInterface, ArrayAccess,
             throw new InvalidArgumentException('non-nullable partitionId cannot be null');
         }
         $this->container['partitionId'] = $partitionId;
+        if ($partitionId === null) {
+            unset($this->openAPIFieldsSet['partitionId']);
+        } else {
+            $this->openAPIFieldsSet['partitionId'] = true;
+        }
 
         return $this;
     }
@@ -453,6 +485,11 @@ class ClusterRebalanceOperationPartition implements ModelInterface, ArrayAccess,
             throw new InvalidArgumentException('non-nullable physicalTenantId cannot be null');
         }
         $this->container['physicalTenantId'] = $physicalTenantId;
+        if ($physicalTenantId === null) {
+            unset($this->openAPIFieldsSet['physicalTenantId']);
+        } else {
+            $this->openAPIFieldsSet['physicalTenantId'] = true;
+        }
 
         return $this;
     }
@@ -487,6 +524,11 @@ class ClusterRebalanceOperationPartition implements ModelInterface, ArrayAccess,
             }
         }
         $this->container['currentLeader'] = $currentLeader;
+        if ($currentLeader === null) {
+            unset($this->openAPIFieldsSet['currentLeader']);
+        } else {
+            $this->openAPIFieldsSet['currentLeader'] = true;
+        }
 
         return $this;
     }
@@ -514,6 +556,11 @@ class ClusterRebalanceOperationPartition implements ModelInterface, ArrayAccess,
             throw new InvalidArgumentException('non-nullable desiredLeader cannot be null');
         }
         $this->container['desiredLeader'] = $desiredLeader;
+        if ($desiredLeader === null) {
+            unset($this->openAPIFieldsSet['desiredLeader']);
+        } else {
+            $this->openAPIFieldsSet['desiredLeader'] = true;
+        }
 
         return $this;
     }
@@ -551,6 +598,11 @@ class ClusterRebalanceOperationPartition implements ModelInterface, ArrayAccess,
             );
         }
         $this->container['progress'] = $progress;
+        if ($progress === null) {
+            unset($this->openAPIFieldsSet['progress']);
+        } else {
+            $this->openAPIFieldsSet['progress'] = true;
+        }
 
         return $this;
     }
@@ -595,6 +647,11 @@ class ClusterRebalanceOperationPartition implements ModelInterface, ArrayAccess,
             );
         }
         $this->container['result'] = $result;
+        if ($result === null) {
+            unset($this->openAPIFieldsSet['result']);
+        } else {
+            $this->openAPIFieldsSet['result'] = true;
+        }
 
         return $this;
     }
@@ -637,6 +694,11 @@ class ClusterRebalanceOperationPartition implements ModelInterface, ArrayAccess,
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -650,6 +712,7 @@ class ClusterRebalanceOperationPartition implements ModelInterface, ArrayAccess,
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

@@ -136,6 +136,15 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -195,6 +204,20 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -350,6 +373,10 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -488,6 +515,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     public function setProcessDefinitionId(\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -522,6 +554,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
             }
         }
         $this->container['processDefinitionName'] = $processDefinitionName;
+        if ($processDefinitionName === null) {
+            unset($this->openAPIFieldsSet['processDefinitionName']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionName'] = true;
+        }
 
         return $this;
     }
@@ -549,6 +586,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
         }
         $this->container['processDefinitionVersion'] = $processDefinitionVersion;
+        if ($processDefinitionVersion === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersion']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
+        }
 
         return $this;
     }
@@ -583,6 +625,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
             }
         }
         $this->container['processDefinitionVersionTag'] = $processDefinitionVersionTag;
+        if ($processDefinitionVersionTag === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersionTag']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersionTag'] = true;
+        }
 
         return $this;
     }
@@ -610,6 +657,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable startDate cannot be null');
         }
         $this->container['startDate'] = $startDate;
+        if ($startDate === null) {
+            unset($this->openAPIFieldsSet['startDate']);
+        } else {
+            $this->openAPIFieldsSet['startDate'] = true;
+        }
 
         return $this;
     }
@@ -644,6 +696,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
             }
         }
         $this->container['endDate'] = $endDate;
+        if ($endDate === null) {
+            unset($this->openAPIFieldsSet['endDate']);
+        } else {
+            $this->openAPIFieldsSet['endDate'] = true;
+        }
 
         return $this;
     }
@@ -671,6 +728,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable state cannot be null');
         }
         $this->container['state'] = $state;
+        if ($state === null) {
+            unset($this->openAPIFieldsSet['state']);
+        } else {
+            $this->openAPIFieldsSet['state'] = true;
+        }
 
         return $this;
     }
@@ -705,6 +767,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
             }
         }
         $this->container['suspendedDate'] = $suspendedDate;
+        if ($suspendedDate === null) {
+            unset($this->openAPIFieldsSet['suspendedDate']);
+        } else {
+            $this->openAPIFieldsSet['suspendedDate'] = true;
+        }
 
         return $this;
     }
@@ -732,6 +799,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable hasIncident cannot be null');
         }
         $this->container['hasIncident'] = $hasIncident;
+        if ($hasIncident === null) {
+            unset($this->openAPIFieldsSet['hasIncident']);
+        } else {
+            $this->openAPIFieldsSet['hasIncident'] = true;
+        }
 
         return $this;
     }
@@ -756,6 +828,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     public function setTenantId(\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -780,6 +857,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     public function setProcessInstanceKey(\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -804,6 +886,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
         $this->container['processDefinitionKey'] = $processDefinitionKey;
+        if ($processDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['processDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -828,6 +915,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     public function setParentProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $parentProcessInstanceKey): static
     {
         $this->container['parentProcessInstanceKey'] = $parentProcessInstanceKey;
+        if ($parentProcessInstanceKey === null) {
+            unset($this->openAPIFieldsSet['parentProcessInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['parentProcessInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -852,6 +944,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     public function setParentElementInstanceKey(?\Camunda\Orchestration\Semantic\ElementInstanceKey $parentElementInstanceKey): static
     {
         $this->container['parentElementInstanceKey'] = $parentElementInstanceKey;
+        if ($parentElementInstanceKey === null) {
+            unset($this->openAPIFieldsSet['parentElementInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['parentElementInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -876,6 +973,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
+        if ($rootProcessInstanceKey === null) {
+            unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['rootProcessInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -906,6 +1008,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('invalid value for $tags when calling ProcessInstanceResult., number of items must be less than or equal to 10.');
         }
         $this->container['tags'] = $tags;
+        if ($tags === null) {
+            unset($this->openAPIFieldsSet['tags']);
+        } else {
+            $this->openAPIFieldsSet['tags'] = true;
+        }
 
         return $this;
     }
@@ -930,6 +1037,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
         $this->container['businessId'] = $businessId;
+        if ($businessId === null) {
+            unset($this->openAPIFieldsSet['businessId']);
+        } else {
+            $this->openAPIFieldsSet['businessId'] = true;
+        }
 
         return $this;
     }
@@ -972,6 +1084,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -985,6 +1102,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

@@ -99,7 +99,14 @@ return static function (array $ctx): void {
                 static function (array $m) use ($prop, $fqcn): string {
                     $nullable = $m[1];
                     $var = $m[2];
-                    $body = "        \$this->container['" . $prop . "'] = \$" . $var . ";\n\n"
+                    // Preserve the explicit-field tracking that hook 0285 relies on, so
+                    // a setter-assigned value marks the field as set (and null unsets it).
+                    $body = "        \$this->container['" . $prop . "'] = \$" . $var . ";\n"
+                        . "        if (\$" . $var . " === null) {\n"
+                        . "            unset(\$this->openAPIFieldsSet['" . $prop . "']);\n"
+                        . "        } else {\n"
+                        . "            \$this->openAPIFieldsSet['" . $prop . "'] = true;\n"
+                        . "        }\n\n"
                         . "        return \$this;\n";
                     return "    public function set" . ucfirst($prop) . "(" . $nullable . $fqcn . " \$" . $var . "): static\n"
                         . "    {\n" . $body . "    }\n";

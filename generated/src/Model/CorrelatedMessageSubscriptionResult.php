@@ -126,6 +126,15 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -185,6 +194,20 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -328,6 +351,10 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -453,6 +480,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
         $this->container['businessId'] = $businessId;
+        if ($businessId === null) {
+            unset($this->openAPIFieldsSet['businessId']);
+        } else {
+            $this->openAPIFieldsSet['businessId'] = true;
+        }
 
         return $this;
     }
@@ -487,6 +519,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
             }
         }
         $this->container['correlationKey'] = $correlationKey;
+        if ($correlationKey === null) {
+            unset($this->openAPIFieldsSet['correlationKey']);
+        } else {
+            $this->openAPIFieldsSet['correlationKey'] = true;
+        }
 
         return $this;
     }
@@ -514,6 +551,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
             throw new InvalidArgumentException('non-nullable correlationTime cannot be null');
         }
         $this->container['correlationTime'] = $correlationTime;
+        if ($correlationTime === null) {
+            unset($this->openAPIFieldsSet['correlationTime']);
+        } else {
+            $this->openAPIFieldsSet['correlationTime'] = true;
+        }
 
         return $this;
     }
@@ -538,6 +580,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     public function setElementId(\Camunda\Orchestration\Semantic\ElementId $elementId): static
     {
         $this->container['elementId'] = $elementId;
+        if ($elementId === null) {
+            unset($this->openAPIFieldsSet['elementId']);
+        } else {
+            $this->openAPIFieldsSet['elementId'] = true;
+        }
 
         return $this;
     }
@@ -562,6 +609,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     public function setElementInstanceKey(?\Camunda\Orchestration\Semantic\ElementInstanceKey $elementInstanceKey): static
     {
         $this->container['elementInstanceKey'] = $elementInstanceKey;
+        if ($elementInstanceKey === null) {
+            unset($this->openAPIFieldsSet['elementInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['elementInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -586,6 +638,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     public function setMessageKey(\Camunda\Orchestration\Semantic\MessageKey $messageKey): static
     {
         $this->container['messageKey'] = $messageKey;
+        if ($messageKey === null) {
+            unset($this->openAPIFieldsSet['messageKey']);
+        } else {
+            $this->openAPIFieldsSet['messageKey'] = true;
+        }
 
         return $this;
     }
@@ -613,6 +670,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
             throw new InvalidArgumentException('non-nullable messageName cannot be null');
         }
         $this->container['messageName'] = $messageName;
+        if ($messageName === null) {
+            unset($this->openAPIFieldsSet['messageName']);
+        } else {
+            $this->openAPIFieldsSet['messageName'] = true;
+        }
 
         return $this;
     }
@@ -640,6 +702,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
             throw new InvalidArgumentException('non-nullable partitionId cannot be null');
         }
         $this->container['partitionId'] = $partitionId;
+        if ($partitionId === null) {
+            unset($this->openAPIFieldsSet['partitionId']);
+        } else {
+            $this->openAPIFieldsSet['partitionId'] = true;
+        }
 
         return $this;
     }
@@ -664,6 +731,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     public function setProcessDefinitionId(\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -688,6 +760,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
         $this->container['processDefinitionKey'] = $processDefinitionKey;
+        if ($processDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['processDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -712,6 +789,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     public function setProcessInstanceKey(\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -736,6 +818,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
+        if ($rootProcessInstanceKey === null) {
+            unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['rootProcessInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -760,6 +847,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     public function setSubscriptionKey(\Camunda\Orchestration\Semantic\MessageSubscriptionKey $subscriptionKey): static
     {
         $this->container['subscriptionKey'] = $subscriptionKey;
+        if ($subscriptionKey === null) {
+            unset($this->openAPIFieldsSet['subscriptionKey']);
+        } else {
+            $this->openAPIFieldsSet['subscriptionKey'] = true;
+        }
 
         return $this;
     }
@@ -784,6 +876,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     public function setTenantId(\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -826,6 +923,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -839,6 +941,7 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

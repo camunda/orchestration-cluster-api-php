@@ -96,6 +96,15 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -155,6 +164,20 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -258,6 +281,10 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -335,6 +362,11 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
             }
         }
         $this->container['variables'] = $variables;
+        if ($variables === null) {
+            unset($this->openAPIFieldsSet['variables']);
+        } else {
+            $this->openAPIFieldsSet['variables'] = true;
+        }
 
         return $this;
     }
@@ -362,6 +394,11 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable result cannot be null');
         }
         $this->container['result'] = $result;
+        if ($result === null) {
+            unset($this->openAPIFieldsSet['result']);
+        } else {
+            $this->openAPIFieldsSet['result'] = true;
+        }
 
         return $this;
     }
@@ -386,6 +423,11 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
     public function setJobLeaseToken(?\Camunda\Orchestration\Semantic\JobLeaseToken $jobLeaseToken): static
     {
         $this->container['jobLeaseToken'] = $jobLeaseToken;
+        if ($jobLeaseToken === null) {
+            unset($this->openAPIFieldsSet['jobLeaseToken']);
+        } else {
+            $this->openAPIFieldsSet['jobLeaseToken'] = true;
+        }
 
         return $this;
     }
@@ -410,6 +452,11 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
         $this->container['businessId'] = $businessId;
+        if ($businessId === null) {
+            unset($this->openAPIFieldsSet['businessId']);
+        } else {
+            $this->openAPIFieldsSet['businessId'] = true;
+        }
 
         return $this;
     }
@@ -452,6 +499,11 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -465,6 +517,7 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

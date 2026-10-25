@@ -103,6 +103,15 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -162,6 +171,20 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -273,6 +296,10 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -372,6 +399,11 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('non-nullable name cannot be null');
         }
         $this->container['name'] = $name;
+        if ($name === null) {
+            unset($this->openAPIFieldsSet['name']);
+        } else {
+            $this->openAPIFieldsSet['name'] = true;
+        }
 
         return $this;
     }
@@ -396,6 +428,11 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setTenantId(\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -420,6 +457,11 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setVariableKey(\Camunda\Orchestration\Semantic\VariableKey $variableKey): static
     {
         $this->container['variableKey'] = $variableKey;
+        if ($variableKey === null) {
+            unset($this->openAPIFieldsSet['variableKey']);
+        } else {
+            $this->openAPIFieldsSet['variableKey'] = true;
+        }
 
         return $this;
     }
@@ -447,6 +489,11 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
             throw new InvalidArgumentException('non-nullable scopeKey cannot be null');
         }
         $this->container['scopeKey'] = $scopeKey;
+        if ($scopeKey === null) {
+            unset($this->openAPIFieldsSet['scopeKey']);
+        } else {
+            $this->openAPIFieldsSet['scopeKey'] = true;
+        }
 
         return $this;
     }
@@ -471,6 +518,11 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setProcessInstanceKey(\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -495,6 +547,11 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
+        if ($rootProcessInstanceKey === null) {
+            unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['rootProcessInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -537,6 +594,11 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -550,6 +612,7 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**
