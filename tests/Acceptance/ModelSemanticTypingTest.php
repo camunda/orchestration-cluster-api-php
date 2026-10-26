@@ -100,6 +100,12 @@ final class ModelSemanticTypingTest extends TestCase
         $result->setProcessDefinitionKey(null);
         self::assertTrue($result->isNullableSetToNull('processDefinitionKey'));
 
+        // Flag the field as an explicit null first, so the concrete-value assignment
+        // below genuinely exercises the setter's flag-clearing branch (the null->value
+        // transition) rather than asserting an already-false flag.
+        $result->setRootProcessInstanceKey(null);
+        self::assertTrue($result->isNullableSetToNull('rootProcessInstanceKey'));
+
         $result->setRootProcessInstanceKey(ProcessInstanceKey::of('42'));
         self::assertFalse($result->isNullableSetToNull('rootProcessInstanceKey'));
 
