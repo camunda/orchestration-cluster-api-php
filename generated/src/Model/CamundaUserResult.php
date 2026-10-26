@@ -482,7 +482,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets authorizedComponents
      *
-     * @param string[] $authorizedComponents The web components the user is authorized to use.
+     * @param string[] $authorizedComponents The web components the user is authorized to use. When authorizations are disabled for the cluster, this always returns `[\"*\"]`, regardless of the user's actual permissions, since access is not restricted in that case.
      *
      * @return $this
      */

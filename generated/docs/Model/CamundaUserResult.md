@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **username** | **string** | The username of the user. |
 **displayName** | **string** | The display name of the user. |
 **email** | **string** | The email of the user. |
-**authorizedComponents** | **string[]** | The web components the user is authorized to use. |
+**authorizedComponents** | **string[]** | The web components the user is authorized to use. When authorizations are disabled for the cluster, this always returns &#x60;[\&quot;*\&quot;]&#x60;, regardless of the user&#39;s actual permissions, since access is not restricted in that case. |
 **tenants** | [**\Camunda\Orchestration\Api\Model\TenantResult[]**](TenantResult.md) | The tenants the user is a member of. |
 **groups** | **string[]** | The groups assigned to the user. |
 **roles** | **string[]** | The roles assigned to the user. |

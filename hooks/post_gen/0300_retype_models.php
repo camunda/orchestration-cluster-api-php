@@ -43,8 +43,14 @@ return static function (array $ctx): void {
     // schema name -> [property => SemanticKeyName]
     $map = [];
     foreach ($schemas as $schemaName => $schema) {
-        $props = $schema['properties'] ?? null;
-        if (!is_array($props)) {
+        if (!is_array($schema)) {
+            continue;
+        }
+        // Collect the schema's own properties *and* those it inherits through
+        // `allOf` `$ref`s to parent schemas (e.g. the process-creation variants
+        // inherit `tenantId`/`businessId` from `ProcessInstanceCreationInstructionBase`).
+        $props = resolve_schema_properties($schema, $schemas);
+        if ($props === []) {
             continue;
         }
         foreach ($props as $propName => $propSchema) {
@@ -92,14 +98,37 @@ return static function (array $ctx): void {
                 1
             ) ?? $src;
 
-            // 3. setter — canonicalise (value object owns validation)
+            // 3. setter — canonicalise (value object owns validation). For a
+            //    nullable property the generator's setter also maintains the
+            //    `openAPINullablesSetToNull` tracking that lets an explicit null
+            //    survive serialization (ObjectSerializer only emits a null value
+            //    when `isNullableSetToNull()` is true). Dropping that block would
+            //    silently omit `set<Prop>(null)` from the wire, so preserve it.
             $src = preg_replace_callback(
                 '/    public function set' . preg_quote($studly, '/')
                     . '\((\??)string \$(\w+)\): static\n    \{.*?\n    \}\n/s',
                 static function (array $m) use ($prop, $fqcn): string {
                     $nullable = $m[1];
                     $var = $m[2];
-                    $body = "        \$this->container['" . $prop . "'] = \$" . $var . ";\n\n"
+                    // Preserve the generator's nullable-state tracking verbatim when
+                    // the original setter tracked it (i.e. the property is declared
+                    // `nullable: true`); keyed off the original body, not the `?`
+                    // marker, since an optional-but-non-nullable property is also `?`.
+                    $tracksNull = str_contains($m[0], 'openAPINullablesSetToNull');
+                    $body = '';
+                    if ($tracksNull) {
+                        $body .= "        if (is_null(\$" . $var . ")) {\n"
+                            . "            array_push(\$this->openAPINullablesSetToNull, '" . $prop . "');\n"
+                            . "        } else {\n"
+                            . "            \$nullablesSetToNull = \$this->getOpenAPINullablesSetToNull();\n"
+                            . "            \$index = array_search('" . $prop . "', \$nullablesSetToNull);\n"
+                            . "            if (\$index !== FALSE) {\n"
+                            . "                unset(\$nullablesSetToNull[\$index]);\n"
+                            . "                \$this->setOpenAPINullablesSetToNull(\$nullablesSetToNull);\n"
+                            . "            }\n"
+                            . "        }\n";
+                    }
+                    $body .= "        \$this->container['" . $prop . "'] = \$" . $var . ";\n\n"
                         . "        return \$this;\n";
                     return "    public function set" . ucfirst($prop) . "(" . $nullable . $fqcn . " \$" . $var . "): static\n"
                         . "    {\n" . $body . "    }\n";
@@ -115,6 +144,20 @@ return static function (array $ctx): void {
             $castRepl = "(string) \$this->container['" . $prop . "'])";
             $src = str_replace($castNeedle, $castRepl, $src);
 
+            // The blunt cast above also rewrites the `is_null(...)` guard that the
+            // generator emits ahead of every length/pattern check on a nullable
+            // property. That is wrong: `(string) null` is `''` (never null), so
+            // `is_null((string) $this->container['prop'])` is always false, the
+            // `!is_null(...) &&` guard always passes, and a permitted null is fed
+            // into mb_strlen/preg_match — failing validation for omitted or
+            // explicitly-null identifiers. Keep the null check on the raw container
+            // value; only the length/pattern-check arguments need the string cast.
+            $src = str_replace(
+                "is_null((string) \$this->container['" . $prop . "'])",
+                "is_null(\$this->container['" . $prop . "'])",
+                $src
+            );
+
             $retyped++;
         }
 
@@ -127,6 +170,55 @@ return static function (array $ctx): void {
 
     fwrite(STDOUT, "  [retype] retyped $retyped properties across $modelsTouched models\n");
 };
+
+/**
+ * Collect a schema's effective properties, merging in the properties of every
+ * `allOf`-`$ref`'d parent schema recursively. The schema's own (more specific)
+ * properties take precedence over inherited ones.
+ *
+ * This is what lets inherited semantic identifiers survive: after the upstream
+ * spec moved the shared process-creation fields into
+ * `ProcessInstanceCreationInstructionBase`, the `ById`/`ByKey`/`ByVersionTag`
+ * variants carry `tenantId`/`businessId` only through `allOf: [{$ref: Base}]`.
+ *
+ * Property-level `allOf` wrappers (the single-`$ref` semantic-key markers) are
+ * left intact in the returned property schemas; only *schema*-level `allOf`
+ * composition is flattened here.
+ *
+ * @param array<string, mixed> $schema
+ * @param array<string, mixed> $schemas  schema name -> schema
+ * @param array<string, bool>  $seen     visited parents, guarding against cycles
+ * @return array<string, mixed> property name -> property schema
+ */
+function resolve_schema_properties(array $schema, array $schemas, array $seen = []): array
+{
+    $inherited = [];
+
+    if (isset($schema['allOf']) && is_array($schema['allOf'])) {
+        foreach ($schema['allOf'] as $frag) {
+            if (!is_array($frag)) {
+                continue;
+            }
+            if (isset($frag['$ref']) && is_string($frag['$ref'])) {
+                $parent = basename_ref($frag['$ref']);
+                if (isset($seen[$parent]) || !isset($schemas[$parent]) || !is_array($schemas[$parent])) {
+                    continue;
+                }
+                $seen[$parent] = true;
+                $inherited = array_merge($inherited, resolve_schema_properties($schemas[$parent], $schemas, $seen));
+            } elseif (is_array($frag['properties'] ?? null)) {
+                // Inline object fragment contributing its own properties (and, in
+                // principle, further nested composition).
+                $inherited = array_merge($inherited, resolve_schema_properties($frag, $schemas, $seen));
+            }
+        }
+    }
+
+    $own = is_array($schema['properties'] ?? null) ? $schema['properties'] : [];
+
+    // The schema's own properties win over anything inherited.
+    return array_merge($inherited, $own);
+}
 
 /**
  * Resolve a property schema to a single referenced component name, or null.

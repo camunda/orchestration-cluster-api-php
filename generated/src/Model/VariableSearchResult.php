@@ -59,11 +59,11 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
      */
     protected static array $openAPITypes = [
         'name' => 'string',
-        'tenantId' => 'string',
-        'variableKey' => 'string',
+        'tenantId' => '\Camunda\Orchestration\Semantic\TenantId',
+        'variableKey' => '\Camunda\Orchestration\Semantic\VariableKey',
         'scopeKey' => '\Camunda\Orchestration\Semantic\ScopeKey',
-        'processInstanceKey' => 'string',
-        'rootProcessInstanceKey' => 'string',
+        'processInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
+        'rootProcessInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
         'value' => 'string',
         'isTruncated' => 'bool'
     ];
@@ -326,15 +326,15 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
         if ($this->container['tenantId'] === null) {
             $invalidProperties[] = "'tenantId' can't be null";
         }
-        if ((mb_strlen($this->container['tenantId']) > 31)) {
+        if ((mb_strlen((string) $this->container['tenantId']) > 31)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be smaller than or equal to 31.";
         }
 
-        if ((mb_strlen($this->container['tenantId']) < 1)) {
+        if ((mb_strlen((string) $this->container['tenantId']) < 1)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", $this->container['tenantId'])) {
+        if (!preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
             $invalidProperties[] = "invalid value for 'tenantId', must be conform to the pattern /^(<default>|[\\w\\.\\-]{1,31})$/.";
         }
 
@@ -400,7 +400,7 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
      *
      * @return string
      */
-    public function getTenantId(): string
+    public function getTenantId(): \Camunda\Orchestration\Semantic\TenantId
     {
         return $this->container['tenantId'];
     }
@@ -412,21 +412,8 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
      *
      * @return $this
      */
-    public function setTenantId(string $tenantId): static
+    public function setTenantId(\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
-        if (is_null($tenantId)) {
-            throw new InvalidArgumentException('non-nullable tenantId cannot be null');
-        }
-        if ((mb_strlen($tenantId) > 31)) {
-            throw new InvalidArgumentException('invalid length for $tenantId when calling VariableSearchResult., must be smaller than or equal to 31.');
-        }
-        if ((mb_strlen($tenantId) < 1)) {
-            throw new InvalidArgumentException('invalid length for $tenantId when calling VariableSearchResult., must be bigger than or equal to 1.');
-        }
-        if ((!preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", ObjectSerializer::toString($tenantId)))) {
-            throw new InvalidArgumentException("invalid value for \$tenantId when calling VariableSearchResult., must conform to the pattern /^(<default>|[\\w\\.\\-]{1,31})$/.");
-        }
-
         $this->container['tenantId'] = $tenantId;
 
         return $this;
@@ -437,7 +424,7 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
      *
      * @return string
      */
-    public function getVariableKey(): string
+    public function getVariableKey(): \Camunda\Orchestration\Semantic\VariableKey
     {
         return $this->container['variableKey'];
     }
@@ -449,11 +436,8 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
      *
      * @return $this
      */
-    public function setVariableKey(string $variableKey): static
+    public function setVariableKey(\Camunda\Orchestration\Semantic\VariableKey $variableKey): static
     {
-        if (is_null($variableKey)) {
-            throw new InvalidArgumentException('non-nullable variableKey cannot be null');
-        }
         $this->container['variableKey'] = $variableKey;
 
         return $this;
@@ -491,7 +475,7 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
      *
      * @return string
      */
-    public function getProcessInstanceKey(): string
+    public function getProcessInstanceKey(): \Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
         return $this->container['processInstanceKey'];
     }
@@ -503,11 +487,8 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
      *
      * @return $this
      */
-    public function setProcessInstanceKey(string $processInstanceKey): static
+    public function setProcessInstanceKey(\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
-        if (is_null($processInstanceKey)) {
-            throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
-        }
         $this->container['processInstanceKey'] = $processInstanceKey;
 
         return $this;
@@ -518,7 +499,7 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
      *
      * @return string|null
      */
-    public function getRootProcessInstanceKey(): ?string
+    public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
         return $this->container['rootProcessInstanceKey'];
     }
@@ -530,7 +511,7 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
      *
      * @return $this
      */
-    public function setRootProcessInstanceKey(?string $rootProcessInstanceKey): static
+    public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
         if (is_null($rootProcessInstanceKey)) {
             array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');

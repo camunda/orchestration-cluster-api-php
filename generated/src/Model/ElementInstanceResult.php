@@ -102,7 +102,7 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      * @var array<string, bool>
      */
     protected static array $openAPINullables = [
-        'processDefinitionId' => false,
+        'processDefinitionId' => true,
         'startDate' => false,
         'endDate' => true,
         'elementId' => false,
@@ -114,7 +114,7 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
         'elementInstanceKey' => false,
         'processInstanceKey' => false,
         'rootProcessInstanceKey' => true,
-        'processDefinitionKey' => false,
+        'processDefinitionKey' => true,
         'incidentKey' => true
     ];
 
@@ -416,14 +416,14 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     {
         $invalidProperties = [];
 
-        if ($this->container['processDefinitionId'] === null) {
-            $invalidProperties[] = "'processDefinitionId' can't be null";
+        if ($this->container['processDefinitionId'] === null && !$this->isNullableSetToNull('processDefinitionId')) {
+            $invalidProperties[] = "'processDefinitionId' is required";
         }
-        if ((mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
+        if (!is_null($this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
+        if (!is_null($this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
         }
 
@@ -481,8 +481,8 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
         if ($this->container['rootProcessInstanceKey'] === null && !$this->isNullableSetToNull('rootProcessInstanceKey')) {
             $invalidProperties[] = "'rootProcessInstanceKey' is required";
         }
-        if ($this->container['processDefinitionKey'] === null) {
-            $invalidProperties[] = "'processDefinitionKey' can't be null";
+        if ($this->container['processDefinitionKey'] === null && !$this->isNullableSetToNull('processDefinitionKey')) {
+            $invalidProperties[] = "'processDefinitionKey' is required";
         }
         if ($this->container['incidentKey'] === null && !$this->isNullableSetToNull('incidentKey')) {
             $invalidProperties[] = "'incidentKey' is required";
@@ -502,9 +502,9 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     /**
      * Gets processDefinitionId
      *
-     * @return string
+     * @return string|null
      */
-    public function getProcessDefinitionId(): \Camunda\Orchestration\Semantic\ProcessDefinitionId
+    public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
         return $this->container['processDefinitionId'];
     }
@@ -512,12 +512,22 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     /**
      * Sets processDefinitionId
      *
-     * @param string $processDefinitionId The process definition ID associated to this element instance.
+     * @param string|null $processDefinitionId The process definition ID associated to this element instance. This field is not present for element instances imported by Operate 8.1 or earlier.
      *
      * @return $this
      */
-    public function setProcessDefinitionId(\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
+    public function setProcessDefinitionId(?\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
+        if (is_null($processDefinitionId)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionId'] = $processDefinitionId;
 
         return $this;
@@ -817,6 +827,16 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
 
         return $this;
@@ -825,9 +845,9 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     /**
      * Gets processDefinitionKey
      *
-     * @return string
+     * @return string|null
      */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Semantic\ProcessDefinitionKey
+    public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
         return $this->container['processDefinitionKey'];
     }
@@ -835,12 +855,22 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     /**
      * Sets processDefinitionKey
      *
-     * @param string $processDefinitionKey The process definition key associated to this element instance.
+     * @param string|null $processDefinitionKey The process definition key associated to this element instance. This field is not present for element instances imported by Operate 8.1.7 or earlier.
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
+    public function setProcessDefinitionKey(?\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
+        if (is_null($processDefinitionKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
 
         return $this;
@@ -865,6 +895,16 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setIncidentKey(?\Camunda\Orchestration\Semantic\IncidentKey $incidentKey): static
     {
+        if (is_null($incidentKey)) {
+            array_push($this->openAPINullablesSetToNull, 'incidentKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('incidentKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['incidentKey'] = $incidentKey;
 
         return $this;

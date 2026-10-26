@@ -379,6 +379,16 @@ class AgentInstanceToolCall implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setElementId(?\Camunda\Orchestration\Semantic\ElementId $elementId): static
     {
+        if (is_null($elementId)) {
+            array_push($this->openAPINullablesSetToNull, 'elementId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('elementId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['elementId'] = $elementId;
 
         return $this;

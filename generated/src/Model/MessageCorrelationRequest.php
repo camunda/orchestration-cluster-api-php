@@ -291,23 +291,23 @@ class MessageCorrelationRequest implements ModelInterface, ArrayAccess, JsonSeri
         if ($this->container['name'] === null) {
             $invalidProperties[] = "'name' can't be null";
         }
-        if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
+        if (!is_null($this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be smaller than or equal to 31.";
         }
 
-        if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) < 1)) {
+        if (!is_null($this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) < 1)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['tenantId']) && !preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
+        if (!is_null($this->container['tenantId']) && !preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
             $invalidProperties[] = "invalid value for 'tenantId', must be conform to the pattern /^(<default>|[\\w\\.\\-]{1,31})$/.";
         }
 
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be smaller than or equal to 256.";
         }
 
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be bigger than or equal to 1.";
         }
 

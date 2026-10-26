@@ -111,7 +111,7 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
         'messageName' => false,
         'partitionId' => false,
         'processDefinitionId' => false,
-        'processDefinitionKey' => false,
+        'processDefinitionKey' => true,
         'processInstanceKey' => false,
         'rootProcessInstanceKey' => true,
         'subscriptionKey' => false,
@@ -354,11 +354,11 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
         if ($this->container['businessId'] === null && !$this->isNullableSetToNull('businessId')) {
             $invalidProperties[] = "'businessId' is required";
         }
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be smaller than or equal to 256.";
         }
 
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be bigger than or equal to 1.";
         }
 
@@ -394,8 +394,8 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
             $invalidProperties[] = "invalid value for 'processDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
         }
 
-        if ($this->container['processDefinitionKey'] === null) {
-            $invalidProperties[] = "'processDefinitionKey' can't be null";
+        if ($this->container['processDefinitionKey'] === null && !$this->isNullableSetToNull('processDefinitionKey')) {
+            $invalidProperties[] = "'processDefinitionKey' is required";
         }
         if ($this->container['processInstanceKey'] === null) {
             $invalidProperties[] = "'processInstanceKey' can't be null";
@@ -452,6 +452,16 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
      */
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
+        if (is_null($businessId)) {
+            array_push($this->openAPINullablesSetToNull, 'businessId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('businessId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['businessId'] = $businessId;
 
         return $this;
@@ -561,6 +571,16 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
      */
     public function setElementInstanceKey(?\Camunda\Orchestration\Semantic\ElementInstanceKey $elementInstanceKey): static
     {
+        if (is_null($elementInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'elementInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('elementInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['elementInstanceKey'] = $elementInstanceKey;
 
         return $this;
@@ -671,9 +691,9 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     /**
      * Gets processDefinitionKey
      *
-     * @return string
+     * @return string|null
      */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Semantic\ProcessDefinitionKey
+    public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
         return $this->container['processDefinitionKey'];
     }
@@ -681,12 +701,22 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
     /**
      * Sets processDefinitionKey
      *
-     * @param string $processDefinitionKey The process definition key associated with this correlated message subscription.
+     * @param string|null $processDefinitionKey The process definition key associated with this correlated message subscription. This field is not present for correlations to message subscriptions of a running process instance (catch, boundary and receive task events) written by version 8.8.
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
+    public function setProcessDefinitionKey(?\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
+        if (is_null($processDefinitionKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
 
         return $this;
@@ -735,6 +765,16 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
 
         return $this;

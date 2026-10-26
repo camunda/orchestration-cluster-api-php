@@ -417,11 +417,11 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
     {
         $invalidProperties = [];
 
-        if (!is_null((string) $this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
+        if (!is_null($this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
+        if (!is_null($this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
         }
 
@@ -434,15 +434,15 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
             );
         }
 
-        if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
+        if (!is_null($this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be smaller than or equal to 31.";
         }
 
-        if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) < 1)) {
+        if (!is_null($this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) < 1)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['tenantId']) && !preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
+        if (!is_null($this->container['tenantId']) && !preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
             $invalidProperties[] = "invalid value for 'tenantId', must be conform to the pattern /^(<default>|[\\w\\.\\-]{1,31})$/.";
         }
 

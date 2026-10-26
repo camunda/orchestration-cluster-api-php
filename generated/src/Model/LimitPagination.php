@@ -255,8 +255,8 @@ class LimitPagination implements ModelInterface, ArrayAccess, JsonSerializable
             $invalidProperties[] = "invalid value for 'limit', must be smaller than or equal to 10000.";
         }
 
-        if (!is_null($this->container['limit']) && ($this->container['limit'] < 1)) {
-            $invalidProperties[] = "invalid value for 'limit', must be bigger than or equal to 1.";
+        if (!is_null($this->container['limit']) && ($this->container['limit'] < 0)) {
+            $invalidProperties[] = "invalid value for 'limit', must be bigger than or equal to 0.";
         }
 
         return $invalidProperties;
@@ -296,8 +296,8 @@ class LimitPagination implements ModelInterface, ArrayAccess, JsonSerializable
         if (($limit > 10000)) {
             throw new InvalidArgumentException('invalid value for $limit when calling LimitPagination., must be smaller than or equal to 10000.');
         }
-        if (($limit < 1)) {
-            throw new InvalidArgumentException('invalid value for $limit when calling LimitPagination., must be bigger than or equal to 1.');
+        if (($limit < 0)) {
+            throw new InvalidArgumentException('invalid value for $limit when calling LimitPagination., must be bigger than or equal to 0.');
         }
 
         $this->container['limit'] = $limit;

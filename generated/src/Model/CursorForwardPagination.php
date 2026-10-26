@@ -267,7 +267,7 @@ class CursorForwardPagination implements ModelInterface, ArrayAccess, JsonSerial
     {
         $invalidProperties = [];
 
-        if (!is_null((string) $this->container['after']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['after'])) {
+        if (!is_null($this->container['after']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['after'])) {
             $invalidProperties[] = "invalid value for 'after', must be conform to the pattern /^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/.";
         }
 
@@ -275,8 +275,8 @@ class CursorForwardPagination implements ModelInterface, ArrayAccess, JsonSerial
             $invalidProperties[] = "invalid value for 'limit', must be smaller than or equal to 10000.";
         }
 
-        if (!is_null($this->container['limit']) && ($this->container['limit'] < 1)) {
-            $invalidProperties[] = "invalid value for 'limit', must be bigger than or equal to 1.";
+        if (!is_null($this->container['limit']) && ($this->container['limit'] < 0)) {
+            $invalidProperties[] = "invalid value for 'limit', must be bigger than or equal to 0.";
         }
 
         return $invalidProperties;
@@ -340,8 +340,8 @@ class CursorForwardPagination implements ModelInterface, ArrayAccess, JsonSerial
         if (($limit > 10000)) {
             throw new InvalidArgumentException('invalid value for $limit when calling CursorForwardPagination., must be smaller than or equal to 10000.');
         }
-        if (($limit < 1)) {
-            throw new InvalidArgumentException('invalid value for $limit when calling CursorForwardPagination., must be bigger than or equal to 1.');
+        if (($limit < 0)) {
+            throw new InvalidArgumentException('invalid value for $limit when calling CursorForwardPagination., must be bigger than or equal to 0.');
         }
 
         $this->container['limit'] = $limit;

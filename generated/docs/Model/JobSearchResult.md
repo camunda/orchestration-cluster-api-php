@@ -17,8 +17,8 @@ Name | Type | Description | Notes
 **jobKey** | **string** | The key, a unique identifier for the job. |
 **kind** | [**\Camunda\Orchestration\Api\Model\JobKindEnum**](JobKindEnum.md) |  |
 **listenerEventType** | [**\Camunda\Orchestration\Api\Model\JobListenerEventTypeEnum**](JobListenerEventTypeEnum.md) |  |
-**processDefinitionId** | **string** | The process definition ID associated with the job. |
-**processDefinitionKey** | **string** | The process definition key associated with the job. |
+**processDefinitionId** | **string** | The process definition ID associated with the job. This field is not present for jobs imported by Operate 8.7 and earlier. |
+**processDefinitionKey** | **string** | The process definition key associated with the job. This field is not present for jobs imported by Operate 8.7 and earlier. |
 **processInstanceKey** | **string** | The process instance key associated with the job. |
 **rootProcessInstanceKey** | **string** | The key of the root process instance. The root process instance is the top-level ancestor in the process instance hierarchy. This field is only present for data belonging to process instance hierarchies created in version 8.9 or later. |
 **businessId** | **string** | The business ID of the owning process instance, inherited when the job was created. This is &#x60;null&#x60; for jobs created before version 8.10 and for jobs whose owning process instance has no business ID. |

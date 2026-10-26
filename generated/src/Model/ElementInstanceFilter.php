@@ -59,17 +59,17 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      * @var array<string, string>
      */
     protected static array $openAPITypes = [
-        'processDefinitionId' => 'string',
+        'processDefinitionId' => '\Camunda\Orchestration\Semantic\ProcessDefinitionId',
         'state' => '\Camunda\Orchestration\Api\Model\ElementInstanceStateFilterProperty',
         'type' => 'string',
         'elementId' => '\Camunda\Orchestration\Api\Model\ElementIdFilterProperty',
         'elementName' => '\Camunda\Orchestration\Api\Model\StringFilterProperty',
         'hasIncident' => 'bool',
-        'tenantId' => 'string',
-        'elementInstanceKey' => 'string',
-        'processInstanceKey' => 'string',
-        'processDefinitionKey' => 'string',
-        'incidentKey' => 'string',
+        'tenantId' => '\Camunda\Orchestration\Semantic\TenantId',
+        'elementInstanceKey' => '\Camunda\Orchestration\Semantic\ElementInstanceKey',
+        'processInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
+        'processDefinitionKey' => '\Camunda\Orchestration\Semantic\ProcessDefinitionKey',
+        'incidentKey' => '\Camunda\Orchestration\Semantic\IncidentKey',
         'startDate' => '\Camunda\Orchestration\Api\Model\DateTimeFilterProperty',
         'endDate' => '\Camunda\Orchestration\Api\Model\DateTimeFilterProperty',
         'elementInstanceScopeKey' => 'string',
@@ -405,7 +405,16 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             $this->openAPINullablesSetToNull[] = $variableName;
         }
 
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $value = $fields[$variableName] ?? $defaultValue;
+        $semanticType = static::$openAPITypes[$variableName] ?? null;
+        if (
+            is_string($value)
+            && is_string($semanticType)
+            && is_subclass_of($semanticType, \Camunda\Orchestration\Semantic\SemanticKey::class)
+        ) {
+            $value = new $semanticType($value);
+        }
+        $this->container[$variableName] = $value;
     }
 
     /**
@@ -415,11 +424,11 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
     {
         $invalidProperties = [];
 
-        if (!is_null($this->container['processDefinitionId']) && (mb_strlen($this->container['processDefinitionId']) < 1)) {
+        if (!is_null($this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null($this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", $this->container['processDefinitionId'])) {
+        if (!is_null($this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
         }
 
@@ -432,15 +441,15 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             );
         }
 
-        if (!is_null($this->container['tenantId']) && (mb_strlen($this->container['tenantId']) > 31)) {
+        if (!is_null($this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be smaller than or equal to 31.";
         }
 
-        if (!is_null($this->container['tenantId']) && (mb_strlen($this->container['tenantId']) < 1)) {
+        if (!is_null($this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) < 1)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null($this->container['tenantId']) && !preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", $this->container['tenantId'])) {
+        if (!is_null($this->container['tenantId']) && !preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
             $invalidProperties[] = "invalid value for 'tenantId', must be conform to the pattern /^(<default>|[\\w\\.\\-]{1,31})$/.";
         }
 
@@ -461,7 +470,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      *
      * @return string|null
      */
-    public function getProcessDefinitionId(): ?string
+    public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
         return $this->container['processDefinitionId'];
     }
@@ -473,19 +482,8 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      *
      * @return $this
      */
-    public function setProcessDefinitionId(?string $processDefinitionId): static
+    public function setProcessDefinitionId(?\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
-        if (is_null($processDefinitionId)) {
-            throw new InvalidArgumentException('non-nullable processDefinitionId cannot be null');
-        }
-
-        if ((mb_strlen($processDefinitionId) < 1)) {
-            throw new InvalidArgumentException('invalid length for $processDefinitionId when calling ElementInstanceFilter., must be bigger than or equal to 1.');
-        }
-        if ((!preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", ObjectSerializer::toString($processDefinitionId)))) {
-            throw new InvalidArgumentException("invalid value for \$processDefinitionId when calling ElementInstanceFilter., must conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.");
-        }
-
         $this->container['processDefinitionId'] = $processDefinitionId;
 
         return $this;
@@ -641,7 +639,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      *
      * @return string|null
      */
-    public function getTenantId(): ?string
+    public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
         return $this->container['tenantId'];
     }
@@ -653,21 +651,8 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      *
      * @return $this
      */
-    public function setTenantId(?string $tenantId): static
+    public function setTenantId(?\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
-        if (is_null($tenantId)) {
-            throw new InvalidArgumentException('non-nullable tenantId cannot be null');
-        }
-        if ((mb_strlen($tenantId) > 31)) {
-            throw new InvalidArgumentException('invalid length for $tenantId when calling ElementInstanceFilter., must be smaller than or equal to 31.');
-        }
-        if ((mb_strlen($tenantId) < 1)) {
-            throw new InvalidArgumentException('invalid length for $tenantId when calling ElementInstanceFilter., must be bigger than or equal to 1.');
-        }
-        if ((!preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", ObjectSerializer::toString($tenantId)))) {
-            throw new InvalidArgumentException("invalid value for \$tenantId when calling ElementInstanceFilter., must conform to the pattern /^(<default>|[\\w\\.\\-]{1,31})$/.");
-        }
-
         $this->container['tenantId'] = $tenantId;
 
         return $this;
@@ -678,7 +663,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      *
      * @return string|null
      */
-    public function getElementInstanceKey(): ?string
+    public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
         return $this->container['elementInstanceKey'];
     }
@@ -690,11 +675,8 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      *
      * @return $this
      */
-    public function setElementInstanceKey(?string $elementInstanceKey): static
+    public function setElementInstanceKey(?\Camunda\Orchestration\Semantic\ElementInstanceKey $elementInstanceKey): static
     {
-        if (is_null($elementInstanceKey)) {
-            throw new InvalidArgumentException('non-nullable elementInstanceKey cannot be null');
-        }
         $this->container['elementInstanceKey'] = $elementInstanceKey;
 
         return $this;
@@ -705,7 +687,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      *
      * @return string|null
      */
-    public function getProcessInstanceKey(): ?string
+    public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
         return $this->container['processInstanceKey'];
     }
@@ -717,11 +699,8 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      *
      * @return $this
      */
-    public function setProcessInstanceKey(?string $processInstanceKey): static
+    public function setProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
-        if (is_null($processInstanceKey)) {
-            throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
-        }
         $this->container['processInstanceKey'] = $processInstanceKey;
 
         return $this;
@@ -732,7 +711,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      *
      * @return string|null
      */
-    public function getProcessDefinitionKey(): ?string
+    public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
         return $this->container['processDefinitionKey'];
     }
@@ -744,11 +723,8 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(?string $processDefinitionKey): static
+    public function setProcessDefinitionKey(?\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
-        if (is_null($processDefinitionKey)) {
-            throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');
-        }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
 
         return $this;
@@ -759,7 +735,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      *
      * @return string|null
      */
-    public function getIncidentKey(): ?string
+    public function getIncidentKey(): ?\Camunda\Orchestration\Semantic\IncidentKey
     {
         return $this->container['incidentKey'];
     }
@@ -771,11 +747,8 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      *
      * @return $this
      */
-    public function setIncidentKey(?string $incidentKey): static
+    public function setIncidentKey(?\Camunda\Orchestration\Semantic\IncidentKey $incidentKey): static
     {
-        if (is_null($incidentKey)) {
-            throw new InvalidArgumentException('non-nullable incidentKey cannot be null');
-        }
         $this->container['incidentKey'] = $incidentKey;
 
         return $this;
