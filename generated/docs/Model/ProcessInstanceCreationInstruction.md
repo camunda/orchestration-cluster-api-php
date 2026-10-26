@@ -7,5 +7,6 @@ It is never instantiated directly — use one of the concrete types.
 
 - [**\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey**](ProcessInstanceCreationInstructionByKey.md)
 - [**\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById**](ProcessInstanceCreationInstructionById.md)
+- [**\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag**](ProcessInstanceCreationInstructionByVersionTag.md)
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)

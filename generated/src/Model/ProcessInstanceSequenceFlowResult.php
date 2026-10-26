@@ -92,8 +92,8 @@ class ProcessInstanceSequenceFlowResult implements ModelInterface, ArrayAccess, 
         'sequenceFlowId' => false,
         'processInstanceKey' => false,
         'rootProcessInstanceKey' => true,
-        'processDefinitionKey' => false,
-        'processDefinitionId' => false,
+        'processDefinitionKey' => true,
+        'processDefinitionId' => true,
         'elementId' => false,
         'tenantId' => false
     ];
@@ -312,17 +312,17 @@ class ProcessInstanceSequenceFlowResult implements ModelInterface, ArrayAccess, 
         if ($this->container['rootProcessInstanceKey'] === null && !$this->isNullableSetToNull('rootProcessInstanceKey')) {
             $invalidProperties[] = "'rootProcessInstanceKey' is required";
         }
-        if ($this->container['processDefinitionKey'] === null) {
-            $invalidProperties[] = "'processDefinitionKey' can't be null";
+        if ($this->container['processDefinitionKey'] === null && !$this->isNullableSetToNull('processDefinitionKey')) {
+            $invalidProperties[] = "'processDefinitionKey' is required";
         }
-        if ($this->container['processDefinitionId'] === null) {
-            $invalidProperties[] = "'processDefinitionId' can't be null";
+        if ($this->container['processDefinitionId'] === null && !$this->isNullableSetToNull('processDefinitionId')) {
+            $invalidProperties[] = "'processDefinitionId' is required";
         }
-        if ((mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
+        if (!is_null((string) $this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
+        if (!is_null((string) $this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
         }
 
@@ -434,9 +434,9 @@ class ProcessInstanceSequenceFlowResult implements ModelInterface, ArrayAccess, 
     /**
      * Gets processDefinitionKey
      *
-     * @return string
+     * @return string|null
      */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Semantic\ProcessDefinitionKey
+    public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
         return $this->container['processDefinitionKey'];
     }
@@ -444,11 +444,11 @@ class ProcessInstanceSequenceFlowResult implements ModelInterface, ArrayAccess, 
     /**
      * Sets processDefinitionKey
      *
-     * @param string $processDefinitionKey The process definition key.
+     * @param string|null $processDefinitionKey The process definition key. This field is not present for sequence flows imported by Operate 8.1 or earlier.
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
+    public function setProcessDefinitionKey(?\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
         $this->container['processDefinitionKey'] = $processDefinitionKey;
 
@@ -458,9 +458,9 @@ class ProcessInstanceSequenceFlowResult implements ModelInterface, ArrayAccess, 
     /**
      * Gets processDefinitionId
      *
-     * @return string
+     * @return string|null
      */
-    public function getProcessDefinitionId(): \Camunda\Orchestration\Semantic\ProcessDefinitionId
+    public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
         return $this->container['processDefinitionId'];
     }
@@ -468,11 +468,11 @@ class ProcessInstanceSequenceFlowResult implements ModelInterface, ArrayAccess, 
     /**
      * Sets processDefinitionId
      *
-     * @param string $processDefinitionId The process definition id.
+     * @param string|null $processDefinitionId The process definition id. This field is not present for sequence flows imported by Operate 8.1 or earlier.
      *
      * @return $this
      */
-    public function setProcessDefinitionId(\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
+    public function setProcessDefinitionId(?\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
         $this->container['processDefinitionId'] = $processDefinitionId;
 

@@ -139,8 +139,8 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
         'jobKey' => false,
         'kind' => false,
         'listenerEventType' => false,
-        'processDefinitionId' => false,
-        'processDefinitionKey' => false,
+        'processDefinitionId' => true,
+        'processDefinitionKey' => true,
         'processInstanceKey' => false,
         'rootProcessInstanceKey' => true,
         'businessId' => true,
@@ -474,19 +474,19 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
         if ($this->container['listenerEventType'] === null) {
             $invalidProperties[] = "'listenerEventType' can't be null";
         }
-        if ($this->container['processDefinitionId'] === null) {
-            $invalidProperties[] = "'processDefinitionId' can't be null";
+        if ($this->container['processDefinitionId'] === null && !$this->isNullableSetToNull('processDefinitionId')) {
+            $invalidProperties[] = "'processDefinitionId' is required";
         }
-        if ((mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
+        if (!is_null((string) $this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
+        if (!is_null((string) $this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
         }
 
-        if ($this->container['processDefinitionKey'] === null) {
-            $invalidProperties[] = "'processDefinitionKey' can't be null";
+        if ($this->container['processDefinitionKey'] === null && !$this->isNullableSetToNull('processDefinitionKey')) {
+            $invalidProperties[] = "'processDefinitionKey' is required";
         }
         if ($this->container['processInstanceKey'] === null) {
             $invalidProperties[] = "'processInstanceKey' can't be null";
@@ -940,9 +940,9 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets processDefinitionId
      *
-     * @return string
+     * @return string|null
      */
-    public function getProcessDefinitionId(): \Camunda\Orchestration\Semantic\ProcessDefinitionId
+    public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
         return $this->container['processDefinitionId'];
     }
@@ -950,11 +950,11 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets processDefinitionId
      *
-     * @param string $processDefinitionId The process definition ID associated with the job.
+     * @param string|null $processDefinitionId The process definition ID associated with the job. This field is not present for jobs imported by Operate 8.7 and earlier.
      *
      * @return $this
      */
-    public function setProcessDefinitionId(\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
+    public function setProcessDefinitionId(?\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
         $this->container['processDefinitionId'] = $processDefinitionId;
 
@@ -964,9 +964,9 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets processDefinitionKey
      *
-     * @return string
+     * @return string|null
      */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Semantic\ProcessDefinitionKey
+    public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
         return $this->container['processDefinitionKey'];
     }
@@ -974,11 +974,11 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets processDefinitionKey
      *
-     * @param string $processDefinitionKey The process definition key associated with the job.
+     * @param string|null $processDefinitionKey The process definition key associated with the job. This field is not present for jobs imported by Operate 8.7 and earlier.
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
+    public function setProcessDefinitionKey(?\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
         $this->container['processDefinitionKey'] = $processDefinitionKey;
 

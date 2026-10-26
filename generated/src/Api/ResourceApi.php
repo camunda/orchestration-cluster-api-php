@@ -562,6 +562,12 @@ class ResourceApi
                         $request,
                         $response,
                     );
+                case 409:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
                 case 500:
                     return $this->handleResponseWithDataType(
                         '\Camunda\Orchestration\Api\Model\ProblemDetail',
@@ -613,6 +619,14 @@ class ResourceApi
                     $e->setResponseObject($data);
                     throw $e;
                 case 404:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 409:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Camunda\Orchestration\Api\Model\ProblemDetail',

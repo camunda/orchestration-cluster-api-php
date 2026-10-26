@@ -63,7 +63,7 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
         'assignee' => '\Camunda\Orchestration\Api\Model\StringFilterProperty',
         'businessId' => '\Camunda\Orchestration\Api\Model\StringFilterProperty',
         'priority' => '\Camunda\Orchestration\Api\Model\IntegerFilterProperty',
-        'elementId' => 'string',
+        'elementId' => '\Camunda\Orchestration\Semantic\ElementId',
         'name' => '\Camunda\Orchestration\Api\Model\StringFilterProperty',
         'candidateGroup' => '\Camunda\Orchestration\Api\Model\StringFilterProperty',
         'candidateUser' => '\Camunda\Orchestration\Api\Model\StringFilterProperty',
@@ -75,10 +75,10 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
         'dueDate' => '\Camunda\Orchestration\Api\Model\DateTimeFilterProperty',
         'processInstanceVariables' => '\Camunda\Orchestration\Api\Model\VariableValueFilterProperty[]',
         'localVariables' => '\Camunda\Orchestration\Api\Model\VariableValueFilterProperty[]',
-        'userTaskKey' => 'string',
+        'userTaskKey' => '\Camunda\Orchestration\Semantic\UserTaskKey',
         'processDefinitionKey' => '\Camunda\Orchestration\Api\Model\ProcessDefinitionKeyFilterProperty',
         'processInstanceKey' => '\Camunda\Orchestration\Api\Model\ProcessInstanceKeyFilterProperty',
-        'elementInstanceKey' => 'string',
+        'elementInstanceKey' => '\Camunda\Orchestration\Semantic\ElementInstanceKey',
         'tags' => 'string[]',
         'or' => '\Camunda\Orchestration\Api\Model\UserTaskFilterFields[]'
     ];
@@ -389,7 +389,16 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             $this->openAPINullablesSetToNull[] = $variableName;
         }
 
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $value = $fields[$variableName] ?? $defaultValue;
+        $semanticType = static::$openAPITypes[$variableName] ?? null;
+        if (
+            is_string($value)
+            && is_string($semanticType)
+            && is_subclass_of($semanticType, \Camunda\Orchestration\Semantic\SemanticKey::class)
+        ) {
+            $value = new $semanticType($value);
+        }
+        $this->container[$variableName] = $value;
     }
 
     /**
@@ -528,7 +537,7 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
      *
      * @return string|null
      */
-    public function getElementId(): ?string
+    public function getElementId(): ?\Camunda\Orchestration\Semantic\ElementId
     {
         return $this->container['elementId'];
     }
@@ -540,11 +549,8 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
      *
      * @return $this
      */
-    public function setElementId(?string $elementId): static
+    public function setElementId(?\Camunda\Orchestration\Semantic\ElementId $elementId): static
     {
-        if (is_null($elementId)) {
-            throw new InvalidArgumentException('non-nullable elementId cannot be null');
-        }
         $this->container['elementId'] = $elementId;
 
         return $this;
@@ -852,7 +858,7 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
      *
      * @return string|null
      */
-    public function getUserTaskKey(): ?string
+    public function getUserTaskKey(): ?\Camunda\Orchestration\Semantic\UserTaskKey
     {
         return $this->container['userTaskKey'];
     }
@@ -864,11 +870,8 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
      *
      * @return $this
      */
-    public function setUserTaskKey(?string $userTaskKey): static
+    public function setUserTaskKey(?\Camunda\Orchestration\Semantic\UserTaskKey $userTaskKey): static
     {
-        if (is_null($userTaskKey)) {
-            throw new InvalidArgumentException('non-nullable userTaskKey cannot be null');
-        }
         $this->container['userTaskKey'] = $userTaskKey;
 
         return $this;
@@ -933,7 +936,7 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
      *
      * @return string|null
      */
-    public function getElementInstanceKey(): ?string
+    public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
         return $this->container['elementInstanceKey'];
     }
@@ -945,11 +948,8 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
      *
      * @return $this
      */
-    public function setElementInstanceKey(?string $elementInstanceKey): static
+    public function setElementInstanceKey(?\Camunda\Orchestration\Semantic\ElementInstanceKey $elementInstanceKey): static
     {
-        if (is_null($elementInstanceKey)) {
-            throw new InvalidArgumentException('non-nullable elementInstanceKey cannot be null');
-        }
         $this->container['elementInstanceKey'] = $elementInstanceKey;
 
         return $this;

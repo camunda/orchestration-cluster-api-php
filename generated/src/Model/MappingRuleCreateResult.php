@@ -61,7 +61,7 @@ class MappingRuleCreateResult implements ModelInterface, ArrayAccess, JsonSerial
         'claimName' => 'string',
         'claimValue' => 'string',
         'name' => 'string',
-        'mappingRuleId' => 'string'
+        'mappingRuleId' => '\Camunda\Orchestration\Semantic\MappingRuleId'
     ];
 
     /**
@@ -262,7 +262,16 @@ class MappingRuleCreateResult implements ModelInterface, ArrayAccess, JsonSerial
             $this->openAPINullablesSetToNull[] = $variableName;
         }
 
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $value = $fields[$variableName] ?? $defaultValue;
+        $semanticType = static::$openAPITypes[$variableName] ?? null;
+        if (
+            is_string($value)
+            && is_string($semanticType)
+            && is_subclass_of($semanticType, \Camunda\Orchestration\Semantic\SemanticKey::class)
+        ) {
+            $value = new $semanticType($value);
+        }
+        $this->container[$variableName] = $value;
     }
 
     /**
@@ -284,15 +293,15 @@ class MappingRuleCreateResult implements ModelInterface, ArrayAccess, JsonSerial
         if ($this->container['mappingRuleId'] === null) {
             $invalidProperties[] = "'mappingRuleId' can't be null";
         }
-        if ((mb_strlen($this->container['mappingRuleId']) > 256)) {
+        if ((mb_strlen((string) $this->container['mappingRuleId']) > 256)) {
             $invalidProperties[] = "invalid value for 'mappingRuleId', the character length must be smaller than or equal to 256.";
         }
 
-        if ((mb_strlen($this->container['mappingRuleId']) < 1)) {
+        if ((mb_strlen((string) $this->container['mappingRuleId']) < 1)) {
             $invalidProperties[] = "invalid value for 'mappingRuleId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!preg_match("/^[a-zA-Z0-9_~@.+-]+$/", $this->container['mappingRuleId'])) {
+        if (!preg_match("/^[a-zA-Z0-9_~@.+-]+$/", (string) $this->container['mappingRuleId'])) {
             $invalidProperties[] = "invalid value for 'mappingRuleId', must be conform to the pattern /^[a-zA-Z0-9_~@.+-]+$/.";
         }
 
@@ -394,7 +403,7 @@ class MappingRuleCreateResult implements ModelInterface, ArrayAccess, JsonSerial
      *
      * @return string
      */
-    public function getMappingRuleId(): string
+    public function getMappingRuleId(): \Camunda\Orchestration\Semantic\MappingRuleId
     {
         return $this->container['mappingRuleId'];
     }
@@ -406,21 +415,8 @@ class MappingRuleCreateResult implements ModelInterface, ArrayAccess, JsonSerial
      *
      * @return $this
      */
-    public function setMappingRuleId(string $mappingRuleId): static
+    public function setMappingRuleId(\Camunda\Orchestration\Semantic\MappingRuleId $mappingRuleId): static
     {
-        if (is_null($mappingRuleId)) {
-            throw new InvalidArgumentException('non-nullable mappingRuleId cannot be null');
-        }
-        if ((mb_strlen($mappingRuleId) > 256)) {
-            throw new InvalidArgumentException('invalid length for $mappingRuleId when calling MappingRuleCreateResult., must be smaller than or equal to 256.');
-        }
-        if ((mb_strlen($mappingRuleId) < 1)) {
-            throw new InvalidArgumentException('invalid length for $mappingRuleId when calling MappingRuleCreateResult., must be bigger than or equal to 1.');
-        }
-        if ((!preg_match("/^[a-zA-Z0-9_~@.+-]+$/", ObjectSerializer::toString($mappingRuleId)))) {
-            throw new InvalidArgumentException("invalid value for \$mappingRuleId when calling MappingRuleCreateResult., must conform to the pattern /^[a-zA-Z0-9_~@.+-]+$/.");
-        }
-
         $this->container['mappingRuleId'] = $mappingRuleId;
 
         return $this;

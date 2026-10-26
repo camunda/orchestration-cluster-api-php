@@ -58,18 +58,18 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
      * @var array<string, string>
      */
     protected static array $openAPITypes = [
-        'processDefinitionKey' => '\Camunda\Orchestration\Semantic\ProcessDefinitionKey',
-        'processDefinitionVersion' => 'int',
         'variables' => 'array<string,mixed>',
-        'startInstructions' => '\Camunda\Orchestration\Api\Model\ProcessInstanceCreationStartInstruction[]',
-        'runtimeInstructions' => '\Camunda\Orchestration\Api\Model\ProcessInstanceCreationTerminateInstruction[]',
         'tenantId' => '\Camunda\Orchestration\Semantic\TenantId',
         'operationReference' => 'int',
+        'startInstructions' => '\Camunda\Orchestration\Api\Model\ProcessInstanceCreationStartInstruction[]',
+        'runtimeInstructions' => '\Camunda\Orchestration\Api\Model\ProcessInstanceCreationTerminateInstruction[]',
         'awaitCompletion' => 'bool',
-        'requestTimeout' => 'int',
         'fetchVariables' => 'string[]',
+        'requestTimeout' => 'int',
         'tags' => 'string[]',
-        'businessId' => '\Camunda\Orchestration\Semantic\BusinessId'
+        'businessId' => '\Camunda\Orchestration\Semantic\BusinessId',
+        'processDefinitionKey' => '\Camunda\Orchestration\Semantic\ProcessDefinitionKey',
+        'processDefinitionVersion' => 'int'
     ];
 
     /**
@@ -78,18 +78,18 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
      * @var array<string, string|null>
      */
     protected static array $openAPIFormats = [
-        'processDefinitionKey' => null,
-        'processDefinitionVersion' => 'int32',
         'variables' => null,
-        'startInstructions' => null,
-        'runtimeInstructions' => null,
         'tenantId' => 'TenantId',
         'operationReference' => 'int64',
+        'startInstructions' => null,
+        'runtimeInstructions' => null,
         'awaitCompletion' => null,
-        'requestTimeout' => 'int64',
         'fetchVariables' => null,
+        'requestTimeout' => 'int64',
         'tags' => 'Tag',
-        'businessId' => 'BusinessId'
+        'businessId' => 'BusinessId',
+        'processDefinitionKey' => null,
+        'processDefinitionVersion' => 'int32'
     ];
 
     /**
@@ -98,18 +98,18 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
      * @var array<string, bool>
      */
     protected static array $openAPINullables = [
-        'processDefinitionKey' => false,
-        'processDefinitionVersion' => false,
         'variables' => false,
-        'startInstructions' => false,
-        'runtimeInstructions' => false,
         'tenantId' => false,
         'operationReference' => false,
+        'startInstructions' => false,
+        'runtimeInstructions' => false,
         'awaitCompletion' => false,
-        'requestTimeout' => false,
         'fetchVariables' => false,
+        'requestTimeout' => false,
         'tags' => false,
-        'businessId' => false
+        'businessId' => false,
+        'processDefinitionKey' => false,
+        'processDefinitionVersion' => false
     ];
 
     /**
@@ -188,18 +188,18 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
      * @var array<string, string>
      */
     protected static array $attributeMap = [
-        'processDefinitionKey' => 'processDefinitionKey',
-        'processDefinitionVersion' => 'processDefinitionVersion',
         'variables' => 'variables',
-        'startInstructions' => 'startInstructions',
-        'runtimeInstructions' => 'runtimeInstructions',
         'tenantId' => 'tenantId',
         'operationReference' => 'operationReference',
+        'startInstructions' => 'startInstructions',
+        'runtimeInstructions' => 'runtimeInstructions',
         'awaitCompletion' => 'awaitCompletion',
-        'requestTimeout' => 'requestTimeout',
         'fetchVariables' => 'fetchVariables',
+        'requestTimeout' => 'requestTimeout',
         'tags' => 'tags',
-        'businessId' => 'businessId'
+        'businessId' => 'businessId',
+        'processDefinitionKey' => 'processDefinitionKey',
+        'processDefinitionVersion' => 'processDefinitionVersion'
     ];
 
     /**
@@ -208,18 +208,18 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
      * @var array<string, string>
      */
     protected static array $setters = [
-        'processDefinitionKey' => 'setProcessDefinitionKey',
-        'processDefinitionVersion' => 'setProcessDefinitionVersion',
         'variables' => 'setVariables',
-        'startInstructions' => 'setStartInstructions',
-        'runtimeInstructions' => 'setRuntimeInstructions',
         'tenantId' => 'setTenantId',
         'operationReference' => 'setOperationReference',
+        'startInstructions' => 'setStartInstructions',
+        'runtimeInstructions' => 'setRuntimeInstructions',
         'awaitCompletion' => 'setAwaitCompletion',
-        'requestTimeout' => 'setRequestTimeout',
         'fetchVariables' => 'setFetchVariables',
+        'requestTimeout' => 'setRequestTimeout',
         'tags' => 'setTags',
-        'businessId' => 'setBusinessId'
+        'businessId' => 'setBusinessId',
+        'processDefinitionKey' => 'setProcessDefinitionKey',
+        'processDefinitionVersion' => 'setProcessDefinitionVersion'
     ];
 
     /**
@@ -228,18 +228,18 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
      * @var array<string, string>
      */
     protected static array $getters = [
-        'processDefinitionKey' => 'getProcessDefinitionKey',
-        'processDefinitionVersion' => 'getProcessDefinitionVersion',
         'variables' => 'getVariables',
-        'startInstructions' => 'getStartInstructions',
-        'runtimeInstructions' => 'getRuntimeInstructions',
         'tenantId' => 'getTenantId',
         'operationReference' => 'getOperationReference',
+        'startInstructions' => 'getStartInstructions',
+        'runtimeInstructions' => 'getRuntimeInstructions',
         'awaitCompletion' => 'getAwaitCompletion',
-        'requestTimeout' => 'getRequestTimeout',
         'fetchVariables' => 'getFetchVariables',
+        'requestTimeout' => 'getRequestTimeout',
         'tags' => 'getTags',
-        'businessId' => 'getBusinessId'
+        'businessId' => 'getBusinessId',
+        'processDefinitionKey' => 'getProcessDefinitionKey',
+        'processDefinitionVersion' => 'getProcessDefinitionVersion'
     ];
 
     /**
@@ -289,18 +289,18 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
      */
     public function __construct(?array $data = null)
     {
-        $this->setIfExists('processDefinitionKey', $data ?? [], null);
-        $this->setIfExists('processDefinitionVersion', $data ?? [], -1);
         $this->setIfExists('variables', $data ?? [], null);
-        $this->setIfExists('startInstructions', $data ?? [], null);
-        $this->setIfExists('runtimeInstructions', $data ?? [], null);
         $this->setIfExists('tenantId', $data ?? [], null);
         $this->setIfExists('operationReference', $data ?? [], null);
+        $this->setIfExists('startInstructions', $data ?? [], null);
+        $this->setIfExists('runtimeInstructions', $data ?? [], null);
         $this->setIfExists('awaitCompletion', $data ?? [], false);
-        $this->setIfExists('requestTimeout', $data ?? [], 0);
         $this->setIfExists('fetchVariables', $data ?? [], null);
+        $this->setIfExists('requestTimeout', $data ?? [], 0);
         $this->setIfExists('tags', $data ?? [], null);
         $this->setIfExists('businessId', $data ?? [], null);
+        $this->setIfExists('processDefinitionKey', $data ?? [], null);
+        $this->setIfExists('processDefinitionVersion', $data ?? [], -1);
     }
 
     /**
@@ -337,9 +337,6 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     {
         $invalidProperties = [];
 
-        if ($this->container['processDefinitionKey'] === null) {
-            $invalidProperties[] = "'processDefinitionKey' can't be null";
-        }
         if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be smaller than or equal to 31.";
         }
@@ -368,6 +365,9 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             $invalidProperties[] = "invalid value for 'businessId', the character length must be bigger than or equal to 1.";
         }
 
+        if ($this->container['processDefinitionKey'] === null) {
+            $invalidProperties[] = "'processDefinitionKey' can't be null";
+        }
         return $invalidProperties;
     }
 
@@ -379,57 +379,6 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
         return count($this->listInvalidProperties()) === 0;
     }
 
-
-    /**
-     * Gets processDefinitionKey
-     *
-     * @return string
-     */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Semantic\ProcessDefinitionKey
-    {
-        return $this->container['processDefinitionKey'];
-    }
-
-    /**
-     * Sets processDefinitionKey
-     *
-     * @param string $processDefinitionKey The unique key identifying the process definition, for example, returned for a process in the deploy resources endpoint.
-     *
-     * @return $this
-     */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
-    {
-        $this->container['processDefinitionKey'] = $processDefinitionKey;
-
-        return $this;
-    }
-
-    /**
-     * Gets processDefinitionVersion
-     *
-     * @return int|null
-     */
-    public function getProcessDefinitionVersion(): ?int
-    {
-        return $this->container['processDefinitionVersion'];
-    }
-
-    /**
-     * Sets processDefinitionVersion
-     *
-     * @param int|null $processDefinitionVersion As the version is already identified by the `processDefinitionKey`, the value of this field is ignored. It's here for backwards-compatibility only as previous releases accepted it in request bodies.
-     *
-     * @return $this
-     */
-    public function setProcessDefinitionVersion(?int $processDefinitionVersion): static
-    {
-        if (is_null($processDefinitionVersion)) {
-            throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
-        }
-        $this->container['processDefinitionVersion'] = $processDefinitionVersion;
-
-        return $this;
-    }
 
     /**
      * Gets variables
@@ -444,7 +393,7 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     /**
      * Sets variables
      *
-     * @param array<string,mixed>|null $variables Set of variables as JSON object to instantiate in the root variable scope of the process instance. Can include nested complex objects.
+     * @param array<string,mixed>|null $variables JSON object that will instantiate the variables for the root variable scope of the process instance.
      *
      * @return $this
      */
@@ -454,60 +403,6 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable variables cannot be null');
         }
         $this->container['variables'] = $variables;
-
-        return $this;
-    }
-
-    /**
-     * Gets startInstructions
-     *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceCreationStartInstruction[]|null
-     */
-    public function getStartInstructions(): ?array
-    {
-        return $this->container['startInstructions'];
-    }
-
-    /**
-     * Sets startInstructions
-     *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceCreationStartInstruction[]|null $startInstructions List of start instructions. By default, the process instance will start at the start event. If provided, the process instance will apply start instructions after it has been created.
-     *
-     * @return $this
-     */
-    public function setStartInstructions(?array $startInstructions): static
-    {
-        if (is_null($startInstructions)) {
-            throw new InvalidArgumentException('non-nullable startInstructions cannot be null');
-        }
-        $this->container['startInstructions'] = $startInstructions;
-
-        return $this;
-    }
-
-    /**
-     * Gets runtimeInstructions
-     *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceCreationTerminateInstruction[]|null
-     */
-    public function getRuntimeInstructions(): ?array
-    {
-        return $this->container['runtimeInstructions'];
-    }
-
-    /**
-     * Sets runtimeInstructions
-     *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceCreationTerminateInstruction[]|null $runtimeInstructions Runtime instructions (alpha). List of instructions that affect the runtime behavior of the process instance. Refer to specific instruction types for more details.  This parameter is an alpha feature and may be subject to change in future releases.
-     *
-     * @return $this
-     */
-    public function setRuntimeInstructions(?array $runtimeInstructions): static
-    {
-        if (is_null($runtimeInstructions)) {
-            throw new InvalidArgumentException('non-nullable runtimeInstructions cannot be null');
-        }
-        $this->container['runtimeInstructions'] = $runtimeInstructions;
 
         return $this;
     }
@@ -568,6 +463,60 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     }
 
     /**
+     * Gets startInstructions
+     *
+     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceCreationStartInstruction[]|null
+     */
+    public function getStartInstructions(): ?array
+    {
+        return $this->container['startInstructions'];
+    }
+
+    /**
+     * Sets startInstructions
+     *
+     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceCreationStartInstruction[]|null $startInstructions List of start instructions. By default, the process instance will start at the start event. If provided, the process instance will apply start instructions after it has been created.
+     *
+     * @return $this
+     */
+    public function setStartInstructions(?array $startInstructions): static
+    {
+        if (is_null($startInstructions)) {
+            throw new InvalidArgumentException('non-nullable startInstructions cannot be null');
+        }
+        $this->container['startInstructions'] = $startInstructions;
+
+        return $this;
+    }
+
+    /**
+     * Gets runtimeInstructions
+     *
+     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceCreationTerminateInstruction[]|null
+     */
+    public function getRuntimeInstructions(): ?array
+    {
+        return $this->container['runtimeInstructions'];
+    }
+
+    /**
+     * Sets runtimeInstructions
+     *
+     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceCreationTerminateInstruction[]|null $runtimeInstructions Runtime instructions (alpha). List of instructions that affect the runtime behavior of the process instance. Refer to specific instruction types for more details.  This parameter is an alpha feature and may be subject to change in future releases.
+     *
+     * @return $this
+     */
+    public function setRuntimeInstructions(?array $runtimeInstructions): static
+    {
+        if (is_null($runtimeInstructions)) {
+            throw new InvalidArgumentException('non-nullable runtimeInstructions cannot be null');
+        }
+        $this->container['runtimeInstructions'] = $runtimeInstructions;
+
+        return $this;
+    }
+
+    /**
      * Gets awaitCompletion
      *
      * @return bool|null
@@ -595,33 +544,6 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     }
 
     /**
-     * Gets requestTimeout
-     *
-     * @return int|null
-     */
-    public function getRequestTimeout(): ?int
-    {
-        return $this->container['requestTimeout'];
-    }
-
-    /**
-     * Sets requestTimeout
-     *
-     * @param int|null $requestTimeout Timeout (in ms) the request waits for the process to complete. By default or when set to 0, the generic request timeout configured in the cluster is applied.
-     *
-     * @return $this
-     */
-    public function setRequestTimeout(?int $requestTimeout): static
-    {
-        if (is_null($requestTimeout)) {
-            throw new InvalidArgumentException('non-nullable requestTimeout cannot be null');
-        }
-        $this->container['requestTimeout'] = $requestTimeout;
-
-        return $this;
-    }
-
-    /**
      * Gets fetchVariables
      *
      * @return string[]|null
@@ -644,6 +566,33 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable fetchVariables cannot be null');
         }
         $this->container['fetchVariables'] = $fetchVariables;
+
+        return $this;
+    }
+
+    /**
+     * Gets requestTimeout
+     *
+     * @return int|null
+     */
+    public function getRequestTimeout(): ?int
+    {
+        return $this->container['requestTimeout'];
+    }
+
+    /**
+     * Sets requestTimeout
+     *
+     * @param int|null $requestTimeout Timeout (in ms) the request waits for the process to complete. By default or when set to 0, the generic request timeout configured in the cluster is applied.
+     *
+     * @return $this
+     */
+    public function setRequestTimeout(?int $requestTimeout): static
+    {
+        if (is_null($requestTimeout)) {
+            throw new InvalidArgumentException('non-nullable requestTimeout cannot be null');
+        }
+        $this->container['requestTimeout'] = $requestTimeout;
 
         return $this;
     }
@@ -698,6 +647,57 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
         $this->container['businessId'] = $businessId;
+
+        return $this;
+    }
+
+    /**
+     * Gets processDefinitionKey
+     *
+     * @return string
+     */
+    public function getProcessDefinitionKey(): \Camunda\Orchestration\Semantic\ProcessDefinitionKey
+    {
+        return $this->container['processDefinitionKey'];
+    }
+
+    /**
+     * Sets processDefinitionKey
+     *
+     * @param string $processDefinitionKey The unique key identifying the process definition, for example, returned for a process in the deploy resources endpoint.
+     *
+     * @return $this
+     */
+    public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
+    {
+        $this->container['processDefinitionKey'] = $processDefinitionKey;
+
+        return $this;
+    }
+
+    /**
+     * Gets processDefinitionVersion
+     *
+     * @return int|null
+     */
+    public function getProcessDefinitionVersion(): ?int
+    {
+        return $this->container['processDefinitionVersion'];
+    }
+
+    /**
+     * Sets processDefinitionVersion
+     *
+     * @param int|null $processDefinitionVersion As the version is already identified by the `processDefinitionKey`, the value of this field is ignored. It's here for backwards-compatibility only as previous releases accepted it in request bodies.
+     *
+     * @return $this
+     */
+    public function setProcessDefinitionVersion(?int $processDefinitionVersion): static
+    {
+        if (is_null($processDefinitionVersion)) {
+            throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
+        }
+        $this->container['processDefinitionVersion'] = $processDefinitionVersion;
 
         return $this;
     }

@@ -317,7 +317,7 @@ class TenantCreateRequest implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Sets tenantId
      *
-     * @param string $tenantId The unique ID for the tenant. Must be 31 characters or less and match `^[\\w.-]{1,31}$` (word characters, `.`, `-`). The literal `<default>` is also accepted as the default-tenant alias.
+     * @param string $tenantId The unique ID for the tenant. Must be 31 characters or less and match `` ^[\\w.-]{1,31}$ `` (word characters, `.`, `-`). The literal `<default>` is also accepted as the default-tenant alias.
      *
      * @return $this
      */

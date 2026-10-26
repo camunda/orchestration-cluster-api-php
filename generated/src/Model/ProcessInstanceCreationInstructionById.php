@@ -58,8 +58,6 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
      * @var array<string, string>
      */
     protected static array $openAPITypes = [
-        'processDefinitionId' => '\Camunda\Orchestration\Semantic\ProcessDefinitionId',
-        'processDefinitionVersion' => 'int',
         'variables' => 'array<string,mixed>',
         'tenantId' => '\Camunda\Orchestration\Semantic\TenantId',
         'operationReference' => 'int',
@@ -69,7 +67,9 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
         'fetchVariables' => 'string[]',
         'requestTimeout' => 'int',
         'tags' => 'string[]',
-        'businessId' => '\Camunda\Orchestration\Semantic\BusinessId'
+        'businessId' => '\Camunda\Orchestration\Semantic\BusinessId',
+        'processDefinitionId' => '\Camunda\Orchestration\Semantic\ProcessDefinitionId',
+        'processDefinitionVersion' => 'int'
     ];
 
     /**
@@ -78,8 +78,6 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
      * @var array<string, string|null>
      */
     protected static array $openAPIFormats = [
-        'processDefinitionId' => 'ProcessDefinitionId',
-        'processDefinitionVersion' => 'int32',
         'variables' => null,
         'tenantId' => 'TenantId',
         'operationReference' => 'int64',
@@ -89,7 +87,9 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
         'fetchVariables' => null,
         'requestTimeout' => 'int64',
         'tags' => 'Tag',
-        'businessId' => 'BusinessId'
+        'businessId' => 'BusinessId',
+        'processDefinitionId' => 'ProcessDefinitionId',
+        'processDefinitionVersion' => 'int32'
     ];
 
     /**
@@ -98,8 +98,6 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
      * @var array<string, bool>
      */
     protected static array $openAPINullables = [
-        'processDefinitionId' => false,
-        'processDefinitionVersion' => false,
         'variables' => false,
         'tenantId' => false,
         'operationReference' => false,
@@ -109,7 +107,9 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
         'fetchVariables' => false,
         'requestTimeout' => false,
         'tags' => false,
-        'businessId' => false
+        'businessId' => false,
+        'processDefinitionId' => false,
+        'processDefinitionVersion' => false
     ];
 
     /**
@@ -188,8 +188,6 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
      * @var array<string, string>
      */
     protected static array $attributeMap = [
-        'processDefinitionId' => 'processDefinitionId',
-        'processDefinitionVersion' => 'processDefinitionVersion',
         'variables' => 'variables',
         'tenantId' => 'tenantId',
         'operationReference' => 'operationReference',
@@ -199,7 +197,9 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
         'fetchVariables' => 'fetchVariables',
         'requestTimeout' => 'requestTimeout',
         'tags' => 'tags',
-        'businessId' => 'businessId'
+        'businessId' => 'businessId',
+        'processDefinitionId' => 'processDefinitionId',
+        'processDefinitionVersion' => 'processDefinitionVersion'
     ];
 
     /**
@@ -208,8 +208,6 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
      * @var array<string, string>
      */
     protected static array $setters = [
-        'processDefinitionId' => 'setProcessDefinitionId',
-        'processDefinitionVersion' => 'setProcessDefinitionVersion',
         'variables' => 'setVariables',
         'tenantId' => 'setTenantId',
         'operationReference' => 'setOperationReference',
@@ -219,7 +217,9 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
         'fetchVariables' => 'setFetchVariables',
         'requestTimeout' => 'setRequestTimeout',
         'tags' => 'setTags',
-        'businessId' => 'setBusinessId'
+        'businessId' => 'setBusinessId',
+        'processDefinitionId' => 'setProcessDefinitionId',
+        'processDefinitionVersion' => 'setProcessDefinitionVersion'
     ];
 
     /**
@@ -228,8 +228,6 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
      * @var array<string, string>
      */
     protected static array $getters = [
-        'processDefinitionId' => 'getProcessDefinitionId',
-        'processDefinitionVersion' => 'getProcessDefinitionVersion',
         'variables' => 'getVariables',
         'tenantId' => 'getTenantId',
         'operationReference' => 'getOperationReference',
@@ -239,7 +237,9 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
         'fetchVariables' => 'getFetchVariables',
         'requestTimeout' => 'getRequestTimeout',
         'tags' => 'getTags',
-        'businessId' => 'getBusinessId'
+        'businessId' => 'getBusinessId',
+        'processDefinitionId' => 'getProcessDefinitionId',
+        'processDefinitionVersion' => 'getProcessDefinitionVersion'
     ];
 
     /**
@@ -289,8 +289,6 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
      */
     public function __construct(?array $data = null)
     {
-        $this->setIfExists('processDefinitionId', $data ?? [], null);
-        $this->setIfExists('processDefinitionVersion', $data ?? [], -1);
         $this->setIfExists('variables', $data ?? [], null);
         $this->setIfExists('tenantId', $data ?? [], null);
         $this->setIfExists('operationReference', $data ?? [], null);
@@ -301,6 +299,8 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
         $this->setIfExists('requestTimeout', $data ?? [], 0);
         $this->setIfExists('tags', $data ?? [], null);
         $this->setIfExists('businessId', $data ?? [], null);
+        $this->setIfExists('processDefinitionId', $data ?? [], null);
+        $this->setIfExists('processDefinitionVersion', $data ?? [], -1);
     }
 
     /**
@@ -337,17 +337,6 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
     {
         $invalidProperties = [];
 
-        if ($this->container['processDefinitionId'] === null) {
-            $invalidProperties[] = "'processDefinitionId' can't be null";
-        }
-        if ((mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
-            $invalidProperties[] = "invalid value for 'processDefinitionId', the character length must be bigger than or equal to 1.";
-        }
-
-        if (!preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
-            $invalidProperties[] = "invalid value for 'processDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
-        }
-
         if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be smaller than or equal to 31.";
         }
@@ -376,6 +365,17 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
             $invalidProperties[] = "invalid value for 'businessId', the character length must be bigger than or equal to 1.";
         }
 
+        if ($this->container['processDefinitionId'] === null) {
+            $invalidProperties[] = "'processDefinitionId' can't be null";
+        }
+        if ((mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
+            $invalidProperties[] = "invalid value for 'processDefinitionId', the character length must be bigger than or equal to 1.";
+        }
+
+        if (!preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
+            $invalidProperties[] = "invalid value for 'processDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
+        }
+
         return $invalidProperties;
     }
 
@@ -387,57 +387,6 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
         return count($this->listInvalidProperties()) === 0;
     }
 
-
-    /**
-     * Gets processDefinitionId
-     *
-     * @return string
-     */
-    public function getProcessDefinitionId(): \Camunda\Orchestration\Semantic\ProcessDefinitionId
-    {
-        return $this->container['processDefinitionId'];
-    }
-
-    /**
-     * Sets processDefinitionId
-     *
-     * @param string $processDefinitionId The BPMN process id of the process definition to start an instance of.
-     *
-     * @return $this
-     */
-    public function setProcessDefinitionId(\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
-    {
-        $this->container['processDefinitionId'] = $processDefinitionId;
-
-        return $this;
-    }
-
-    /**
-     * Gets processDefinitionVersion
-     *
-     * @return int|null
-     */
-    public function getProcessDefinitionVersion(): ?int
-    {
-        return $this->container['processDefinitionVersion'];
-    }
-
-    /**
-     * Sets processDefinitionVersion
-     *
-     * @param int|null $processDefinitionVersion The version of the process. If omitted, the latest active version is used.
-     *
-     * @return $this
-     */
-    public function setProcessDefinitionVersion(?int $processDefinitionVersion): static
-    {
-        if (is_null($processDefinitionVersion)) {
-            throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
-        }
-        $this->container['processDefinitionVersion'] = $processDefinitionVersion;
-
-        return $this;
-    }
 
     /**
      * Gets variables
@@ -706,6 +655,57 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
         $this->container['businessId'] = $businessId;
+
+        return $this;
+    }
+
+    /**
+     * Gets processDefinitionId
+     *
+     * @return string
+     */
+    public function getProcessDefinitionId(): \Camunda\Orchestration\Semantic\ProcessDefinitionId
+    {
+        return $this->container['processDefinitionId'];
+    }
+
+    /**
+     * Sets processDefinitionId
+     *
+     * @param string $processDefinitionId The BPMN process id of the process definition to start an instance of.
+     *
+     * @return $this
+     */
+    public function setProcessDefinitionId(\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
+    {
+        $this->container['processDefinitionId'] = $processDefinitionId;
+
+        return $this;
+    }
+
+    /**
+     * Gets processDefinitionVersion
+     *
+     * @return int|null
+     */
+    public function getProcessDefinitionVersion(): ?int
+    {
+        return $this->container['processDefinitionVersion'];
+    }
+
+    /**
+     * Sets processDefinitionVersion
+     *
+     * @param int|null $processDefinitionVersion The version of the process. If omitted, the latest active version is used.
+     *
+     * @return $this
+     */
+    public function setProcessDefinitionVersion(?int $processDefinitionVersion): static
+    {
+        if (is_null($processDefinitionVersion)) {
+            throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
+        }
+        $this->container['processDefinitionVersion'] = $processDefinitionVersion;
 
         return $this;
     }

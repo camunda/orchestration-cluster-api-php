@@ -262,8 +262,8 @@ class OffsetPagination implements ModelInterface, ArrayAccess, JsonSerializable
             $invalidProperties[] = "invalid value for 'from', must be bigger than or equal to 0.";
         }
 
-        if (!is_null($this->container['limit']) && ($this->container['limit'] < 1)) {
-            $invalidProperties[] = "invalid value for 'limit', must be bigger than or equal to 1.";
+        if (!is_null($this->container['limit']) && ($this->container['limit'] < 0)) {
+            $invalidProperties[] = "invalid value for 'limit', must be bigger than or equal to 0.";
         }
 
         return $invalidProperties;
@@ -331,8 +331,8 @@ class OffsetPagination implements ModelInterface, ArrayAccess, JsonSerializable
         if (is_null($limit)) {
             throw new InvalidArgumentException('non-nullable limit cannot be null');
         }
-        if (($limit < 1)) {
-            throw new InvalidArgumentException('invalid value for $limit when calling OffsetPagination., must be bigger than or equal to 1.');
+        if (($limit < 0)) {
+            throw new InvalidArgumentException('invalid value for $limit when calling OffsetPagination., must be bigger than or equal to 0.');
         }
 
         $this->container['limit'] = $limit;

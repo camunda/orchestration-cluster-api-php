@@ -43,8 +43,14 @@ return static function (array $ctx): void {
     // schema name -> [property => SemanticKeyName]
     $map = [];
     foreach ($schemas as $schemaName => $schema) {
-        $props = $schema['properties'] ?? null;
-        if (!is_array($props)) {
+        if (!is_array($schema)) {
+            continue;
+        }
+        // Collect the schema's own properties *and* those it inherits through
+        // `allOf` `$ref`s to parent schemas (e.g. the process-creation variants
+        // inherit `tenantId`/`businessId` from `ProcessInstanceCreationInstructionBase`).
+        $props = resolve_schema_properties($schema, $schemas);
+        if ($props === []) {
             continue;
         }
         foreach ($props as $propName => $propSchema) {
@@ -127,6 +133,55 @@ return static function (array $ctx): void {
 
     fwrite(STDOUT, "  [retype] retyped $retyped properties across $modelsTouched models\n");
 };
+
+/**
+ * Collect a schema's effective properties, merging in the properties of every
+ * `allOf`-`$ref`'d parent schema recursively. The schema's own (more specific)
+ * properties take precedence over inherited ones.
+ *
+ * This is what lets inherited semantic identifiers survive: after the upstream
+ * spec moved the shared process-creation fields into
+ * `ProcessInstanceCreationInstructionBase`, the `ById`/`ByKey`/`ByVersionTag`
+ * variants carry `tenantId`/`businessId` only through `allOf: [{$ref: Base}]`.
+ *
+ * Property-level `allOf` wrappers (the single-`$ref` semantic-key markers) are
+ * left intact in the returned property schemas; only *schema*-level `allOf`
+ * composition is flattened here.
+ *
+ * @param array<string, mixed> $schema
+ * @param array<string, mixed> $schemas  schema name -> schema
+ * @param array<string, bool>  $seen     visited parents, guarding against cycles
+ * @return array<string, mixed> property name -> property schema
+ */
+function resolve_schema_properties(array $schema, array $schemas, array $seen = []): array
+{
+    $inherited = [];
+
+    if (isset($schema['allOf']) && is_array($schema['allOf'])) {
+        foreach ($schema['allOf'] as $frag) {
+            if (!is_array($frag)) {
+                continue;
+            }
+            if (isset($frag['$ref']) && is_string($frag['$ref'])) {
+                $parent = basename_ref($frag['$ref']);
+                if (isset($seen[$parent]) || !isset($schemas[$parent]) || !is_array($schemas[$parent])) {
+                    continue;
+                }
+                $seen[$parent] = true;
+                $inherited = array_merge($inherited, resolve_schema_properties($schemas[$parent], $schemas, $seen));
+            } elseif (is_array($frag['properties'] ?? null)) {
+                // Inline object fragment contributing its own properties (and, in
+                // principle, further nested composition).
+                $inherited = array_merge($inherited, resolve_schema_properties($frag, $schemas, $seen));
+            }
+        }
+    }
+
+    $own = is_array($schema['properties'] ?? null) ? $schema['properties'] : [];
+
+    // The schema's own properties win over anything inherited.
+    return array_merge($inherited, $own);
+}
 
 /**
  * Resolve a property schema to a single referenced component name, or null.
