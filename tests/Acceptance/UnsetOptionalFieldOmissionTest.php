@@ -27,9 +27,9 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'overrides' => ['tenant-a' => new RestoreRequest(['backupIds' => [55]])],
         ]);
 
-        self::assertSame(
-            '{"overrides":{"tenant-a":{"backupIds":[55]}}}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            ['overrides' => ['tenant-a' => ['backupIds' => [55]]]],
+            $request,
         );
     }
 
@@ -39,9 +39,9 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'processDefinitionKey' => '2251799813685249',
         ]);
 
-        self::assertSame(
-            '{"processDefinitionKey":"2251799813685249"}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            ['processDefinitionKey' => '2251799813685249'],
+            $request,
         );
     }
 
@@ -55,10 +55,14 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'requestTimeout' => 0,
         ]);
 
-        self::assertSame(
-            '{"processDefinitionKey":"2251799813685249","processDefinitionVersion":-1,'
-                . '"awaitCompletion":false,"requestTimeout":0}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            [
+                'processDefinitionKey' => '2251799813685249',
+                'processDefinitionVersion' => -1,
+                'awaitCompletion' => false,
+                'requestTimeout' => 0,
+            ],
+            $request,
         );
     }
 
@@ -69,9 +73,9 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'overrides' => ['tenant-a' => new RestoreRequest(['backupIds' => [55]])],
         ]);
 
-        self::assertSame(
-            '{"from":null,"overrides":{"tenant-a":{"backupIds":[55]}}}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            ['from' => null, 'overrides' => ['tenant-a' => ['backupIds' => [55]]]],
+            $request,
         );
     }
 
@@ -82,9 +86,13 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             ->setAwaitCompletion(true)
             ->setRequestTimeout(5_000);
 
-        self::assertSame(
-            '{"processDefinitionKey":"2251799813685249","awaitCompletion":true,"requestTimeout":5000}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            [
+                'processDefinitionKey' => '2251799813685249',
+                'awaitCompletion' => true,
+                'requestTimeout' => 5000,
+            ],
+            $request,
         );
     }
 
@@ -99,9 +107,9 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
         // Assigning null through a setter mirrors ArrayAccess semantics: the field
         // becomes unset again and is omitted (explicit constructor null stays explicit).
         $request->setFrom(null);
-        self::assertSame(
-            '{"overrides":{"tenant-a":{"backupIds":[55]}}}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            ['overrides' => ['tenant-a' => ['backupIds' => [55]]]],
+            $request,
         );
     }
 
@@ -111,9 +119,12 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
         $request['processDefinitionKey'] = new ProcessDefinitionKey('2251799813685249');
         $request['requestTimeout'] = 5_000;
 
-        self::assertSame(
-            '{"processDefinitionKey":"2251799813685249","requestTimeout":5000}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            [
+                'processDefinitionKey' => '2251799813685249',
+                'requestTimeout' => 5000,
+            ],
+            $request,
         );
 
         unset($request['requestTimeout']);
@@ -133,9 +144,9 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'overrides' => ['tenant-a' => new RestoreRequest(['backupIds' => [56]])],
         ]);
 
-        self::assertSame(
-            '{"backupIds":[55],"overrides":{"tenant-a":{"backupIds":[56]}}}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            ['backupIds' => [55], 'overrides' => ['tenant-a' => ['backupIds' => [56]]]],
+            $request,
         );
     }
 
@@ -144,5 +155,22 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
         $json = json_encode(ObjectSerializer::sanitizeForSerialization($model));
         self::assertIsString($json);
         return $json;
+    }
+
+    /**
+     * Assert the model serializes to exactly the given body. JSON object key order is
+     * not part of the API contract (it tracks the generated property order, which the
+     * upstream spec may reshuffle — e.g. when shared fields move onto an allOf parent),
+     * so compare the decoded structure order-independently while still enforcing that
+     * no field is added or omitted.
+     *
+     * @param array<string, mixed> $expected
+     */
+    private function assertSerializesTo(array $expected, object $model): void
+    {
+        $decoded = json_decode($this->toJson($model), true);
+        self::assertIsArray($decoded);
+        self::assertEqualsCanonicalizing(array_keys($expected), array_keys($decoded));
+        self::assertEquals($expected, $decoded);
     }
 }
