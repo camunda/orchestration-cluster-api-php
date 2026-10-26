@@ -448,11 +448,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
         if ($this->container['businessId'] === null && !$this->isNullableSetToNull('businessId')) {
             $invalidProperties[] = "'businessId' is required";
         }
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be smaller than or equal to 256.";
         }
 
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be bigger than or equal to 1.";
         }
 

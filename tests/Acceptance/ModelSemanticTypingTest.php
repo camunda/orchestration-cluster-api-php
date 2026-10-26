@@ -6,6 +6,7 @@ namespace Camunda\Orchestration\Tests\Acceptance;
 
 use Camunda\Orchestration\Api\Model\ElementInstanceResult;
 use Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById;
+use Camunda\Orchestration\Api\Model\ProcessInstanceSequenceFlowResult;
 use Camunda\Orchestration\Api\Model\VariableResult;
 use Camunda\Orchestration\Api\ObjectSerializer;
 use Camunda\Orchestration\Semantic\ProcessDefinitionId;
@@ -104,5 +105,40 @@ final class ModelSemanticTypingTest extends TestCase
 
         $result->setRootProcessInstanceKey(null);
         self::assertTrue($result->isNullableSetToNull('rootProcessInstanceKey'));
+    }
+
+    /**
+     * Regression: hook 0300's blunt `(string)` cast on validation operands also rewrote the
+     * generator's `is_null($this->container['prop'])` guard to `is_null((string) ...)`. Because
+     * `(string) null === ''`, that guard is always false, so the length/pattern check ran on
+     * omitted optional identifiers and wrongly rejected them (e.g. "character length must be
+     * bigger than or equal to 1"). An instruction carrying only its required identifier, with
+     * every optional retyped identifier omitted, must validate cleanly.
+     */
+    public function testOmittedOptionalRetypedIdentifiersPassValidation(): void
+    {
+        $instruction = new ProcessInstanceCreationInstructionById([
+            'processDefinitionId' => 'order-process',
+        ]);
+
+        self::assertSame([], $instruction->listInvalidProperties());
+        self::assertTrue($instruction->valid());
+    }
+
+    /**
+     * The same class of bug affected the newly-nullable retyped definition fields on the
+     * legacy-result models. Explicitly nulling such a field must not resurrect the spurious
+     * minimum-length validation error that the broken `is_null((string) ...)` guard let through.
+     */
+    public function testExplicitNullOnNewlyNullableDefinitionFieldIsNotRejected(): void
+    {
+        $result = new ProcessInstanceSequenceFlowResult();
+        $result->setProcessDefinitionId(null);
+
+        self::assertTrue($result->isNullableSetToNull('processDefinitionId'));
+        self::assertNotContains(
+            "invalid value for 'processDefinitionId', the character length must be bigger than or equal to 1.",
+            $result->listInvalidProperties(),
+        );
     }
 }

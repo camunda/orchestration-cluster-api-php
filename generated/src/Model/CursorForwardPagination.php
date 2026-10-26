@@ -267,7 +267,7 @@ class CursorForwardPagination implements ModelInterface, ArrayAccess, JsonSerial
     {
         $invalidProperties = [];
 
-        if (!is_null((string) $this->container['after']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['after'])) {
+        if (!is_null($this->container['after']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['after'])) {
             $invalidProperties[] = "invalid value for 'after', must be conform to the pattern /^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/.";
         }
 

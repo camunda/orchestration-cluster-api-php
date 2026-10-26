@@ -291,14 +291,14 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
         if ($this->container['startCursor'] === null && !$this->isNullableSetToNull('startCursor')) {
             $invalidProperties[] = "'startCursor' is required";
         }
-        if (!is_null((string) $this->container['startCursor']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['startCursor'])) {
+        if (!is_null($this->container['startCursor']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['startCursor'])) {
             $invalidProperties[] = "invalid value for 'startCursor', must be conform to the pattern /^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/.";
         }
 
         if ($this->container['endCursor'] === null && !$this->isNullableSetToNull('endCursor')) {
             $invalidProperties[] = "'endCursor' is required";
         }
-        if (!is_null((string) $this->container['endCursor']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['endCursor'])) {
+        if (!is_null($this->container['endCursor']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['endCursor'])) {
             $invalidProperties[] = "invalid value for 'endCursor', must be conform to the pattern /^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/.";
         }
 

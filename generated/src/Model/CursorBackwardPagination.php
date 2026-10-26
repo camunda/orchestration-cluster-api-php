@@ -267,7 +267,7 @@ class CursorBackwardPagination implements ModelInterface, ArrayAccess, JsonSeria
     {
         $invalidProperties = [];
 
-        if (!is_null((string) $this->container['before']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['before'])) {
+        if (!is_null($this->container['before']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['before'])) {
             $invalidProperties[] = "invalid value for 'before', must be conform to the pattern /^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/.";
         }
 

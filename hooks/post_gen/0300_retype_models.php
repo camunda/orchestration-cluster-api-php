@@ -144,6 +144,20 @@ return static function (array $ctx): void {
             $castRepl = "(string) \$this->container['" . $prop . "'])";
             $src = str_replace($castNeedle, $castRepl, $src);
 
+            // The blunt cast above also rewrites the `is_null(...)` guard that the
+            // generator emits ahead of every length/pattern check on a nullable
+            // property. That is wrong: `(string) null` is `''` (never null), so
+            // `is_null((string) $this->container['prop'])` is always false, the
+            // `!is_null(...) &&` guard always passes, and a permitted null is fed
+            // into mb_strlen/preg_match — failing validation for omitted or
+            // explicitly-null identifiers. Keep the null check on the raw container
+            // value; only the length/pattern-check arguments need the string cast.
+            $src = str_replace(
+                "is_null((string) \$this->container['" . $prop . "'])",
+                "is_null(\$this->container['" . $prop . "'])",
+                $src
+            );
+
             $retyped++;
         }
 

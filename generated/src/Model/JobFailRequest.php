@@ -288,7 +288,7 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
     {
         $invalidProperties = [];
 
-        if (!is_null((string) $this->container['jobLeaseToken']) && (mb_strlen((string) $this->container['jobLeaseToken']) < 1)) {
+        if (!is_null($this->container['jobLeaseToken']) && (mb_strlen((string) $this->container['jobLeaseToken']) < 1)) {
             $invalidProperties[] = "invalid value for 'jobLeaseToken', the character length must be bigger than or equal to 1.";
         }
 

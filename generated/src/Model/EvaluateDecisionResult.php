@@ -382,11 +382,11 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
         if ($this->container['failedDecisionDefinitionId'] === null && !$this->isNullableSetToNull('failedDecisionDefinitionId')) {
             $invalidProperties[] = "'failedDecisionDefinitionId' is required";
         }
-        if (!is_null((string) $this->container['failedDecisionDefinitionId']) && (mb_strlen((string) $this->container['failedDecisionDefinitionId']) < 1)) {
+        if (!is_null($this->container['failedDecisionDefinitionId']) && (mb_strlen((string) $this->container['failedDecisionDefinitionId']) < 1)) {
             $invalidProperties[] = "invalid value for 'failedDecisionDefinitionId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['failedDecisionDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['failedDecisionDefinitionId'])) {
+        if (!is_null($this->container['failedDecisionDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['failedDecisionDefinitionId'])) {
             $invalidProperties[] = "invalid value for 'failedDecisionDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
         }
 
