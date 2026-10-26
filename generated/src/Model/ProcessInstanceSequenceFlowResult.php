@@ -426,6 +426,16 @@ class ProcessInstanceSequenceFlowResult implements ModelInterface, ArrayAccess, 
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
 
         return $this;
@@ -450,6 +460,16 @@ class ProcessInstanceSequenceFlowResult implements ModelInterface, ArrayAccess, 
      */
     public function setProcessDefinitionKey(?\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
+        if (is_null($processDefinitionKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
 
         return $this;
@@ -474,6 +494,16 @@ class ProcessInstanceSequenceFlowResult implements ModelInterface, ArrayAccess, 
      */
     public function setProcessDefinitionId(?\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
+        if (is_null($processDefinitionId)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionId'] = $processDefinitionId;
 
         return $this;

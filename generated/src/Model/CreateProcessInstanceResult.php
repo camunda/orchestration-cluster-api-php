@@ -576,6 +576,16 @@ class CreateProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSe
      */
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
+        if (is_null($businessId)) {
+            array_push($this->openAPINullablesSetToNull, 'businessId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('businessId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['businessId'] = $businessId;
 
         return $this;

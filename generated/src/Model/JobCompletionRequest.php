@@ -385,6 +385,16 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function setJobLeaseToken(?\Camunda\Orchestration\Semantic\JobLeaseToken $jobLeaseToken): static
     {
+        if (is_null($jobLeaseToken)) {
+            array_push($this->openAPINullablesSetToNull, 'jobLeaseToken');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('jobLeaseToken', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['jobLeaseToken'] = $jobLeaseToken;
 
         return $this;
@@ -409,6 +419,16 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
+        if (is_null($businessId)) {
+            array_push($this->openAPINullablesSetToNull, 'businessId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('businessId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['businessId'] = $businessId;
 
         return $this;

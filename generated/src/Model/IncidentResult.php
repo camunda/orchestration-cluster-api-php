@@ -686,6 +686,16 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
 
         return $this;
@@ -734,6 +744,16 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setJobKey(?\Camunda\Orchestration\Semantic\JobKey $jobKey): static
     {
+        if (is_null($jobKey)) {
+            array_push($this->openAPINullablesSetToNull, 'jobKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('jobKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['jobKey'] = $jobKey;
 
         return $this;

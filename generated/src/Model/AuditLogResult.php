@@ -756,6 +756,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setBatchOperationKey(?\Camunda\Orchestration\Semantic\BatchOperationKey $batchOperationKey): static
     {
+        if (is_null($batchOperationKey)) {
+            array_push($this->openAPINullablesSetToNull, 'batchOperationKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('batchOperationKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['batchOperationKey'] = $batchOperationKey;
 
         return $this;
@@ -943,6 +953,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setTenantId(?\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
+        if (is_null($tenantId)) {
+            array_push($this->openAPINullablesSetToNull, 'tenantId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('tenantId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['tenantId'] = $tenantId;
 
         return $this;
@@ -1021,6 +1041,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setProcessDefinitionId(?\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
+        if (is_null($processDefinitionId)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionId'] = $processDefinitionId;
 
         return $this;
@@ -1045,6 +1075,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setProcessDefinitionKey(?\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
+        if (is_null($processDefinitionKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
 
         return $this;
@@ -1069,6 +1109,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
+        if (is_null($processInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processInstanceKey'] = $processInstanceKey;
 
         return $this;
@@ -1093,6 +1143,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
 
         return $this;
@@ -1117,6 +1177,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setElementInstanceKey(?\Camunda\Orchestration\Semantic\ElementInstanceKey $elementInstanceKey): static
     {
+        if (is_null($elementInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'elementInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('elementInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['elementInstanceKey'] = $elementInstanceKey;
 
         return $this;
@@ -1141,6 +1211,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setJobKey(?\Camunda\Orchestration\Semantic\JobKey $jobKey): static
     {
+        if (is_null($jobKey)) {
+            array_push($this->openAPINullablesSetToNull, 'jobKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('jobKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['jobKey'] = $jobKey;
 
         return $this;
@@ -1165,6 +1245,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setUserTaskKey(?\Camunda\Orchestration\Semantic\UserTaskKey $userTaskKey): static
     {
+        if (is_null($userTaskKey)) {
+            array_push($this->openAPINullablesSetToNull, 'userTaskKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('userTaskKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['userTaskKey'] = $userTaskKey;
 
         return $this;
@@ -1223,6 +1313,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setDecisionRequirementsKey(?\Camunda\Orchestration\Semantic\DecisionRequirementsKey $decisionRequirementsKey): static
     {
+        if (is_null($decisionRequirementsKey)) {
+            array_push($this->openAPINullablesSetToNull, 'decisionRequirementsKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('decisionRequirementsKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['decisionRequirementsKey'] = $decisionRequirementsKey;
 
         return $this;
@@ -1247,6 +1347,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setDecisionDefinitionId(?\Camunda\Orchestration\Semantic\DecisionDefinitionId $decisionDefinitionId): static
     {
+        if (is_null($decisionDefinitionId)) {
+            array_push($this->openAPINullablesSetToNull, 'decisionDefinitionId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('decisionDefinitionId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['decisionDefinitionId'] = $decisionDefinitionId;
 
         return $this;
@@ -1271,6 +1381,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setDecisionDefinitionKey(?\Camunda\Orchestration\Semantic\DecisionDefinitionKey $decisionDefinitionKey): static
     {
+        if (is_null($decisionDefinitionKey)) {
+            array_push($this->openAPINullablesSetToNull, 'decisionDefinitionKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('decisionDefinitionKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['decisionDefinitionKey'] = $decisionDefinitionKey;
 
         return $this;
@@ -1295,6 +1415,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setDecisionEvaluationKey(?\Camunda\Orchestration\Semantic\DecisionEvaluationKey $decisionEvaluationKey): static
     {
+        if (is_null($decisionEvaluationKey)) {
+            array_push($this->openAPINullablesSetToNull, 'decisionEvaluationKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('decisionEvaluationKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['decisionEvaluationKey'] = $decisionEvaluationKey;
 
         return $this;
@@ -1319,6 +1449,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setDeploymentKey(?\Camunda\Orchestration\Semantic\DeploymentKey $deploymentKey): static
     {
+        if (is_null($deploymentKey)) {
+            array_push($this->openAPINullablesSetToNull, 'deploymentKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('deploymentKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['deploymentKey'] = $deploymentKey;
 
         return $this;
@@ -1343,6 +1483,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setFormKey(?\Camunda\Orchestration\Semantic\FormKey $formKey): static
     {
+        if (is_null($formKey)) {
+            array_push($this->openAPINullablesSetToNull, 'formKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('formKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['formKey'] = $formKey;
 
         return $this;
@@ -1401,6 +1551,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setRelatedEntityKey(?\Camunda\Orchestration\Semantic\AuditLogEntityKey $relatedEntityKey): static
     {
+        if (is_null($relatedEntityKey)) {
+            array_push($this->openAPINullablesSetToNull, 'relatedEntityKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('relatedEntityKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['relatedEntityKey'] = $relatedEntityKey;
 
         return $this;

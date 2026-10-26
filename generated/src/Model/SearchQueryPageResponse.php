@@ -387,6 +387,16 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function setStartCursor(?\Camunda\Orchestration\Semantic\StartCursor $startCursor): static
     {
+        if (is_null($startCursor)) {
+            array_push($this->openAPINullablesSetToNull, 'startCursor');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('startCursor', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['startCursor'] = $startCursor;
 
         return $this;
@@ -411,6 +421,16 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function setEndCursor(?\Camunda\Orchestration\Semantic\EndCursor $endCursor): static
     {
+        if (is_null($endCursor)) {
+            array_push($this->openAPINullablesSetToNull, 'endCursor');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('endCursor', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['endCursor'] = $endCursor;
 
         return $this;

@@ -827,6 +827,16 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setParentProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $parentProcessInstanceKey): static
     {
+        if (is_null($parentProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'parentProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('parentProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['parentProcessInstanceKey'] = $parentProcessInstanceKey;
 
         return $this;
@@ -851,6 +861,16 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setParentElementInstanceKey(?\Camunda\Orchestration\Semantic\ElementInstanceKey $parentElementInstanceKey): static
     {
+        if (is_null($parentElementInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'parentElementInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('parentElementInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['parentElementInstanceKey'] = $parentElementInstanceKey;
 
         return $this;
@@ -875,6 +895,16 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
 
         return $this;
@@ -929,6 +959,16 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
+        if (is_null($businessId)) {
+            array_push($this->openAPINullablesSetToNull, 'businessId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('businessId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['businessId'] = $businessId;
 
         return $this;

@@ -2424,11 +2424,11 @@ trait GeneratedAsyncOperations
      *
      * Create process instance
      *
-     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction processInstanceCreationInstruction (required)
+     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction processInstanceCreationInstruction (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createProcessInstance'] to see the possible values for this operation
      *
      */
-    public function createProcessInstance(\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction, string $contentType = \Camunda\Orchestration\Api\Api\ProcessInstanceApi::contentTypes['createProcessInstance'][0]): \GuzzleHttp\Promise\PromiseInterface
+    public function createProcessInstance(\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction, string $contentType = \Camunda\Orchestration\Api\Api\ProcessInstanceApi::contentTypes['createProcessInstance'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
         if ($this->config->tenantIds !== [] && $processInstanceCreationInstruction->getTenantId() === null) {
             $processInstanceCreationInstruction = clone $processInstanceCreationInstruction;

@@ -672,6 +672,16 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function setFailedDecisionDefinitionId(?\Camunda\Orchestration\Semantic\DecisionDefinitionId $failedDecisionDefinitionId): static
     {
+        if (is_null($failedDecisionDefinitionId)) {
+            array_push($this->openAPINullablesSetToNull, 'failedDecisionDefinitionId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('failedDecisionDefinitionId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['failedDecisionDefinitionId'] = $failedDecisionDefinitionId;
 
         return $this;

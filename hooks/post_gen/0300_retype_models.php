@@ -98,14 +98,37 @@ return static function (array $ctx): void {
                 1
             ) ?? $src;
 
-            // 3. setter — canonicalise (value object owns validation)
+            // 3. setter — canonicalise (value object owns validation). For a
+            //    nullable property the generator's setter also maintains the
+            //    `openAPINullablesSetToNull` tracking that lets an explicit null
+            //    survive serialization (ObjectSerializer only emits a null value
+            //    when `isNullableSetToNull()` is true). Dropping that block would
+            //    silently omit `set<Prop>(null)` from the wire, so preserve it.
             $src = preg_replace_callback(
                 '/    public function set' . preg_quote($studly, '/')
                     . '\((\??)string \$(\w+)\): static\n    \{.*?\n    \}\n/s',
                 static function (array $m) use ($prop, $fqcn): string {
                     $nullable = $m[1];
                     $var = $m[2];
-                    $body = "        \$this->container['" . $prop . "'] = \$" . $var . ";\n\n"
+                    // Preserve the generator's nullable-state tracking verbatim when
+                    // the original setter tracked it (i.e. the property is declared
+                    // `nullable: true`); keyed off the original body, not the `?`
+                    // marker, since an optional-but-non-nullable property is also `?`.
+                    $tracksNull = str_contains($m[0], 'openAPINullablesSetToNull');
+                    $body = '';
+                    if ($tracksNull) {
+                        $body .= "        if (is_null(\$" . $var . ")) {\n"
+                            . "            array_push(\$this->openAPINullablesSetToNull, '" . $prop . "');\n"
+                            . "        } else {\n"
+                            . "            \$nullablesSetToNull = \$this->getOpenAPINullablesSetToNull();\n"
+                            . "            \$index = array_search('" . $prop . "', \$nullablesSetToNull);\n"
+                            . "            if (\$index !== FALSE) {\n"
+                            . "                unset(\$nullablesSetToNull[\$index]);\n"
+                            . "                \$this->setOpenAPINullablesSetToNull(\$nullablesSetToNull);\n"
+                            . "            }\n"
+                            . "        }\n";
+                    }
+                    $body .= "        \$this->container['" . $prop . "'] = \$" . $var . ";\n\n"
                         . "        return \$this;\n";
                     return "    public function set" . ucfirst($prop) . "(" . $nullable . $fqcn . " \$" . $var . "): static\n"
                         . "    {\n" . $body . "    }\n";
