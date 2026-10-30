@@ -4,6 +4,7 @@
   "semanticCommits": "enabled",
   "baseBranchPatterns": ["main", "/^stable\\/.+$/"],
   "rebaseWhen": "behind-base-branch",
+  "ignorePaths": ["**/node_modules/**", "**/bower_components/**", "**/vendor/**", "**/examples/**", "**/__tests__/**", "**/test/**", "**/tests/**", "**/__fixtures__/**", "generated/**"],
   "packageRules": [
     {
       "description": "stable/* are maintenance branches: patch updates only.",
