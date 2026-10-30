@@ -75,6 +75,15 @@ jobs:
       - name: Install Node dependencies
         run: npm ci || npm install
 
+      - name: Cache openapi-generator jar
+        uses: actions/cache@v4
+        with:
+          path: ~/.openapi-generator
+          key: openapi-generator-${{ hashFiles('openapitools.json') }}
+
+      - name: Fetch openapi-generator jar (retried)
+        run: bash scripts/fetch-openapi-generator.sh
+
       - name: Clear checked-in spec (prevent stale fallback)
         run: rm -rf external-spec/bundled/*
 
@@ -141,6 +150,15 @@ jobs:
       - name: Install Node dependencies
         run: npm ci || npm install
 
+      - name: Cache openapi-generator jar
+        uses: actions/cache@v4
+        with:
+          path: ~/.openapi-generator
+          key: openapi-generator-${{ hashFiles('openapitools.json') }}
+
+      - name: Fetch openapi-generator jar (retried)
+        run: bash scripts/fetch-openapi-generator.sh
+
       - name: Clear checked-in spec (prevent stale fallback)
         run: rm -rf external-spec/bundled/*
 
@@ -201,6 +219,15 @@ jobs:
 
       - name: Install Node dependencies
         run: npm ci || npm install
+
+      - name: Cache openapi-generator jar
+        uses: actions/cache@v4
+        with:
+          path: ~/.openapi-generator
+          key: openapi-generator-${{ hashFiles('openapitools.json') }}
+
+      - name: Fetch openapi-generator jar (retried)
+        run: bash scripts/fetch-openapi-generator.sh
 
       - name: Clear checked-in spec (prevent stale fallback)
         run: rm -rf external-spec/bundled/*
