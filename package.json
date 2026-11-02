@@ -6,7 +6,7 @@
   },
   "devDependencies": {
     "@camunda8/sdk-infra": "1.11.1",
-    "@commitlint/cli": "21.2.0",
+    "@commitlint/cli": "21.2.4",
     "@commitlint/config-conventional": "21.2.0",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/exec": "7.1.0",
