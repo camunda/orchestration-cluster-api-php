@@ -2,7 +2,7 @@
 # Fetch (optionally) and bundle the upstream OpenAPI spec using camunda-schema-bundler.
 #
 # Environment variables:
-#   SPEC_REF                     Git ref to fetch (default: stable/8.10). Passed as --ref.
+#   SPEC_REF                     Git ref to fetch (default: main). Passed as --ref.
 #   CAMUNDA_SDK_SKIP_FETCH_SPEC  If "1", bundle the already-fetched spec under
 #                                external-spec/upstream (skip network fetch).
 #   BUNDLER_BIN                  Path to a camunda-schema-bundler binary (optional).
@@ -34,7 +34,7 @@ if [ "${CAMUNDA_SDK_SKIP_FETCH_SPEC:-0}" = "1" ]; then
         --output-spec "$BUNDLED_SPEC" \
         --output-metadata "$METADATA"
 else
-    REF="${SPEC_REF:-stable/8.10}"
+    REF="${SPEC_REF:-main}"
     echo "[bundle-spec] Fetching (ref: $REF) and bundling spec"
     $BUNDLER_CMD \
         --ref "$REF" \
