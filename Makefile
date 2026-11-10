@@ -1,8 +1,8 @@
 .PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan examples advanced-examples example-showcase example-report check sync-readme sync-readme-check docs-md docs-docusaurus config-reference config-reference-check example-coverage security-scan security-selftest coverage
 
 # Git ref/branch/tag/SHA in https://github.com/camunda/camunda.git to fetch the OpenAPI
-# spec from. Override like: `make generate SPEC_REF=stable/8.9`
-SPEC_REF ?= stable/8.10
+# spec from. Override like: `make generate SPEC_REF=stable/8.10`
+SPEC_REF ?= main
 
 # PHP binary used by the coverage target; override to load a driver, e.g.
 # `make coverage PHP="php -d extension=pcov.so"`.
