@@ -137,19 +137,20 @@ final class JobWorker
             $request->setTenantFilter(TenantFilterEnum::PROVIDED);
         }
 
-        $result = $this->jobApi()->activateJobs($request);
-        if ($result instanceof ProblemDetail) {
-            $status = $result->offsetGet('status');
-            $title = $result->offsetGet('title');
-            $detail = $result->offsetGet('detail');
+        [$result, $httpStatus, $headers] = $this->jobApi()->activateJobsWithHttpInfo($request);
+        if ($result instanceof ProblemDetail || $httpStatus < 200 || $httpStatus > 299) {
+            // The HTTP status is authoritative: a problem body may omit `status`.
+            $title = $result instanceof ProblemDetail ? $result->offsetGet('title') : null;
+            $detail = $result instanceof ProblemDetail ? $result->offsetGet('detail') : null;
             $exception = new ApiException(
                 sprintf(
                     '[%d] Job activation failed (%s: %s)',
-                    is_int($status) ? $status : 0,
+                    $httpStatus,
                     is_string($title) ? $title : 'unknown',
                     is_string($detail) ? $detail : 'no detail',
                 ),
-                is_int($status) ? $status : 0,
+                $httpStatus,
+                $headers,
             );
             $exception->setResponseObject($result);
             throw $exception;

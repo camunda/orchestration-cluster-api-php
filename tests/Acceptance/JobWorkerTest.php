@@ -138,8 +138,12 @@ final class JobWorkerTest extends TestCase
             new Response(503, ['Content-Type' => 'application/problem+json'], '{}'),
         ], new JobWorkerOptions(type: 'greet'));
 
-        $this->expectException(\Camunda\Orchestration\Api\ApiException::class);
-        $worker->pollOnce(static fn (ActivatedJobResult $job, JobActionClient $action): null => null);
+        try {
+            $worker->pollOnce(static fn (ActivatedJobResult $job, JobActionClient $action): null => null);
+            self::fail('Expected pollOnce() to throw an ApiException for the 503 activation response.');
+        } catch (\Camunda\Orchestration\Api\ApiException $exception) {
+            self::assertSame(503, $exception->getCode());
+        }
     }
 
     /**

@@ -74,6 +74,7 @@ PHP;
 
     $patchedFiles = 0;
     $patchedCallbacks = 0;
+    $alreadyPatched = 0;
 
     foreach (glob($apiDir . '/*Api.php') ?: [] as $apiFile) {
         $source = (string) file_get_contents($apiFile);
@@ -82,7 +83,8 @@ PHP;
             continue;
         }
         if (str_contains($source, 'Non-problem error bodies stay available via getResponseBody().')) {
-            continue; // already patched (idempotency)
+            $alreadyPatched += $count; // already patched (idempotent rerun)
+            continue;
         }
 
         $source = str_replace($anchor, $anchor . $check, $source);
@@ -91,9 +93,9 @@ PHP;
         $patchedCallbacks += $count;
     }
 
-    if ($patchedCallbacks === 0) {
+    if ($patchedCallbacks + $alreadyPatched === 0) {
         throw new RuntimeException('hook 0325: no async fulfilment callbacks found to patch');
     }
 
-    fwrite(STDOUT, "  [async-http-errors] $patchedCallbacks async operations across $patchedFiles API groups now reject on non-2xx responses\n");
+    fwrite(STDOUT, "  [async-http-errors] $patchedCallbacks async operations across $patchedFiles API groups now reject on non-2xx responses ($alreadyPatched already patched)\n");
 };
