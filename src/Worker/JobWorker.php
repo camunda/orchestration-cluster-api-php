@@ -5,9 +5,15 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Worker;
 
 use Camunda\Orchestration\Api\Api\JobApi;
+use Camunda\Orchestration\Api\ApiException;
 use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\Api\Model\JobActivationRequest;
+<<<<<<< HEAD
 use Camunda\Orchestration\Api\Model\JobActivationResult;
+=======
+use Camunda\Orchestration\Api\Model\ProblemDetail;
+use Camunda\Orchestration\Api\Model\TenantFilterEnum;
+>>>>>>> d30832c (fix: async client rejects with ApiException on HTTP 4xx/5xx (#86))
 use Camunda\Orchestration\CamundaClient;
 
 /**
@@ -109,6 +115,12 @@ final class JobWorker
 
     /**
      * @return list<ActivatedJobResult>
+     *
+     * @throws ApiException When activation fails (e.g. broker backpressure `503`).
+     *         The generated sync API returns error statuses as a `ProblemDetail`
+     *         value; the worker converts that into an exception so callers can
+     *         back off instead of mistaking the failure for an empty batch
+     *         (issue #85).
      */
     private function activate(): array
     {
@@ -125,9 +137,23 @@ final class JobWorker
             $request->setTenantIds($this->options->tenantIds);
         }
 
-        $result = $this->jobApi()->activateJobs($request);
-        if (!$result instanceof JobActivationResult) {
-            return [];
+        [$result, $httpStatus, $headers] = $this->jobApi()->activateJobsWithHttpInfo($request);
+        if ($result instanceof ProblemDetail || $httpStatus < 200 || $httpStatus > 299) {
+            // The HTTP status is authoritative: a problem body may omit `status`.
+            $title = $result instanceof ProblemDetail ? $result->offsetGet('title') : null;
+            $detail = $result instanceof ProblemDetail ? $result->offsetGet('detail') : null;
+            $exception = new ApiException(
+                sprintf(
+                    '[%d] Job activation failed (%s: %s)',
+                    $httpStatus,
+                    is_string($title) ? $title : 'unknown',
+                    is_string($detail) ? $detail : 'no detail',
+                ),
+                $httpStatus,
+                $headers,
+            );
+            $exception->setResponseObject($result);
+            throw $exception;
         }
 
         return array_values($result->getJobs());
