@@ -94,4 +94,13 @@ class AuthenticationConfigurationResponseTest extends TestCase
         // TODO: implement
         self::markTestIncomplete('Not implemented');
     }
+
+    /**
+     * Test attribute "isCamundaGroupsEnabled"
+     */
+    public function testPropertyIsCamundaGroupsEnabled()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
 }

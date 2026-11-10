@@ -767,6 +767,33 @@ trait GeneratedAsyncOperations
     }
 
     /**
+     * Operation addClock
+     *
+     * Add time to internal clock
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ClockAddRequest $clockAddRequest clockAddRequest (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['addClock'] to see the possible values for this operation
+     *
+     */
+    public function addClock(\Camunda\Orchestration\Api\Model\ClockAddRequest $clockAddRequest, string $contentType = \Camunda\Orchestration\Api\Api\ClockApi::contentTypes['addClock'][0]): \GuzzleHttp\Promise\PromiseInterface
+    {
+        return $this->api(\Camunda\Orchestration\Api\Api\ClockApi::class)->addClockAsync($clockAddRequest, $contentType);
+    }
+
+    /**
+     * Operation getClock
+     *
+     * Get internal clock
+     *
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getClock'] to see the possible values for this operation
+     *
+     */
+    public function getClock(string $contentType = \Camunda\Orchestration\Api\Api\ClockApi::contentTypes['getClock'][0]): \GuzzleHttp\Promise\PromiseInterface
+    {
+        return $this->api(\Camunda\Orchestration\Api\Api\ClockApi::class)->getClockAsync($contentType);
+    }
+
+    /**
      * Operation pinClock
      *
      * Pin internal clock (alpha)
@@ -1290,15 +1317,15 @@ trait GeneratedAsyncOperations
      * Create document link
      *
      * @param  string $documentId The ID of the document to link. (required)
+     * @param  \Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest documentLinkRequest (required)
      * @param  string|null $storeId The ID of the document store where the document is located. (optional)
      * @param  string|null $contentHash The hash of the document content that was computed by the document store during upload. The hash is part of the document reference that is returned when uploading a document. If the client fails to provide the correct hash, the request will be rejected. (optional)
-     * @param  \Camunda\Orchestration\Api\Model\DocumentLinkRequest|null $documentLinkRequest documentLinkRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createDocumentLink'] to see the possible values for this operation
      *
      */
-    public function createDocumentLink(string $documentId, ?string $storeId = null, ?string $contentHash = null, ?\Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest = null, string $contentType = \Camunda\Orchestration\Api\Api\DocumentApi::contentTypes['createDocumentLink'][0]): \GuzzleHttp\Promise\PromiseInterface
+    public function createDocumentLink(string $documentId, \Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest, ?string $storeId = null, ?string $contentHash = null, string $contentType = \Camunda\Orchestration\Api\Api\DocumentApi::contentTypes['createDocumentLink'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
-        return $this->api(\Camunda\Orchestration\Api\Api\DocumentApi::class)->createDocumentLinkAsync($documentId, $storeId, $contentHash, $documentLinkRequest, $contentType);
+        return $this->api(\Camunda\Orchestration\Api\Api\DocumentApi::class)->createDocumentLinkAsync($documentId, $documentLinkRequest, $storeId, $contentHash, $contentType);
     }
 
     /**
@@ -1543,7 +1570,7 @@ trait GeneratedAsyncOperations
     {
         if ($this->config->tenantIds !== [] && $expressionEvaluationRequest->getTenantId() === null) {
             $expressionEvaluationRequest = clone $expressionEvaluationRequest;
-            $expressionEvaluationRequest->setTenantId($this->config->tenantIds[0]);
+            $expressionEvaluationRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));
         }
         return $this->api(\Camunda\Orchestration\Api\Api\ExpressionApi::class)->evaluateExpressionAsync($expressionEvaluationRequest, $contentType);
     }
@@ -2424,11 +2451,11 @@ trait GeneratedAsyncOperations
      *
      * Create process instance
      *
-     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction processInstanceCreationInstruction (required)
+     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction processInstanceCreationInstruction (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createProcessInstance'] to see the possible values for this operation
      *
      */
-    public function createProcessInstance(\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction, string $contentType = \Camunda\Orchestration\Api\Api\ProcessInstanceApi::contentTypes['createProcessInstance'][0]): \GuzzleHttp\Promise\PromiseInterface
+    public function createProcessInstance(\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction, string $contentType = \Camunda\Orchestration\Api\Api\ProcessInstanceApi::contentTypes['createProcessInstance'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
         if ($this->config->tenantIds !== [] && $processInstanceCreationInstruction->getTenantId() === null) {
             $processInstanceCreationInstruction = clone $processInstanceCreationInstruction;
@@ -2599,11 +2626,11 @@ trait GeneratedAsyncOperations
      *
      * Resolve related incidents (batch)
      *
-     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest|null $processInstanceIncidentResolutionBatchOperationRequest processInstanceIncidentResolutionBatchOperationRequest (optional)
+     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest processInstanceIncidentResolutionBatchOperationRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resolveIncidentsBatchOperation'] to see the possible values for this operation
      *
      */
-    public function resolveIncidentsBatchOperation(?\Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest = null, string $contentType = \Camunda\Orchestration\Api\Api\ProcessInstanceApi::contentTypes['resolveIncidentsBatchOperation'][0]): \GuzzleHttp\Promise\PromiseInterface
+    public function resolveIncidentsBatchOperation(\Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest, string $contentType = \Camunda\Orchestration\Api\Api\ProcessInstanceApi::contentTypes['resolveIncidentsBatchOperation'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
         return $this->api(\Camunda\Orchestration\Api\Api\ProcessInstanceApi::class)->resolveIncidentsBatchOperationAsync($processInstanceIncidentResolutionBatchOperationRequest, $contentType);
     }
@@ -3658,6 +3685,21 @@ trait GeneratedAsyncOperations
     public function getUserTaskForm(string $userTaskKey, string $contentType = \Camunda\Orchestration\Api\Api\UserTaskApi::contentTypes['getUserTaskForm'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
         return $this->api(\Camunda\Orchestration\Api\Api\UserTaskApi::class)->getUserTaskFormAsync($userTaskKey, $contentType);
+    }
+
+    /**
+     * Operation lookupUserTask
+     *
+     * Look up an active user task (alpha)
+     *
+     * @param  string $userTaskKey The key of the user task to look up. (required)
+     * @param  \Camunda\Orchestration\Api\Model\UserTaskLookupRequest|null $userTaskLookupRequest userTaskLookupRequest (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['lookupUserTask'] to see the possible values for this operation
+     *
+     */
+    public function lookupUserTask(string $userTaskKey, ?\Camunda\Orchestration\Api\Model\UserTaskLookupRequest $userTaskLookupRequest = null, string $contentType = \Camunda\Orchestration\Api\Api\UserTaskApi::contentTypes['lookupUserTask'][0]): \GuzzleHttp\Promise\PromiseInterface
+    {
+        return $this->api(\Camunda\Orchestration\Api\Api\UserTaskApi::class)->lookupUserTaskAsync($userTaskKey, $userTaskLookupRequest, $contentType);
     }
 
     /**

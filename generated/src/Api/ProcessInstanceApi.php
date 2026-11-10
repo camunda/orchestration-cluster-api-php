@@ -612,6 +612,14 @@ class ProcessInstanceApi
                     );
                     $e->setResponseObject($data);
                     throw $e;
+                case 409:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
                 case 500:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -1237,7 +1245,7 @@ class ProcessInstanceApi
      *
      * Create process instance
      *
-     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction processInstanceCreationInstruction (required)
+     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction processInstanceCreationInstruction (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createProcessInstance'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -1245,7 +1253,7 @@ class ProcessInstanceApi
      * @return \Camunda\Orchestration\Api\Model\CreateProcessInstanceResult|\Camunda\Orchestration\Api\Model\ProblemDetail
      */
     public function createProcessInstance(
-        \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction,
+        \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction,
         string $contentType = self::contentTypes['createProcessInstance'][0]
     ): \Camunda\Orchestration\Api\Model\CreateProcessInstanceResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
@@ -1258,7 +1266,7 @@ class ProcessInstanceApi
      *
      * Create process instance
      *
-     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction (required)
+     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createProcessInstance'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -1266,7 +1274,7 @@ class ProcessInstanceApi
      * @return array{0: \Camunda\Orchestration\Api\Model\CreateProcessInstanceResult|\Camunda\Orchestration\Api\Model\ProblemDetail, 1: int, 2: array<string, string[]>} [response data, HTTP status code, HTTP response headers]
      */
     public function createProcessInstanceWithHttpInfo(
-        \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction,
+        \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction,
         string $contentType = self::contentTypes['createProcessInstance'][0]
     ): array
     {
@@ -1412,14 +1420,14 @@ class ProcessInstanceApi
      *
      * Create process instance
      *
-     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction (required)
+     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createProcessInstance'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
      * @return PromiseInterface
      */
     public function createProcessInstanceAsync(
-        \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction,
+        \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction,
         string $contentType = self::contentTypes['createProcessInstance'][0]
     ): PromiseInterface
     {
@@ -1436,14 +1444,14 @@ class ProcessInstanceApi
      *
      * Create process instance
      *
-     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction (required)
+     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createProcessInstance'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
      * @return PromiseInterface
      */
     public function createProcessInstanceAsyncWithHttpInfo(
-        \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction,
+        \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction,
         string $contentType = self::contentTypes['createProcessInstance'][0]
     ): PromiseInterface
     {
@@ -1515,14 +1523,14 @@ class ProcessInstanceApi
     /**
      * Create request for operation 'createProcessInstance'
      *
-     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction (required)
+     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createProcessInstance'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function createProcessInstanceRequest(
-        \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction,
+        \Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByVersionTag $processInstanceCreationInstruction,
         string $contentType = self::contentTypes['createProcessInstance'][0]
     ): Request
     {
@@ -5499,7 +5507,7 @@ class ProcessInstanceApi
      *
      * Resolve related incidents (batch)
      *
-     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest|null $processInstanceIncidentResolutionBatchOperationRequest processInstanceIncidentResolutionBatchOperationRequest (optional)
+     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest processInstanceIncidentResolutionBatchOperationRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resolveIncidentsBatchOperation'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -5507,7 +5515,7 @@ class ProcessInstanceApi
      * @return \Camunda\Orchestration\Api\Model\BatchOperationCreatedResult|\Camunda\Orchestration\Api\Model\ProblemDetail
      */
     public function resolveIncidentsBatchOperation(
-        ?\Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest = null,
+        \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest,
         string $contentType = self::contentTypes['resolveIncidentsBatchOperation'][0]
     ): \Camunda\Orchestration\Api\Model\BatchOperationCreatedResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
@@ -5520,7 +5528,7 @@ class ProcessInstanceApi
      *
      * Resolve related incidents (batch)
      *
-     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest|null $processInstanceIncidentResolutionBatchOperationRequest (optional)
+     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resolveIncidentsBatchOperation'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -5528,7 +5536,7 @@ class ProcessInstanceApi
      * @return array{0: \Camunda\Orchestration\Api\Model\BatchOperationCreatedResult|\Camunda\Orchestration\Api\Model\ProblemDetail, 1: int, 2: array<string, string[]>} [response data, HTTP status code, HTTP response headers]
      */
     public function resolveIncidentsBatchOperationWithHttpInfo(
-        ?\Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest = null,
+        \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest,
         string $contentType = self::contentTypes['resolveIncidentsBatchOperation'][0]
     ): array
     {
@@ -5660,14 +5668,14 @@ class ProcessInstanceApi
      *
      * Resolve related incidents (batch)
      *
-     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest|null $processInstanceIncidentResolutionBatchOperationRequest (optional)
+     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resolveIncidentsBatchOperation'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
      * @return PromiseInterface
      */
     public function resolveIncidentsBatchOperationAsync(
-        ?\Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest = null,
+        \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest,
         string $contentType = self::contentTypes['resolveIncidentsBatchOperation'][0]
     ): PromiseInterface
     {
@@ -5684,14 +5692,14 @@ class ProcessInstanceApi
      *
      * Resolve related incidents (batch)
      *
-     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest|null $processInstanceIncidentResolutionBatchOperationRequest (optional)
+     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resolveIncidentsBatchOperation'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
      * @return PromiseInterface
      */
     public function resolveIncidentsBatchOperationAsyncWithHttpInfo(
-        ?\Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest = null,
+        \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest,
         string $contentType = self::contentTypes['resolveIncidentsBatchOperation'][0]
     ): PromiseInterface
     {
@@ -5763,17 +5771,23 @@ class ProcessInstanceApi
     /**
      * Create request for operation 'resolveIncidentsBatchOperation'
      *
-     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest|null $processInstanceIncidentResolutionBatchOperationRequest (optional)
+     * @param  \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resolveIncidentsBatchOperation'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function resolveIncidentsBatchOperationRequest(
-        ?\Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest = null,
+        \Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest $processInstanceIncidentResolutionBatchOperationRequest,
         string $contentType = self::contentTypes['resolveIncidentsBatchOperation'][0]
     ): Request
     {
+        // verify the required parameter 'processInstanceIncidentResolutionBatchOperationRequest' is set
+        if ($processInstanceIncidentResolutionBatchOperationRequest === null || (is_array($processInstanceIncidentResolutionBatchOperationRequest) && count($processInstanceIncidentResolutionBatchOperationRequest) === 0)) {
+            throw new InvalidArgumentException(
+                'Missing the required parameter $processInstanceIncidentResolutionBatchOperationRequest when calling resolveIncidentsBatchOperation'
+            );
+        }
 
         $resourcePath = '/process-instances/incident-resolution';
         $formParams = [];

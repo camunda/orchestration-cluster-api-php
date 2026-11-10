@@ -142,6 +142,8 @@ Class | Method | HTTP request | Description
 *BatchOperationApi* | [**searchBatchOperationItems**](docs/Api/BatchOperationApi.md#searchbatchoperationitems) | **POST** /batch-operation-items/search | Search batch operation items
 *BatchOperationApi* | [**searchBatchOperations**](docs/Api/BatchOperationApi.md#searchbatchoperations) | **POST** /batch-operations/search | Search batch operations
 *BatchOperationApi* | [**suspendBatchOperation**](docs/Api/BatchOperationApi.md#suspendbatchoperation) | **POST** /batch-operations/{batchOperationKey}/suspension | Suspend Batch operation
+*ClockApi* | [**addClock**](docs/Api/ClockApi.md#addclock) | **POST** /clock/add | Add time to internal clock
+*ClockApi* | [**getClock**](docs/Api/ClockApi.md#getclock) | **GET** /clock | Get internal clock
 *ClockApi* | [**pinClock**](docs/Api/ClockApi.md#pinclock) | **PUT** /clock | Pin internal clock (alpha)
 *ClockApi* | [**resetClock**](docs/Api/ClockApi.md#resetclock) | **POST** /clock/reset | Reset internal clock (alpha)
 *ClusterApi* | [**cancelClusterRebalance**](docs/Api/ClusterApi.md#cancelclusterrebalance) | **DELETE** /cluster/v2/rebalance | Stop the running rebalance
@@ -333,6 +335,7 @@ Class | Method | HTTP request | Description
 *UserTaskApi* | [**completeUserTask**](docs/Api/UserTaskApi.md#completeusertask) | **POST** /user-tasks/{userTaskKey}/completion | Complete user task
 *UserTaskApi* | [**getUserTask**](docs/Api/UserTaskApi.md#getusertask) | **GET** /user-tasks/{userTaskKey} | Get user task
 *UserTaskApi* | [**getUserTaskForm**](docs/Api/UserTaskApi.md#getusertaskform) | **GET** /user-tasks/{userTaskKey}/form | Get user task form
+*UserTaskApi* | [**lookupUserTask**](docs/Api/UserTaskApi.md#lookupusertask) | **POST** /user-tasks/{userTaskKey}/lookup | Look up an active user task (alpha)
 *UserTaskApi* | [**searchUserTaskAuditLogs**](docs/Api/UserTaskApi.md#searchusertaskauditlogs) | **POST** /user-tasks/{userTaskKey}/audit-logs/search | Search user task audit logs
 *UserTaskApi* | [**searchUserTaskEffectiveVariables**](docs/Api/UserTaskApi.md#searchusertaskeffectivevariables) | **POST** /user-tasks/{userTaskKey}/effective-variables/search | Search user task effective variables
 *UserTaskApi* | [**searchUserTaskVariables**](docs/Api/UserTaskApi.md#searchusertaskvariables) | **POST** /user-tasks/{userTaskKey}/variables/search | Search user task variables
@@ -395,6 +398,7 @@ Class | Method | HTTP request | Description
 - [AdvancedProcessDefinitionKeyFilter](docs/Model/AdvancedProcessDefinitionKeyFilter.md)
 - [AdvancedProcessInstanceKeyFilter](docs/Model/AdvancedProcessInstanceKeyFilter.md)
 - [AdvancedProcessInstanceStateFilter](docs/Model/AdvancedProcessInstanceStateFilter.md)
+- [AdvancedProtectionModeFilter](docs/Model/AdvancedProtectionModeFilter.md)
 - [AdvancedResourceKeyFilter](docs/Model/AdvancedResourceKeyFilter.md)
 - [AdvancedResultFilter](docs/Model/AdvancedResultFilter.md)
 - [AdvancedScopeKeyFilter](docs/Model/AdvancedScopeKeyFilter.md)
@@ -473,6 +477,7 @@ Class | Method | HTTP request | Description
 - [AuditLogSearchQueryRequest](docs/Model/AuditLogSearchQueryRequest.md)
 - [AuditLogSearchQueryResult](docs/Model/AuditLogSearchQueryResult.md)
 - [AuditLogSearchQuerySortRequest](docs/Model/AuditLogSearchQuerySortRequest.md)
+- [AuthenticatedCamundaUserResult](docs/Model/AuthenticatedCamundaUserResult.md)
 - [AuthenticationConfigurationResponse](docs/Model/AuthenticationConfigurationResponse.md)
 - [AuthorizationCreateResult](docs/Model/AuthorizationCreateResult.md)
 - [AuthorizationFilter](docs/Model/AuthorizationFilter.md)
@@ -517,7 +522,9 @@ Class | Method | HTTP request | Description
 - [CategoryFilterProperty](docs/Model/CategoryFilterProperty.md)
 - [Changeset](docs/Model/Changeset.md)
 - [CheckpointType](docs/Model/CheckpointType.md)
+- [ClockAddRequest](docs/Model/ClockAddRequest.md)
 - [ClockPinRequest](docs/Model/ClockPinRequest.md)
+- [ClockResult](docs/Model/ClockResult.md)
 - [CloudConfigurationResponse](docs/Model/CloudConfigurationResponse.md)
 - [CloudStage](docs/Model/CloudStage.md)
 - [ClusterBalanceResponse](docs/Model/ClusterBalanceResponse.md)
@@ -858,8 +865,10 @@ Class | Method | HTTP request | Description
 - [ProcessInstanceCallHierarchyEntry](docs/Model/ProcessInstanceCallHierarchyEntry.md)
 - [ProcessInstanceCancellationBatchOperationRequest](docs/Model/ProcessInstanceCancellationBatchOperationRequest.md)
 - [ProcessInstanceCreationInstruction](docs/Model/ProcessInstanceCreationInstruction.md)
+- [ProcessInstanceCreationInstructionBase](docs/Model/ProcessInstanceCreationInstructionBase.md)
 - [ProcessInstanceCreationInstructionById](docs/Model/ProcessInstanceCreationInstructionById.md)
 - [ProcessInstanceCreationInstructionByKey](docs/Model/ProcessInstanceCreationInstructionByKey.md)
+- [ProcessInstanceCreationInstructionByVersionTag](docs/Model/ProcessInstanceCreationInstructionByVersionTag.md)
 - [ProcessInstanceCreationStartInstruction](docs/Model/ProcessInstanceCreationStartInstruction.md)
 - [ProcessInstanceCreationTerminateInstruction](docs/Model/ProcessInstanceCreationTerminateInstruction.md)
 - [ProcessInstanceDeletionBatchOperationRequest](docs/Model/ProcessInstanceDeletionBatchOperationRequest.md)
@@ -894,6 +903,9 @@ Class | Method | HTTP request | Description
 - [ProcessInstanceSuspensionBatchOperationRequest](docs/Model/ProcessInstanceSuspensionBatchOperationRequest.md)
 - [ProcessInstanceWaitStateStatisticsQueryResult](docs/Model/ProcessInstanceWaitStateStatisticsQueryResult.md)
 - [ProcessInstanceWaitStateStatisticsResult](docs/Model/ProcessInstanceWaitStateStatisticsResult.md)
+- [ProtectionModeEnum](docs/Model/ProtectionModeEnum.md)
+- [ProtectionModeExactMatch](docs/Model/ProtectionModeExactMatch.md)
+- [ProtectionModeFilterProperty](docs/Model/ProtectionModeFilterProperty.md)
 - [RebalanceCancellationResponse](docs/Model/RebalanceCancellationResponse.md)
 - [ResolvedSecret](docs/Model/ResolvedSecret.md)
 - [ResourceFilter](docs/Model/ResourceFilter.md)
@@ -929,6 +941,7 @@ Class | Method | HTTP request | Description
 - [RoleSearchQuerySortRequest](docs/Model/RoleSearchQuerySortRequest.md)
 - [RoleUpdateRequest](docs/Model/RoleUpdateRequest.md)
 - [RoleUpdateResult](docs/Model/RoleUpdateResult.md)
+- [RoleUserFilterRequest](docs/Model/RoleUserFilterRequest.md)
 - [RoleUserResult](docs/Model/RoleUserResult.md)
 - [RoleUserSearchQueryRequest](docs/Model/RoleUserSearchQueryRequest.md)
 - [RoleUserSearchQuerySortRequest](docs/Model/RoleUserSearchQuerySortRequest.md)
@@ -1009,6 +1022,9 @@ Class | Method | HTTP request | Description
 - [UserTaskEffectiveVariableSearchQueryRequest](docs/Model/UserTaskEffectiveVariableSearchQueryRequest.md)
 - [UserTaskFilter](docs/Model/UserTaskFilter.md)
 - [UserTaskFilterFields](docs/Model/UserTaskFilterFields.md)
+- [UserTaskLookupRequest](docs/Model/UserTaskLookupRequest.md)
+- [UserTaskLookupResult](docs/Model/UserTaskLookupResult.md)
+- [UserTaskLookupStateEnum](docs/Model/UserTaskLookupStateEnum.md)
 - [UserTaskProperties](docs/Model/UserTaskProperties.md)
 - [UserTaskResult](docs/Model/UserTaskResult.md)
 - [UserTaskSearchQuery](docs/Model/UserTaskSearchQuery.md)
@@ -1027,6 +1043,7 @@ Class | Method | HTTP request | Description
 - [VariableFilter](docs/Model/VariableFilter.md)
 - [VariableKeyExactMatch](docs/Model/VariableKeyExactMatch.md)
 - [VariableKeyFilterProperty](docs/Model/VariableKeyFilterProperty.md)
+- [VariableMetadata](docs/Model/VariableMetadata.md)
 - [VariableResult](docs/Model/VariableResult.md)
 - [VariableResultBase](docs/Model/VariableResultBase.md)
 - [VariableSearchQuery](docs/Model/VariableSearchQuery.md)

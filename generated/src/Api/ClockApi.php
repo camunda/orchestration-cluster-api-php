@@ -72,6 +72,12 @@ class ClockApi
 
     /** @var array<string,string[]> $contentTypes **/
     public const contentTypes = [
+        'addClock' => [
+            'application/json',
+        ],
+        'getClock' => [
+            'application/json',
+        ],
         'pinClock' => [
             'application/json',
         ],
@@ -124,6 +130,714 @@ class ClockApi
     public function getConfig(): Configuration
     {
         return $this->config;
+    }
+
+    /**
+     * Operation addClock
+     *
+     * Add time to internal clock
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ClockAddRequest $clockAddRequest clockAddRequest (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['addClock'] to see the possible values for this operation
+     *
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws InvalidArgumentException
+     * @return \Camunda\Orchestration\Api\Model\ClockResult|\Camunda\Orchestration\Api\Model\ProblemDetail
+     */
+    public function addClock(
+        \Camunda\Orchestration\Api\Model\ClockAddRequest $clockAddRequest,
+        string $contentType = self::contentTypes['addClock'][0]
+    ): \Camunda\Orchestration\Api\Model\ClockResult|\Camunda\Orchestration\Api\Model\ProblemDetail
+    {
+        list($response) = $this->addClockWithHttpInfo($clockAddRequest, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation addClockWithHttpInfo
+     *
+     * Add time to internal clock
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ClockAddRequest $clockAddRequest (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['addClock'] to see the possible values for this operation
+     *
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws InvalidArgumentException
+     * @return array{0: \Camunda\Orchestration\Api\Model\ClockResult|\Camunda\Orchestration\Api\Model\ProblemDetail, 1: int, 2: array<string, string[]>} [response data, HTTP status code, HTTP response headers]
+     */
+    public function addClockWithHttpInfo(
+        \Camunda\Orchestration\Api\Model\ClockAddRequest $clockAddRequest,
+        string $contentType = self::contentTypes['addClock'][0]
+    ): array
+    {
+        $request = $this->addClockRequest($clockAddRequest, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            switch($statusCode) {
+                case 200:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ClockResult',
+                        $request,
+                        $response,
+                    );
+                case 400:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 401:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 403:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 500:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 503:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+            }
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            return $this->handleResponseWithDataType(
+                '\Camunda\Orchestration\Api\Model\ClockResult',
+                $request,
+                $response,
+            );
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ClockResult',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 401:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 403:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 500:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 503:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+            }
+        
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation addClockAsync
+     *
+     * Add time to internal clock
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ClockAddRequest $clockAddRequest (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['addClock'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return PromiseInterface
+     */
+    public function addClockAsync(
+        \Camunda\Orchestration\Api\Model\ClockAddRequest $clockAddRequest,
+        string $contentType = self::contentTypes['addClock'][0]
+    ): PromiseInterface
+    {
+        return $this->addClockAsyncWithHttpInfo($clockAddRequest, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation addClockAsyncWithHttpInfo
+     *
+     * Add time to internal clock
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ClockAddRequest $clockAddRequest (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['addClock'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return PromiseInterface
+     */
+    public function addClockAsyncWithHttpInfo(
+        \Camunda\Orchestration\Api\Model\ClockAddRequest $clockAddRequest,
+        string $contentType = self::contentTypes['addClock'][0]
+    ): PromiseInterface
+    {
+        $returnType = '\Camunda\Orchestration\Api\Model\ClockResult';
+        $request = $this->addClockRequest($clockAddRequest, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
+                    if (in_array($returnType, ['\SplFileObject', '\Psr\Http\Message\StreamInterface'])) {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'addClock'
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ClockAddRequest $clockAddRequest (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['addClock'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function addClockRequest(
+        \Camunda\Orchestration\Api\Model\ClockAddRequest $clockAddRequest,
+        string $contentType = self::contentTypes['addClock'][0]
+    ): Request
+    {
+        // verify the required parameter 'clockAddRequest' is set
+        if ($clockAddRequest === null || (is_array($clockAddRequest) && count($clockAddRequest) === 0)) {
+            throw new InvalidArgumentException(
+                'Missing the required parameter $clockAddRequest when calling addClock'
+            );
+        }
+
+        $resourcePath = '/clock/add';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/problem+json', ],
+            $contentType,
+            $multipart
+        );
+
+        // for model (json/xml)
+        if (isset($clockAddRequest)) {
+            if (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the body
+                try {
+                    $httpBody = json_encode(ObjectSerializer::sanitizeForSerialization($clockAddRequest), JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    throw new \InvalidArgumentException('json_encode error: ' . $e->getMessage(), 0, $e);
+                }
+            } else {
+                $httpBody = $clockAddRequest;
+            }
+        } elseif (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
+                    foreach ($formParamValueItems as $formParamValueItem) {
+                        $multipartContents[] = [
+                            'name' => $formParamName,
+                            'contents' => $formParamValueItem
+                        ];
+                    }
+                }
+                // for HTTP post (form)
+                $httpBody = new \GuzzleHttp\Psr7\MultipartStream($multipartContents);
+
+            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the form parameters
+                try {
+                    $httpBody = json_encode($formParams, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    throw new \InvalidArgumentException('json_encode error: ' . $e->getMessage(), 0, $e);
+                }
+            } else {
+                // for HTTP post (form)
+                $httpBody = ObjectSerializer::buildQuery($formParams);
+            }
+        }
+
+        // this endpoint requires HTTP basic authentication
+        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
+        }
+
+        // this endpoint requires Bearer (JWT) authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'POST',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation getClock
+     *
+     * Get internal clock
+     *
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getClock'] to see the possible values for this operation
+     *
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws InvalidArgumentException
+     * @return \Camunda\Orchestration\Api\Model\ClockResult|\Camunda\Orchestration\Api\Model\ProblemDetail
+     */
+    public function getClock(
+        string $contentType = self::contentTypes['getClock'][0]
+    ): \Camunda\Orchestration\Api\Model\ClockResult|\Camunda\Orchestration\Api\Model\ProblemDetail
+    {
+        list($response) = $this->getClockWithHttpInfo($contentType);
+        return $response;
+    }
+
+    /**
+     * Operation getClockWithHttpInfo
+     *
+     * Get internal clock
+     *
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getClock'] to see the possible values for this operation
+     *
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws InvalidArgumentException
+     * @return array{0: \Camunda\Orchestration\Api\Model\ClockResult|\Camunda\Orchestration\Api\Model\ProblemDetail, 1: int, 2: array<string, string[]>} [response data, HTTP status code, HTTP response headers]
+     */
+    public function getClockWithHttpInfo(
+        string $contentType = self::contentTypes['getClock'][0]
+    ): array
+    {
+        $request = $this->getClockRequest($contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            switch($statusCode) {
+                case 200:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ClockResult',
+                        $request,
+                        $response,
+                    );
+                case 401:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 403:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 500:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 503:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+            }
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            return $this->handleResponseWithDataType(
+                '\Camunda\Orchestration\Api\Model\ClockResult',
+                $request,
+                $response,
+            );
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ClockResult',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 401:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 403:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 500:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 503:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+            }
+        
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation getClockAsync
+     *
+     * Get internal clock
+     *
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getClock'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return PromiseInterface
+     */
+    public function getClockAsync(
+        string $contentType = self::contentTypes['getClock'][0]
+    ): PromiseInterface
+    {
+        return $this->getClockAsyncWithHttpInfo($contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation getClockAsyncWithHttpInfo
+     *
+     * Get internal clock
+     *
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getClock'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return PromiseInterface
+     */
+    public function getClockAsyncWithHttpInfo(
+        string $contentType = self::contentTypes['getClock'][0]
+    ): PromiseInterface
+    {
+        $returnType = '\Camunda\Orchestration\Api\Model\ClockResult';
+        $request = $this->getClockRequest($contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
+                    if (in_array($returnType, ['\SplFileObject', '\Psr\Http\Message\StreamInterface'])) {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'getClock'
+     *
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getClock'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function getClockRequest(
+        string $contentType = self::contentTypes['getClock'][0]
+    ): Request
+    {
+
+        $resourcePath = '/clock';
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/problem+json', ],
+            $contentType,
+            $multipart
+        );
+
+
+        // this endpoint requires HTTP basic authentication
+        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
+        }
+
+        // this endpoint requires Bearer (JWT) authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'GET',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
     }
 
     /**

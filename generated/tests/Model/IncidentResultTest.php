@@ -193,4 +193,13 @@ class IncidentResultTest extends TestCase
         // TODO: implement
         self::markTestIncomplete('Not implemented');
     }
+
+    /**
+     * Test attribute "storageOrdinal"
+     */
+    public function testPropertyStorageOrdinal()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
 }

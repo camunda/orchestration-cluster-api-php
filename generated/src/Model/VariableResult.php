@@ -64,6 +64,7 @@ class VariableResult implements ModelInterface, ArrayAccess, JsonSerializable
         'scopeKey' => '\Camunda\Orchestration\Semantic\ScopeKey',
         'processInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
         'rootProcessInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
+        'metadata' => '\Camunda\Orchestration\Api\Model\VariableMetadata',
         'value' => 'string'
     ];
 
@@ -79,6 +80,7 @@ class VariableResult implements ModelInterface, ArrayAccess, JsonSerializable
         'scopeKey' => null,
         'processInstanceKey' => null,
         'rootProcessInstanceKey' => null,
+        'metadata' => null,
         'value' => null
     ];
 
@@ -94,6 +96,7 @@ class VariableResult implements ModelInterface, ArrayAccess, JsonSerializable
         'scopeKey' => false,
         'processInstanceKey' => false,
         'rootProcessInstanceKey' => true,
+        'metadata' => false,
         'value' => false
     ];
 
@@ -202,6 +205,7 @@ class VariableResult implements ModelInterface, ArrayAccess, JsonSerializable
         'scopeKey' => 'scopeKey',
         'processInstanceKey' => 'processInstanceKey',
         'rootProcessInstanceKey' => 'rootProcessInstanceKey',
+        'metadata' => 'metadata',
         'value' => 'value'
     ];
 
@@ -217,6 +221,7 @@ class VariableResult implements ModelInterface, ArrayAccess, JsonSerializable
         'scopeKey' => 'setScopeKey',
         'processInstanceKey' => 'setProcessInstanceKey',
         'rootProcessInstanceKey' => 'setRootProcessInstanceKey',
+        'metadata' => 'setMetadata',
         'value' => 'setValue'
     ];
 
@@ -232,6 +237,7 @@ class VariableResult implements ModelInterface, ArrayAccess, JsonSerializable
         'scopeKey' => 'getScopeKey',
         'processInstanceKey' => 'getProcessInstanceKey',
         'rootProcessInstanceKey' => 'getRootProcessInstanceKey',
+        'metadata' => 'getMetadata',
         'value' => 'getValue'
     ];
 
@@ -288,6 +294,7 @@ class VariableResult implements ModelInterface, ArrayAccess, JsonSerializable
         $this->setIfExists('scopeKey', $data ?? [], null);
         $this->setIfExists('processInstanceKey', $data ?? [], null);
         $this->setIfExists('rootProcessInstanceKey', $data ?? [], null);
+        $this->setIfExists('metadata', $data ?? [], null);
         $this->setIfExists('value', $data ?? [], null);
     }
 
@@ -369,6 +376,9 @@ class VariableResult implements ModelInterface, ArrayAccess, JsonSerializable
         }
         if ($this->container['rootProcessInstanceKey'] === null && !$this->isNullableSetToNull('rootProcessInstanceKey')) {
             $invalidProperties[] = "'rootProcessInstanceKey' is required";
+        }
+        if ($this->container['metadata'] === null) {
+            $invalidProperties[] = "'metadata' can't be null";
         }
         if ($this->container['value'] === null) {
             $invalidProperties[] = "'value' can't be null";
@@ -566,6 +576,38 @@ class VariableResult implements ModelInterface, ArrayAccess, JsonSerializable
     }
 
     /**
+     * Gets metadata
+     *
+     * @return \Camunda\Orchestration\Api\Model\VariableMetadata
+     */
+    public function getMetadata(): \Camunda\Orchestration\Api\Model\VariableMetadata
+    {
+        return $this->container['metadata'];
+    }
+
+    /**
+     * Sets metadata
+     *
+     * @param \Camunda\Orchestration\Api\Model\VariableMetadata $metadata Metadata of this variable.
+     *
+     * @return $this
+     */
+    public function setMetadata(\Camunda\Orchestration\Api\Model\VariableMetadata $metadata): static
+    {
+        if (is_null($metadata)) {
+            throw new InvalidArgumentException('non-nullable metadata cannot be null');
+        }
+        $this->container['metadata'] = $metadata;
+        if ($metadata === null) {
+            unset($this->openAPIFieldsSet['metadata']);
+        } else {
+            $this->openAPIFieldsSet['metadata'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
      * Gets value
      *
      * @return string
@@ -578,7 +620,7 @@ class VariableResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets value
      *
-     * @param string $value Full value of this variable.
+     * @param string $value The full value of this variable, or `\"\"` if the variable is redacted.  Check `metadata.protectionModes` before you use the value: it contains `REDACT` for a redacted variable.
      *
      * @return $this
      */

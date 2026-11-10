@@ -59,7 +59,7 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
      */
     protected static array $openAPITypes = [
         'expression' => 'string',
-        'tenantId' => 'string',
+        'tenantId' => '\Camunda\Orchestration\Semantic\TenantId',
         'scopeKey' => '\Camunda\Orchestration\Semantic\ScopeKey',
         'variables' => 'array<string,mixed>'
     ];
@@ -71,7 +71,7 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
      */
     protected static array $openAPIFormats = [
         'expression' => null,
-        'tenantId' => null,
+        'tenantId' => 'TenantId',
         'scopeKey' => null,
         'variables' => null
     ];
@@ -322,6 +322,18 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
         if ($this->container['expression'] === null) {
             $invalidProperties[] = "'expression' can't be null";
         }
+        if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
+            $invalidProperties[] = "invalid value for 'tenantId', the character length must be smaller than or equal to 31.";
+        }
+
+        if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) < 1)) {
+            $invalidProperties[] = "invalid value for 'tenantId', the character length must be bigger than or equal to 1.";
+        }
+
+        if (!is_null((string) $this->container['tenantId']) && !preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
+            $invalidProperties[] = "invalid value for 'tenantId', must be conform to the pattern /^(<default>|[\\w\\.\\-]{1,31})$/.";
+        }
+
         return $invalidProperties;
     }
 
@@ -371,7 +383,7 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
      *
      * @return string|null
      */
-    public function getTenantId(): ?string
+    public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
         return $this->container['tenantId'];
     }
@@ -383,11 +395,8 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
      *
      * @return $this
      */
-    public function setTenantId(?string $tenantId): static
+    public function setTenantId(?\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
-        if (is_null($tenantId)) {
-            throw new InvalidArgumentException('non-nullable tenantId cannot be null');
-        }
         $this->container['tenantId'] = $tenantId;
         if ($tenantId === null) {
             unset($this->openAPIFieldsSet['tenantId']);

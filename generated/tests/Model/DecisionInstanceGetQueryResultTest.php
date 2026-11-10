@@ -231,6 +231,15 @@ class DecisionInstanceGetQueryResultTest extends TestCase
     }
 
     /**
+     * Test attribute "storageOrdinal"
+     */
+    public function testPropertyStorageOrdinal()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
      * Test attribute "tenantId"
      */
     public function testPropertyTenantId()

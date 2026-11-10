@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **processDefinitionId** | [**\Camunda\Orchestration\Api\Model\StringFilterProperty**](StringFilterProperty.md) | The process definition ID associated to this incident. | [optional]
 **errorType** | [**\Camunda\Orchestration\Api\Model\IncidentErrorTypeFilterProperty**](IncidentErrorTypeFilterProperty.md) | Incident error type with a defined set of values. | [optional]
-**errorMessage** | [**\Camunda\Orchestration\Api\Model\StringFilterProperty**](StringFilterProperty.md) | The error message of this incident. | [optional]
+**errorMessage** | [**\Camunda\Orchestration\Api\Model\StringFilterProperty**](StringFilterProperty.md) | The error message of this incident. For &#x60;$eq&#x60;, &#x60;$neq&#x60;, &#x60;$in&#x60;, and &#x60;$notIn&#x60;, matching is case-insensitive and matches if the incident&#39;s error message contains the given value as a phrase, not necessarily the entire error message. &#x60;$like&#x60; matches on individual words of the error message and does not support multi-word patterns. | [optional]
 **elementId** | [**\Camunda\Orchestration\Api\Model\StringFilterProperty**](StringFilterProperty.md) | The element ID associated to this incident. | [optional]
 **creationTime** | [**\Camunda\Orchestration\Api\Model\DateTimeFilterProperty**](DateTimeFilterProperty.md) | Date of incident creation. | [optional]
 **state** | [**\Camunda\Orchestration\Api\Model\IncidentStateFilterProperty**](IncidentStateFilterProperty.md) | State of this incident with a defined set of values. | [optional]

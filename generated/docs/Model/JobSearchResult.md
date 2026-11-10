@@ -17,11 +17,12 @@ Name | Type | Description | Notes
 **jobKey** | **string** | The key, a unique identifier for the job. |
 **kind** | [**\Camunda\Orchestration\Api\Model\JobKindEnum**](JobKindEnum.md) |  |
 **listenerEventType** | [**\Camunda\Orchestration\Api\Model\JobListenerEventTypeEnum**](JobListenerEventTypeEnum.md) |  |
-**processDefinitionId** | **string** | The process definition ID associated with the job. |
-**processDefinitionKey** | **string** | The process definition key associated with the job. |
+**processDefinitionId** | **string** | The process definition ID associated with the job. This field is not present for jobs imported by Operate 8.7 and earlier. |
+**processDefinitionKey** | **string** | The process definition key associated with the job. This field is not present for jobs imported by Operate 8.7 and earlier. |
 **processInstanceKey** | **string** | The process instance key associated with the job. |
 **rootProcessInstanceKey** | **string** | The key of the root process instance. The root process instance is the top-level ancestor in the process instance hierarchy. This field is only present for data belonging to process instance hierarchies created in version 8.9 or later. |
 **businessId** | **string** | The business ID of the owning process instance, inherited when the job was created. This is &#x60;null&#x60; for jobs created before version 8.10 and for jobs whose owning process instance has no business ID. |
+**storageOrdinal** | **int** | The storage ordinal this job&#39;s data belongs to. This is &#x60;null&#x60; for data exported before storage ordinals were introduced in version 8.11. |
 **retries** | **int** | The amount of retries left to this job. |
 **state** | [**\Camunda\Orchestration\Api\Model\JobStateEnum**](JobStateEnum.md) |  |
 **tenantId** | **string** | The unique identifier of the tenant. |

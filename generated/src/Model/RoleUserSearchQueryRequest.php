@@ -59,6 +59,7 @@ class RoleUserSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSer
      */
     protected static array $openAPITypes = [
         'page' => '\Camunda\Orchestration\Api\Model\SearchQueryPageRequest',
+        'filter' => '\Camunda\Orchestration\Api\Model\RoleUserFilterRequest',
         'sort' => '\Camunda\Orchestration\Api\Model\RoleUserSearchQuerySortRequest[]'
     ];
 
@@ -69,6 +70,7 @@ class RoleUserSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSer
      */
     protected static array $openAPIFormats = [
         'page' => null,
+        'filter' => null,
         'sort' => null
     ];
 
@@ -79,6 +81,7 @@ class RoleUserSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSer
      */
     protected static array $openAPINullables = [
         'page' => false,
+        'filter' => false,
         'sort' => false
     ];
 
@@ -182,6 +185,7 @@ class RoleUserSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSer
      */
     protected static array $attributeMap = [
         'page' => 'page',
+        'filter' => 'filter',
         'sort' => 'sort'
     ];
 
@@ -192,6 +196,7 @@ class RoleUserSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSer
      */
     protected static array $setters = [
         'page' => 'setPage',
+        'filter' => 'setFilter',
         'sort' => 'setSort'
     ];
 
@@ -202,6 +207,7 @@ class RoleUserSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSer
      */
     protected static array $getters = [
         'page' => 'getPage',
+        'filter' => 'getFilter',
         'sort' => 'getSort'
     ];
 
@@ -253,6 +259,7 @@ class RoleUserSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSer
     public function __construct(?array $data = null)
     {
         $this->setIfExists('page', $data ?? [], null);
+        $this->setIfExists('filter', $data ?? [], null);
         $this->setIfExists('sort', $data ?? [], null);
     }
 
@@ -324,6 +331,38 @@ class RoleUserSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSer
             unset($this->openAPIFieldsSet['page']);
         } else {
             $this->openAPIFieldsSet['page'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets filter
+     *
+     * @return \Camunda\Orchestration\Api\Model\RoleUserFilterRequest|null
+     */
+    public function getFilter(): ?\Camunda\Orchestration\Api\Model\RoleUserFilterRequest
+    {
+        return $this->container['filter'];
+    }
+
+    /**
+     * Sets filter
+     *
+     * @param \Camunda\Orchestration\Api\Model\RoleUserFilterRequest|null $filter The user filter criteria.
+     *
+     * @return $this
+     */
+    public function setFilter(?\Camunda\Orchestration\Api\Model\RoleUserFilterRequest $filter): static
+    {
+        if (is_null($filter)) {
+            throw new InvalidArgumentException('non-nullable filter cannot be null');
+        }
+        $this->container['filter'] = $filter;
+        if ($filter === null) {
+            unset($this->openAPIFieldsSet['filter']);
+        } else {
+            $this->openAPIFieldsSet['filter'] = true;
         }
 
         return $this;

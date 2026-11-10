@@ -139,4 +139,13 @@ class VariableFilterTest extends TestCase
         // TODO: implement
         self::markTestIncomplete('Not implemented');
     }
+
+    /**
+     * Test attribute "protectionMode"
+     */
+    public function testPropertyProtectionMode()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
 }

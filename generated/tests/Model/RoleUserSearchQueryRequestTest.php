@@ -87,6 +87,15 @@ class RoleUserSearchQueryRequestTest extends TestCase
     }
 
     /**
+     * Test attribute "filter"
+     */
+    public function testPropertyFilter()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
      * Test attribute "sort"
      */
     public function testPropertySort()

@@ -65,7 +65,8 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
         'isTruncated' => 'bool',
         'variableKey' => '\Camunda\Orchestration\Api\Model\VariableKeyFilterProperty',
         'scopeKey' => '\Camunda\Orchestration\Api\Model\ScopeKeyFilterProperty',
-        'processInstanceKey' => '\Camunda\Orchestration\Api\Model\ProcessInstanceKeyFilterProperty'
+        'processInstanceKey' => '\Camunda\Orchestration\Api\Model\ProcessInstanceKeyFilterProperty',
+        'protectionMode' => '\Camunda\Orchestration\Api\Model\ProtectionModeFilterProperty'
     ];
 
     /**
@@ -80,7 +81,8 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
         'isTruncated' => null,
         'variableKey' => null,
         'scopeKey' => null,
-        'processInstanceKey' => null
+        'processInstanceKey' => null,
+        'protectionMode' => null
     ];
 
     /**
@@ -95,7 +97,8 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
         'isTruncated' => false,
         'variableKey' => false,
         'scopeKey' => false,
-        'processInstanceKey' => false
+        'processInstanceKey' => false,
+        'protectionMode' => false
     ];
 
     /**
@@ -203,7 +206,8 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
         'isTruncated' => 'isTruncated',
         'variableKey' => 'variableKey',
         'scopeKey' => 'scopeKey',
-        'processInstanceKey' => 'processInstanceKey'
+        'processInstanceKey' => 'processInstanceKey',
+        'protectionMode' => 'protectionMode'
     ];
 
     /**
@@ -218,7 +222,8 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
         'isTruncated' => 'setIsTruncated',
         'variableKey' => 'setVariableKey',
         'scopeKey' => 'setScopeKey',
-        'processInstanceKey' => 'setProcessInstanceKey'
+        'processInstanceKey' => 'setProcessInstanceKey',
+        'protectionMode' => 'setProtectionMode'
     ];
 
     /**
@@ -233,7 +238,8 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
         'isTruncated' => 'getIsTruncated',
         'variableKey' => 'getVariableKey',
         'scopeKey' => 'getScopeKey',
-        'processInstanceKey' => 'getProcessInstanceKey'
+        'processInstanceKey' => 'getProcessInstanceKey',
+        'protectionMode' => 'getProtectionMode'
     ];
 
     /**
@@ -290,6 +296,7 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
         $this->setIfExists('variableKey', $data ?? [], null);
         $this->setIfExists('scopeKey', $data ?? [], null);
         $this->setIfExists('processInstanceKey', $data ?? [], null);
+        $this->setIfExists('protectionMode', $data ?? [], null);
     }
 
     /**
@@ -570,6 +577,38 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
             unset($this->openAPIFieldsSet['processInstanceKey']);
         } else {
             $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets protectionMode
+     *
+     * @return \Camunda\Orchestration\Api\Model\ProtectionModeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProtectionModeFilter|null
+     */
+    public function getProtectionMode(): \Camunda\Orchestration\Api\Model\ProtectionModeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProtectionModeFilter|null
+    {
+        return $this->container['protectionMode'];
+    }
+
+    /**
+     * Sets protectionMode
+     *
+     * @param \Camunda\Orchestration\Api\Model\ProtectionModeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProtectionModeFilter|null $protectionMode The protection modes applied to the variable.
+     *
+     * @return $this
+     */
+    public function setProtectionMode(\Camunda\Orchestration\Api\Model\ProtectionModeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProtectionModeFilter|null $protectionMode): static
+    {
+        if (is_null($protectionMode)) {
+            throw new InvalidArgumentException('non-nullable protectionMode cannot be null');
+        }
+        $this->container['protectionMode'] = $protectionMode;
+        if ($protectionMode === null) {
+            unset($this->openAPIFieldsSet['protectionMode']);
+        } else {
+            $this->openAPIFieldsSet['protectionMode'] = true;
         }
 
         return $this;

@@ -78,27 +78,18 @@ class ProcessInstanceCreationInstructionByIdTest extends TestCase
     }
 
     /**
-     * Test attribute "processDefinitionId"
-     */
-    public function testPropertyProcessDefinitionId()
-    {
-        // TODO: implement
-        self::markTestIncomplete('Not implemented');
-    }
-
-    /**
-     * Test attribute "processDefinitionVersion"
-     */
-    public function testPropertyProcessDefinitionVersion()
-    {
-        // TODO: implement
-        self::markTestIncomplete('Not implemented');
-    }
-
-    /**
      * Test attribute "variables"
      */
     public function testPropertyVariables()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
+     * Test attribute "variablesMetadata"
+     */
+    public function testPropertyVariablesMetadata()
     {
         // TODO: implement
         self::markTestIncomplete('Not implemented');
@@ -180,6 +171,24 @@ class ProcessInstanceCreationInstructionByIdTest extends TestCase
      * Test attribute "businessId"
      */
     public function testPropertyBusinessId()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
+     * Test attribute "processDefinitionId"
+     */
+    public function testPropertyProcessDefinitionId()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
+     * Test attribute "processDefinitionVersion"
+     */
+    public function testPropertyProcessDefinitionVersion()
     {
         // TODO: implement
         self::markTestIncomplete('Not implemented');

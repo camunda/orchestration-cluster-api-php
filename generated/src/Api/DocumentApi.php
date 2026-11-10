@@ -535,9 +535,9 @@ class DocumentApi
      * Create document link
      *
      * @param  string $documentId The ID of the document to link. (required)
+     * @param  \Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest documentLinkRequest (required)
      * @param  string|null $storeId The ID of the document store where the document is located. (optional)
      * @param  string|null $contentHash The hash of the document content that was computed by the document store during upload. The hash is part of the document reference that is returned when uploading a document. If the client fails to provide the correct hash, the request will be rejected. (optional)
-     * @param  \Camunda\Orchestration\Api\Model\DocumentLinkRequest|null $documentLinkRequest documentLinkRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createDocumentLink'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -546,13 +546,13 @@ class DocumentApi
      */
     public function createDocumentLink(
         string $documentId,
+        \Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest,
         ?string $storeId = null,
         ?string $contentHash = null,
-        ?\Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest = null,
         string $contentType = self::contentTypes['createDocumentLink'][0]
     ): \Camunda\Orchestration\Api\Model\DocumentLink|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
-        list($response) = $this->createDocumentLinkWithHttpInfo($documentId, $storeId, $contentHash, $documentLinkRequest, $contentType);
+        list($response) = $this->createDocumentLinkWithHttpInfo($documentId, $documentLinkRequest, $storeId, $contentHash, $contentType);
         return $response;
     }
 
@@ -562,9 +562,9 @@ class DocumentApi
      * Create document link
      *
      * @param  string $documentId The ID of the document to link. (required)
+     * @param  \Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest (required)
      * @param  string|null $storeId The ID of the document store where the document is located. (optional)
      * @param  string|null $contentHash The hash of the document content that was computed by the document store during upload. The hash is part of the document reference that is returned when uploading a document. If the client fails to provide the correct hash, the request will be rejected. (optional)
-     * @param  \Camunda\Orchestration\Api\Model\DocumentLinkRequest|null $documentLinkRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createDocumentLink'] to see the possible values for this operation
      *
      * @throws ApiException on non-2xx response or if the response body is not in the expected format
@@ -573,13 +573,13 @@ class DocumentApi
      */
     public function createDocumentLinkWithHttpInfo(
         string $documentId,
+        \Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest,
         ?string $storeId = null,
         ?string $contentHash = null,
-        ?\Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest = null,
         string $contentType = self::contentTypes['createDocumentLink'][0]
     ): array
     {
-        $request = $this->createDocumentLinkRequest($documentId, $storeId, $contentHash, $documentLinkRequest, $contentType);
+        $request = $this->createDocumentLinkRequest($documentId, $documentLinkRequest, $storeId, $contentHash, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -666,9 +666,9 @@ class DocumentApi
      * Create document link
      *
      * @param  string $documentId The ID of the document to link. (required)
+     * @param  \Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest (required)
      * @param  string|null $storeId The ID of the document store where the document is located. (optional)
      * @param  string|null $contentHash The hash of the document content that was computed by the document store during upload. The hash is part of the document reference that is returned when uploading a document. If the client fails to provide the correct hash, the request will be rejected. (optional)
-     * @param  \Camunda\Orchestration\Api\Model\DocumentLinkRequest|null $documentLinkRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createDocumentLink'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
@@ -676,13 +676,13 @@ class DocumentApi
      */
     public function createDocumentLinkAsync(
         string $documentId,
+        \Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest,
         ?string $storeId = null,
         ?string $contentHash = null,
-        ?\Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest = null,
         string $contentType = self::contentTypes['createDocumentLink'][0]
     ): PromiseInterface
     {
-        return $this->createDocumentLinkAsyncWithHttpInfo($documentId, $storeId, $contentHash, $documentLinkRequest, $contentType)
+        return $this->createDocumentLinkAsyncWithHttpInfo($documentId, $documentLinkRequest, $storeId, $contentHash, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -696,9 +696,9 @@ class DocumentApi
      * Create document link
      *
      * @param  string $documentId The ID of the document to link. (required)
+     * @param  \Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest (required)
      * @param  string|null $storeId The ID of the document store where the document is located. (optional)
      * @param  string|null $contentHash The hash of the document content that was computed by the document store during upload. The hash is part of the document reference that is returned when uploading a document. If the client fails to provide the correct hash, the request will be rejected. (optional)
-     * @param  \Camunda\Orchestration\Api\Model\DocumentLinkRequest|null $documentLinkRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createDocumentLink'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
@@ -706,14 +706,14 @@ class DocumentApi
      */
     public function createDocumentLinkAsyncWithHttpInfo(
         string $documentId,
+        \Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest,
         ?string $storeId = null,
         ?string $contentHash = null,
-        ?\Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest = null,
         string $contentType = self::contentTypes['createDocumentLink'][0]
     ): PromiseInterface
     {
         $returnType = '\Camunda\Orchestration\Api\Model\DocumentLink';
-        $request = $this->createDocumentLinkRequest($documentId, $storeId, $contentHash, $documentLinkRequest, $contentType);
+        $request = $this->createDocumentLinkRequest($documentId, $documentLinkRequest, $storeId, $contentHash, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -781,9 +781,9 @@ class DocumentApi
      * Create request for operation 'createDocumentLink'
      *
      * @param  string $documentId The ID of the document to link. (required)
+     * @param  \Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest (required)
      * @param  string|null $storeId The ID of the document store where the document is located. (optional)
      * @param  string|null $contentHash The hash of the document content that was computed by the document store during upload. The hash is part of the document reference that is returned when uploading a document. If the client fails to provide the correct hash, the request will be rejected. (optional)
-     * @param  \Camunda\Orchestration\Api\Model\DocumentLinkRequest|null $documentLinkRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createDocumentLink'] to see the possible values for this operation
      *
      * @throws InvalidArgumentException
@@ -791,9 +791,9 @@ class DocumentApi
      */
     public function createDocumentLinkRequest(
         string $documentId,
+        \Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest,
         ?string $storeId = null,
         ?string $contentHash = null,
-        ?\Camunda\Orchestration\Api\Model\DocumentLinkRequest $documentLinkRequest = null,
         string $contentType = self::contentTypes['createDocumentLink'][0]
     ): Request
     {
@@ -801,6 +801,12 @@ class DocumentApi
         if ($documentId === null || (is_array($documentId) && count($documentId) === 0)) {
             throw new InvalidArgumentException(
                 'Missing the required parameter $documentId when calling createDocumentLink'
+            );
+        }
+        // verify the required parameter 'documentLinkRequest' is set
+        if ($documentLinkRequest === null || (is_array($documentLinkRequest) && count($documentLinkRequest) === 0)) {
+            throw new InvalidArgumentException(
+                'Missing the required parameter $documentLinkRequest when calling createDocumentLink'
             );
         }
 

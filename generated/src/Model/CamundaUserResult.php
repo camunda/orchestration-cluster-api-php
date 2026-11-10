@@ -58,6 +58,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      * @var array<string, string>
      */
     protected static array $openAPITypes = [
+        'isAnonymous' => 'bool',
         'username' => '\Camunda\Orchestration\Semantic\Username',
         'displayName' => 'string',
         'email' => 'string',
@@ -76,6 +77,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      * @var array<string, string|null>
      */
     protected static array $openAPIFormats = [
+        'isAnonymous' => null,
         'username' => 'Username',
         'displayName' => null,
         'email' => null,
@@ -94,7 +96,8 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      * @var array<string, bool>
      */
     protected static array $openAPINullables = [
-        'username' => false,
+        'isAnonymous' => false,
+        'username' => true,
         'displayName' => true,
         'email' => true,
         'authorizedComponents' => false,
@@ -205,6 +208,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      * @var array<string, string>
      */
     protected static array $attributeMap = [
+        'isAnonymous' => 'isAnonymous',
         'username' => 'username',
         'displayName' => 'displayName',
         'email' => 'email',
@@ -223,6 +227,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      * @var array<string, string>
      */
     protected static array $setters = [
+        'isAnonymous' => 'setIsAnonymous',
         'username' => 'setUsername',
         'displayName' => 'setDisplayName',
         'email' => 'setEmail',
@@ -241,6 +246,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      * @var array<string, string>
      */
     protected static array $getters = [
+        'isAnonymous' => 'getIsAnonymous',
         'username' => 'getUsername',
         'displayName' => 'getDisplayName',
         'email' => 'getEmail',
@@ -300,6 +306,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function __construct(?array $data = null)
     {
+        $this->setIfExists('isAnonymous', $data ?? [], null);
         $this->setIfExists('username', $data ?? [], null);
         $this->setIfExists('displayName', $data ?? [], null);
         $this->setIfExists('email', $data ?? [], null);
@@ -350,18 +357,21 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
     {
         $invalidProperties = [];
 
-        if ($this->container['username'] === null) {
-            $invalidProperties[] = "'username' can't be null";
+        if ($this->container['isAnonymous'] === null) {
+            $invalidProperties[] = "'isAnonymous' can't be null";
         }
-        if ((mb_strlen((string) $this->container['username']) > 256)) {
+        if ($this->container['username'] === null && !$this->isNullableSetToNull('username')) {
+            $invalidProperties[] = "'username' is required";
+        }
+        if (!is_null((string) $this->container['username']) && (mb_strlen((string) $this->container['username']) > 256)) {
             $invalidProperties[] = "invalid value for 'username', the character length must be smaller than or equal to 256.";
         }
 
-        if ((mb_strlen((string) $this->container['username']) < 1)) {
+        if (!is_null((string) $this->container['username']) && (mb_strlen((string) $this->container['username']) < 1)) {
             $invalidProperties[] = "invalid value for 'username', the character length must be bigger than or equal to 1.";
         }
 
-        if (!preg_match("/^[a-zA-Z0-9_~@.+-]+$/", (string) $this->container['username'])) {
+        if (!is_null((string) $this->container['username']) && !preg_match("/^[a-zA-Z0-9_~@.+-]+$/", (string) $this->container['username'])) {
             $invalidProperties[] = "invalid value for 'username', must be conform to the pattern /^[a-zA-Z0-9_~@.+-]+$/.";
         }
 
@@ -405,11 +415,43 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
 
 
     /**
+     * Gets isAnonymous
+     *
+     * @return bool
+     */
+    public function getIsAnonymous(): bool
+    {
+        return $this->container['isAnonymous'];
+    }
+
+    /**
+     * Sets isAnonymous
+     *
+     * @param bool $isAnonymous Whether the caller has no identity. Only an unprotected API answers an anonymous caller; a protected API returns `401` instead. When `true`, `username`, `displayName` and `email` are `null` and the lists are empty.
+     *
+     * @return $this
+     */
+    public function setIsAnonymous(bool $isAnonymous): static
+    {
+        if (is_null($isAnonymous)) {
+            throw new InvalidArgumentException('non-nullable isAnonymous cannot be null');
+        }
+        $this->container['isAnonymous'] = $isAnonymous;
+        if ($isAnonymous === null) {
+            unset($this->openAPIFieldsSet['isAnonymous']);
+        } else {
+            $this->openAPIFieldsSet['isAnonymous'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
      * Gets username
      *
-     * @return string
+     * @return string|null
      */
-    public function getUsername(): \Camunda\Orchestration\Semantic\Username
+    public function getUsername(): ?\Camunda\Orchestration\Semantic\Username
     {
         return $this->container['username'];
     }
@@ -417,11 +459,11 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets username
      *
-     * @param string $username The username of the user.
+     * @param string|null $username The username of the user. `null` when `isAnonymous` is `true`.
      *
      * @return $this
      */
-    public function setUsername(\Camunda\Orchestration\Semantic\Username $username): static
+    public function setUsername(?\Camunda\Orchestration\Semantic\Username $username): static
     {
         $this->container['username'] = $username;
         if ($username === null) {
@@ -524,7 +566,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets authorizedComponents
      *
-     * @param string[] $authorizedComponents The web components the user is authorized to use.
+     * @param string[] $authorizedComponents The web components the user is authorized to use. When authorizations are disabled for the cluster, this always returns `[\"*\"]`, regardless of the user's actual permissions, since access is not restricted in that case. An anonymous caller of an unprotected API also gets `[\"*\"]`, for the same reason.
      *
      * @return $this
      */

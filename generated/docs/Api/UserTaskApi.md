@@ -8,6 +8,7 @@ All URIs are relative to http://localhost:8080/v2, except if the operation defin
 | [**completeUserTask()**](UserTaskApi.md#completeUserTask) | **POST** /user-tasks/{userTaskKey}/completion | Complete user task |
 | [**getUserTask()**](UserTaskApi.md#getUserTask) | **GET** /user-tasks/{userTaskKey} | Get user task |
 | [**getUserTaskForm()**](UserTaskApi.md#getUserTaskForm) | **GET** /user-tasks/{userTaskKey}/form | Get user task form |
+| [**lookupUserTask()**](UserTaskApi.md#lookupUserTask) | **POST** /user-tasks/{userTaskKey}/lookup | Look up an active user task (alpha) |
 | [**searchUserTaskAuditLogs()**](UserTaskApi.md#searchUserTaskAuditLogs) | **POST** /user-tasks/{userTaskKey}/audit-logs/search | Search user task audit logs |
 | [**searchUserTaskEffectiveVariables()**](UserTaskApi.md#searchUserTaskEffectiveVariables) | **POST** /user-tasks/{userTaskKey}/effective-variables/search | Search user task effective variables |
 | [**searchUserTaskVariables()**](UserTaskApi.md#searchUserTaskVariables) | **POST** /user-tasks/{userTaskKey}/variables/search | Search user task variables |
@@ -272,6 +273,73 @@ try {
 ### HTTP request headers
 
 - **Content-Type**: Not defined
+- **Accept**: `application/json`, `application/problem+json`
+
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
+[[Back to README]](../../README.md)
+
+## `lookupUserTask()`
+
+```php
+lookupUserTask($userTaskKey, $userTaskLookupRequest): \Camunda\Orchestration\Api\Model\UserTaskLookupResult
+```
+
+Look up an active user task (alpha)
+
+Returns an active user task together with the variables visible to it, read from the engine's state instead of secondary storage. The task and its variables are read at the same point in processing, so they are consistent with each other and with any command the engine has already processed, for example the completion of a previous task.  The response includes the task's lifecycle `state`. Use it to interpret the returned values: while a change to the task is in progress, the task fields and variables are the ones from before the change, and `state` names the pending change. For example, with `ASSIGNING` the returned `assignee` is still the previous one, because task listeners can deny the new assignment; with `COMPLETING` the variables don't include the ones sent with the completion yet.  Only active tasks can be looked up. The lookup returns 404 when the task doesn't exist, when it was already completed or canceled (use the user task search for those), or when it belongs to a tenant the caller isn't assigned to. It returns 409 when the task's process instance is banned: an instance that hit an unrecoverable error and can only be canceled.  Each lookup is processed by the engine. Use it when a task is opened, not for polling.  This endpoint is an alpha feature and may be subject to change in future releases.
+
+### Example
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+// Configure HTTP basic authorization: basicAuth
+$config = Camunda\Orchestration\Api\Configuration::getDefaultConfiguration()
+              ->setUsername('YOUR_USERNAME')
+              ->setPassword('YOUR_PASSWORD');
+
+// Configure Bearer (JWT) authorization: bearerAuth
+$config = Camunda\Orchestration\Api\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+
+$apiInstance = new Camunda\Orchestration\Api\Api\UserTaskApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client(),
+    $config
+);
+$userTaskKey = 'userTaskKey_example'; // string | The key of the user task to look up.
+$userTaskLookupRequest = new \Camunda\Orchestration\Api\Model\UserTaskLookupRequest(); // \Camunda\Orchestration\Api\Model\UserTaskLookupRequest
+
+try {
+    $result = $apiInstance->lookupUserTask($userTaskKey, $userTaskLookupRequest);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling UserTaskApi->lookupUserTask: ', $e->getMessage(), PHP_EOL;
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **userTaskKey** | **string**| The key of the user task to look up. | |
+| **userTaskLookupRequest** | [**\Camunda\Orchestration\Api\Model\UserTaskLookupRequest**](../Model/UserTaskLookupRequest.md)|  | [optional] |
+
+### Return type
+
+[**\Camunda\Orchestration\Api\Model\UserTaskLookupResult**](../Model/UserTaskLookupResult.md)
+
+### Authorization
+
+[basicAuth](../../README.md#basicAuth), [bearerAuth](../../README.md#bearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
 - **Accept**: `application/json`, `application/problem+json`
 
 [[Back to top]](#) [[Back to API list]](../../README.md#endpoints)

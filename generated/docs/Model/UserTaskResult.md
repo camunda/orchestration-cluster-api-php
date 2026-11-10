@@ -20,6 +20,7 @@ Name | Type | Description | Notes
 **processDefinitionVersion** | **int** | The version of the process definition. |
 **customHeaders** | **array<string,string>** | Custom headers for the user task. |
 **priority** | **int** | The priority of a user task. The higher the value the higher the priority. | [default to 50]
+**isSuspended** | **bool** | Whether the user task is suspended because its owning process instance is suspended. |
 **userTaskKey** | **string** | The key of the user task. |
 **elementInstanceKey** | **string** | The key of the element instance. |
 **processName** | **string** | The name of the process definition. This is &#x60;null&#x60; if the process has no name defined. |

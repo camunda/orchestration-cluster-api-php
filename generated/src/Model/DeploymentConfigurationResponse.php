@@ -60,6 +60,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
      */
     protected static array $openAPITypes = [
         'isMultiTenancyEnabled' => 'bool',
+        'isTenantsApiEnabled' => 'bool',
         'maxRequestSize' => 'int'
     ];
 
@@ -70,6 +71,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
      */
     protected static array $openAPIFormats = [
         'isMultiTenancyEnabled' => null,
+        'isTenantsApiEnabled' => null,
         'maxRequestSize' => 'int64'
     ];
 
@@ -80,6 +82,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
      */
     protected static array $openAPINullables = [
         'isMultiTenancyEnabled' => false,
+        'isTenantsApiEnabled' => false,
         'maxRequestSize' => false
     ];
 
@@ -183,6 +186,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
      */
     protected static array $attributeMap = [
         'isMultiTenancyEnabled' => 'isMultiTenancyEnabled',
+        'isTenantsApiEnabled' => 'isTenantsApiEnabled',
         'maxRequestSize' => 'maxRequestSize'
     ];
 
@@ -193,6 +197,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
      */
     protected static array $setters = [
         'isMultiTenancyEnabled' => 'setIsMultiTenancyEnabled',
+        'isTenantsApiEnabled' => 'setIsTenantsApiEnabled',
         'maxRequestSize' => 'setMaxRequestSize'
     ];
 
@@ -203,6 +208,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
      */
     protected static array $getters = [
         'isMultiTenancyEnabled' => 'getIsMultiTenancyEnabled',
+        'isTenantsApiEnabled' => 'getIsTenantsApiEnabled',
         'maxRequestSize' => 'getMaxRequestSize'
     ];
 
@@ -254,6 +260,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
     public function __construct(?array $data = null)
     {
         $this->setIfExists('isMultiTenancyEnabled', $data ?? [], null);
+        $this->setIfExists('isTenantsApiEnabled', $data ?? [], null);
         $this->setIfExists('maxRequestSize', $data ?? [], null);
     }
 
@@ -288,6 +295,9 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
 
         if ($this->container['isMultiTenancyEnabled'] === null) {
             $invalidProperties[] = "'isMultiTenancyEnabled' can't be null";
+        }
+        if ($this->container['isTenantsApiEnabled'] === null) {
+            $invalidProperties[] = "'isTenantsApiEnabled' can't be null";
         }
         if ($this->container['maxRequestSize'] === null) {
             $invalidProperties[] = "'maxRequestSize' can't be null";
@@ -331,6 +341,38 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
             unset($this->openAPIFieldsSet['isMultiTenancyEnabled']);
         } else {
             $this->openAPIFieldsSet['isMultiTenancyEnabled'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets isTenantsApiEnabled
+     *
+     * @return bool
+     */
+    public function getIsTenantsApiEnabled(): bool
+    {
+        return $this->container['isTenantsApiEnabled'];
+    }
+
+    /**
+     * Sets isTenantsApiEnabled
+     *
+     * @param bool $isTenantsApiEnabled Whether the tenants management API and UI are enabled.
+     *
+     * @return $this
+     */
+    public function setIsTenantsApiEnabled(bool $isTenantsApiEnabled): static
+    {
+        if (is_null($isTenantsApiEnabled)) {
+            throw new InvalidArgumentException('non-nullable isTenantsApiEnabled cannot be null');
+        }
+        $this->container['isTenantsApiEnabled'] = $isTenantsApiEnabled;
+        if ($isTenantsApiEnabled === null) {
+            unset($this->openAPIFieldsSet['isTenantsApiEnabled']);
+        } else {
+            $this->openAPIFieldsSet['isTenantsApiEnabled'] = true;
         }
 
         return $this;

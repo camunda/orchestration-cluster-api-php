@@ -84,6 +84,9 @@ class UserTaskApi
         'getUserTaskForm' => [
             'application/json',
         ],
+        'lookupUserTask' => [
+            'application/json',
+        ],
         'searchUserTaskAuditLogs' => [
             'application/json',
         ],
@@ -1542,6 +1545,441 @@ class UserTaskApi
         $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'GET',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation lookupUserTask
+     *
+     * Look up an active user task (alpha)
+     *
+     * @param  string $userTaskKey The key of the user task to look up. (required)
+     * @param  \Camunda\Orchestration\Api\Model\UserTaskLookupRequest|null $userTaskLookupRequest userTaskLookupRequest (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['lookupUserTask'] to see the possible values for this operation
+     *
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws InvalidArgumentException
+     * @return \Camunda\Orchestration\Api\Model\UserTaskLookupResult|\Camunda\Orchestration\Api\Model\ProblemDetail
+     */
+    public function lookupUserTask(
+        string $userTaskKey,
+        ?\Camunda\Orchestration\Api\Model\UserTaskLookupRequest $userTaskLookupRequest = null,
+        string $contentType = self::contentTypes['lookupUserTask'][0]
+    ): \Camunda\Orchestration\Api\Model\UserTaskLookupResult|\Camunda\Orchestration\Api\Model\ProblemDetail
+    {
+        list($response) = $this->lookupUserTaskWithHttpInfo($userTaskKey, $userTaskLookupRequest, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation lookupUserTaskWithHttpInfo
+     *
+     * Look up an active user task (alpha)
+     *
+     * @param  string $userTaskKey The key of the user task to look up. (required)
+     * @param  \Camunda\Orchestration\Api\Model\UserTaskLookupRequest|null $userTaskLookupRequest (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['lookupUserTask'] to see the possible values for this operation
+     *
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws InvalidArgumentException
+     * @return array{0: \Camunda\Orchestration\Api\Model\UserTaskLookupResult|\Camunda\Orchestration\Api\Model\ProblemDetail, 1: int, 2: array<string, string[]>} [response data, HTTP status code, HTTP response headers]
+     */
+    public function lookupUserTaskWithHttpInfo(
+        string $userTaskKey,
+        ?\Camunda\Orchestration\Api\Model\UserTaskLookupRequest $userTaskLookupRequest = null,
+        string $contentType = self::contentTypes['lookupUserTask'][0]
+    ): array
+    {
+        $request = $this->lookupUserTaskRequest($userTaskKey, $userTaskLookupRequest, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            switch($statusCode) {
+                case 200:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\UserTaskLookupResult',
+                        $request,
+                        $response,
+                    );
+                case 400:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 401:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 403:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 404:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 409:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 500:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 503:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+            }
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            return $this->handleResponseWithDataType(
+                '\Camunda\Orchestration\Api\Model\UserTaskLookupResult',
+                $request,
+                $response,
+            );
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\UserTaskLookupResult',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 401:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 403:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 404:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 409:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 500:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+                case 503:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    throw $e;
+            }
+        
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation lookupUserTaskAsync
+     *
+     * Look up an active user task (alpha)
+     *
+     * @param  string $userTaskKey The key of the user task to look up. (required)
+     * @param  \Camunda\Orchestration\Api\Model\UserTaskLookupRequest|null $userTaskLookupRequest (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['lookupUserTask'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return PromiseInterface
+     */
+    public function lookupUserTaskAsync(
+        string $userTaskKey,
+        ?\Camunda\Orchestration\Api\Model\UserTaskLookupRequest $userTaskLookupRequest = null,
+        string $contentType = self::contentTypes['lookupUserTask'][0]
+    ): PromiseInterface
+    {
+        return $this->lookupUserTaskAsyncWithHttpInfo($userTaskKey, $userTaskLookupRequest, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation lookupUserTaskAsyncWithHttpInfo
+     *
+     * Look up an active user task (alpha)
+     *
+     * @param  string $userTaskKey The key of the user task to look up. (required)
+     * @param  \Camunda\Orchestration\Api\Model\UserTaskLookupRequest|null $userTaskLookupRequest (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['lookupUserTask'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return PromiseInterface
+     */
+    public function lookupUserTaskAsyncWithHttpInfo(
+        string $userTaskKey,
+        ?\Camunda\Orchestration\Api\Model\UserTaskLookupRequest $userTaskLookupRequest = null,
+        string $contentType = self::contentTypes['lookupUserTask'][0]
+    ): PromiseInterface
+    {
+        $returnType = '\Camunda\Orchestration\Api\Model\UserTaskLookupResult';
+        $request = $this->lookupUserTaskRequest($userTaskKey, $userTaskLookupRequest, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
+                    if (in_array($returnType, ['\SplFileObject', '\Psr\Http\Message\StreamInterface'])) {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'lookupUserTask'
+     *
+     * @param  string $userTaskKey The key of the user task to look up. (required)
+     * @param  \Camunda\Orchestration\Api\Model\UserTaskLookupRequest|null $userTaskLookupRequest (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['lookupUserTask'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function lookupUserTaskRequest(
+        string $userTaskKey,
+        ?\Camunda\Orchestration\Api\Model\UserTaskLookupRequest $userTaskLookupRequest = null,
+        string $contentType = self::contentTypes['lookupUserTask'][0]
+    ): Request
+    {
+        // verify the required parameter 'userTaskKey' is set
+        if ($userTaskKey === null || (is_array($userTaskKey) && count($userTaskKey) === 0)) {
+            throw new InvalidArgumentException(
+                'Missing the required parameter $userTaskKey when calling lookupUserTask'
+            );
+        }
+
+        $resourcePath = '/user-tasks/{userTaskKey}/lookup';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+        // path params
+        if ($userTaskKey !== null) {
+            $resourcePath = str_replace(
+                '{userTaskKey}',
+                ObjectSerializer::toPathValue($userTaskKey),
+                $resourcePath
+            );
+        }
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/problem+json', ],
+            $contentType,
+            $multipart
+        );
+
+        // for model (json/xml)
+        if (isset($userTaskLookupRequest)) {
+            if (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the body
+                try {
+                    $httpBody = json_encode(ObjectSerializer::sanitizeForSerialization($userTaskLookupRequest), JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    throw new \InvalidArgumentException('json_encode error: ' . $e->getMessage(), 0, $e);
+                }
+            } else {
+                $httpBody = $userTaskLookupRequest;
+            }
+        } elseif (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
+                    foreach ($formParamValueItems as $formParamValueItem) {
+                        $multipartContents[] = [
+                            'name' => $formParamName,
+                            'contents' => $formParamValueItem
+                        ];
+                    }
+                }
+                // for HTTP post (form)
+                $httpBody = new \GuzzleHttp\Psr7\MultipartStream($multipartContents);
+
+            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the form parameters
+                try {
+                    $httpBody = json_encode($formParams, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    throw new \InvalidArgumentException('json_encode error: ' . $e->getMessage(), 0, $e);
+                }
+            } else {
+                // for HTTP post (form)
+                $httpBody = ObjectSerializer::buildQuery($formParams);
+            }
+        }
+
+        // this endpoint requires HTTP basic authentication
+        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
+        }
+
+        // this endpoint requires Bearer (JWT) authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'POST',
             $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
             $headers,
             $httpBody

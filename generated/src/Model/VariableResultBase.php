@@ -64,7 +64,8 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
         'variableKey' => '\Camunda\Orchestration\Semantic\VariableKey',
         'scopeKey' => '\Camunda\Orchestration\Semantic\ScopeKey',
         'processInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
-        'rootProcessInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey'
+        'rootProcessInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
+        'metadata' => '\Camunda\Orchestration\Api\Model\VariableMetadata'
     ];
 
     /**
@@ -78,7 +79,8 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
         'variableKey' => null,
         'scopeKey' => null,
         'processInstanceKey' => null,
-        'rootProcessInstanceKey' => null
+        'rootProcessInstanceKey' => null,
+        'metadata' => null
     ];
 
     /**
@@ -92,7 +94,8 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
         'variableKey' => false,
         'scopeKey' => false,
         'processInstanceKey' => false,
-        'rootProcessInstanceKey' => true
+        'rootProcessInstanceKey' => true,
+        'metadata' => false
     ];
 
     /**
@@ -199,7 +202,8 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
         'variableKey' => 'variableKey',
         'scopeKey' => 'scopeKey',
         'processInstanceKey' => 'processInstanceKey',
-        'rootProcessInstanceKey' => 'rootProcessInstanceKey'
+        'rootProcessInstanceKey' => 'rootProcessInstanceKey',
+        'metadata' => 'metadata'
     ];
 
     /**
@@ -213,7 +217,8 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
         'variableKey' => 'setVariableKey',
         'scopeKey' => 'setScopeKey',
         'processInstanceKey' => 'setProcessInstanceKey',
-        'rootProcessInstanceKey' => 'setRootProcessInstanceKey'
+        'rootProcessInstanceKey' => 'setRootProcessInstanceKey',
+        'metadata' => 'setMetadata'
     ];
 
     /**
@@ -227,7 +232,8 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
         'variableKey' => 'getVariableKey',
         'scopeKey' => 'getScopeKey',
         'processInstanceKey' => 'getProcessInstanceKey',
-        'rootProcessInstanceKey' => 'getRootProcessInstanceKey'
+        'rootProcessInstanceKey' => 'getRootProcessInstanceKey',
+        'metadata' => 'getMetadata'
     ];
 
     /**
@@ -283,6 +289,7 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
         $this->setIfExists('scopeKey', $data ?? [], null);
         $this->setIfExists('processInstanceKey', $data ?? [], null);
         $this->setIfExists('rootProcessInstanceKey', $data ?? [], null);
+        $this->setIfExists('metadata', $data ?? [], null);
     }
 
     /**
@@ -363,6 +370,9 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
         }
         if ($this->container['rootProcessInstanceKey'] === null && !$this->isNullableSetToNull('rootProcessInstanceKey')) {
             $invalidProperties[] = "'rootProcessInstanceKey' is required";
+        }
+        if ($this->container['metadata'] === null) {
+            $invalidProperties[] = "'metadata' can't be null";
         }
         return $invalidProperties;
     }
@@ -551,6 +561,38 @@ class VariableResultBase implements ModelInterface, ArrayAccess, JsonSerializabl
             unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
         } else {
             $this->openAPIFieldsSet['rootProcessInstanceKey'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets metadata
+     *
+     * @return \Camunda\Orchestration\Api\Model\VariableMetadata
+     */
+    public function getMetadata(): \Camunda\Orchestration\Api\Model\VariableMetadata
+    {
+        return $this->container['metadata'];
+    }
+
+    /**
+     * Sets metadata
+     *
+     * @param \Camunda\Orchestration\Api\Model\VariableMetadata $metadata Metadata of this variable.
+     *
+     * @return $this
+     */
+    public function setMetadata(\Camunda\Orchestration\Api\Model\VariableMetadata $metadata): static
+    {
+        if (is_null($metadata)) {
+            throw new InvalidArgumentException('non-nullable metadata cannot be null');
+        }
+        $this->container['metadata'] = $metadata;
+        if ($metadata === null) {
+            unset($this->openAPIFieldsSet['metadata']);
+        } else {
+            $this->openAPIFieldsSet['metadata'] = true;
         }
 
         return $this;

@@ -87,6 +87,15 @@ class UserTaskFilterFieldsTest extends TestCase
     }
 
     /**
+     * Test attribute "isSuspended"
+     */
+    public function testPropertyIsSuspended()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
      * Test attribute "assignee"
      */
     public function testPropertyAssignee()

@@ -132,6 +132,15 @@ class VariableResultTest extends TestCase
     }
 
     /**
+     * Test attribute "metadata"
+     */
+    public function testPropertyMetadata()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
      * Test attribute "value"
      */
     public function testPropertyValue()

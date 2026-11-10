@@ -70,6 +70,30 @@ class ClockApiTest extends TestCase
     }
 
     /**
+     * Test case for addClock
+     *
+     * Add time to internal clock.
+     *
+     */
+    public function testAddClock()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
+     * Test case for getClock
+     *
+     * Get internal clock.
+     *
+     */
+    public function testGetClock()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
      * Test case for pinClock
      *
      * Pin internal clock (alpha).
