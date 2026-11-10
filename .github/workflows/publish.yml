@@ -10,7 +10,7 @@ on:
       spec_ref:
         description: 'Git ref (branch/tag/SHA) in camunda/camunda to fetch spec from'
         required: false
-        default: 'stable/8.10'
+        default: 'main'
 
 concurrency:
   group: orchestration-cluster-api-php-release-${{ github.ref_name }}
@@ -25,8 +25,8 @@ jobs:
   spec-ref-guard:
     uses: camunda/sdk-infra/.github/workflows/sdk-spec-ref-guard.yml@v1
     with:
-      spec-ref: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.spec_ref) || vars.SPEC_REF_OVERRIDE || 'stable/8.10' }}
-      default-ref: 'stable/8.10'
+      spec-ref: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.spec_ref) || vars.SPEC_REF_OVERRIDE || 'main' }}
+      default-ref: 'main'
       ack: ${{ vars.SPEC_REF_OVERRIDE_ACK || '' }}
       expires: ${{ vars.SPEC_REF_OVERRIDE_EXPIRES || '' }}
 
@@ -34,7 +34,7 @@ jobs:
     needs: spec-ref-guard
     uses: camunda/sdk-infra/.github/workflows/sdk-bundle-spec.yml@v1
     with:
-      spec-ref: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.spec_ref) || vars.SPEC_REF_OVERRIDE || 'stable/8.10' }}
+      spec-ref: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.spec_ref) || vars.SPEC_REF_OVERRIDE || 'main' }}
 
   release:
     needs: bundle-spec
@@ -97,7 +97,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PACKAGIST_USERNAME: ${{ vars.PACKAGIST_USERNAME }}
           PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
-          # SDK major tracks the Camunda server minor (spec ref stable/8.10 -> major 10).
+          # SDK major tracks the Camunda server minor: main builds camunda main (8.11 -> 11.0.0-alpha.N),
+          # stable/10 builds camunda stable/8.10 (-> 10.x).
           # Consumed by @camunda8/sdk-infra release.config.base.cjs to pick the promoted
           # stable major (dist-tag `latest`) and align main's alpha prereleases.
           CAMUNDA_SDK_CURRENT_STABLE_MAJOR: ${{ vars.CAMUNDA_SDK_CURRENT_STABLE_MAJOR }}

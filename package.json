@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "release": "semantic-release",
-    "bundle:spec": "camunda-schema-bundler --ref ${SPEC_REF:-stable/8.10} --deref-path-local --output-spec external-spec/bundled/rest-api.bundle.json --output-metadata external-spec/bundled/spec-metadata.json"
+    "bundle:spec": "camunda-schema-bundler --ref ${SPEC_REF:-main} --deref-path-local --output-spec external-spec/bundled/rest-api.bundle.json --output-metadata external-spec/bundled/spec-metadata.json"
   },
   "devDependencies": {
     "@camunda8/sdk-infra": "1.14.0",
