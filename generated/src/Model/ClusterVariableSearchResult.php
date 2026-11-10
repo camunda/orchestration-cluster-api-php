@@ -58,7 +58,7 @@ class ClusterVariableSearchResult implements ModelInterface, ArrayAccess, JsonSe
      * @var array<string, string>
      */
     protected static array $openAPITypes = [
-        'name' => 'string',
+        'name' => '\Camunda\Orchestration\Semantic\ClusterVariableName',
         'scope' => '\Camunda\Orchestration\Api\Model\ClusterVariableScopeEnum',
         'tenantId' => 'string',
         'metadata' => 'array<string,\Camunda\Orchestration\Api\Model\CreateClusterVariableRequestMetadataValue>',
@@ -310,7 +310,16 @@ class ClusterVariableSearchResult implements ModelInterface, ArrayAccess, JsonSe
             $this->openAPINullablesSetToNull[] = $variableName;
         }
 
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $value = $fields[$variableName] ?? $defaultValue;
+        $semanticType = static::$openAPITypes[$variableName] ?? null;
+        if (
+            is_string($value)
+            && is_string($semanticType)
+            && is_subclass_of($semanticType, \Camunda\Orchestration\Semantic\SemanticKey::class)
+        ) {
+            $value = new $semanticType($value);
+        }
+        $this->container[$variableName] = $value;
     }
 
     /**
@@ -323,15 +332,15 @@ class ClusterVariableSearchResult implements ModelInterface, ArrayAccess, JsonSe
         if ($this->container['name'] === null) {
             $invalidProperties[] = "'name' can't be null";
         }
-        if ((mb_strlen($this->container['name']) > 256)) {
+        if ((mb_strlen((string) $this->container['name']) > 256)) {
             $invalidProperties[] = "invalid value for 'name', the character length must be smaller than or equal to 256.";
         }
 
-        if ((mb_strlen($this->container['name']) < 1)) {
+        if ((mb_strlen((string) $this->container['name']) < 1)) {
             $invalidProperties[] = "invalid value for 'name', the character length must be bigger than or equal to 1.";
         }
 
-        if (!preg_match("/^[a-zA-Z0-9_~@.+-]+$/", $this->container['name'])) {
+        if (!preg_match("/^[a-zA-Z0-9_~@.+-]+$/", (string) $this->container['name'])) {
             $invalidProperties[] = "invalid value for 'name', must be conform to the pattern /^[a-zA-Z0-9_~@.+-]+$/.";
         }
 
@@ -374,7 +383,7 @@ class ClusterVariableSearchResult implements ModelInterface, ArrayAccess, JsonSe
      *
      * @return string
      */
-    public function getName(): string
+    public function getName(): \Camunda\Orchestration\Semantic\ClusterVariableName
     {
         return $this->container['name'];
     }
@@ -386,21 +395,8 @@ class ClusterVariableSearchResult implements ModelInterface, ArrayAccess, JsonSe
      *
      * @return $this
      */
-    public function setName(string $name): static
+    public function setName(\Camunda\Orchestration\Semantic\ClusterVariableName $name): static
     {
-        if (is_null($name)) {
-            throw new InvalidArgumentException('non-nullable name cannot be null');
-        }
-        if ((mb_strlen($name) > 256)) {
-            throw new InvalidArgumentException('invalid length for $name when calling ClusterVariableSearchResult., must be smaller than or equal to 256.');
-        }
-        if ((mb_strlen($name) < 1)) {
-            throw new InvalidArgumentException('invalid length for $name when calling ClusterVariableSearchResult., must be bigger than or equal to 1.');
-        }
-        if ((!preg_match("/^[a-zA-Z0-9_~@.+-]+$/", ObjectSerializer::toString($name)))) {
-            throw new InvalidArgumentException("invalid value for \$name when calling ClusterVariableSearchResult., must conform to the pattern /^[a-zA-Z0-9_~@.+-]+$/.");
-        }
-
         $this->container['name'] = $name;
         if ($name === null) {
             unset($this->openAPIFieldsSet['name']);

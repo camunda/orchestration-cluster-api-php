@@ -58,24 +58,24 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      * @var array<string, string>
      */
     protected static array $openAPITypes = [
-        'businessId' => 'string',
-        'decisionDefinitionId' => 'string',
-        'decisionDefinitionKey' => 'string',
+        'businessId' => '\Camunda\Orchestration\Semantic\BusinessId',
+        'decisionDefinitionId' => '\Camunda\Orchestration\Semantic\DecisionDefinitionId',
+        'decisionDefinitionKey' => '\Camunda\Orchestration\Semantic\DecisionDefinitionKey',
         'decisionDefinitionName' => 'string',
         'decisionDefinitionType' => '\Camunda\Orchestration\Api\Model\DecisionDefinitionTypeEnum',
         'decisionDefinitionVersion' => 'int',
-        'decisionEvaluationInstanceKey' => 'string',
-        'decisionEvaluationKey' => 'string',
-        'elementInstanceKey' => 'string',
+        'decisionEvaluationInstanceKey' => '\Camunda\Orchestration\Semantic\DecisionEvaluationInstanceKey',
+        'decisionEvaluationKey' => '\Camunda\Orchestration\Semantic\DecisionEvaluationKey',
+        'elementInstanceKey' => '\Camunda\Orchestration\Semantic\ElementInstanceKey',
         'evaluationDate' => '\DateTime',
         'evaluationFailure' => 'string',
-        'processDefinitionKey' => 'string',
-        'processInstanceKey' => 'string',
+        'processDefinitionKey' => '\Camunda\Orchestration\Semantic\ProcessDefinitionKey',
+        'processInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
         'result' => 'string',
-        'rootDecisionDefinitionKey' => 'string',
-        'rootProcessInstanceKey' => 'string',
+        'rootDecisionDefinitionKey' => '\Camunda\Orchestration\Semantic\DecisionDefinitionKey',
+        'rootProcessInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
         'state' => '\Camunda\Orchestration\Api\Model\DecisionInstanceStateEnum',
-        'tenantId' => 'string',
+        'tenantId' => '\Camunda\Orchestration\Semantic\TenantId',
         'evaluatedInputs' => '\Camunda\Orchestration\Api\Model\EvaluatedDecisionInputItem[]',
         'matchedRules' => '\Camunda\Orchestration\Api\Model\MatchedDecisionRuleItem[]'
     ];
@@ -401,7 +401,16 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
             $this->openAPINullablesSetToNull[] = $variableName;
         }
 
-        $this->container[$variableName] = $fields[$variableName] ?? $defaultValue;
+        $value = $fields[$variableName] ?? $defaultValue;
+        $semanticType = static::$openAPITypes[$variableName] ?? null;
+        if (
+            is_string($value)
+            && is_string($semanticType)
+            && is_subclass_of($semanticType, \Camunda\Orchestration\Semantic\SemanticKey::class)
+        ) {
+            $value = new $semanticType($value);
+        }
+        $this->container[$variableName] = $value;
     }
 
     /**
@@ -414,22 +423,22 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
         if ($this->container['businessId'] === null && !$this->isNullableSetToNull('businessId')) {
             $invalidProperties[] = "'businessId' is required";
         }
-        if (!is_null($this->container['businessId']) && (mb_strlen($this->container['businessId']) > 256)) {
+        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be smaller than or equal to 256.";
         }
 
-        if (!is_null($this->container['businessId']) && (mb_strlen($this->container['businessId']) < 1)) {
+        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be bigger than or equal to 1.";
         }
 
         if ($this->container['decisionDefinitionId'] === null) {
             $invalidProperties[] = "'decisionDefinitionId' can't be null";
         }
-        if ((mb_strlen($this->container['decisionDefinitionId']) < 1)) {
+        if ((mb_strlen((string) $this->container['decisionDefinitionId']) < 1)) {
             $invalidProperties[] = "invalid value for 'decisionDefinitionId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", $this->container['decisionDefinitionId'])) {
+        if (!preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['decisionDefinitionId'])) {
             $invalidProperties[] = "invalid value for 'decisionDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
         }
 
@@ -448,15 +457,15 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
         if ($this->container['decisionEvaluationInstanceKey'] === null) {
             $invalidProperties[] = "'decisionEvaluationInstanceKey' can't be null";
         }
-        if ((mb_strlen($this->container['decisionEvaluationInstanceKey']) > 30)) {
+        if ((mb_strlen((string) $this->container['decisionEvaluationInstanceKey']) > 30)) {
             $invalidProperties[] = "invalid value for 'decisionEvaluationInstanceKey', the character length must be smaller than or equal to 30.";
         }
 
-        if ((mb_strlen($this->container['decisionEvaluationInstanceKey']) < 3)) {
+        if ((mb_strlen((string) $this->container['decisionEvaluationInstanceKey']) < 3)) {
             $invalidProperties[] = "invalid value for 'decisionEvaluationInstanceKey', the character length must be bigger than or equal to 3.";
         }
 
-        if (!preg_match("/^[0-9]+-[0-9]+$/", $this->container['decisionEvaluationInstanceKey'])) {
+        if (!preg_match("/^[0-9]+-[0-9]+$/", (string) $this->container['decisionEvaluationInstanceKey'])) {
             $invalidProperties[] = "invalid value for 'decisionEvaluationInstanceKey', must be conform to the pattern /^[0-9]+-[0-9]+$/.";
         }
 
@@ -493,15 +502,15 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
         if ($this->container['tenantId'] === null) {
             $invalidProperties[] = "'tenantId' can't be null";
         }
-        if ((mb_strlen($this->container['tenantId']) > 31)) {
+        if ((mb_strlen((string) $this->container['tenantId']) > 31)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be smaller than or equal to 31.";
         }
 
-        if ((mb_strlen($this->container['tenantId']) < 1)) {
+        if ((mb_strlen((string) $this->container['tenantId']) < 1)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", $this->container['tenantId'])) {
+        if (!preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
             $invalidProperties[] = "invalid value for 'tenantId', must be conform to the pattern /^(<default>|[\\w\\.\\-]{1,31})$/.";
         }
 
@@ -528,7 +537,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return string|null
      */
-    public function getBusinessId(): ?string
+    public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
         return $this->container['businessId'];
     }
@@ -540,25 +549,8 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return $this
      */
-    public function setBusinessId(?string $businessId): static
+    public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
-        if (is_null($businessId)) {
-            array_push($this->openAPINullablesSetToNull, 'businessId');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('businessId', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        if (!is_null($businessId) && (mb_strlen($businessId) > 256)) {
-            throw new InvalidArgumentException('invalid length for $businessId when calling DecisionInstanceGetQueryResult., must be smaller than or equal to 256.');
-        }
-        if (!is_null($businessId) && (mb_strlen($businessId) < 1)) {
-            throw new InvalidArgumentException('invalid length for $businessId when calling DecisionInstanceGetQueryResult., must be bigger than or equal to 1.');
-        }
-
         $this->container['businessId'] = $businessId;
         if ($businessId === null) {
             unset($this->openAPIFieldsSet['businessId']);
@@ -574,7 +566,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return string
      */
-    public function getDecisionDefinitionId(): string
+    public function getDecisionDefinitionId(): \Camunda\Orchestration\Semantic\DecisionDefinitionId
     {
         return $this->container['decisionDefinitionId'];
     }
@@ -586,19 +578,8 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return $this
      */
-    public function setDecisionDefinitionId(string $decisionDefinitionId): static
+    public function setDecisionDefinitionId(\Camunda\Orchestration\Semantic\DecisionDefinitionId $decisionDefinitionId): static
     {
-        if (is_null($decisionDefinitionId)) {
-            throw new InvalidArgumentException('non-nullable decisionDefinitionId cannot be null');
-        }
-
-        if ((mb_strlen($decisionDefinitionId) < 1)) {
-            throw new InvalidArgumentException('invalid length for $decisionDefinitionId when calling DecisionInstanceGetQueryResult., must be bigger than or equal to 1.');
-        }
-        if ((!preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", ObjectSerializer::toString($decisionDefinitionId)))) {
-            throw new InvalidArgumentException("invalid value for \$decisionDefinitionId when calling DecisionInstanceGetQueryResult., must conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.");
-        }
-
         $this->container['decisionDefinitionId'] = $decisionDefinitionId;
         if ($decisionDefinitionId === null) {
             unset($this->openAPIFieldsSet['decisionDefinitionId']);
@@ -614,7 +595,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return string
      */
-    public function getDecisionDefinitionKey(): string
+    public function getDecisionDefinitionKey(): \Camunda\Orchestration\Semantic\DecisionDefinitionKey
     {
         return $this->container['decisionDefinitionKey'];
     }
@@ -626,11 +607,8 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return $this
      */
-    public function setDecisionDefinitionKey(string $decisionDefinitionKey): static
+    public function setDecisionDefinitionKey(\Camunda\Orchestration\Semantic\DecisionDefinitionKey $decisionDefinitionKey): static
     {
-        if (is_null($decisionDefinitionKey)) {
-            throw new InvalidArgumentException('non-nullable decisionDefinitionKey cannot be null');
-        }
         $this->container['decisionDefinitionKey'] = $decisionDefinitionKey;
         if ($decisionDefinitionKey === null) {
             unset($this->openAPIFieldsSet['decisionDefinitionKey']);
@@ -742,7 +720,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return string
      */
-    public function getDecisionEvaluationInstanceKey(): string
+    public function getDecisionEvaluationInstanceKey(): \Camunda\Orchestration\Semantic\DecisionEvaluationInstanceKey
     {
         return $this->container['decisionEvaluationInstanceKey'];
     }
@@ -754,21 +732,8 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return $this
      */
-    public function setDecisionEvaluationInstanceKey(string $decisionEvaluationInstanceKey): static
+    public function setDecisionEvaluationInstanceKey(\Camunda\Orchestration\Semantic\DecisionEvaluationInstanceKey $decisionEvaluationInstanceKey): static
     {
-        if (is_null($decisionEvaluationInstanceKey)) {
-            throw new InvalidArgumentException('non-nullable decisionEvaluationInstanceKey cannot be null');
-        }
-        if ((mb_strlen($decisionEvaluationInstanceKey) > 30)) {
-            throw new InvalidArgumentException('invalid length for $decisionEvaluationInstanceKey when calling DecisionInstanceGetQueryResult., must be smaller than or equal to 30.');
-        }
-        if ((mb_strlen($decisionEvaluationInstanceKey) < 3)) {
-            throw new InvalidArgumentException('invalid length for $decisionEvaluationInstanceKey when calling DecisionInstanceGetQueryResult., must be bigger than or equal to 3.');
-        }
-        if ((!preg_match("/^[0-9]+-[0-9]+$/", ObjectSerializer::toString($decisionEvaluationInstanceKey)))) {
-            throw new InvalidArgumentException("invalid value for \$decisionEvaluationInstanceKey when calling DecisionInstanceGetQueryResult., must conform to the pattern /^[0-9]+-[0-9]+$/.");
-        }
-
         $this->container['decisionEvaluationInstanceKey'] = $decisionEvaluationInstanceKey;
         if ($decisionEvaluationInstanceKey === null) {
             unset($this->openAPIFieldsSet['decisionEvaluationInstanceKey']);
@@ -784,7 +749,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return string
      */
-    public function getDecisionEvaluationKey(): string
+    public function getDecisionEvaluationKey(): \Camunda\Orchestration\Semantic\DecisionEvaluationKey
     {
         return $this->container['decisionEvaluationKey'];
     }
@@ -796,11 +761,8 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return $this
      */
-    public function setDecisionEvaluationKey(string $decisionEvaluationKey): static
+    public function setDecisionEvaluationKey(\Camunda\Orchestration\Semantic\DecisionEvaluationKey $decisionEvaluationKey): static
     {
-        if (is_null($decisionEvaluationKey)) {
-            throw new InvalidArgumentException('non-nullable decisionEvaluationKey cannot be null');
-        }
         $this->container['decisionEvaluationKey'] = $decisionEvaluationKey;
         if ($decisionEvaluationKey === null) {
             unset($this->openAPIFieldsSet['decisionEvaluationKey']);
@@ -816,7 +778,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return string|null
      */
-    public function getElementInstanceKey(): ?string
+    public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
         return $this->container['elementInstanceKey'];
     }
@@ -828,18 +790,8 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return $this
      */
-    public function setElementInstanceKey(?string $elementInstanceKey): static
+    public function setElementInstanceKey(?\Camunda\Orchestration\Semantic\ElementInstanceKey $elementInstanceKey): static
     {
-        if (is_null($elementInstanceKey)) {
-            array_push($this->openAPINullablesSetToNull, 'elementInstanceKey');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('elementInstanceKey', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
         $this->container['elementInstanceKey'] = $elementInstanceKey;
         if ($elementInstanceKey === null) {
             unset($this->openAPIFieldsSet['elementInstanceKey']);
@@ -926,7 +878,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return string|null
      */
-    public function getProcessDefinitionKey(): ?string
+    public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
         return $this->container['processDefinitionKey'];
     }
@@ -938,18 +890,8 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(?string $processDefinitionKey): static
+    public function setProcessDefinitionKey(?\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
-        if (is_null($processDefinitionKey)) {
-            array_push($this->openAPINullablesSetToNull, 'processDefinitionKey');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('processDefinitionKey', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
         if ($processDefinitionKey === null) {
             unset($this->openAPIFieldsSet['processDefinitionKey']);
@@ -965,7 +907,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return string|null
      */
-    public function getProcessInstanceKey(): ?string
+    public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
         return $this->container['processInstanceKey'];
     }
@@ -977,18 +919,8 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return $this
      */
-    public function setProcessInstanceKey(?string $processInstanceKey): static
+    public function setProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
-        if (is_null($processInstanceKey)) {
-            array_push($this->openAPINullablesSetToNull, 'processInstanceKey');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('processInstanceKey', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
         $this->container['processInstanceKey'] = $processInstanceKey;
         if ($processInstanceKey === null) {
             unset($this->openAPIFieldsSet['processInstanceKey']);
@@ -1036,7 +968,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return string
      */
-    public function getRootDecisionDefinitionKey(): string
+    public function getRootDecisionDefinitionKey(): \Camunda\Orchestration\Semantic\DecisionDefinitionKey
     {
         return $this->container['rootDecisionDefinitionKey'];
     }
@@ -1048,11 +980,8 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return $this
      */
-    public function setRootDecisionDefinitionKey(string $rootDecisionDefinitionKey): static
+    public function setRootDecisionDefinitionKey(\Camunda\Orchestration\Semantic\DecisionDefinitionKey $rootDecisionDefinitionKey): static
     {
-        if (is_null($rootDecisionDefinitionKey)) {
-            throw new InvalidArgumentException('non-nullable rootDecisionDefinitionKey cannot be null');
-        }
         $this->container['rootDecisionDefinitionKey'] = $rootDecisionDefinitionKey;
         if ($rootDecisionDefinitionKey === null) {
             unset($this->openAPIFieldsSet['rootDecisionDefinitionKey']);
@@ -1068,7 +997,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return string|null
      */
-    public function getRootProcessInstanceKey(): ?string
+    public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
         return $this->container['rootProcessInstanceKey'];
     }
@@ -1080,18 +1009,8 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return $this
      */
-    public function setRootProcessInstanceKey(?string $rootProcessInstanceKey): static
+    public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
-        if (is_null($rootProcessInstanceKey)) {
-            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
         if ($rootProcessInstanceKey === null) {
             unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
@@ -1139,7 +1058,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return string
      */
-    public function getTenantId(): string
+    public function getTenantId(): \Camunda\Orchestration\Semantic\TenantId
     {
         return $this->container['tenantId'];
     }
@@ -1151,21 +1070,8 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      *
      * @return $this
      */
-    public function setTenantId(string $tenantId): static
+    public function setTenantId(\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
-        if (is_null($tenantId)) {
-            throw new InvalidArgumentException('non-nullable tenantId cannot be null');
-        }
-        if ((mb_strlen($tenantId) > 31)) {
-            throw new InvalidArgumentException('invalid length for $tenantId when calling DecisionInstanceGetQueryResult., must be smaller than or equal to 31.');
-        }
-        if ((mb_strlen($tenantId) < 1)) {
-            throw new InvalidArgumentException('invalid length for $tenantId when calling DecisionInstanceGetQueryResult., must be bigger than or equal to 1.');
-        }
-        if ((!preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", ObjectSerializer::toString($tenantId)))) {
-            throw new InvalidArgumentException("invalid value for \$tenantId when calling DecisionInstanceGetQueryResult., must conform to the pattern /^(<default>|[\\w\\.\\-]{1,31})$/.");
-        }
-
         $this->container['tenantId'] = $tenantId;
         if ($tenantId === null) {
             unset($this->openAPIFieldsSet['tenantId']);

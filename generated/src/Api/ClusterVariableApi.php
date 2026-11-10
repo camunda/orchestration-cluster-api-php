@@ -369,6 +369,32 @@ class ClusterVariableApi
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
                     if (in_array($returnType, ['\SplFileObject', '\Psr\Http\Message\StreamInterface'])) {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -754,6 +780,32 @@ class ClusterVariableApi
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
                     if (in_array($returnType, ['\SplFileObject', '\Psr\Http\Message\StreamInterface'])) {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -1079,6 +1131,32 @@ class ClusterVariableApi
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
                 function ($exception) {
@@ -1351,6 +1429,32 @@ class ClusterVariableApi
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
                 function ($exception) {
@@ -1703,6 +1807,32 @@ class ClusterVariableApi
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
                     if (in_array($returnType, ['\SplFileObject', '\Psr\Http\Message\StreamInterface'])) {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -2051,6 +2181,32 @@ class ClusterVariableApi
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
                     if (in_array($returnType, ['\SplFileObject', '\Psr\Http\Message\StreamInterface'])) {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -2402,6 +2558,32 @@ class ClusterVariableApi
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
                     if (in_array($returnType, ['\SplFileObject', '\Psr\Http\Message\StreamInterface'])) {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -2778,6 +2960,32 @@ class ClusterVariableApi
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
                     if (in_array($returnType, ['\SplFileObject', '\Psr\Http\Message\StreamInterface'])) {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -3182,6 +3390,32 @@ class ClusterVariableApi
             ->sendAsync($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
                     if (in_array($returnType, ['\SplFileObject', '\Psr\Http\Message\StreamInterface'])) {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {

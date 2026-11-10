@@ -106,6 +106,42 @@ final class JobWorkerTest extends TestCase
         self::assertSame(['variables' => ['handledBy' => 'object-handler']], $this->jsonBody($this->requests[1]));
     }
 
+    public function testActivationHttpErrorPropagatesInsteadOfLookingLikeAnEmptyBatch(): void
+    {
+        // Issue #85: a 503 on job activation must surface as an ApiException so the
+        // caller can back off — it must never be swallowed into "no jobs available".
+        $worker = $this->worker([
+            new Response(
+                503,
+                ['Content-Type' => 'application/problem+json'],
+                '{"title":"RESOURCE_EXHAUSTED","status":503}',
+            ),
+        ], new JobWorkerOptions(type: 'greet'));
+
+        try {
+            $worker->pollOnce(static fn (ActivatedJobResult $job, JobActionClient $action): null => null);
+            self::fail('Expected pollOnce() to throw an ApiException for the 503 activation response.');
+        } catch (\Camunda\Orchestration\Api\ApiException $exception) {
+            self::assertSame(503, $exception->getCode());
+            $problem = $exception->getResponseObject();
+            self::assertInstanceOf(\Camunda\Orchestration\Api\Model\ProblemDetail::class, $problem);
+            self::assertSame('RESOURCE_EXHAUSTED', $problem->getTitle());
+        }
+
+        self::assertCount(1, $this->requests);
+        self::assertStringEndsWith('/jobs/activation', $this->requests[0]->getUri()->getPath());
+    }
+
+    public function testActivationHttpErrorWithoutProblemFieldsStillThrows(): void
+    {
+        $worker = $this->worker([
+            new Response(503, ['Content-Type' => 'application/problem+json'], '{}'),
+        ], new JobWorkerOptions(type: 'greet'));
+
+        $this->expectException(\Camunda\Orchestration\Api\ApiException::class);
+        $worker->pollOnce(static fn (ActivatedJobResult $job, JobActionClient $action): null => null);
+    }
+
     /**
      * @param list<Response> $responses
      */

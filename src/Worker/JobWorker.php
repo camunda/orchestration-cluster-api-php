@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Worker;
 
 use Camunda\Orchestration\Api\Api\JobApi;
+use Camunda\Orchestration\Api\ApiException;
 use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\Api\Model\JobActivationRequest;
-use Camunda\Orchestration\Api\Model\JobActivationResult;
+use Camunda\Orchestration\Api\Model\ProblemDetail;
 use Camunda\Orchestration\Api\Model\TenantFilterEnum;
 use Camunda\Orchestration\CamundaClient;
 
@@ -110,6 +111,12 @@ final class JobWorker
 
     /**
      * @return list<ActivatedJobResult>
+     *
+     * @throws ApiException When activation fails (e.g. broker backpressure `503`).
+     *         The generated sync API returns error statuses as a `ProblemDetail`
+     *         value; the worker converts that into an exception so callers can
+     *         back off instead of mistaking the failure for an empty batch
+     *         (issue #85).
      */
     private function activate(): array
     {
@@ -131,8 +138,21 @@ final class JobWorker
         }
 
         $result = $this->jobApi()->activateJobs($request);
-        if (!$result instanceof JobActivationResult) {
-            return [];
+        if ($result instanceof ProblemDetail) {
+            $status = $result->offsetGet('status');
+            $title = $result->offsetGet('title');
+            $detail = $result->offsetGet('detail');
+            $exception = new ApiException(
+                sprintf(
+                    '[%d] Job activation failed (%s: %s)',
+                    is_int($status) ? $status : 0,
+                    is_string($title) ? $title : 'unknown',
+                    is_string($detail) ? $detail : 'no detail',
+                ),
+                is_int($status) ? $status : 0,
+            );
+            $exception->setResponseObject($result);
+            throw $exception;
         }
 
         return array_values($result->getJobs());
