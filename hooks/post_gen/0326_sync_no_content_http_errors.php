@@ -20,6 +20,15 @@
  * `catch (ApiException $e)` switch below then deserializes the declared
  * `ProblemDetail` for the status and rethrows, so sync no-content callers observe
  * exactly what body-returning and async (hook 0325) callers observe.
+ *
+ * The enrichment itself is made best-effort for every sync operation: the
+ * generated catch switch calls `ObjectSerializer::deserialize()` on the error
+ * body, which throws (e.g. `InvalidArgumentException`) when the body does not
+ * match the declared model — a 503 with `{"status":"unavailable"}`, an HTML
+ * proxy page, … That would replace the `ApiException` (losing status, headers
+ * and raw body) with an unrelated exception. Each enrichment is wrapped so a
+ * deserialization failure leaves the original `ApiException` to be rethrown,
+ * mirroring the async path (hook 0325).
  */
 
 declare(strict_types=1);
@@ -59,6 +68,23 @@ PHP;
 
 PHP;
 
+    // Best-effort enrichment: matches only the unwrapped (20-space indented)
+    // form, so the wrapped output (24 spaces) is never re-matched on reruns.
+    $enrichPattern = '/^ {20}\$data = ObjectSerializer::deserialize\(\n {24}\$e->getResponseBody\(\),\n {24}(\'[^\'\n]+\'),\n {24}\$e->getResponseHeaders\(\)\n {20}\);\n {20}\$e->setResponseObject\(\$data\);$/m';
+    $enrichReplacement = <<<'PHP'
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            $1,
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+PHP;
+    $wrappedEnrichments = 0;
+
     $patchedFiles = 0;
     $patchedOperations = 0;
     $alreadyPatched = 0;
@@ -71,6 +97,15 @@ PHP;
 
     foreach (glob($apiDir . '/*Api.php') ?: [] as $apiFile) {
         $source = (string) file_get_contents($apiFile);
+        $wrapped = preg_replace($enrichPattern, $enrichReplacement, $source, -1, $count);
+        if (!is_string($wrapped)) {
+            throw new RuntimeException("hook 0326: enrichment rewrite failed for $apiFile");
+        }
+        if ($count > 0) {
+            file_put_contents($apiFile, $wrapped);
+            $source = $wrapped;
+            $wrappedEnrichments += $count;
+        }
         $done = substr_count($source, $patchedMarker);
         $todo = substr_count($source, $anchor) - $done;
         if ($todo === 0) {
@@ -101,5 +136,5 @@ PHP;
         throw new RuntimeException('hook 0326: no sync no-content operations found to patch');
     }
 
-    fwrite(STDOUT, "  [sync-no-content-http-errors] $patchedOperations sync no-content operations across $patchedFiles API groups now throw on non-2xx responses ($alreadyPatched already patched)\n");
+    fwrite(STDOUT, "  [sync-no-content-http-errors] $patchedOperations sync no-content operations across $patchedFiles API groups now throw on non-2xx responses ($alreadyPatched already patched); $wrappedEnrichments error-model enrichments made best-effort\n");
 };

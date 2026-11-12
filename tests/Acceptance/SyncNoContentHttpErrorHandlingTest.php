@@ -109,6 +109,34 @@ final class SyncNoContentHttpErrorHandlingTest extends TestCase
     }
 
     /**
+     * A declared error status whose body does not match ProblemDetail must not
+     * replace the ApiException with a deserialization error: enrichment is
+     * best-effort and the original status, headers and raw body survive.
+     */
+    #[DataProvider('malformedErrorBodies')]
+    public function testCompleteJobKeepsApiExceptionWhenErrorBodyIsMalformed(string $body): void
+    {
+        $client = $this->syncClient([
+            new Response(503, ['Content-Type' => 'application/json', 'X-Trace' => 'abc'], $body),
+        ]);
+
+        $exception = $this->catchApiException(static fn () => $client->completeJob('2251799813686200'));
+
+        self::assertSame(503, $exception->getCode());
+        self::assertSame($body, $exception->getResponseBody());
+        self::assertSame(['abc'], ($exception->getResponseHeaders() ?? [])['X-Trace'] ?? null);
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function malformedErrorBodies(): iterable
+    {
+        yield 'mismatched shape' => ['{"status":"unavailable"}'];
+        yield 'non-json' => ['<html>Service Unavailable</html>'];
+    }
+
+    /**
      * The worker's auto-complete path must surface a failed completion instead
      * of reporting the job as done.
      */
