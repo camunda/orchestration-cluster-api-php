@@ -17,9 +17,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+  contents: read
 
 jobs:
   spec-ref-guard:
@@ -40,10 +38,56 @@ jobs:
     needs: bundle-spec
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    permissions:
+      contents: read
+      id-token: write # mint GitHub OIDC token for Vault JWT auth
     steps:
+      # semantic-release pushes the release commit and tag to a ruleset-protected
+      # branch. GITHUB_TOKEN can never bypass a ruleset, so the release runs as the
+      # camunda-sdk-automation GitHub App, which is a bypass actor on the main and
+      # stable/** rulesets (same setup as the other orchestration-cluster-api SDKs).
+      - name: Import secrets
+        id: secrets
+        uses: hashicorp/vault-action@v4.0.0
+        with:
+          url: ${{ secrets.VAULT_ADDR }}
+          method: jwt
+          path: ${{ secrets.VAULT_JWT_PATH }}
+          role: ${{ secrets.VAULT_JWT_ROLE }}
+          jwtGithubAudience: ${{ secrets.VAULT_JWT_AUDIENCE }}
+          exportEnv: false
+          secrets: |
+            secret/data/products/agentic-experience/github.com/apps/camunda/camunda-sdk-automation GITHUB_APP_ID | APP_ID ;
+            secret/data/products/agentic-experience/github.com/apps/camunda/camunda-sdk-automation GITHUB_APP_PRIVATE_KEY | APP_PRIVATE_KEY ;
+
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ steps.secrets.outputs.APP_ID }}
+          private-key: ${{ steps.secrets.outputs.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Configure committer identity
+        env:
+          APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+        run: |
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${APP_SLUG}[bot]@users.noreply.github.com"
+          # semantic-release sets default GIT_AUTHOR_*/GIT_COMMITTER_* env vars that
+          # override git config, so export the app identity explicitly.
+          {
+            echo "GIT_AUTHOR_NAME=${APP_SLUG}[bot]"
+            echo "GIT_AUTHOR_EMAIL=${APP_SLUG}[bot]@users.noreply.github.com"
+            echo "GIT_COMMITTER_NAME=${APP_SLUG}[bot]"
+            echo "GIT_COMMITTER_EMAIL=${APP_SLUG}[bot]@users.noreply.github.com"
+          } >> "$GITHUB_ENV"
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -97,7 +141,7 @@ jobs:
       # new version syncs immediately — requires the PACKAGIST_* credentials below.
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           PACKAGIST_USERNAME: ${{ vars.PACKAGIST_USERNAME }}
           PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
           # SDK major tracks the Camunda server minor (spec ref stable/8.10 -> major 10).
