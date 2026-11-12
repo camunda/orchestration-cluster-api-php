@@ -189,32 +189,56 @@ class ClockApi
             $statusCode = $response->getStatusCode();
 
 
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
             return [null, $statusCode, $response->getHeaders()];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 400:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
                 case 503:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
             }
         
@@ -456,24 +480,44 @@ class ClockApi
             $statusCode = $response->getStatusCode();
 
 
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
             return [null, $statusCode, $response->getHeaders()];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
                 case 503:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
             }
         
