@@ -251,28 +251,40 @@ class DocumentApi
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 201:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\DocumentReference',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\DocumentReference',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
                 case 400:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
                 case 415:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
             }
         
@@ -613,20 +625,28 @@ class DocumentApi
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 201:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\DocumentLink',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\DocumentLink',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
                 case 400:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
             }
         
@@ -984,36 +1004,52 @@ class DocumentApi
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 201:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\DocumentCreationBatchResponse',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\DocumentCreationBatchResponse',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
                 case 207:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\DocumentCreationBatchResponse',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\DocumentCreationBatchResponse',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
                 case 400:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
                 case 415:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
             }
         
@@ -1299,24 +1335,44 @@ class DocumentApi
             $statusCode = $response->getStatusCode();
 
 
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
             return [null, $statusCode, $response->getHeaders()];
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 404:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
             }
         
@@ -1594,28 +1650,40 @@ class DocumentApi
         } catch (ApiException $e) {
             switch ($e->getCode()) {
                 case 200:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\SplFileObject',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\SplFileObject',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
                 case 404:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
                     throw $e;
             }
         
