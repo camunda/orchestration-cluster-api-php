@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Tests\Acceptance;
 
+use Camunda\Orchestration\Api\Api\JobApi;
 use Camunda\Orchestration\CamundaAsyncClient;
 use Camunda\Orchestration\CamundaClient;
 use Camunda\Orchestration\Config\CamundaConfiguration;
@@ -51,25 +52,39 @@ final class ConfigurationSecretRedactionTest extends TestCase
     #[DataProvider('credentials')]
     public function testVarDumpOfTheSyncClientHidesEveryCredential(string $sentinel): void
     {
-        $client = CamundaClient::fromConfiguration($this->configuration(), new GuzzleClient());
-
-        self::assertStringNotContainsString($sentinel, self::varDump($client));
+        self::assertStringNotContainsString($sentinel, self::varDump($this->syncClient()));
     }
 
     #[DataProvider('credentials')]
     public function testVarDumpOfTheAsyncClientHidesEveryCredential(string $sentinel): void
     {
-        $client = CamundaAsyncClient::fromConfiguration($this->configuration(), new GuzzleClient());
-
-        self::assertStringNotContainsString($sentinel, self::varDump($client));
+        self::assertStringNotContainsString($sentinel, self::varDump($this->asyncClient()));
     }
 
     #[DataProvider('credentials')]
     public function testJsonEncodeOfTheSyncClientHidesEveryCredential(string $sentinel): void
     {
-        $client = CamundaClient::fromConfiguration($this->configuration(), new GuzzleClient());
+        self::assertStringNotContainsString($sentinel, (string) json_encode($this->syncClient()));
+    }
 
-        self::assertStringNotContainsString($sentinel, (string) json_encode($client));
+    #[DataProvider('credentials')]
+    public function testJsonEncodeOfTheAsyncClientHidesEveryCredential(string $sentinel): void
+    {
+        self::assertStringNotContainsString($sentinel, (string) json_encode($this->asyncClient()));
+    }
+
+    /**
+     * The client's debug view must hide the HTTP stack rather than merely not mention
+     * the configuration twice: the Guzzle options built from an mTLS configuration
+     * carry the key passphrase, and the auth middleware holds the client secret.
+     */
+    public function testTheClientDebugViewSummarisesTheHttpStackInsteadOfDumpingIt(): void
+    {
+        $debug = $this->syncClient()->__debugInfo();
+
+        self::assertSame(GuzzleClient::class, $debug['httpClient']);
+        self::assertSame([JobApi::class], $debug['apis']);
+        self::assertInstanceOf(CamundaConfiguration::class, $debug['configuration']);
     }
 
     public function testRedactedFieldsAreMarkedRatherThanSilentlyDropped(): void
@@ -139,6 +154,27 @@ final class ConfigurationSecretRedactionTest extends TestCase
         self::assertSame(self::CLIENT_SECRET, $configuration->clientSecret);
         self::assertSame(self::BASIC_PASSWORD, $configuration->basicAuthPassword);
         self::assertSame(self::MTLS_PASSPHRASE, $configuration->mtlsKeyPassphrase);
+    }
+
+    /**
+     * Built through the real wiring — no HTTP-client override — so the Guzzle options
+     * really do carry the mTLS passphrase and the auth middleware really does hold the
+     * client secret. One API group is resolved so the cache is populated too.
+     */
+    private function syncClient(): CamundaClient
+    {
+        $client = CamundaClient::fromConfiguration($this->configuration());
+        $client->api(JobApi::class);
+
+        return $client;
+    }
+
+    private function asyncClient(): CamundaAsyncClient
+    {
+        $client = CamundaAsyncClient::fromConfiguration($this->configuration());
+        $client->api(JobApi::class);
+
+        return $client;
     }
 
     private function configuration(): CamundaConfiguration
