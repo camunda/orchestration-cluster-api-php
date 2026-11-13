@@ -72,12 +72,15 @@ final class OAuthClientCredentialsProvider implements AuthProvider
             $response = $this->httpClient->sendRequest($request);
         } catch (\Psr\Http\Client\ClientExceptionInterface $e) {
             // A transport error message can quote the request it failed to send, and
-            // that request carries the client secret (issue #110).
-            throw new AuthenticationException(
-                'Failed to reach the OAuth token endpoint: ' . $this->redactSecret($e->getMessage()),
-                0,
-                $e
-            );
+            // that request carries the client secret (issue #110). The cause is not
+            // attached: a logger or `(string) $exception` renders the whole chain, so
+            // an unsanitised `previous` would leak the secret the message no longer
+            // carries. Its class and redacted message are reported here instead.
+            throw new AuthenticationException(sprintf(
+                'Failed to reach the OAuth token endpoint (%s): %s',
+                $e::class,
+                $this->redactSecret($e->getMessage()),
+            ));
         }
 
         $status = $response->getStatusCode();

@@ -44,6 +44,32 @@ final class OAuthTokenErrorRedactionTest extends TestCase
         } catch (AuthenticationException $exception) {
             self::assertStringNotContainsString(self::SENTINEL, $exception->getMessage());
             self::assertStringNotContainsString(rawurlencode(self::SENTINEL), $exception->getMessage());
+
+            // A logger renders the whole chain, so the rendered exception — message,
+            // trace and every `previous` — is the surface that actually matters.
+            self::assertStringNotContainsString(self::SENTINEL, (string) $exception);
+            self::assertStringNotContainsString(rawurlencode(self::SENTINEL), (string) $exception);
+
+            for ($cause = $exception->getPrevious(); $cause !== null; $cause = $cause->getPrevious()) {
+                self::assertStringNotContainsString(self::SENTINEL, $cause->getMessage());
+                self::assertStringNotContainsString(self::SENTINEL, $cause->getTraceAsString());
+            }
+        }
+    }
+
+    /**
+     * The cause of a transport failure is reported by class and redacted message rather
+     * than attached, because an attached cause is rendered with the exception.
+     */
+    public function testATransportFailureNamesItsCauseWithoutAttachingIt(): void
+    {
+        try {
+            $this->provider(new TokenTransportFailure('cURL error 7: connection refused'))->getHeaders();
+            self::fail('Expected the failing token exchange to throw an AuthenticationException.');
+        } catch (AuthenticationException $exception) {
+            self::assertStringContainsString(TokenTransportFailure::class, $exception->getMessage());
+            self::assertStringContainsString('connection refused', $exception->getMessage());
+            self::assertNull($exception->getPrevious());
         }
     }
 
