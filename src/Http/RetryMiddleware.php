@@ -178,8 +178,8 @@ final class RetryMiddleware
      * by the unread remainder of the original stream.
      *
      * @return array{ResponseInterface, string, bool} The response, the bytes read (the
-     *   whole body when `complete`, else its first {@see MAX_CLASSIFIED_BODY_BYTES} + 1
-     *   bytes), and whether the body ended within the limit.
+     *   whole body when `complete`, else the bytes read so far, at most
+     *   {@see MAX_CLASSIFIED_BODY_BYTES} + 1), and whether the body ended within the limit.
      */
     private static function readBounded(ResponseInterface $response): array
     {
@@ -198,7 +198,10 @@ final class RetryMiddleware
             }
             $contents .= $chunk;
         }
-        $complete = strlen($contents) <= $limit;
+        // An empty read before EOF (a socket with no data yet) ends the loop without the
+        // body being fully read: treat it as not classifiable rather than as complete, so
+        // the unread remainder is preserved for the caller instead of being dropped.
+        $complete = strlen($contents) <= $limit && $body->eof();
 
         if ($seekable) {
             $body->rewind();
@@ -216,9 +219,9 @@ final class RetryMiddleware
 
                         return $chunk;
                     }
-                    $chunk = $body->eof() ? '' : $body->read($length);
-
-                    return $chunk === '' ? false : $chunk;
+                    // false means end of stream; an empty read before EOF is passed on as an
+                    // empty read and must not end the body early.
+                    return $body->eof() ? false : $body->read($length);
                 },
             ));
         }

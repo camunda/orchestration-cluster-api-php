@@ -166,6 +166,32 @@ final class HttpRetryMiddlewareTest extends TestCase
         self::assertSame(str_repeat('x', $total), $body);
     }
 
+    /**
+     * A non-seekable stream may return an empty read before it is at EOF (for example a
+     * socket that has no data yet). That must never truncate the body the caller gets
+     * back: the response is returned unclassified, with every byte still readable.
+     */
+    public function testAnEmptyReadBeforeEofDoesNotTruncateTheErrorBody(): void
+    {
+        $stream = new EmptyReadBeforeEofStream(['{"title":"Other","detail":"first half, ', '', 'second half"}']);
+        self::assertNull($stream->getSize());
+
+        $response = $this->send(
+            [new Response(500, ['Content-Type' => 'application/problem+json'], $stream), new Response(200)],
+            new Request('GET', 'http://cluster/v2/topology'),
+        );
+
+        self::assertSame(500, $response->getStatusCode());
+        self::assertCount(1, $this->calls);
+
+        $body = $response->getBody();
+        $received = '';
+        while (!$body->eof()) {
+            $received .= $body->read(8192);
+        }
+        self::assertSame('{"title":"Other","detail":"first half, second half"}', $received);
+    }
+
     public function testUnknownSizeBackpressureBodyIsStillClassifiedAndRetried(): void
     {
         $json = (string) json_encode(['title' => 'RESOURCE_EXHAUSTED', 'status' => 503, 'detail' => 'busy']);
@@ -560,5 +586,102 @@ final class HttpRetryMiddlewareTest extends TestCase
             ['Content-Type' => 'application/problem+json'],
             (string) json_encode(['type' => 'about:blank', 'title' => $title, 'status' => $status, 'detail' => $detail]),
         );
+    }
+}
+
+/**
+ * A non-seekable body of unknown size whose reads may come back empty before EOF,
+ * as a socket with no data available yet does. Guzzle's own PumpStream hides this by
+ * looping, so the behaviour needs a stream that exposes it.
+ */
+final class EmptyReadBeforeEofStream implements \Psr\Http\Message\StreamInterface
+{
+    /** @param list<string> $chunks One entry per read() call; an empty string is an empty read. */
+    public function __construct(private array $chunks)
+    {
+    }
+
+    public function __toString(): string
+    {
+        throw new \LogicException('Not supported on a non-seekable stream.');
+    }
+
+    public function close(): void
+    {
+        $this->chunks = [];
+    }
+
+    public function detach()
+    {
+        $this->chunks = [];
+
+        return null;
+    }
+
+    public function getSize(): ?int
+    {
+        return null;
+    }
+
+    public function tell(): int
+    {
+        throw new \RuntimeException('Not supported.');
+    }
+
+    public function eof(): bool
+    {
+        return $this->chunks === [];
+    }
+
+    public function isSeekable(): bool
+    {
+        return false;
+    }
+
+    public function seek(int $offset, int $whence = SEEK_SET): void
+    {
+        throw new \RuntimeException('Not seekable.');
+    }
+
+    public function rewind(): void
+    {
+        throw new \RuntimeException('Not seekable.');
+    }
+
+    public function isWritable(): bool
+    {
+        return false;
+    }
+
+    public function write(string $string): int
+    {
+        throw new \RuntimeException('Not writable.');
+    }
+
+    public function isReadable(): bool
+    {
+        return true;
+    }
+
+    public function read(int $length): string
+    {
+        $chunk = array_shift($this->chunks) ?? '';
+
+        return substr($chunk, 0, $length);
+    }
+
+    public function getContents(): string
+    {
+        $out = '';
+        while (!$this->eof()) {
+            $out .= $this->read(8192);
+        }
+
+        return $out;
+    }
+
+    public function getMetadata(?string $key = null)
+    {
+        return $key === null ? [] : null;
     }
 }
