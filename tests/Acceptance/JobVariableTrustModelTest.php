@@ -220,11 +220,35 @@ final class JobVariableTrustModelTest extends TestCase
 
         /** @var list<array<string, mixed>> $seen */
         $seen = [];
+        /** @var list<int> $jobIds */
+        $jobIds = [];
+        /** @var list<int> $actionIds */
+        $actionIds = [];
+        /** @var list<ActivatedJobResult> $jobs */
+        $jobs = [];
+        /** @var list<JobActionClient> $actions */
+        $actions = [];
+
         $worker->pollOnce(
-            static function (ActivatedJobResult $job, JobActionClient $action) use (&$seen): array {
-                $variables = $job->getVariables();
-                $variables['owner'] = 'mutated by the handler';
+            static function (ActivatedJobResult $job, JobActionClient $action) use (
+                &$seen,
+                &$jobIds,
+                &$actionIds,
+                &$jobs,
+                &$actions,
+            ): array {
+                // Hold a reference to each object before taking its id: PHP reuses the
+                // id of an object that has already been freed.
+                $jobs[] = $job;
+                $actions[] = $action;
+                $jobIds[] = spl_object_id($job);
+                $actionIds[] = spl_object_id($action);
+
                 $seen[] = $job->getVariables();
+
+                // Write through the model, not into the copy getVariables() returns —
+                // mutating a copy would prove nothing about isolation.
+                $job->setVariables(['owner' => 'mutated by the handler']);
 
                 return [];
             },
@@ -232,7 +256,18 @@ final class JobVariableTrustModelTest extends TestCase
 
         self::assertCount(2, $seen);
         self::assertSame(['owner' => 'first'], $seen[0]);
-        self::assertSame(['owner' => 'second'], $seen[1]);
+        self::assertSame(
+            ['owner' => 'second'],
+            $seen[1],
+            "The first handler's mutation must not be visible to the second job.",
+        );
+
+        self::assertCount(2, array_unique($jobIds), 'Each job must get its own ActivatedJobResult.');
+        self::assertCount(2, array_unique($actionIds), 'Each job must get its own JobActionClient.');
+
+        // The second job's payload was never touched by the first handler call.
+        self::assertSame('2', (string) $jobs[1]->getJobKey());
+        self::assertNotSame($jobs[0], $jobs[1]);
     }
 
     /**
