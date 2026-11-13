@@ -72,7 +72,9 @@ final class RetryMiddleware
         if ($baseDelayMs < 0 || $maxDelayMs < 0) {
             throw new \InvalidArgumentException('Retry delays must not be negative.');
         }
-        $this->random = $random ?? static fn (): float => mt_rand() / (mt_getrandmax() + 1);
+        // Not `mt_rand()`: forked job workers inherit the parent's Mersenne Twister state and
+        // would all draw the same jitter, retrying in lockstep. The CSPRNG is per-call.
+        $this->random = $random ?? static fn (): float => random_int(0, 0x7FFFFFFF) / 0x80000000;
     }
 
     /**
@@ -86,7 +88,7 @@ final class RetryMiddleware
                 return $handler($request, $options);
             }
 
-            return $this->attempt($handler, $request, $options, 1);
+            return $this->attempt($handler, $request, $options, 1, self::bodyStart($request));
         };
     }
 
@@ -94,10 +96,15 @@ final class RetryMiddleware
      * @param callable(RequestInterface, array<int|string, mixed>): PromiseInterface $handler
      * @param array<int|string, mixed> $options
      */
-    private function attempt(callable $handler, RequestInterface $request, array $options, int $attempt): PromiseInterface
-    {
+    private function attempt(
+        callable $handler,
+        RequestInterface $request,
+        array $options,
+        int $attempt,
+        int $bodyStart,
+    ): PromiseInterface {
         return $handler($request, $options)->then(
-            function (ResponseInterface $response) use ($handler, $request, $options, $attempt) {
+            function (ResponseInterface $response) use ($handler, $request, $options, $attempt, $bodyStart) {
                 [$response, $retryable] = $this->classify($response);
                 if (!$retryable) {
                     return $response;
@@ -105,14 +112,14 @@ final class RetryMiddleware
                 if ($attempt >= $this->maxAttempts) {
                     throw $this->exhaustedByResponse($response, $attempt);
                 }
-                if (!self::rewind($request)) {
+                if (!self::rewind($request, $bodyStart)) {
                     return $response;
                 }
 
                 $options['delay'] = $this->delayMs($attempt, $response);
-                return $this->attempt($handler, $request, $options, $attempt + 1);
+                return $this->attempt($handler, $request, $options, $attempt + 1, $bodyStart);
             },
-            function (mixed $reason) use ($handler, $request, $options, $attempt) {
+            function (mixed $reason) use ($handler, $request, $options, $attempt, $bodyStart) {
                 if (!$reason instanceof \Throwable || !self::isRetryableTransportFailure($reason, $request)) {
                     return Create::rejectionFor($reason);
                 }
@@ -123,12 +130,12 @@ final class RetryMiddleware
                         $attempt,
                     ));
                 }
-                if (!self::rewind($request)) {
+                if (!self::rewind($request, $bodyStart)) {
                     return Create::rejectionFor($reason);
                 }
 
                 $options['delay'] = $this->delayMs($attempt, null);
-                return $this->attempt($handler, $request, $options, $attempt + 1);
+                return $this->attempt($handler, $request, $options, $attempt + 1, $bodyStart);
             },
         );
     }
@@ -325,14 +332,25 @@ final class RetryMiddleware
             && !$failure instanceof TooManyRedirectsException;
     }
 
-    /** Rewind the request body so it can be sent again; false when that is impossible. */
-    private static function rewind(RequestInterface $request): bool
+    /** Where the request body stream is positioned before the first attempt (0 if not seekable). */
+    private static function bodyStart(RequestInterface $request): int
+    {
+        $body = $request->getBody();
+
+        return $body->isSeekable() ? $body->tell() : 0;
+    }
+
+    /**
+     * Seek the request body back to where the first attempt started reading, so every
+     * attempt sends the same bytes; false when that is impossible.
+     */
+    private static function rewind(RequestInterface $request, int $bodyStart): bool
     {
         $body = $request->getBody();
         if (!$body->isSeekable()) {
             return false;
         }
-        $body->rewind();
+        $body->seek($bodyStart);
 
         return true;
     }

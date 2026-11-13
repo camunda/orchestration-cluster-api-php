@@ -14,6 +14,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\PumpStream;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -278,6 +279,39 @@ final class HttpRetryMiddlewareTest extends TestCase
         ));
     }
 
+    /**
+     * Forked job workers inherit the parent's Mersenne Twister state, so a jitter source
+     * built on `mt_rand()` would hand every worker the same sequence and the workers
+     * would retry in lockstep, defeating the jitter. The default source must not depend
+     * on that process-inherited state.
+     */
+    public function testDefaultJitterIsNotDerivedFromTheInheritedMersenneTwisterState(): void
+    {
+        /** @var list<int> $delays */
+        $delays = [];
+        foreach ([1, 2, 3] as $fork) {
+            // Every "forked worker" starts from the identical inherited generator state.
+            mt_srand(12345);
+            $this->send(
+                array_fill(0, 2, self::problem(429, 'RESOURCE_EXHAUSTED')),
+                new Request('GET', 'http://cluster/v2/topology'),
+                maxAttempts: 2,
+                baseDelayMs: 1_000_000_000,
+                maxDelayMs: 1_000_000_000,
+                catchExhaustion: true,
+            );
+            $delay = $this->calls[1]['options']['delay'] ?? null;
+            self::assertIsInt($delay);
+            $delays[] = $delay;
+        }
+
+        self::assertCount(
+            3,
+            array_unique($delays),
+            'Workers sharing one inherited mt_rand state must still draw different jitter.',
+        );
+    }
+
     public function testJitterNeverExceedsTheExponentialCeiling(): void
     {
         $this->send(
@@ -391,6 +425,38 @@ final class HttpRetryMiddlewareTest extends TestCase
         self::assertCount(2, $this->calls);
         self::assertSame('{"a":1}', $this->calls[0]['body']);
         self::assertSame('{"a":1}', $this->calls[1]['body']);
+    }
+
+    /**
+     * A body that starts at a nonzero offset must be replayed from that same offset: the
+     * first attempt sent the bytes from the starting position onwards, so a retry that
+     * rewinds to byte zero would send different bytes.
+     */
+    public function testRequestBodyIsReplayedFromItsInitialPositionOnHttpRetries(): void
+    {
+        $body = Utils::streamFor('prefixPAYLOAD');
+        $body->seek(6);
+
+        $this->send(
+            [self::problem(429, 'RESOURCE_EXHAUSTED'), self::problem(429, 'RESOURCE_EXHAUSTED'), new Response(204)],
+            new Request('POST', 'http://cluster/v2/process-instances', [], $body),
+        );
+
+        self::assertSame(['PAYLOAD', 'PAYLOAD', 'PAYLOAD'], array_column($this->calls, 'body'));
+    }
+
+    public function testRequestBodyIsReplayedFromItsInitialPositionOnTransportRetries(): void
+    {
+        $body = Utils::streamFor('prefixPAYLOAD');
+        $body->seek(6);
+        $request = new Request('PUT', 'http://cluster/v2/thing', [], $body);
+
+        $this->send(
+            [new ConnectException('connection refused', $request), new Response(204)],
+            $request,
+        );
+
+        self::assertSame(['PAYLOAD', 'PAYLOAD'], array_column($this->calls, 'body'));
     }
 
     public function testPostBackpressureIsRetriedBecauseTheRequestWasRejectedUnprocessed(): void
