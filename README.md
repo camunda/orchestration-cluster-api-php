@@ -345,6 +345,22 @@ function object_job_handler(CamundaClient $client): void
 }
 ```
 
+### Job variables are untrusted input
+
+Job variables and custom headers reach your handler through the cluster, but neither is shaped by your worker. Variables carry whatever is in scope for the task at activation — input supplied by whoever started the process instance, values written by earlier tasks, and data from any external caller along the way. Custom headers come from the deployed process model, so they are as trustworthy as your deployment pipeline and no more. Treat both as untrusted input.
+
+What the SDK does:
+
+- **Deserialization is JSON only.** Variables and custom headers are typed `array<string,mixed>` and are hydrated from `json_decode` alone. The top level is a PHP array; a nested JSON object arrives as a `stdClass`, a JSON array as a PHP array, and everything else as a scalar or `null`. No class is instantiated from the payload, and nothing in it reaches `unserialize()` or `eval()` — a string that looks like serialized PHP stays a string.
+- **Nesting is bounded** at `json_decode`'s default depth of 512, applied to the whole response. A payload nested beyond that is rejected with an `ApiException` (`Error JSON decoding server response`) before your handler is called, so an over-deep payload cannot drive the SDK into unbounded recursion.
+- **The SDK adds no variable content to its own output.** There is no logger in the SDK, and it never appends a payload to an exception message it raises: a failed activation reports the `title` and `detail` the cluster returned, nothing more. Note that those two fields are the server's text, passed through unredacted, and that a generated `ApiException` still carries the raw HTTP response body on `getResponseBody()` — for an activation response that body *is* the variables. Log the exception's message, not the whole exception, if variable values are sensitive in your deployment.
+- **Each job gets its own objects.** Every dispatched job is given its own `ActivatedJobResult` and its own `JobActionClient`, and the variables handed to one handler call are a separate value from any other's, so no payload is shared or mutated across jobs. That is object isolation, not sandboxing: a stateful handler — properties, captured references, statics, globals — can still carry data from one job to the next, and forked mode separates jobs into processes for concurrency, not as a security boundary.
+
+What the SDK does not do:
+
+- **It enforces no payload size limit.** There is no cap on the byte size of an activation response or of an individual variable. Note where a cap has to go: the activation response is read into a string and decoded in full before any handler is dispatched, so a check inside your handler runs far too late to protect the worker's memory. A size limit must be imposed upstream — on the cluster, or in the HTTP layer, for example a Guzzle middleware on a custom client that rejects an over-large response before it is buffered. A handler-side check is still worth having against individual values you are about to act on; it is just not a defence against an over-large response.
+- **It does not validate or sanitise content.** Type-checking, range-checking, schema validation, and escaping before use in SQL, a shell command, a file path or HTML are the handler author's responsibility. In particular, never use a variable value as a file path, a class name or a callable without checking it against a list you control.
+
 ## Accessing every operation
 
 Every one of the 244 API operations is exposed as a method directly on the client — the
