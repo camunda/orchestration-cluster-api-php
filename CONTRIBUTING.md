@@ -46,6 +46,7 @@ make check              # lint + phpstan (level max) + acceptance tests
 make sync-readme-check  # verify README snippets match examples/
 make config-reference-check # verify the README config reference is in sync
 make example-coverage   # verify examples/operation-map.json integrity
+make security-scan      # Psalm taint analysis of src/ (needs a recent PHP patch release, e.g. >= 8.3.16)
 ```
 
 If you changed anything user-facing:
@@ -87,3 +88,11 @@ When they are absent the release still succeeds; the notification is skipped and
 - Keep `src/`, `examples/`, and `tests/` green at PHPStan level `max`.
 - Follow the PHP-CS-Fixer ruleset (`make lint-fix`).
 - Prefer editing a hook over hand-editing generated code — always.
+
+## Security analysis
+
+CodeQL does not support PHP, so the `Security analysis` workflow (`.github/workflows/security-analysis.yml`) runs [Psalm](https://psalm.dev) in taint-analysis mode over the hand-written runtime in `src/` (generated code is excluded, see `psalm.xml`). It runs on pull requests and on pushes to `main` / `stable/**`, fails on any finding, and uploads the results to code scanning (category `psalm-taint`).
+
+- `make security-scan` runs the same analysis locally.
+- `make security-selftest` proves the analysis is alive: it must flag the deliberately vulnerable fixture in `security/selftest/`. CI runs it before the real scan so a no-op scan cannot pass silently.
+- Fix a finding by removing the tainted flow (validate or encode the value). Do not add a baseline or a suppression without a written justification in the PR.
