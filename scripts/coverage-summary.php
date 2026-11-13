@@ -16,8 +16,10 @@ if (!is_file($path)) {
     exit(1);
 }
 
-$xml = simplexml_load_file($path);
-if ($xml === false) {
+// DOM rather than SimpleXML: ext-dom is already required by PHPUnit's coverage reports.
+libxml_use_internal_errors(true);
+$document = new DOMDocument();
+if (!$document->load($path)) {
     fwrite(STDERR, "Cannot parse Clover report: $path\n");
     exit(1);
 }
@@ -26,17 +28,20 @@ $root = dirname(__DIR__) . '/';
 $rows = [];
 $totalStatements = 0;
 $totalCovered = 0;
-foreach ($xml->xpath('//file') ?: [] as $file) {
-    $name = (string) $file['name'];
+foreach ((new DOMXPath($document))->query('//file') ?: [] as $file) {
+    if (!$file instanceof DOMElement) {
+        continue;
+    }
+    $name = $file->getAttribute('name');
     $relative = str_starts_with($name, $root) ? substr($name, strlen($root)) : $name;
     $statements = 0;
     $covered = 0;
-    foreach ($file->line as $line) {
-        if ((string) $line['type'] !== 'stmt') {
+    foreach ($file->getElementsByTagName('line') as $line) {
+        if ($line->getAttribute('type') !== 'stmt') {
             continue;
         }
         ++$statements;
-        if ((int) $line['count'] > 0) {
+        if ((int) $line->getAttribute('count') > 0) {
             ++$covered;
         }
     }
