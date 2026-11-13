@@ -44,6 +44,31 @@ final class ConfigurationSecretRedactionTest extends TestCase
     }
 
     #[DataProvider('credentials')]
+    public function testPrintROfTheConfigurationHidesEveryCredential(string $sentinel): void
+    {
+        self::assertStringNotContainsString($sentinel, print_r($this->configuration(), true));
+    }
+
+    #[DataProvider('credentials')]
+    public function testPrintROfTheClientsHidesEveryCredential(string $sentinel): void
+    {
+        self::assertStringNotContainsString($sentinel, print_r($this->syncClient(), true));
+        self::assertStringNotContainsString($sentinel, print_r($this->asyncClient(), true));
+    }
+
+    /**
+     * `var_export()` builds a `__set_state()` literal straight from the properties with
+     * no hook to intercept, so it is the one surface that still prints credentials.
+     * This is pinned rather than left implicit: if the credential fields are ever made
+     * private, this test fails and the README paragraph needs updating with it.
+     */
+    #[DataProvider('credentials')]
+    public function testVarExportIsTheDocumentedExceptionWhileTheFieldsArePublic(string $sentinel): void
+    {
+        self::assertStringContainsString($sentinel, var_export($this->configuration(), true));
+    }
+
+    #[DataProvider('credentials')]
     public function testJsonEncodeOfTheConfigurationHidesEveryCredential(string $sentinel): void
     {
         self::assertStringNotContainsString($sentinel, (string) json_encode($this->configuration()));
