@@ -478,9 +478,23 @@ final class JobWorkerBehaviourTest extends TestCase
 
     public function testSuccessfulActivationStatusOtherThan200WithoutJobsIsTreatedAsEmpty(): void
     {
-        $worker = $this->worker([new Response(200, ['Content-Type' => 'application/json'], '{"jobs":[]}')]);
+        // The generated client only names 200 as the documented success status; any other 2xx
+        // takes its success fallback, which must still be read as an activation result.
+        $worker = $this->worker([new Response(201, ['Content-Type' => 'application/json'], '{"jobs":[]}')]);
 
         self::assertSame(0, $worker->pollOnce(static fn (): null => null));
+    }
+
+    public function testJobsActivatedWithASuccessStatusOtherThan200AreStillProcessed(): void
+    {
+        $activation = JobFixtures::activation('7');
+        $worker = $this->worker([
+            new Response(201, $activation->getHeaders(), (string) $activation->getBody()),
+            new Response(204),
+        ]);
+
+        self::assertSame(1, $worker->pollOnce(static fn (): null => null));
+        self::assertStringEndsWith('/jobs/7/completion', $this->http->requests[1]->getUri()->getPath());
     }
 
     /**

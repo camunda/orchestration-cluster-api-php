@@ -20,6 +20,12 @@ final class ForkedWorkerSupportEdgeCasesTest extends TestCase
 
     protected function tearDown(): void
     {
+        // A test may leave a directory read-only; restore it first so its contents can be removed.
+        foreach ($this->cleanup as $path) {
+            if (is_dir($path)) {
+                @chmod($path, 0700);
+            }
+        }
         foreach (array_reverse($this->cleanup) as $path) {
             if (is_dir($path)) {
                 @chmod($path, 0700);
@@ -209,6 +215,9 @@ final class ForkedWorkerSupportEdgeCasesTest extends TestCase
         } finally {
             restore_error_handler();
             unset($previous);
+            // Always make the directory writable again so tearDown() can remove the marker and the
+            // directory, even if cleanupFile() or the assertion below fails.
+            chmod($dir, 0700);
         }
 
         self::assertSame("Cannot remove temporary PID marker file: $file", $message);
