@@ -1,0 +1,85 @@
+name: Security analysis
+
+# CodeQL has no PHP support, so the SDK's PHP code is not covered by the repository's CodeQL
+# default setup (which only scans `actions` and `javascript-typescript`). This workflow adds a
+# PHP security analyser: Psalm in taint-analysis mode, scoped to the hand-written runtime in
+# `src/` (see psalm.xml; generated code is excluded). Findings are reported to GitHub code
+# scanning as SARIF (category `psalm-taint`) and any finding also fails the job.
+
+on:
+  pull_request:
+    branches:
+      - main
+      - 'stable/**'
+  push:
+    branches:
+      - main
+      - 'stable/**'
+  workflow_dispatch:
+
+concurrency:
+  group: security-analysis-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  psalm-taint:
+    name: psalm-taint
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      # Required to upload SARIF to code scanning.
+      security-events: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: json, pcntl, mbstring, dom, simplexml, tokenizer, libxml
+          coverage: none
+          tools: composer:v2
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --no-progress
+
+      # The scan must be able to see a real vulnerability, otherwise a green result could mean
+      # "analysed nothing". The fixture in security/selftest/ is deliberately vulnerable.
+      - name: Check the taint analysis detects a known vulnerability
+        run: make security-selftest
+
+      # Under GitHub Actions Psalm deliberately exits 0 when it reports taint findings together with
+      # --report (so that the SARIF can still be uploaded). The gate is therefore the SARIF content
+      # in the last step, not this step's exit status; a Psalm crash or misconfiguration still
+      # fails here.
+      - name: Run Psalm taint analysis
+        run: vendor/bin/psalm --taint-analysis --no-cache --no-progress --report=psalm-taint.sarif
+
+      # Fork PRs get a read-only token and cannot upload to code scanning; the analysis above
+      # still runs and still gates the PR.
+      - name: Upload SARIF to code scanning
+        if: >-
+          always() && hashFiles('psalm-taint.sarif') != '' &&
+          (github.event_name != 'pull_request' ||
+          github.event.pull_request.head.repo.full_name == github.repository)
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: psalm-taint.sarif
+          category: psalm-taint
+
+      - name: Fail on taint findings
+        run: |
+          if [ ! -s psalm-taint.sarif ]; then
+            echo "::error::Psalm produced no SARIF report, so the result cannot be trusted."
+            exit 1
+          fi
+          findings="$(jq '[.runs[].results[]?] | length' psalm-taint.sarif)"
+          echo "Psalm taint findings: ${findings}"
+          if [ "${findings}" -gt 0 ]; then
+            echo "::error::Psalm taint analysis reported ${findings} finding(s). See the step log and the code scanning alerts."
+            exit 1
+          fi
