@@ -4,7 +4,7 @@ name: Security analysis
 # default setup (which only scans `actions` and `javascript-typescript`). This workflow adds a
 # PHP security analyser: Psalm in taint-analysis mode, scoped to the hand-written runtime in
 # `src/` (see psalm.xml; generated code is excluded). Findings are reported to GitHub code
-# scanning as SARIF (category `psalm-taint`) and also fail the job.
+# scanning as SARIF (category `psalm-taint`) and any finding also fails the job.
 
 on:
   pull_request:
@@ -52,11 +52,11 @@ jobs:
       - name: Check the taint analysis detects a known vulnerability
         run: make security-selftest
 
-      # Psalm exits non-zero when it reports findings. Keep going so the SARIF is uploaded to
-      # code scanning either way, then fail the job in the last step.
+      # Under GitHub Actions Psalm deliberately exits 0 when it reports taint findings together with
+      # --report (so that the SARIF can still be uploaded). The gate is therefore the SARIF content
+      # in the last step, not this step's exit status; a Psalm crash or misconfiguration still
+      # fails here.
       - name: Run Psalm taint analysis
-        id: psalm
-        continue-on-error: true
         run: vendor/bin/psalm --taint-analysis --no-cache --no-progress --report=psalm-taint.sarif
 
       # Fork PRs get a read-only token and cannot upload to code scanning; the analysis above
@@ -72,7 +72,14 @@ jobs:
           category: psalm-taint
 
       - name: Fail on taint findings
-        if: steps.psalm.outcome == 'failure'
         run: |
-          echo "::error::Psalm taint analysis reported findings. See the step log and the code scanning alerts."
-          exit 1
+          if [ ! -s psalm-taint.sarif ]; then
+            echo "::error::Psalm produced no SARIF report, so the result cannot be trusted."
+            exit 1
+          fi
+          findings="$(jq '[.runs[].results[]?] | length' psalm-taint.sarif)"
+          echo "Psalm taint findings: ${findings}"
+          if [ "${findings}" -gt 0 ]; then
+            echo "::error::Psalm taint analysis reported ${findings} finding(s). See the step log and the code scanning alerts."
+            exit 1
+          fi
