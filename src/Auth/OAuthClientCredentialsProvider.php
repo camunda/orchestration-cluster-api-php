@@ -23,6 +23,13 @@ final class OAuthClientCredentialsProvider implements AuthProvider
     private ?string $accessToken = null;
     private float $expiresAtEpoch = 0.0;
 
+    /** @var \Closure(): float */
+    private readonly \Closure $clock;
+
+    /**
+     * @param (\Closure(): float)|null $clock Returns the current Unix time in seconds. Defaults to
+     *   `microtime(true)`; inject a fake to test token expiry without sleeping.
+     */
     public function __construct(
         private readonly ClientInterface $httpClient,
         private readonly RequestFactoryInterface $requestFactory,
@@ -31,7 +38,9 @@ final class OAuthClientCredentialsProvider implements AuthProvider
         private readonly string $clientId,
         private readonly string $clientSecret,
         private readonly string $audience,
+        ?\Closure $clock = null,
     ) {
+        $this->clock = $clock ?? static fn (): float => microtime(true);
     }
 
     /** @return array{Authorization: string} */
@@ -42,8 +51,9 @@ final class OAuthClientCredentialsProvider implements AuthProvider
 
     private function token(): string
     {
-        if ($this->accessToken !== null && microtime(true) < $this->expiresAtEpoch) {
-            return $this->accessToken;
+        $cached = $this->accessToken;
+        if ($cached !== null && ($this->clock)() < $this->expiresAtEpoch) {
+            return $cached;
         }
         return $this->fetchToken();
     }
@@ -87,9 +97,10 @@ final class OAuthClientCredentialsProvider implements AuthProvider
         }
 
         $expiresIn = isset($payload['expires_in']) ? (int) $payload['expires_in'] : 300;
-        $this->accessToken = $payload['access_token'];
-        $this->expiresAtEpoch = microtime(true) + max(1, $expiresIn - self::EXPIRY_LEEWAY_SECONDS);
+        $accessToken = $payload['access_token'];
+        $this->accessToken = $accessToken;
+        $this->expiresAtEpoch = ($this->clock)() + max(1, $expiresIn - self::EXPIRY_LEEWAY_SECONDS);
 
-        return $this->accessToken;
+        return $accessToken;
     }
 }
