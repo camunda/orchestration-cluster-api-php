@@ -124,6 +124,44 @@ final class JobWorkerHandlerExceptionTest extends TestCase
         self::assertSame(0, $this->jsonBody($this->requests[1])['retries']);
     }
 
+    /**
+     * A handler can throw with a message built from binary data. The fail request is
+     * JSON, so an unencodable message would throw while the worker is reporting the
+     * failure — out of the catch block — and re-create the defect this fix removes.
+     */
+    public function testAHandlerMessageThatIsNotValidUtf8StillFailsTheJob(): void
+    {
+        $worker = $this->worker([
+            $this->activationResponse([
+                ['jobKey' => '1', 'retries' => 3],
+                ['jobKey' => '2', 'retries' => 3],
+            ]),
+            new Response(204),
+            new Response(204),
+        ]);
+
+        $processed = $worker->pollOnce(
+            static function (ActivatedJobResult $job, JobActionClient $action): array {
+                if ((string) $job->getJobKey() === '1') {
+                    throw new \RuntimeException("payload \xB1\x31 rejected \xC3\x28");
+                }
+
+                return ['handled' => true];
+            },
+        );
+
+        self::assertSame(2, $processed);
+        self::assertCount(3, $this->requests, 'The failure must still be reported, and the batch continue.');
+        self::assertStringEndsWith('/jobs/1/failure', $this->requests[1]->getUri()->getPath());
+        self::assertStringEndsWith('/jobs/2/completion', $this->requests[2]->getUri()->getPath());
+
+        $errorMessage = $this->jsonBody($this->requests[1])['errorMessage'];
+        self::assertIsString($errorMessage);
+        self::assertStringContainsString('RuntimeException', $errorMessage);
+        self::assertStringContainsString('rejected', $errorMessage);
+        self::assertTrue(mb_check_encoding($errorMessage, 'UTF-8'));
+    }
+
     public function testRetriesNeverGoNegative(): void
     {
         $worker = $this->worker([

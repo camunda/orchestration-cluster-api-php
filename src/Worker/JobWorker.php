@@ -191,7 +191,7 @@ final class JobWorker
             if (!$action->wasHandled()) {
                 $action->fail(
                     retries: max(0, $job->getRetries() - 1),
-                    errorMessage: $throwable::class . ': ' . $throwable->getMessage(),
+                    errorMessage: self::failureMessage($throwable),
                 );
             }
 
@@ -201,6 +201,20 @@ final class JobWorker
         if (!$action->wasHandled() && $this->options->autoComplete) {
             $action->complete(\is_array($result) ? $result : []);
         }
+    }
+
+    /**
+     * The message reported to the broker for a job whose handler threw.
+     *
+     * Carries the exception class and message only — never the stack trace, which can
+     * hold unrelated data. The text is forced to valid UTF-8 first: a handler is free
+     * to throw with a message built from binary data, and the fail request is JSON, so
+     * an unencodable message would throw out of the catch block above and re-create the
+     * very defect this guards against.
+     */
+    private static function failureMessage(\Throwable $throwable): string
+    {
+        return mb_convert_encoding($throwable::class . ': ' . $throwable->getMessage(), 'UTF-8', 'UTF-8');
     }
 
     private function reap(int $count): void
