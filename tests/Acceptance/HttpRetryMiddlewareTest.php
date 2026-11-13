@@ -311,9 +311,20 @@ final class HttpRetryMiddlewareTest extends TestCase
      * RFC 9110 requires recipients to accept all three HTTP-date formats: the
      * preferred IMF-fixdate and the obsolete RFC 850 and asctime forms.
      */
-    #[DataProvider('retryAfterHttpDates')]
-    public function testRetryAfterHttpDateIsHonoured(string $date): void
+    #[DataProvider('retryAfterHttpDateFormats')]
+    public function testRetryAfterHttpDateIsHonoured(string $format): void
     {
+        // Built here, not in the data provider, so the five seconds are measured from
+        // the moment the test runs rather than from test discovery.
+        $at = time() + 5;
+        $date = match ($format) {
+            'imf-fixdate' => gmdate('D, d M Y H:i:s', $at) . ' GMT',
+            'rfc850' => gmdate('l, d-M-y H:i:s', $at) . ' GMT',
+            // asctime pads a single-digit day with a space.
+            'asctime' => gmdate('D M ', $at) . sprintf('%2d', (int) gmdate('j', $at)) . gmdate(' H:i:s Y', $at),
+            default => throw new \LogicException("Unknown format $format"),
+        };
+
         $this->send(
             [new Response(429, ['Retry-After' => $date]), new Response(200)],
             new Request('GET', 'http://cluster/v2/topology'),
@@ -329,13 +340,11 @@ final class HttpRetryMiddlewareTest extends TestCase
     /**
      * @return iterable<string, array{string}>
      */
-    public static function retryAfterHttpDates(): iterable
+    public static function retryAfterHttpDateFormats(): iterable
     {
-        $at = time() + 5;
-        yield 'IMF-fixdate' => [gmdate('D, d M Y H:i:s', $at) . ' GMT'];
-        yield 'RFC 850' => [gmdate('l, d-M-y H:i:s', $at) . ' GMT'];
-        // asctime pads a single-digit day with a space.
-        yield 'asctime' => [gmdate('D M ', $at) . sprintf('%2d', (int) gmdate('j', $at)) . gmdate(' H:i:s Y', $at)];
+        yield 'IMF-fixdate' => ['imf-fixdate'];
+        yield 'RFC 850' => ['rfc850'];
+        yield 'asctime' => ['asctime'];
     }
 
     public function testRetryAfterIsBoundedByACeiling(): void
