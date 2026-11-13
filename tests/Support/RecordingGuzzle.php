@@ -46,7 +46,7 @@ final class RecordingGuzzle
     {
         return CamundaClient::fromConfiguration(
             ConfigResolver::resolve(
-                overrides: ['CAMUNDA_AUTH_STRATEGY' => 'NONE'] + $overrides,
+                overrides: $overrides + ['CAMUNDA_AUTH_STRATEGY' => 'NONE'], // NONE is only a default
                 environment: [],
             ),
             $this->guzzle($queue),

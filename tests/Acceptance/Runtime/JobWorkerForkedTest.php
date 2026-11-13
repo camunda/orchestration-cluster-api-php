@@ -68,6 +68,11 @@ final class JobWorkerForkedTest extends TestCase
             $childPids[] = $pid;
         }
         self::assertCount(3, array_unique($childPids), 'one process per job');
+        foreach ($childPids as $childPid) {
+            // -1 (ECHILD) means the child is no longer ours to wait for: pollOnce() already reaped it.
+            // A child still running or left as a zombie would give 0 or its pid here.
+            self::assertSame(-1, pcntl_waitpid((int) $childPid, $status, WNOHANG), "child $childPid must have been reaped");
+        }
         $handledJobs = array_map(static fn (array $m): string => $m['runId'], $markers);
         sort($handledJobs);
         self::assertSame(['1', '2', '3'], $handledJobs);
