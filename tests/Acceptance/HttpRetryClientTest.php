@@ -318,6 +318,25 @@ final class HttpRetryClientTest extends TestCase
         }
     }
 
+    /**
+     * Defect class, not just the two operations above: every generated async
+     * rejection callback must pass non-HTTP failures through instead of assuming
+     * a response-bearing exception.
+     */
+    public function testEveryGeneratedAsyncRejectionCallbackPassesNonHttpFailuresThrough(): void
+    {
+        $callbacks = 0;
+        $guarded = 0;
+        foreach (glob(dirname(__DIR__, 2) . '/generated/src/Api/*Api.php') ?: [] as $file) {
+            $source = (string) file_get_contents($file);
+            $callbacks += substr_count($source, 'function ($exception) {');
+            $guarded += substr_count($source, '!$exception instanceof \\GuzzleHttp\\Exception\\RequestException || $exception->getResponse() === null');
+        }
+
+        self::assertGreaterThan(0, $callbacks);
+        self::assertSame($callbacks, $guarded);
+    }
+
     public function testSuppliedHttpClientIsLeftUntouched(): void
     {
         $guzzle = new \GuzzleHttp\Client([
