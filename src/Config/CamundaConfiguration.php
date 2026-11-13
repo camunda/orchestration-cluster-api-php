@@ -43,8 +43,9 @@ final class CamundaConfiguration implements \JsonSerializable
     }
 
     /**
-     * The configuration as `var_dump()` and most framework dumpers show it, with every
-     * credential replaced by a fixed marker.
+     * The configuration as `var_dump()` and `print_r()` show it, with every credential
+     * replaced by a fixed marker. Symfony's VarDumper (and so Symfony's and Laravel's
+     * `dump()`/`dd()`) ignores this hook and still shows the real properties.
      *
      * A credential that is not set stays `null`, so "missing" and "redacted" remain
      * distinguishable when you are debugging a configuration problem.

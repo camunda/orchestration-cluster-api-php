@@ -14,9 +14,11 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Issue #111: dumping a configuration or a client is the ordinary way a PHP
- * application reports a startup problem — framework debug pages, `dd()`, structured
- * log context and crash reporters all serialise objects this way. None of those
- * surfaces may show a credential.
+ * application reports a startup problem — debug output, structured log context and
+ * crash reporters all serialise objects this way. None of the surfaces PHP lets an
+ * object intercept (`var_dump()`, `print_r()`, `json_encode()`) may show a credential.
+ * `var_export()` and Symfony's VarDumper cannot be intercepted; the README documents them
+ * as the exceptions.
  *
  * The tests walk every credential field and every interceptable dump surface, so a
  * credential added later is caught by the same test rather than needing a new one.
