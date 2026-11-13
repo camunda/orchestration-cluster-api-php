@@ -20,6 +20,12 @@ final class OAuthClientCredentialsProvider implements AuthProvider
     /** Refresh this many seconds before the token actually expires. */
     private const EXPIRY_LEEWAY_SECONDS = 30;
 
+    /** Upper bound on the error summary carried in an {@see AuthenticationException}. */
+    private const MAX_ERROR_SUMMARY_LENGTH = 200;
+
+    /** Stand-in for the client secret wherever it would otherwise be reported. */
+    private const REDACTED = '***';
+
     private ?string $accessToken = null;
     private float $expiresAtEpoch = 0.0;
 
@@ -65,18 +71,23 @@ final class OAuthClientCredentialsProvider implements AuthProvider
         try {
             $response = $this->httpClient->sendRequest($request);
         } catch (\Psr\Http\Client\ClientExceptionInterface $e) {
-            throw new AuthenticationException(
-                'Failed to reach the OAuth token endpoint: ' . $e->getMessage(),
-                0,
-                $e
-            );
+            // A transport error message can quote the request it failed to send, and
+            // that request carries the client secret (issue #110). The cause is not
+            // attached: a logger or `(string) $exception` renders the whole chain, so
+            // an unsanitised `previous` would leak the secret the message no longer
+            // carries. Its class and redacted message are reported here instead.
+            throw new AuthenticationException(sprintf(
+                'Failed to reach the OAuth token endpoint (%s): %s',
+                $e::class,
+                $this->redactSecret($e->getMessage()),
+            ));
         }
 
         $status = $response->getStatusCode();
         $raw = (string) $response->getBody();
         if ($status < 200 || $status >= 300) {
             throw new AuthenticationException(
-                "OAuth token request failed with HTTP $status: $raw"
+                'OAuth token request failed with HTTP ' . $status . $this->errorSummary($raw)
             );
         }
 
@@ -91,5 +102,111 @@ final class OAuthClientCredentialsProvider implements AuthProvider
         $this->expiresAtEpoch = microtime(true) + max(1, $expiresIn - self::EXPIRY_LEEWAY_SECONDS);
 
         return $this->accessToken;
+    }
+
+    /**
+     * Summarise a token-endpoint error body instead of echoing it.
+     *
+     * The request sent to the token endpoint is a form containing `client_secret`, and
+     * an identity provider is free to quote the request it rejected. Only the
+     * well-known OAuth 2.0 `error` and `error_description` fields of a JSON body are
+     * reported, bounded in length and scrubbed of the configured secret (issue #110).
+     */
+    private function errorSummary(string $raw): string
+    {
+        /** @var mixed $payload */
+        $payload = json_decode($raw, true);
+        if (!is_array($payload)) {
+            return '.';
+        }
+
+        $parts = [];
+        foreach (['error', 'error_description'] as $field) {
+            /** @var mixed $value */
+            $value = $payload[$field] ?? null;
+            if (is_string($value) && $value !== '') {
+                $parts[] = $value;
+            }
+        }
+        if ($parts === []) {
+            return '.';
+        }
+
+        $summary = $this->redactSecret(implode(': ', $parts));
+        if (mb_strlen($summary) > self::MAX_ERROR_SUMMARY_LENGTH) {
+            $summary = mb_substr($summary, 0, self::MAX_ERROR_SUMMARY_LENGTH) . '...';
+        }
+
+        return ' (' . $summary . ').';
+    }
+
+    /**
+     * Replace the configured client secret wherever it appears in text destined for an
+     * exception message — a backstop for every place the secret could be reflected back
+     * to us, not only the structured fields we choose to report.
+     *
+     * The secret may come back in a representation other than the one we sent, so the
+     * literal, percent-encoded (with the hex digits of each escape in either case) and
+     * JSON-escaped forms are all scrubbed. This is a second line of defence over an
+     * open-ended space of encodings; the first is that only the two well-known OAuth
+     * fields are quoted at all.
+     */
+    private function redactSecret(string $text): string
+    {
+        if ($this->clientSecret === '') {
+            return $text;
+        }
+
+        return (string) preg_replace($this->secretPatterns(), self::REDACTED, $text);
+    }
+
+    /**
+     * One pattern per representation, longest first so a form that contains another is
+     * replaced whole.
+     *
+     * @return list<non-empty-string>
+     */
+    private function secretPatterns(): array
+    {
+        $literals = [$this->clientSecret];
+
+        $json = json_encode($this->clientSecret);
+        if (is_string($json)) {
+            // Strip the surrounding quotes: `"a\/b"` -> `a\/b`.
+            $literals[] = substr($json, 1, -1);
+        }
+
+        $patterns = array_map(static fn (string $l): string => preg_quote($l, '/'), $literals);
+        foreach ([rawurlencode($this->clientSecret), urlencode($this->clientSecret)] as $encoded) {
+            $patterns[] = self::patternForEncoded($encoded);
+        }
+
+        $patterns = array_values(array_unique($patterns));
+        usort($patterns, static fn (string $a, string $b): int => \strlen($b) <=> \strlen($a));
+
+        /** @var list<non-empty-string> */
+        return array_map(static fn (string $p): string => '/' . $p . '/', $patterns);
+    }
+
+    /**
+     * Match a percent-encoded form with the hex digits of every `%XX` escape in either
+     * case — a provider may emit `%2f`, `%2F` or a mixture — and everything else
+     * literally.
+     */
+    private static function patternForEncoded(string $encoded): string
+    {
+        return (string) preg_replace_callback(
+            '/%([0-9A-Fa-f])([0-9A-Fa-f])/',
+            static fn (array $match): string => '%' . self::eitherCase($match[1]) . self::eitherCase($match[2]),
+            preg_quote($encoded, '/'),
+        );
+    }
+
+    private static function eitherCase(string $hexDigit): string
+    {
+        $upper = strtoupper($hexDigit);
+        $lower = strtolower($hexDigit);
+
+        return $upper === $lower ? $upper : '[' . $upper . $lower . ']';
     }
 }
