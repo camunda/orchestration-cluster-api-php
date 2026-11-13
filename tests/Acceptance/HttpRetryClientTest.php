@@ -6,6 +6,7 @@ namespace Camunda\Orchestration\Tests\Acceptance;
 
 use Camunda\Orchestration\Api\ApiException;
 use Camunda\Orchestration\Api\Model\TopologyResponse;
+use Camunda\Orchestration\Auth\AuthProvider;
 use Camunda\Orchestration\Auth\AuthProviderFactory;
 use Camunda\Orchestration\CamundaAsyncClient;
 use Camunda\Orchestration\CamundaClient;
@@ -14,7 +15,10 @@ use Camunda\Orchestration\Config\ConfigResolver;
 use Camunda\Orchestration\Exception\RetryExhaustedException;
 use Camunda\Orchestration\Http\HttpClientFactory;
 use Camunda\Orchestration\Worker\JobWorkerOptions;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\Promise\Create;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -219,6 +223,99 @@ final class HttpRetryClientTest extends TestCase
         }
 
         self::assertCount(1, $this->requests);
+    }
+
+    /**
+     * Each attempt must ask the auth provider again: a token can expire while an
+     * attempt is waiting out its backoff, and replaying the first Authorization
+     * header would then fail with a non-retryable 401.
+     */
+    public function testEveryAttemptRechecksTheAuthProvider(): void
+    {
+        $provider = new class () implements AuthProvider {
+            public int $calls = 0;
+
+            public function getHeaders(): array
+            {
+                return ['Authorization' => 'Bearer token-' . ++$this->calls];
+            }
+        };
+        $config = $this->config();
+        $client = CamundaClient::fromConfiguration(
+            $config,
+            HttpClientFactory::create($config, $provider, $this->handler([
+                $this->problem(429, 'RESOURCE_EXHAUSTED'),
+                new Response(200, ['Content-Type' => 'application/json'], '{"clusterSize":3,"brokers":[]}'),
+            ])),
+        );
+
+        $client->getTopology();
+
+        self::assertSame(2, $provider->calls);
+        self::assertSame(['Bearer token-1'], $this->requests[0]->getHeader('Authorization'));
+        self::assertSame(['Bearer token-2'], $this->requests[1]->getHeader('Authorization'));
+    }
+
+    /**
+     * The generated async rejection callback used to assume every rejection was a
+     * response-bearing Guzzle exception and called getResponse() on it, turning
+     * any other failure into a PHP Error. Exhaustion must reach async callers as
+     * the RetryExhaustedException with its status and attempt count intact.
+     */
+    #[DataProvider('asyncOperations')]
+    public function testAsyncExhaustionRejectsWithTheFinalStatusAndAttempts(string $operation): void
+    {
+        $config = $this->config();
+        $client = CamundaAsyncClient::fromConfiguration(
+            $config,
+            HttpClientFactory::create($config, AuthProviderFactory::fromConfiguration($config), $this->handler(
+                array_fill(0, 3, $this->problem(429, 'RESOURCE_EXHAUSTED')),
+            )),
+        );
+
+        try {
+            $client->{$operation}(...self::asyncArguments($operation))->wait();
+            self::fail('Expected RetryExhaustedException');
+        } catch (RetryExhaustedException $e) {
+            self::assertSame(429, $e->getCode());
+            self::assertSame(3, $e->getAttempts());
+        }
+        self::assertCount(3, $this->requests);
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function asyncOperations(): iterable
+    {
+        yield 'GET returning a model' => ['getTopology'];
+        yield 'no-content POST' => ['completeJob'];
+    }
+
+    /**
+     * @return list<mixed>
+     */
+    private static function asyncArguments(string $operation): array
+    {
+        return $operation === 'completeJob' ? ['2251799813686200'] : [];
+    }
+
+    public function testAsyncTransportExhaustionRejectsWithTheRetryExhaustedException(): void
+    {
+        $config = $this->config();
+        $failure = new ConnectException('connection refused', new Request('GET', 'http://localhost:8080/v2/topology'));
+        $client = CamundaAsyncClient::fromConfiguration(
+            $config,
+            HttpClientFactory::create($config, AuthProviderFactory::fromConfiguration($config), static fn () => Create::rejectionFor($failure)),
+        );
+
+        try {
+            $client->getTopology()->wait();
+            self::fail('Expected RetryExhaustedException');
+        } catch (RetryExhaustedException $e) {
+            self::assertSame(0, $e->getCode());
+            self::assertSame(3, $e->getAttempts());
+        }
     }
 
     public function testSuppliedHttpClientIsLeftUntouched(): void
