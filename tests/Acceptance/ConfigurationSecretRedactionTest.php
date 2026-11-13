@@ -57,15 +57,41 @@ final class ConfigurationSecretRedactionTest extends TestCase
     }
 
     /**
-     * `var_export()` builds a `__set_state()` literal straight from the properties with
-     * no hook to intercept, so it is the one surface that still prints credentials.
-     * This is pinned rather than left implicit: if the credential fields are ever made
-     * private, this test fails and the README paragraph needs updating with it.
+     * `var_export()` builds a `__set_state()` literal from the properties with no hook
+     * to intercept, and it exports private and protected properties just the same, so
+     * it is the one surface that still prints credentials and no change of visibility
+     * would alter that. Pinned rather than left implicit, so the day it stops being
+     * true the README paragraph is updated with it.
      */
     #[DataProvider('credentials')]
-    public function testVarExportIsTheDocumentedExceptionWhileTheFieldsArePublic(string $sentinel): void
+    public function testVarExportIsTheDocumentedExceptionRegardlessOfVisibility(string $sentinel): void
     {
         self::assertStringContainsString($sentinel, var_export($this->configuration(), true));
+
+        $privateHolder = new class ($sentinel) {
+            public function __construct(private readonly string $secret)
+            {
+            }
+
+            public function reveal(): string
+            {
+                return $this->secret;
+            }
+
+            /** @return array<string, mixed> */
+            public function __debugInfo(): array
+            {
+                return ['secret' => '***'];
+            }
+        };
+
+        self::assertStringContainsString(
+            $sentinel,
+            var_export($privateHolder, true),
+            'var_export() reaches private properties too, so making the fields private would not close it.',
+        );
+        self::assertStringNotContainsString($sentinel, print_r($privateHolder, true));
+        self::assertSame($sentinel, $privateHolder->reveal());
     }
 
     #[DataProvider('credentials')]
