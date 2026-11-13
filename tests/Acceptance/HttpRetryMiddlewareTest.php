@@ -413,6 +413,13 @@ final class HttpRetryMiddlewareTest extends TestCase
         yield 'past date' => ['Wed, 21 Oct 2015 07:28:00 GMT'];
         yield 'past RFC 850 date' => ['Wednesday, 21-Oct-15 07:28:00 GMT'];
         yield 'past asctime date' => ['Wed Oct 21 07:28:00 2015'];
+        // PHP normalises impossible calendar dates (31 Feb becomes 3 Mar) instead of
+        // rejecting them; these are far in the future so a normalised parse would wait.
+        yield 'IMF-fixdate with 31 February' => ['Sat, 31 Feb 2099 10:00:00 GMT'];
+        yield 'IMF-fixdate with 31 April' => ['Thu, 31 Apr 2099 10:00:00 GMT'];
+        yield 'IMF-fixdate with hour 25' => ['Thu, 05 Mar 2099 25:00:00 GMT'];
+        yield 'RFC 850 with 31 February' => ['Saturday, 31-Feb-68 10:00:00 GMT'];
+        yield 'asctime with 31 February' => ['Sat Feb 31 10:00:00 2099'];
     }
 
     public function testRequestBodyIsReplayedOnEveryAttempt(): void

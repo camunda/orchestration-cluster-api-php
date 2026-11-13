@@ -297,14 +297,17 @@ final class RetryMiddleware
     /**
      * Parse an HTTP-date. RFC 9110 requires recipients to accept the preferred
      * IMF-fixdate and the obsolete RFC 850 and asctime formats (the latter has no zone
-     * and is always GMT).
+     * and is always GMT). A value naming an impossible date or time is rejected.
      */
     private static function parseHttpDate(string $value): ?\DateTimeImmutable
     {
         $utc = new \DateTimeZone('UTC');
         foreach (['D, d M Y H:i:s \\G\\M\\T', 'l, d-M-y H:i:s \\G\\M\\T', 'D M j H:i:s Y'] as $format) {
-            $date = \DateTimeImmutable::createFromFormat($format, (string) preg_replace('/ {2,}/', ' ', $value), $utc);
-            if ($date !== false) {
+            $candidate = (string) preg_replace('/ {2,}/', ' ', $value);
+            $date = \DateTimeImmutable::createFromFormat($format, $candidate, $utc);
+            // createFromFormat() normalises impossible dates (31 Feb becomes 3 Mar) rather
+            // than failing; accept only a value that formats back to what was parsed.
+            if ($date !== false && strcasecmp($date->format($format), $candidate) === 0) {
                 return $date;
             }
         }
