@@ -135,6 +135,24 @@ final class CamundaClient
         return $this->config;
     }
 
+    /**
+     * A dump-safe view of the client (issue #111).
+     *
+     * The underlying Guzzle client is summarised by class name rather than dumped: its
+     * options carry the mTLS key passphrase, which `var_dump()` would otherwise reach
+     * through this object. The configuration redacts its own credentials.
+     *
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
+    {
+        return [
+            'configuration' => $this->config,
+            'httpClient' => $this->httpClient::class,
+            'apis' => array_keys($this->apiCache),
+        ];
+    }
+
     // ---------------------------------------------------------------------------
     // Ergonomic helpers
     // ---------------------------------------------------------------------------

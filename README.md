@@ -237,6 +237,12 @@ function custom_http_client(CamundaConfiguration $configuration): CamundaClient
 }
 ```
 
+### Credentials in debug output
+
+`CamundaConfiguration` redacts `clientSecret`, `basicAuthPassword` and `mtlsKeyPassphrase` on the debug surfaces PHP lets an object intercept: `var_dump()` (and the framework dumpers built on it, such as Symfony's `dump()`/`dd()` and Laravel's `dd()`) and `json_encode()`. A credential that is set shows as `***`; one that is not set stays `null`. `CamundaClient` and `CamundaAsyncClient` do the same and additionally summarise their Guzzle client by class name, because its options carry the mTLS key passphrase. Reading `$config->clientSecret` in your own code still returns the real value.
+
+`print_r()` and `var_export()` cannot be intercepted while the fields are public readonly properties, so **those two still print credentials**. Do not pass a configuration or client object to them, and keep them out of log context.
+
 ### Supported environment variables
 
 <!-- BEGIN_CONFIG_REFERENCE -->

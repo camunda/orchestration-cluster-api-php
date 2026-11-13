@@ -11,8 +11,11 @@ namespace Camunda\Orchestration\Config;
  * auth-strategy auto-detection happen in the resolver; by the time you hold one of
  * these, every value is final.
  */
-final class CamundaConfiguration
+final class CamundaConfiguration implements \JsonSerializable
 {
+    /** Shown wherever a credential would otherwise be dumped (issue #111). */
+    private const REDACTED = '***';
+
     /**
      * @param 'NONE'|'OAUTH'|'BASIC' $authStrategy
      * @param list<string> $tenantIds
@@ -37,5 +40,55 @@ final class CamundaConfiguration
         public readonly int $workerRequestTimeoutMs = 10000,
         public readonly ?string $workerName = null,
     ) {
+    }
+
+    /**
+     * The configuration as `var_dump()` and most framework dumpers show it, with every
+     * credential replaced by a fixed marker.
+     *
+     * A credential that is not set stays `null`, so "missing" and "redacted" remain
+     * distinguishable when you are debugging a configuration problem.
+     *
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
+    {
+        return [
+            'restAddress' => $this->restAddress,
+            'authStrategy' => $this->authStrategy,
+            'oauthUrl' => $this->oauthUrl,
+            'tokenAudience' => $this->tokenAudience,
+            'clientId' => $this->clientId,
+            'clientSecret' => self::redact($this->clientSecret),
+            'basicAuthUsername' => $this->basicAuthUsername,
+            'basicAuthPassword' => self::redact($this->basicAuthPassword),
+            'tenantIds' => $this->tenantIds,
+            'mtlsCertPath' => $this->mtlsCertPath,
+            'mtlsKeyPath' => $this->mtlsKeyPath,
+            'mtlsCaPath' => $this->mtlsCaPath,
+            'mtlsKeyPassphrase' => self::redact($this->mtlsKeyPassphrase),
+            'logLevel' => $this->logLevel,
+            'workerMaxJobs' => $this->workerMaxJobs,
+            'workerTimeoutMs' => $this->workerTimeoutMs,
+            'workerRequestTimeoutMs' => $this->workerRequestTimeoutMs,
+            'workerName' => $this->workerName,
+        ];
+    }
+
+    /**
+     * The same redacted view for `json_encode()`, which structured loggers and crash
+     * reporters reach for.
+     *
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array
+    {
+        return $this->__debugInfo();
+    }
+
+    /** Keep "not set" and "set but hidden" distinguishable. */
+    private static function redact(?string $value): ?string
+    {
+        return $value === null ? null : self::REDACTED;
     }
 }
