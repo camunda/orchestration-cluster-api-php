@@ -51,7 +51,8 @@ Upstream dependencies — when they misbehave, fix them at the source rather tha
 | `src/` | Hand-written runtime: clients, config, auth, HTTP, job worker. **Primary edit surface** for runtime behaviour. Held at PHPStan `max`. |
 | `examples/` | Compilable, statically-analysed usage examples. `examples/readme.php` is the source of truth for `README.md` snippets. |
 | `examples/operation-map.json` | Maps API operations to example file + region, for docs coverage. |
-| `tests/Acceptance/` | Fast unit tests (semantic types, config, serialization). No live Camunda required. |
+| `tests/Acceptance/` | Fast unit tests (semantic types, config, serialization). No live Camunda required. `tests/Acceptance/Runtime/` holds the isolated tests of the hand-written runtime (auth, config, worker, HTTP wiring). |
+| `tests/Support/` | Shared test doubles (queued PSR-18 client, fake clock, recording Guzzle, environment sandbox, job fixtures). |
 | `tests/Integration/` | Integration tests against a real Camunda instance. Skipped unless `CAMUNDA_INTEGRATION=1`. |
 | `docker/` | Local Camunda compose stack for integration tests. |
 | `scripts/` | Bundle, README-sync, docs, config-reference, example-coverage, and release helpers. |
@@ -76,6 +77,7 @@ Upstream dependencies — when they misbehave, fix them at the source rather tha
 | `make generate` | Full pipeline: bundle spec → generate → hooks → lint-fix → phpstan → test. |
 | `make generate-only` | Regenerate from the already-bundled spec (fast hook iteration). |
 | `make test` | Run the acceptance test suite. |
+| `make coverage` | Acceptance suite with a line-coverage report of `src/` (generated facades excluded). Needs pcov or Xdebug. |
 | `make itest` | Run integration tests (requires a running cluster; see `make docker-start`). |
 | `make phpstan` | Static analysis at level `max`. |
 | `make lint` / `make lint-fix` | Coding-standards check / auto-fix. |

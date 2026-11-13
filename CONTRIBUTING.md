@@ -58,6 +58,7 @@ If you changed anything user-facing:
 ## Testing
 
 - **Acceptance tests** (`tests/Acceptance/`) are fast and require no cluster: `make test`.
+- **Coverage** of the hand-written runtime (`src/`, generated code excluded) is reported by `make coverage`: a text summary, a per-file Markdown table, and Clover/HTML output in `build/coverage/`. It needs a coverage driver (pcov or Xdebug); CI measures it on the PHP 8.3 leg of the `test` job and uploads the HTML report as an artifact. Isolated runtime tests live in `tests/Acceptance/Runtime/` and share test doubles from `tests/Support/` (queued PSR-18 client, fake clock, recording Guzzle, environment sandbox).
 - **Integration tests** (`tests/Integration/`) run against a live cluster:
 
   ```bash
