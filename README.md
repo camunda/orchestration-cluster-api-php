@@ -320,6 +320,23 @@ function readme_job_worker(): void
 
 When `ext-pcntl` is available and `forked: true` is set, each job is processed in its own child process, bounded to `maxJobs` concurrent children.
 
+### When a handler throws
+
+If your handler throws, the worker catches the `Throwable` and fails the job for you, then carries on: the remaining jobs of the batch are still dispatched and the poll loop keeps running, so one bad job never stops the worker.
+
+What you can rely on:
+
+- The job is failed with one retry consumed — `retries - 1`, floored at zero — so the broker schedules a retry while retries remain and creates an incident when they are exhausted. No retry back-off is set.
+- The failure message is the exception class and its message. The stack trace is never sent to the broker.
+- If your handler already completed the job, failed it, or raised a BPMN error before throwing, the worker leaves that terminal action alone and sends nothing further.
+- Auto-completion is skipped for a job whose handler threw.
+
+To choose the retry count, the back-off, or the message yourself, catch the error inside your handler and call `$action->fail(...)` explicitly.
+
+Note that a transport error raised while reporting the failure — for example broker backpressure on the fail call itself — still surfaces to the caller of `run()` or `pollOnce()`, exactly as a failing auto-completion does. The same holds when your handler calls `$action->complete()`, `fail()` or `error()` itself and that request fails: the worker surfaces the error rather than replacing the terminal action you asked for with one of its own.
+
+In forked mode that last point works differently, because nothing crosses the process boundary. A handler exception is still turned into a job failure, in the child, before it exits. But a transport error while reporting the terminal action ends the child instead of reaching the parent: the parent reaps it and polls on, so the job is left to its lease timeout and you do not see the error. If your handler needs to observe its own transport failures, handle them inside the handler.
+
 ### Object-oriented handlers
 
 <!-- snippet-source: examples/readme.php | regions: ReadmeObjectJobHandler -->
