@@ -367,7 +367,7 @@ final class JobWorkerBehaviourTest extends TestCase
         self::assertLessThan(5.0, $elapsed);
     }
 
-    public function testHandlerFailureInsideRunTerminatesTheLoopAndLeavesNoStaleRunningState(): void
+    public function testHandlerFailureInsideRunTerminatesTheLoopWithoutFurtherDispatch(): void
     {
         $worker = $this->worker([
             JobFixtures::activation('7'),
