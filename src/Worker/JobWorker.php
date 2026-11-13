@@ -160,15 +160,35 @@ final class JobWorker
     }
 
     /**
+     * Dispatch a single job to the handler, turning a throwing handler into a job
+     * failure rather than letting it escape the worker.
+     *
      * @param callable(ActivatedJobResult, JobActionClient): (array<string,mixed>|null|void)|JobHandler $handler
      */
     private function dispatch(callable|JobHandler $handler, ActivatedJobResult $job): void
     {
         $action = new JobActionClient($this->jobApi(), $job);
 
-        $result = $handler instanceof JobHandler
-            ? $handler->handle($job, $action)
-            : $handler($job, $action);
+        try {
+            $result = $handler instanceof JobHandler
+                ? $handler->handle($job, $action)
+                : $handler($job, $action);
+        } catch (\Throwable $throwable) {
+            // Issue #109: an uncaught handler exception used to propagate out of the
+            // dispatch loop, leaving the job leased until `timeoutMs`, dropping the
+            // rest of the batch and stopping `run()`. Mirror the JS SDK instead: fail
+            // the job unless the handler already took a terminal action, then carry on
+            // with the batch and keep polling. The message carries the exception class
+            // and message only — never the stack trace, which can hold unrelated data.
+            if (!$action->wasHandled()) {
+                $action->fail(
+                    retries: max(0, $job->getRetries() - 1),
+                    errorMessage: $throwable::class . ': ' . $throwable->getMessage(),
+                );
+            }
+
+            return;
+        }
 
         if (!$action->wasHandled() && $this->options->autoComplete) {
             $action->complete(\is_array($result) ? $result : []);
