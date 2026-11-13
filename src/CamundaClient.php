@@ -8,17 +8,14 @@ use Camunda\Orchestration\Api\Api\ResourceApi;
 use Camunda\Orchestration\Api\Configuration as ApiConfiguration;
 use Camunda\Orchestration\Api\Model\DeploymentResult;
 use Camunda\Orchestration\Api\Model\ProblemDetail;
-use Camunda\Orchestration\Auth\AuthProvider;
 use Camunda\Orchestration\Auth\AuthProviderFactory;
 use Camunda\Orchestration\Config\CamundaConfiguration;
 use Camunda\Orchestration\Config\ConfigResolver;
 use Camunda\Orchestration\Exception\ConfigurationException;
-use Camunda\Orchestration\Http\AuthMiddleware;
+use Camunda\Orchestration\Http\HttpClientFactory;
 use Camunda\Orchestration\Worker\JobWorker;
 use Camunda\Orchestration\Worker\JobWorkerOptions;
-use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\HandlerStack;
 
 /**
  * The Camunda 8 Orchestration Cluster SDK — synchronous client.
@@ -79,36 +76,8 @@ final class CamundaClient
         ?ClientInterface $httpClient = null,
     ): self {
         $auth = AuthProviderFactory::fromConfiguration($config);
-        $client = $httpClient ?? self::buildHttpClient($config, $auth);
+        $client = $httpClient ?? HttpClientFactory::create($config, $auth);
         return new self($config, $client);
-    }
-
-    private static function buildHttpClient(CamundaConfiguration $config, AuthProvider $auth): ClientInterface
-    {
-        $stack = HandlerStack::create();
-        $stack->push(new AuthMiddleware($auth), 'camunda_auth');
-
-        /** @var array<string, mixed> $options */
-        $options = [
-            'handler' => $stack,
-            'http_errors' => false,
-        ];
-
-        if ($config->mtlsCertPath !== null) {
-            $options['cert'] = $config->mtlsKeyPassphrase !== null
-                ? [$config->mtlsCertPath, $config->mtlsKeyPassphrase]
-                : $config->mtlsCertPath;
-        }
-        if ($config->mtlsKeyPath !== null) {
-            $options['ssl_key'] = $config->mtlsKeyPassphrase !== null
-                ? [$config->mtlsKeyPath, $config->mtlsKeyPassphrase]
-                : $config->mtlsKeyPath;
-        }
-        if ($config->mtlsCaPath !== null) {
-            $options['verify'] = $config->mtlsCaPath;
-        }
-
-        return new GuzzleClient($options);
     }
 
     /**

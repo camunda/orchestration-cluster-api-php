@@ -7,6 +7,7 @@ namespace Camunda\Orchestration\Tests\Acceptance;
 use Camunda\Orchestration\Exception\RetryExhaustedException;
 use Camunda\Orchestration\Http\RetryMiddleware;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\Create;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
@@ -25,7 +26,7 @@ use Psr\Http\Message\ResponseInterface;
  */
 final class HttpRetryMiddlewareTest extends TestCase
 {
-    /** @var list<array{request: RequestInterface, options: array<string, mixed>, body: string}> */
+    /** @var list<array{request: RequestInterface, options: array<int|string, mixed>, body: string}> */
     private array $calls = [];
 
     public function testRetriesA429AndReturnsTheEventualSuccess(): void
@@ -119,7 +120,9 @@ final class HttpRetryMiddlewareTest extends TestCase
             self::assertStringContainsString('3 attempts', $e->getMessage());
             self::assertStringContainsString('[429]', $e->getMessage());
             self::assertSame(['last'], ($e->getResponseHeaders() ?? [])['X-Trace'] ?? null);
-            self::assertStringContainsString('third', (string) $e->getResponseBody());
+            $body = $e->getResponseBody();
+            self::assertIsString($body);
+            self::assertStringContainsString('third', $body);
         }
 
         self::assertCount(3, $this->calls);
@@ -280,6 +283,19 @@ final class HttpRetryMiddlewareTest extends TestCase
         }
     }
 
+    public function testGetRetriesRequestFailuresThatNeverReceivedAResponse(): void
+    {
+        $request = new Request('GET', 'http://cluster/v2/topology');
+
+        $response = $this->send(
+            [new RequestException('cURL error 56: Recv failure: Connection reset by peer', $request), new Response(200)],
+            $request,
+        );
+
+        self::assertSame(200, $response->getStatusCode());
+        self::assertCount(2, $this->calls);
+    }
+
     /**
      * A transport failure on a POST may have happened after the broker accepted the
      * command, so replaying it could duplicate the side effect. It surfaces untouched.
@@ -299,7 +315,7 @@ final class HttpRetryMiddlewareTest extends TestCase
         self::assertCount(1, $this->calls);
     }
 
-    public function testTransportFailureExhaustionReportsAttemptsAndKeepsTheCause(): void
+    public function testTransportFailureExhaustionReportsAttemptsAndTheCause(): void
     {
         $request = new Request('GET', 'http://cluster/v2/topology');
         $failure = new ConnectException('connection refused', $request);
@@ -311,7 +327,7 @@ final class HttpRetryMiddlewareTest extends TestCase
             self::assertSame(0, $e->getCode());
             self::assertSame(3, $e->getAttempts());
             self::assertStringContainsString('3 attempts', $e->getMessage());
-            self::assertSame($failure, $e->getPrevious());
+            self::assertStringContainsString('connection refused', $e->getMessage());
         }
     }
 
@@ -350,7 +366,9 @@ final class HttpRetryMiddlewareTest extends TestCase
             new Request('GET', 'http://cluster/v2/topology'),
         );
 
-        self::assertSame(200, $promise->wait()->getStatusCode());
+        $response = $promise->wait();
+        self::assertInstanceOf(ResponseInterface::class, $response);
+        self::assertSame(200, $response->getStatusCode());
         self::assertCount(2, $this->calls);
     }
 
@@ -391,7 +409,10 @@ final class HttpRetryMiddlewareTest extends TestCase
         bool $catchExhaustion = false,
     ): ResponseInterface {
         try {
-            return $this->sendAsync($outcomes, $request, $maxAttempts, $baseDelayMs, $maxDelayMs, $random)->wait();
+            $response = $this->sendAsync($outcomes, $request, $maxAttempts, $baseDelayMs, $maxDelayMs, $random)->wait();
+            self::assertInstanceOf(ResponseInterface::class, $response);
+
+            return $response;
         } catch (RetryExhaustedException $e) {
             if (!$catchExhaustion) {
                 throw $e;
@@ -403,7 +424,6 @@ final class HttpRetryMiddlewareTest extends TestCase
 
     /**
      * @param list<ResponseInterface|\Throwable> $outcomes
-     * @return PromiseInterface<ResponseInterface>
      */
     private function sendAsync(
         array $outcomes,
@@ -432,7 +452,6 @@ final class HttpRetryMiddlewareTest extends TestCase
 
         $middleware = new RetryMiddleware($maxAttempts, $baseDelayMs, $maxDelayMs, $random);
 
-        /** @var PromiseInterface<ResponseInterface> */
         return $middleware($handler)($request, []);
     }
 

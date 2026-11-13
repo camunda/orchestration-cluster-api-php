@@ -237,6 +237,72 @@ function custom_http_client(CamundaConfiguration $configuration): CamundaClient
 }
 ```
 
+### Retry and backoff
+
+The SDK-built HTTP client retries transient failures with exponential backoff and full jitter. Option names, environment variables and defaults match the JS SDK:
+
+<!-- snippet-source: examples/readme.php | regions: ReadmeRetryConfig -->
+```php
+function retry_config_client(): CamundaClient
+{
+    // Same options and defaults as the JS SDK: 3 attempts, 100 ms base delay, 2 s cap.
+    // Equivalent environment variables: CAMUNDA_SDK_HTTP_RETRY_MAX_ATTEMPTS,
+    // CAMUNDA_SDK_HTTP_RETRY_BASE_DELAY_MS and CAMUNDA_SDK_HTTP_RETRY_MAX_DELAY_MS.
+    return CamundaClient::fromConfiguration(new CamundaConfiguration(
+        restAddress: 'https://my-cluster.example.com/v2',
+        authStrategy: 'NONE',
+        httpRetryMaxAttempts: 5,
+        httpRetryBaseDelayMs: 200,
+        httpRetryMaxDelayMs: 5_000,
+    ));
+}
+```
+
+What is retried:
+
+- **HTTP 429**, always.
+- **HTTP 503 and 500 that signal broker backpressure** (problem `title` or, for 500, `detail` containing `RESOURCE_EXHAUSTED`). Any other 500 or 503 is returned after a single request, as before.
+- **Connection failures** (no response received), for idempotent methods only (`GET`, `HEAD`, `PUT`, `DELETE`, `OPTIONS`). A transport failure on a `POST` may have happened after the cluster accepted the command, so it is never replayed.
+
+The wait before retry `n + 1` is a random value between 0 and `min(CAMUNDA_SDK_HTTP_RETRY_BASE_DELAY_MS * 2^(n-1), CAMUNDA_SDK_HTTP_RETRY_MAX_DELAY_MS)`. When the response carries a usable `Retry-After` header the wait is raised to at least that value (bounded at 60 seconds). Set `CAMUNDA_SDK_HTTP_RETRY_MAX_ATTEMPTS=1` to disable retry.
+
+When every attempt fails, the SDK throws `RetryExhaustedException`, a subclass of `ApiException`. `getCode()` is the HTTP status of the final attempt (`0` if the final attempt received no response), the response headers and body are those of the final response, and `getAttempts()` reports how many requests were sent:
+
+<!-- snippet-source: examples/readme.php | regions: ReadmeRetryExhausted -->
+```php
+function retry_exhausted(CamundaClient $client): void
+{
+    try {
+        $client->completeJob('2251799813686200');
+    } catch (RetryExhaustedException $e) {
+        // The final status (429 here) and the number of requests actually sent.
+        error_log(sprintf('gave up with HTTP %d after %d attempts', $e->getCode(), $e->getAttempts()));
+    }
+}
+```
+
+Notes:
+
+- **Job activation is not retried inside the long poll.** `JobWorker` activation requests (`POST /jobs/activation`) are sent exactly once; a failed activation surfaces to the worker loop as it always has. Retrying inside a long poll would hold it open for several times its request timeout.
+- **A Guzzle client you supply is not modified.** Retry is part of the SDK-built client only. Push `RetryMiddleware` onto your own handler stack to get the same behaviour:
+
+<!-- snippet-source: examples/readme.php | regions: ReadmeRetryCustomHttpClient -->
+```php
+function custom_http_client_with_retry(CamundaConfiguration $configuration): CamundaClient
+{
+    // A client you supply is not wrapped by the SDK: push the retry middleware yourself
+    // if you want the same behaviour.
+    $stack = HandlerStack::create();
+    $stack->push(new AuthMiddleware(AuthProviderFactory::fromConfiguration($configuration)), 'camunda_auth');
+    $stack->push(new RetryMiddleware(maxAttempts: 3, baseDelayMs: 100, maxDelayMs: 2_000), 'camunda_retry');
+
+    return CamundaClient::fromConfiguration(
+        $configuration,
+        new GuzzleClient(['handler' => $stack, 'http_errors' => false]),
+    );
+}
+```
+
 ### Supported environment variables
 
 <!-- BEGIN_CONFIG_REFERENCE -->
@@ -261,6 +327,9 @@ function custom_http_client(CamundaConfiguration $configuration): CamundaClient
 | `CAMUNDA_WORKER_TIMEOUT` | `60000` | Default job activation timeout, in milliseconds. |
 | `CAMUNDA_WORKER_REQUEST_TIMEOUT` | `10000` | Default long-poll request timeout, in milliseconds. |
 | `CAMUNDA_WORKER_NAME` | — | Default worker name reported when activating jobs. |
+| `CAMUNDA_SDK_HTTP_RETRY_MAX_ATTEMPTS` | `3` | Maximum total HTTP attempts (including the first) for transient failures: 429, broker backpressure (`RESOURCE_EXHAUSTED` on 500/503) and, for idempotent methods, connection failures. `1` disables retry. Applies to the SDK-built HTTP client only; the job-activation long poll is never retried. |
+| `CAMUNDA_SDK_HTTP_RETRY_BASE_DELAY_MS` | `100` | Base delay in milliseconds for exponential backoff with full jitter between HTTP retries. A `Retry-After` header raises the wait to at least the server value (capped at 60 seconds). |
+| `CAMUNDA_SDK_HTTP_RETRY_MAX_DELAY_MS` | `2000` | Maximum delay cap in milliseconds for HTTP retry backoff. |
 | `CAMUNDA_MTLS_CERT_PATH` | — | Path to the client certificate for mutual TLS. |
 | `CAMUNDA_MTLS_KEY_PATH` | — | Path to the client private key for mutual TLS. |
 | `CAMUNDA_MTLS_CA_PATH` | — | Path to the CA bundle used to verify the server certificate. |

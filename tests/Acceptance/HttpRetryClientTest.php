@@ -169,9 +169,15 @@ final class HttpRetryClientTest extends TestCase
             ['CAMUNDA_SDK_HTTP_RETRY_MAX_ATTEMPTS' => '1'],
         );
 
-        $result = $client->getTopology();
+        try {
+            $client->getTopology();
+            self::fail('Expected ApiException');
+        } catch (RetryExhaustedException) {
+            self::fail('A single attempt must surface the plain failure, not a retry-exhaustion error.');
+        } catch (ApiException $e) {
+            self::assertSame(503, $e->getCode());
+        }
 
-        self::assertNotInstanceOf(TopologyResponse::class, $result);
         self::assertCount(1, $this->requests);
     }
 
@@ -226,7 +232,12 @@ final class HttpRetryClientTest extends TestCase
         ]);
         $client = CamundaClient::fromConfiguration($this->config(), $guzzle);
 
-        $client->getTopology();
+        try {
+            $client->getTopology();
+            self::fail('Expected ApiException');
+        } catch (ApiException $e) {
+            self::assertSame(429, $e->getCode());
+        }
 
         self::assertCount(1, $this->requests, 'A caller-supplied Guzzle client owns its own middleware stack.');
     }
@@ -265,14 +276,19 @@ final class HttpRetryClientTest extends TestCase
 
     /**
      * @param list<Response> $responses
+     * @return callable(RequestInterface, array<int|string, mixed>): \GuzzleHttp\Promise\PromiseInterface
      */
-    private function handler(array $responses): MockHandler
+    private function handler(array $responses): callable
     {
         $this->requests = [];
 
-        return new MockHandler($responses, function (RequestInterface $request): void {
+        $mock = new MockHandler($responses);
+
+        return function (RequestInterface $request, array $options) use ($mock) {
             $this->requests[] = $request;
-        });
+
+            return $mock($request, $options);
+        };
     }
 
     private function problem(int $status, string $title): Response

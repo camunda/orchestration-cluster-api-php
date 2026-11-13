@@ -36,6 +36,9 @@ final class CamundaConfiguration
         public readonly int $workerTimeoutMs = 60000,
         public readonly int $workerRequestTimeoutMs = 10000,
         public readonly ?string $workerName = null,
+        public readonly int $httpRetryMaxAttempts = 3,
+        public readonly int $httpRetryBaseDelayMs = 100,
+        public readonly int $httpRetryMaxDelayMs = 2000,
     ) {
     }
 }
