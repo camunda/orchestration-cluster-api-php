@@ -21,9 +21,10 @@ use PHPUnit\Framework\TestCase;
 /**
  * Issue #113: pin the documented trust model for server-supplied job variables.
  *
- * Job variables and custom headers are set by whoever started the process instance,
- * so the SDK treats them as untrusted input. The README now states what the SDK does
- * and does not do about that; these tests are what keeps the statement true.
+ * Neither job variables nor custom headers are shaped by the worker: variables carry
+ * whatever is in scope for the task at activation, and custom headers come from the
+ * deployed process model. The SDK therefore treats both as untrusted input. The README
+ * states what it does and does not do about that; these tests keep the statement true.
  */
 final class JobVariableTrustModelTest extends TestCase
 {
@@ -151,10 +152,12 @@ final class JobVariableTrustModelTest extends TestCase
     }
 
     /**
-     * Variable contents must not reach exception messages. A failing terminal action
-     * reports the server's problem detail, never the payload the SDK sent.
+     * The SDK never appends a payload to an exception message it raises: a failing
+     * terminal action reports the server's problem detail, not the variables that were
+     * sent. The raw response body is still attached to the generated `ApiException`,
+     * which is why the README tells you to log the message rather than the exception.
      */
-    public function testVariableContentNeverReachesAnExceptionMessage(): void
+    public function testTheSdkAddsNoVariableContentToAnExceptionMessage(): void
     {
         $sentinel = 'sentinel-variable-value-4d9c';
         $worker = $this->worker([
@@ -170,15 +173,42 @@ final class JobVariableTrustModelTest extends TestCase
             $worker->pollOnce(
                 static fn (ActivatedJobResult $job, JobActionClient $action): array => $job->getVariables(),
             );
-            self::fail('Expected the failing completion to throw.');
-        } catch (\Throwable $throwable) {
-            self::assertStringNotContainsString($sentinel, $throwable->getMessage());
+            self::fail('Expected the failing completion to throw an ApiException.');
+        } catch (ApiException $exception) {
+            self::assertSame(400, $exception->getCode());
+            self::assertStringContainsString('/v2/jobs/1/completion', $exception->getMessage());
+            self::assertStringNotContainsString($sentinel, $exception->getMessage());
         }
     }
 
     /**
-     * Each dispatched job gets its own `JobActionClient` and its own variables, so one
-     * handler cannot see or disturb another job's payload.
+     * The documented caveat, pinned so it cannot be quietly overstated: an activation
+     * that fails after the body has been read still carries that body — the variables —
+     * on the generated exception, even though the SDK's own message does not.
+     */
+    public function testTheRawResponseBodyIsStillAttachedToAFailedActivation(): void
+    {
+        $sentinel = 'sentinel-variable-value-7e1a';
+        $worker = $this->worker([$this->activationResponse(['payload' => self::nest(600)])]);
+
+        try {
+            $worker->pollOnce(
+                static fn (ActivatedJobResult $job, JobActionClient $action): array => ['echo' => $sentinel],
+            );
+            self::fail('Expected the over-deep payload to be rejected by the decoder.');
+        } catch (ApiException $exception) {
+            self::assertStringNotContainsString('"level"', $exception->getMessage());
+
+            $body = $exception->getResponseBody();
+            self::assertIsString($body);
+            self::assertStringContainsString('"level"', $body);
+        }
+    }
+
+    /**
+     * Each dispatched job gets its own `JobActionClient` and its own variables, so the
+     * SDK never shares or mutates a payload across jobs. This is object isolation, not
+     * sandboxing — a stateful handler can still carry its own data between jobs.
      */
     public function testVariablesAreNotSharedBetweenJobsOfTheSameBatch(): void
     {
