@@ -1,8 +1,12 @@
-.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan examples advanced-examples example-showcase example-report check sync-readme sync-readme-check docs-md docs-docusaurus config-reference config-reference-check example-coverage
+.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan examples advanced-examples example-showcase example-report check sync-readme sync-readme-check docs-md docs-docusaurus config-reference config-reference-check example-coverage coverage
 
 # Git ref/branch/tag/SHA in https://github.com/camunda/camunda.git to fetch the OpenAPI
 # spec from. Override like: `make generate SPEC_REF=stable/8.9`
 SPEC_REF ?= stable/8.10
+
+# PHP binary used by the coverage target; override to load a driver, e.g.
+# `make coverage PHP="php -d extension=pcov.so"`.
+PHP ?= php
 
 BUNDLED_SPEC = external-spec/bundled/rest-api.bundle.json
 
@@ -29,6 +33,14 @@ clean:
 
 test:
 	vendor/bin/phpunit --testsuite acceptance
+
+# Acceptance suite with a coverage report of the hand-written runtime (src/, generated code excluded):
+# text summary on stdout, Clover XML + HTML under build/coverage/. Needs a coverage driver
+# (pcov preferred, or Xdebug); the CI `test` job on PHP 8.3 provides pcov.
+coverage:
+	XDEBUG_MODE=coverage $(PHP) -d pcov.enabled=1 -d pcov.directory=src vendor/bin/phpunit --testsuite acceptance \
+		--coverage-text --coverage-clover build/coverage/clover.xml --coverage-html build/coverage/html
+	php scripts/coverage-summary.php build/coverage/clover.xml
 
 itest:
 	CAMUNDA_INTEGRATION=1 vendor/bin/phpunit --testsuite integration
