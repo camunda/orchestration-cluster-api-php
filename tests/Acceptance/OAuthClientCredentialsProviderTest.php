@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Tests\Acceptance;
 
 use Camunda\Orchestration\Auth\OAuthClientCredentialsProvider;
+use Camunda\Orchestration\Exception\AuthenticationException;
 use GuzzleHttp\Psr7\Response;
 use Http\Discovery\Psr17Factory;
 use PHPUnit\Framework\TestCase;
@@ -77,6 +78,32 @@ final class OAuthClientCredentialsProviderTest extends TestCase
 
         self::assertSame('Bearer fresh', $provider->getHeaders()['Authorization']);
         self::assertCount(2, $httpClient->requests);
+    }
+
+    /**
+     * A freshly fetched token is subject to the same rule as a cached one: if its real
+     * lifetime cannot cover the scheduled delay, the request would be sent with an
+     * expired credential and fail with a non-retryable 401. The provider fails
+     * explicitly instead, without echoing the token.
+     */
+    public function testRejectsAFreshlyFetchedTokenThatCannotCoverTheScheduledDelay(): void
+    {
+        $httpClient = new RecordingTokenClient(
+            new Response(200, ['Content-Type' => 'application/json'], '{"access_token":"short-lived-secret","expires_in":30}'),
+            new Response(200, ['Content-Type' => 'application/json'], '{"access_token":"long-lived","expires_in":3600}'),
+        );
+        $provider = $this->provider($httpClient);
+
+        try {
+            $provider->getHeadersValidFor(60.0);
+            self::fail('A token that expires before the delayed request is sent must not be returned.');
+        } catch (AuthenticationException $e) {
+            self::assertStringContainsString('lifetime', $e->getMessage());
+            self::assertStringNotContainsString('short-lived-secret', $e->getMessage());
+        }
+
+        // A token that does cover the delay, and an undelayed request, are unaffected.
+        self::assertSame('Bearer long-lived', $provider->getHeadersValidFor(10.0)['Authorization']);
     }
 
     public function testAZeroDelayBehavesLikeGetHeaders(): void

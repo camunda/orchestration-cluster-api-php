@@ -22,6 +22,8 @@ final class OAuthClientCredentialsProvider implements DelayAwareAuthProvider
 
     private ?string $accessToken = null;
     private float $expiresAtEpoch = 0.0;
+    /** Epoch second at which the cached token is actually no longer accepted (no leeway). */
+    private float $hardExpiresAtEpoch = 0.0;
 
     public function __construct(
         private readonly ClientInterface $httpClient,
@@ -56,7 +58,18 @@ final class OAuthClientCredentialsProvider implements DelayAwareAuthProvider
         if ($this->accessToken !== null && microtime(true) + $validForSeconds < $this->expiresAtEpoch) {
             return $this->accessToken;
         }
-        return $this->fetchToken();
+        $token = $this->fetchToken();
+        // A fresh token is subject to the same rule as a cached one: if it cannot
+        // outlive the scheduled delay the request would be sent with an expired
+        // credential and fail with a non-retryable 401, so fail explicitly instead.
+        if ($validForSeconds > 0.0 && microtime(true) + $validForSeconds >= $this->hardExpiresAtEpoch) {
+            throw new AuthenticationException(
+                'The OAuth token lifetime is shorter than the scheduled retry delay '
+                . '(' . (int) ceil($validForSeconds) . ' s), so the delayed request could not be authenticated.'
+            );
+        }
+
+        return $token;
     }
 
     private function fetchToken(): string
@@ -99,7 +112,9 @@ final class OAuthClientCredentialsProvider implements DelayAwareAuthProvider
 
         $expiresIn = isset($payload['expires_in']) ? (int) $payload['expires_in'] : 300;
         $this->accessToken = $payload['access_token'];
-        $this->expiresAtEpoch = microtime(true) + max(1, $expiresIn - self::EXPIRY_LEEWAY_SECONDS);
+        $now = microtime(true);
+        $this->expiresAtEpoch = $now + max(1, $expiresIn - self::EXPIRY_LEEWAY_SECONDS);
+        $this->hardExpiresAtEpoch = $now + max(1, $expiresIn);
 
         return $this->accessToken;
     }
