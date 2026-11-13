@@ -147,6 +147,13 @@ final class OAuthTokenErrorRedactionTest extends TestCase
             ])),
         ]];
 
+        yield 'percent-encoded secret with mixed-case hex' => [[
+            new Response(400, ['Content-Type' => 'application/json'], (string) json_encode([
+                'error' => 'invalid_request',
+                'error_description' => 'bad value ' . self::mixedCaseHex(rawurlencode(self::SENTINEL)),
+            ])),
+        ]];
+
         yield 'json-escaped secret in a transport message' => [[
             new TokenTransportFailure('rejected payload {"client_secret":"' . self::jsonEscaped() . '"}'),
         ]];
@@ -230,6 +237,7 @@ final class OAuthTokenErrorRedactionTest extends TestCase
             'literal' => self::SENTINEL,
             'percent-encoded' => rawurlencode(self::SENTINEL),
             'percent-encoded lowercase' => self::lowercaseHex(rawurlencode(self::SENTINEL)),
+            'percent-encoded mixed case' => self::mixedCaseHex(rawurlencode(self::SENTINEL)),
             'json-escaped' => self::jsonEscaped(),
         ];
 
@@ -247,6 +255,22 @@ final class OAuthTokenErrorRedactionTest extends TestCase
         return (string) preg_replace_callback(
             '/%[0-9A-Fa-f]{2}/',
             static fn (array $match): string => strtolower($match[0]),
+            $encoded,
+        );
+    }
+
+    /** Lowercases the hex of every other escape, so neither casing rule alone matches. */
+    private static function mixedCaseHex(string $encoded): string
+    {
+        $seen = 0;
+
+        return (string) preg_replace_callback(
+            '/%[0-9A-Fa-f]{2}/',
+            static function (array $match) use (&$seen): string {
+                ++$seen;
+
+                return $seen % 2 === 0 ? strtolower($match[0]) : strtoupper($match[0]);
+            },
             $encoded,
         );
     }
