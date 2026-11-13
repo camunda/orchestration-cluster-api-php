@@ -237,6 +237,17 @@ function custom_http_client(CamundaConfiguration $configuration): CamundaClient
 }
 ```
 
+### Credentials in debug output
+
+`CamundaConfiguration` redacts `clientSecret`, `basicAuthPassword` and `mtlsKeyPassphrase` on the debug surfaces PHP lets an object intercept: `var_dump()` and `print_r()`, which both honour `__debugInfo()`, and `json_encode()`, which uses the configuration's `JsonSerializable` implementation. A credential that is set shows as `***`; one that is not set stays `null`. `CamundaClient` and `CamundaAsyncClient` do the same on `var_dump()` and `print_r()` and additionally summarise their Guzzle client by class name, because its options carry the mTLS key passphrase. The clients have no public properties, so `json_encode()` of a client contains no credentials either. Reading `$config->clientSecret` in your own code still returns the real value.
+
+Two surfaces are exceptions, and **both still print credentials**:
+
+- `var_export()` builds a `__set_state()` literal from the object's properties with no hook to intercept, and it exports private and protected properties just the same, so no change of property visibility would alter that.
+- Symfony's VarDumper does not use `__debugInfo()` as the source of the values it shows: it dumps the object's real properties (checked with `symfony/var-dumper` 7.4, where `$config->clientSecret` appears in clear text next to the redacted debug view). That covers Symfony's `dump()` and `dd()` and Laravel's `dump()` and `dd()`, which are built on it, so debug pages and error screens that use them can show a credential.
+
+Do not pass a configuration or client object to either, and keep their output out of log context.
+
 ### Supported environment variables
 
 <!-- BEGIN_CONFIG_REFERENCE -->
