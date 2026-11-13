@@ -335,6 +335,8 @@ To choose the retry count, the back-off, or the message yourself, catch the erro
 
 Note that a transport error raised while reporting the failure — for example broker backpressure on the fail call itself — still surfaces to the caller of `run()` or `pollOnce()`, exactly as a failing auto-completion does. The same holds when your handler calls `$action->complete()`, `fail()` or `error()` itself and that request fails: the worker surfaces the error rather than replacing the terminal action you asked for with one of its own.
 
+In forked mode that last point works differently, because nothing crosses the process boundary. A handler exception is still turned into a job failure, in the child, before it exits. But a transport error while reporting the terminal action ends the child instead of reaching the parent: the parent reaps it and polls on, so the job is left to its lease timeout and you do not see the error. If your handler needs to observe its own transport failures, handle them inside the handler.
+
 ### Object-oriented handlers
 
 <!-- snippet-source: examples/readme.php | regions: ReadmeObjectJobHandler -->
