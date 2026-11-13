@@ -345,6 +345,22 @@ function object_job_handler(CamundaClient $client): void
 }
 ```
 
+### Job variables are untrusted input
+
+Job variables and custom headers reach your handler through the cluster, but their content is set by whoever started the process instance — not by the cluster, and not by you. Treat them as untrusted input.
+
+What the SDK does:
+
+- **Deserialization is JSON only.** Variables and custom headers are typed `array<string,mixed>` and are hydrated from `json_decode` alone. The top level is a PHP array; a nested JSON object arrives as a `stdClass`, a JSON array as a PHP array, and everything else as a scalar or `null`. No class is instantiated from the payload, and nothing in it reaches `unserialize()` or `eval()` — a string that looks like serialized PHP stays a string.
+- **Nesting is bounded** at `json_decode`'s default depth of 512, applied to the whole response. A payload nested beyond that is rejected with an `ApiException` (`Error JSON decoding server response`) before your handler is called, so an over-deep payload cannot drive the SDK into unbounded recursion.
+- **Variable contents are not logged.** The SDK has no logger and does not put variable contents into exception messages. A failed activation reports only the `title` and `detail` of the cluster's problem response.
+- **Jobs are isolated.** Each dispatched job gets its own `JobActionClient` and its own copy of its variables, and forked mode puts each job in its own process, so one handler cannot see or disturb another job's payload.
+
+What the SDK does not do:
+
+- **It enforces no payload size limit.** There is no cap on the byte size of an activation response or of an individual variable. If you need one, set it on the cluster side or enforce it in your handler.
+- **It does not validate or sanitise content.** Type-checking, range-checking, schema validation, and escaping before use in SQL, a shell command, a file path or HTML are the handler author's responsibility. In particular, never use a variable value as a file path, a class name or a callable without checking it against a list you control.
+
 ## Accessing every operation
 
 Every one of the 244 API operations is exposed as a method directly on the client — the
