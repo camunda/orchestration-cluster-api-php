@@ -144,6 +144,11 @@ final class OAuthClientCredentialsProvider implements AuthProvider
      * Replace the configured client secret wherever it appears in text destined for an
      * exception message — a backstop for every place the secret could be reflected back
      * to us, not only the structured fields we choose to report.
+     *
+     * The secret may come back in a representation other than the one we sent, so the
+     * literal, percent-encoded (in either hex case) and JSON-escaped forms are all
+     * scrubbed. This is a second line of defence: the first is that only the two
+     * well-known OAuth fields are quoted at all.
      */
     private function redactSecret(string $text): string
     {
@@ -151,12 +156,35 @@ final class OAuthClientCredentialsProvider implements AuthProvider
             return $text;
         }
 
-        $needles = array_values(array_unique([
-            $this->clientSecret,
-            rawurlencode($this->clientSecret),
-            urlencode($this->clientSecret),
-        ]));
+        return str_replace($this->secretRepresentations(), self::REDACTED, $text);
+    }
 
-        return str_replace($needles, self::REDACTED, $text);
+    /**
+     * @return list<string>
+     */
+    private function secretRepresentations(): array
+    {
+        $forms = [$this->clientSecret];
+        foreach ([rawurlencode($this->clientSecret), urlencode($this->clientSecret)] as $encoded) {
+            $forms[] = $encoded;
+            // A provider is free to emit `%2f` where PHP emits `%2F`.
+            $forms[] = (string) preg_replace_callback(
+                '/%[0-9A-Fa-f]{2}/',
+                static fn (array $match): string => strtolower($match[0]),
+                $encoded,
+            );
+        }
+
+        $json = json_encode($this->clientSecret);
+        if (is_string($json)) {
+            // Strip the surrounding quotes: `"a\/b"` -> `a\/b`.
+            $forms[] = substr($json, 1, -1);
+        }
+
+        // Longest first, so a form that contains another is replaced whole.
+        $forms = array_values(array_unique($forms));
+        usort($forms, static fn (string $a, string $b): int => \strlen($b) <=> \strlen($a));
+
+        return $forms;
     }
 }

@@ -30,7 +30,12 @@ use Psr\Http\Message\ResponseInterface;
  */
 final class OAuthTokenErrorRedactionTest extends TestCase
 {
-    private const SENTINEL = 'sentinel-client-secret-6f2b1a';
+    /**
+     * Deliberately contains URL-reserved characters, so the percent-encoded and
+     * JSON-escaped forms are genuinely different strings from the literal one and the
+     * encoded-redaction cases below cannot pass on literal replacement alone.
+     */
+    private const SENTINEL = 'sentinel+client/secret=6f2b1a';
 
     /**
      * @param list<ResponseInterface|ClientExceptionInterface> $exchanges
@@ -42,13 +47,23 @@ final class OAuthTokenErrorRedactionTest extends TestCase
             $this->provider(...$exchanges)->getHeaders();
             self::fail('Expected the failing token exchange to throw an AuthenticationException.');
         } catch (AuthenticationException $exception) {
-            self::assertStringNotContainsString(self::SENTINEL, $exception->getMessage());
-            self::assertStringNotContainsString(rawurlencode(self::SENTINEL), $exception->getMessage());
+            foreach (self::secretRepresentations() as $label => $form) {
+                self::assertStringNotContainsString(
+                    $form,
+                    $exception->getMessage(),
+                    "The $label form of the secret reached the exception message.",
+                );
+            }
 
             // A logger renders the whole chain, so the rendered exception — message,
             // trace and every `previous` — is the surface that actually matters.
-            self::assertStringNotContainsString(self::SENTINEL, (string) $exception);
-            self::assertStringNotContainsString(rawurlencode(self::SENTINEL), (string) $exception);
+            foreach (self::secretRepresentations() as $label => $form) {
+                self::assertStringNotContainsString(
+                    $form,
+                    (string) $exception,
+                    "The $label form of the secret reached the rendered exception.",
+                );
+            }
 
             for ($cause = $exception->getPrevious(); $cause !== null; $cause = $cause->getPrevious()) {
                 self::assertStringNotContainsString(self::SENTINEL, $cause->getMessage());
@@ -118,11 +133,22 @@ final class OAuthTokenErrorRedactionTest extends TestCase
             new Response(403, [], 'rejected: client_secret=' . self::SENTINEL),
         ]];
 
-        yield 'url-encoded secret in the body' => [[
+        yield 'percent-encoded secret in the body' => [[
             new Response(400, ['Content-Type' => 'application/json'], (string) json_encode([
                 'error' => 'invalid_request',
                 'error_description' => 'bad value ' . rawurlencode(self::SENTINEL),
             ])),
+        ]];
+
+        yield 'percent-encoded secret with lowercase hex' => [[
+            new Response(400, ['Content-Type' => 'application/json'], (string) json_encode([
+                'error' => 'invalid_request',
+                'error_description' => 'bad value ' . self::lowercaseHex(rawurlencode(self::SENTINEL)),
+            ])),
+        ]];
+
+        yield 'json-escaped secret in a transport message' => [[
+            new TokenTransportFailure('rejected payload {"client_secret":"' . self::jsonEscaped() . '"}'),
         ]];
 
         yield 'success status with a body that is not a token response' => [[
@@ -190,6 +216,44 @@ final class OAuthTokenErrorRedactionTest extends TestCase
         );
 
         self::assertSame(['Authorization' => 'Bearer an-access-token'], $provider->getHeaders());
+    }
+
+    /**
+     * The sentinel in every representation a provider might hand back, each asserted
+     * to be a distinct string so none of these cases degenerates into the literal one.
+     *
+     * @return array<string, string>
+     */
+    private static function secretRepresentations(): array
+    {
+        $forms = [
+            'literal' => self::SENTINEL,
+            'percent-encoded' => rawurlencode(self::SENTINEL),
+            'percent-encoded lowercase' => self::lowercaseHex(rawurlencode(self::SENTINEL)),
+            'json-escaped' => self::jsonEscaped(),
+        ];
+
+        self::assertSame(
+            \count($forms),
+            \count(array_unique($forms)),
+            'The sentinel must differ in every representation for these assertions to mean anything.',
+        );
+
+        return $forms;
+    }
+
+    private static function lowercaseHex(string $encoded): string
+    {
+        return (string) preg_replace_callback(
+            '/%[0-9A-Fa-f]{2}/',
+            static fn (array $match): string => strtolower($match[0]),
+            $encoded,
+        );
+    }
+
+    private static function jsonEscaped(): string
+    {
+        return substr((string) json_encode(self::SENTINEL), 1, -1);
     }
 
     private function provider(ResponseInterface|ClientExceptionInterface ...$exchanges): OAuthClientCredentialsProvider
