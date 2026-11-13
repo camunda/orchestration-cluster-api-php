@@ -307,10 +307,13 @@ final class HttpRetryMiddlewareTest extends TestCase
         self::assertSame(3000, $this->calls[1]['options']['delay']);
     }
 
-    public function testRetryAfterHttpDateIsHonoured(): void
+    /**
+     * RFC 9110 requires recipients to accept all three HTTP-date formats: the
+     * preferred IMF-fixdate and the obsolete RFC 850 and asctime forms.
+     */
+    #[DataProvider('retryAfterHttpDates')]
+    public function testRetryAfterHttpDateIsHonoured(string $date): void
     {
-        $date = gmdate('D, d M Y H:i:s', time() + 5) . ' GMT';
-
         $this->send(
             [new Response(429, ['Retry-After' => $date]), new Response(200)],
             new Request('GET', 'http://cluster/v2/topology'),
@@ -319,8 +322,20 @@ final class HttpRetryMiddlewareTest extends TestCase
 
         $delay = $this->calls[1]['options']['delay'];
         self::assertIsInt($delay);
-        self::assertGreaterThanOrEqual(3000, $delay);
-        self::assertLessThanOrEqual(5000, $delay);
+        self::assertGreaterThanOrEqual(3000, $delay, $date);
+        self::assertLessThanOrEqual(5000, $delay, $date);
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function retryAfterHttpDates(): iterable
+    {
+        $at = time() + 5;
+        yield 'IMF-fixdate' => [gmdate('D, d M Y H:i:s', $at) . ' GMT'];
+        yield 'RFC 850' => [gmdate('l, d-M-y H:i:s', $at) . ' GMT'];
+        // asctime pads a single-digit day with a space.
+        yield 'asctime' => [gmdate('D M ', $at) . sprintf('%2d', (int) gmdate('j', $at)) . gmdate(' H:i:s Y', $at)];
     }
 
     public function testRetryAfterIsBoundedByACeiling(): void
@@ -353,6 +368,8 @@ final class HttpRetryMiddlewareTest extends TestCase
         yield 'garbage' => ['soon'];
         yield 'negative' => ['-5'];
         yield 'past date' => ['Wed, 21 Oct 2015 07:28:00 GMT'];
+        yield 'past RFC 850 date' => ['Wednesday, 21-Oct-15 07:28:00 GMT'];
+        yield 'past asctime date' => ['Wed Oct 21 07:28:00 2015'];
     }
 
     public function testRequestBodyIsReplayedOnEveryAttempt(): void

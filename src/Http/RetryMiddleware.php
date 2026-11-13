@@ -278,13 +278,31 @@ final class RetryMiddleware
         if (ctype_digit($value)) {
             return min((int) $value * 1000, self::MAX_RETRY_AFTER_MS);
         }
-        $date = \DateTimeImmutable::createFromFormat('D, d M Y H:i:s \\G\\M\\T', $value, new \DateTimeZone('UTC'));
-        if ($date === false) {
+        $date = self::parseHttpDate($value);
+        if ($date === null) {
             return null;
         }
         $ms = ($date->getTimestamp() - time()) * 1000;
 
         return $ms > 0 ? min($ms, self::MAX_RETRY_AFTER_MS) : null;
+    }
+
+    /**
+     * Parse an HTTP-date. RFC 9110 requires recipients to accept the preferred
+     * IMF-fixdate and the obsolete RFC 850 and asctime formats (the latter has no zone
+     * and is always GMT).
+     */
+    private static function parseHttpDate(string $value): ?\DateTimeImmutable
+    {
+        $utc = new \DateTimeZone('UTC');
+        foreach (['D, d M Y H:i:s \\G\\M\\T', 'l, d-M-y H:i:s \\G\\M\\T', 'D M j H:i:s Y'] as $format) {
+            $date = \DateTimeImmutable::createFromFormat($format, (string) preg_replace('/ {2,}/', ' ', $value), $utc);
+            if ($date !== false) {
+                return $date;
+            }
+        }
+
+        return null;
     }
 
     private static function isJobActivation(RequestInterface $request): bool
