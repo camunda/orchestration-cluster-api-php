@@ -24,7 +24,14 @@ final class OAuthClientCredentialsProvider implements DelayAwareAuthProvider
     private float $expiresAtEpoch = 0.0;
     /** Epoch second at which the cached token is actually no longer accepted (no leeway). */
     private float $hardExpiresAtEpoch = 0.0;
+    /** @var \Closure(): float */
+    private readonly \Closure $clock;
 
+    /**
+     * @param (\Closure(): float)|null $clock Returns the current time as epoch seconds with
+     *   sub-second precision. Defaults to `microtime(true)`; injectable so tests can drive time
+     *   deterministically.
+     */
     public function __construct(
         private readonly ClientInterface $httpClient,
         private readonly RequestFactoryInterface $requestFactory,
@@ -33,7 +40,9 @@ final class OAuthClientCredentialsProvider implements DelayAwareAuthProvider
         private readonly string $clientId,
         private readonly string $clientSecret,
         private readonly string $audience,
+        ?\Closure $clock = null,
     ) {
+        $this->clock = $clock ?? static fn (): float => microtime(true);
     }
 
     /** @return array{Authorization: string} */
@@ -55,14 +64,15 @@ final class OAuthClientCredentialsProvider implements DelayAwareAuthProvider
 
     private function token(float $validForSeconds): string
     {
-        if ($this->accessToken !== null && microtime(true) + $validForSeconds < $this->expiresAtEpoch) {
-            return $this->accessToken;
+        $cached = $this->accessToken;
+        if ($cached !== null && ($this->clock)() + $validForSeconds < $this->expiresAtEpoch) {
+            return $cached;
         }
         $token = $this->fetchToken();
         // A fresh token is subject to the same rule as a cached one: if it cannot
         // outlive the scheduled delay the request would be sent with an expired
         // credential and fail with a non-retryable 401, so fail explicitly instead.
-        if ($validForSeconds > 0.0 && microtime(true) + $validForSeconds >= $this->hardExpiresAtEpoch) {
+        if ($validForSeconds > 0.0 && ($this->clock)() + $validForSeconds >= $this->hardExpiresAtEpoch) {
             throw new AuthenticationException(
                 'The OAuth token lifetime is shorter than the scheduled retry delay '
                 . '(' . (int) ceil($validForSeconds) . ' s), so the delayed request could not be authenticated.'
@@ -85,6 +95,11 @@ final class OAuthClientCredentialsProvider implements DelayAwareAuthProvider
             ->withHeader('Content-Type', 'application/x-www-form-urlencoded')
             ->withHeader('Accept', 'application/json')
             ->withBody($this->streamFactory->createStream($body));
+
+        // The server's `expires_in` clock starts when it issues the token, which is no
+        // later than when the response reaches us. Measure from before the request is
+        // sent so token-endpoint latency can never make the token look fresher than it is.
+        $requestStartedAt = ($this->clock)();
 
         try {
             $response = $this->httpClient->sendRequest($request);
@@ -112,9 +127,8 @@ final class OAuthClientCredentialsProvider implements DelayAwareAuthProvider
 
         $expiresIn = isset($payload['expires_in']) ? (int) $payload['expires_in'] : 300;
         $this->accessToken = $payload['access_token'];
-        $now = microtime(true);
-        $this->expiresAtEpoch = $now + max(1, $expiresIn - self::EXPIRY_LEEWAY_SECONDS);
-        $this->hardExpiresAtEpoch = $now + max(1, $expiresIn);
+        $this->expiresAtEpoch = $requestStartedAt + max(1, $expiresIn - self::EXPIRY_LEEWAY_SECONDS);
+        $this->hardExpiresAtEpoch = $requestStartedAt + max(1, $expiresIn);
 
         return $this->accessToken;
     }

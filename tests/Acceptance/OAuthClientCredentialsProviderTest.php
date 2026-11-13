@@ -117,7 +117,59 @@ final class OAuthClientCredentialsProviderTest extends TestCase
         self::assertCount(1, $httpClient->requests);
     }
 
-    private function provider(RecordingTokenClient $httpClient): OAuthClientCredentialsProvider
+    /**
+     * Token expiry is measured from when the token request is sent, not from when the
+     * response arrives: the authorization server issued the token (and started its
+     * `expires_in` clock) before the response travelled back, so a slow token endpoint
+     * must not make the token look fresher than it is.
+     */
+    public function testMeasuresTokenExpiryFromBeforeTheTokenRequestIsSent(): void
+    {
+        $clock = new ManualClock(1_000.0);
+        // The endpoint takes 40 s to answer; the token lives 100 s from issuance.
+        $httpClient = new RecordingTokenClient(
+            new Response(200, ['Content-Type' => 'application/json'], '{"access_token":"slow","expires_in":100}'),
+            new Response(200, ['Content-Type' => 'application/json'], '{"access_token":"fresh","expires_in":3600}'),
+        );
+        $httpClient->latencySeconds = 40.0;
+        $httpClient->clock = $clock;
+        $provider = $this->provider($httpClient, $clock);
+
+        self::assertSame('Bearer slow', $provider->getHeaders()['Authorization']);
+        self::assertSame(1_040.0, $clock->now, 'The response arrived 40 s after the request was sent.');
+
+        // Soft expiry = request start (1000) + 100 - 30 s leeway = 1070.
+        $clock->now = 1_069.0;
+        self::assertSame('Bearer slow', $provider->getHeaders()['Authorization']);
+        self::assertCount(1, $httpClient->requests, 'Still inside the refresh window boundary: reused.');
+
+        $clock->now = 1_071.0;
+        $httpClient->latencySeconds = 0.0;
+        self::assertSame('Bearer fresh', $provider->getHeaders()['Authorization']);
+        self::assertCount(2, $httpClient->requests, 'Measured from the response (1040 + 70) it would wrongly be reused.');
+    }
+
+    public function testHardExpiryIsMeasuredFromBeforeTheTokenRequestIsSent(): void
+    {
+        $clock = new ManualClock(1_000.0);
+        // 40 s of latency leaves only 20 s of a 60 s token once it is in hand.
+        $httpClient = new RecordingTokenClient(
+            new Response(200, ['Content-Type' => 'application/json'], '{"access_token":"slow-secret","expires_in":60}'),
+        );
+        $httpClient->latencySeconds = 40.0;
+        $httpClient->clock = $clock;
+        $provider = $this->provider($httpClient, $clock);
+
+        try {
+            $provider->getHeadersValidFor(30.0);
+            self::fail('A token with 20 s left must not be returned for a request sent in 30 s.');
+        } catch (AuthenticationException $e) {
+            self::assertStringContainsString('lifetime', $e->getMessage());
+            self::assertStringNotContainsString('slow-secret', $e->getMessage());
+        }
+    }
+
+    private function provider(RecordingTokenClient $httpClient, ?ManualClock $clock = null): OAuthClientCredentialsProvider
     {
         $factories = new Psr17Factory();
 
@@ -129,7 +181,15 @@ final class OAuthClientCredentialsProviderTest extends TestCase
             clientId: 'client id',
             clientSecret: 'client secret',
             audience: 'zeebe-api',
+            clock: $clock === null ? null : static fn (): float => $clock->now,
         );
+    }
+}
+
+final class ManualClock
+{
+    public function __construct(public float $now)
+    {
     }
 }
 
@@ -137,6 +197,10 @@ final class RecordingTokenClient implements ClientInterface
 {
     /** @var list<RequestInterface> */
     public array $requests = [];
+
+    /** Simulated time the token endpoint takes to answer; advances {@see $clock}. */
+    public float $latencySeconds = 0.0;
+    public ?ManualClock $clock = null;
 
     /** @var list<ResponseInterface> */
     private array $responses;
@@ -149,6 +213,9 @@ final class RecordingTokenClient implements ClientInterface
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $this->requests[] = $request;
+        if ($this->clock !== null) {
+            $this->clock->now += $this->latencySeconds;
+        }
 
         $response = array_shift($this->responses);
         if (!$response instanceof ResponseInterface) {
