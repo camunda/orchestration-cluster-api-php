@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Tests\Acceptance;
 
+use Camunda\Orchestration\Api\Model\ProblemDetail;
 use Camunda\Orchestration\Exception\RetryExhaustedException;
 use Camunda\Orchestration\Http\RetryMiddleware;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\Create;
 use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Psr7\PumpStream;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -126,6 +128,97 @@ final class HttpRetryMiddlewareTest extends TestCase
         }
 
         self::assertCount(3, $this->calls);
+    }
+
+    /**
+     * A streamed error body of unknown size must not be buffered whole to classify
+     * it: the read stops just past the classification limit, and the caller still
+     * receives the complete body (consumed prefix plus the unread remainder).
+     */
+    public function testUnknownSizeErrorBodyIsReadOnlyUpToTheClassificationLimit(): void
+    {
+        $limit = 1_048_576;
+        $total = 3 * $limit;
+        $produced = 0;
+        $source = static function (int $length) use (&$produced, $total): string|false {
+            if ($produced >= $total) {
+                return false;
+            }
+            $chunk = str_repeat('x', min($length, $total - $produced));
+            $produced += strlen($chunk);
+
+            return $chunk;
+        };
+        $stream = new PumpStream($source);
+        self::assertNull($stream->getSize());
+
+        $response = $this->send(
+            [new Response(500, ['Content-Type' => 'application/problem+json'], $stream), new Response(200)],
+            new Request('GET', 'http://cluster/v2/topology'),
+        );
+
+        self::assertSame(500, $response->getStatusCode());
+        self::assertCount(1, $this->calls);
+        self::assertLessThanOrEqual($limit + 1, $produced, 'Classification must not drain the whole stream.');
+
+        $body = (string) $response->getBody();
+        self::assertSame($total, strlen($body), 'The oversized body must reach the caller intact.');
+        self::assertSame(str_repeat('x', $total), $body);
+    }
+
+    public function testUnknownSizeBackpressureBodyIsStillClassifiedAndRetried(): void
+    {
+        $json = (string) json_encode(['title' => 'RESOURCE_EXHAUSTED', 'status' => 503, 'detail' => 'busy']);
+        $sent = false;
+        $stream = new PumpStream(static function (int $length) use (&$sent, $json): string|false {
+            if ($sent) {
+                return false;
+            }
+            $sent = true;
+
+            return $json;
+        });
+
+        $response = $this->send(
+            [new Response(503, [], $stream), new Response(200)],
+            new Request('GET', 'http://cluster/v2/topology'),
+        );
+
+        self::assertSame(200, $response->getStatusCode());
+        self::assertCount(2, $this->calls);
+    }
+
+    public function testExhaustionExposesTheDeserializedProblemDetail(): void
+    {
+        try {
+            $this->send(
+                array_fill(0, 3, self::problem(503, 'RESOURCE_EXHAUSTED', 'Broker is under backpressure')),
+                new Request('GET', 'http://cluster/v2/topology'),
+            );
+            self::fail('Expected RetryExhaustedException');
+        } catch (RetryExhaustedException $e) {
+            $problem = $e->getResponseObject();
+            self::assertInstanceOf(ProblemDetail::class, $problem);
+            self::assertSame('RESOURCE_EXHAUSTED', $problem->getTitle());
+            self::assertSame(503, $problem->getStatus());
+            self::assertSame('Broker is under backpressure', $problem->getDetail());
+            self::assertSame(503, $e->getCode());
+            self::assertSame(3, $e->getAttempts());
+        }
+    }
+
+    public function testExhaustionWithANonProblemBodyLeavesTheResponseObjectEmpty(): void
+    {
+        try {
+            $this->send(
+                array_fill(0, 3, new Response(429, [], 'slow down')),
+                new Request('GET', 'http://cluster/v2/topology'),
+            );
+            self::fail('Expected RetryExhaustedException');
+        } catch (RetryExhaustedException $e) {
+            self::assertNull($e->getResponseObject());
+            self::assertSame('slow down', $e->getResponseBody());
+        }
     }
 
     public function testMaxAttemptsOfOneDisablesRetryAndReturnsTheResponse(): void
@@ -379,12 +472,17 @@ final class HttpRetryMiddlewareTest extends TestCase
             new Request('GET', 'http://cluster/v2/topology'),
         );
 
-        $this->expectException(RetryExhaustedException::class);
-        try {
-            $promise->wait();
-        } finally {
-            self::assertCount(3, $this->calls);
-        }
+        $rejection = null;
+        $promise->then(null, static function (mixed $reason) use (&$rejection): void {
+            $rejection = $reason;
+        });
+        $promise->wait(false);
+
+        self::assertInstanceOf(RetryExhaustedException::class, $rejection);
+        // The async path never reaches the generated response parser, so the
+        // exception itself must carry the deserialized problem.
+        self::assertInstanceOf(ProblemDetail::class, $rejection->getResponseObject());
+        self::assertCount(3, $this->calls);
     }
 
     public function testRejectsInvalidPolicies(): void

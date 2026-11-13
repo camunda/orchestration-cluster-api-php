@@ -15,7 +15,7 @@ use Psr\Http\Message\StreamFactoryInterface;
  * Acquires a bearer token from the configured token endpoint and caches it in memory
  * until shortly before it expires, transparently refreshing on demand.
  */
-final class OAuthClientCredentialsProvider implements AuthProvider
+final class OAuthClientCredentialsProvider implements DelayAwareAuthProvider
 {
     /** Refresh this many seconds before the token actually expires. */
     private const EXPIRY_LEEWAY_SECONDS = 30;
@@ -37,12 +37,23 @@ final class OAuthClientCredentialsProvider implements AuthProvider
     /** @return array{Authorization: string} */
     public function getHeaders(): array
     {
-        return ['Authorization' => 'Bearer ' . $this->token()];
+        return $this->getHeadersValidFor(0.0);
     }
 
-    private function token(): string
+    /**
+     * A cached token is reused only if it will still be outside its refresh window
+     * when a request delayed by `$seconds` is sent; otherwise a fresh one is fetched.
+     *
+     * @return array{Authorization: string}
+     */
+    public function getHeadersValidFor(float $seconds): array
     {
-        if ($this->accessToken !== null && microtime(true) < $this->expiresAtEpoch) {
+        return ['Authorization' => 'Bearer ' . $this->token(max(0.0, $seconds))];
+    }
+
+    private function token(float $validForSeconds): string
+    {
+        if ($this->accessToken !== null && microtime(true) + $validForSeconds < $this->expiresAtEpoch) {
             return $this->accessToken;
         }
         return $this->fetchToken();

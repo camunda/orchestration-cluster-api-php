@@ -28,6 +28,8 @@ final class HttpClientFactory
         $stack = HandlerStack::create($handler);
         // Retry wraps auth (it is pushed first, so it sits outside), which makes every
         // attempt ask the auth provider again: a token can expire during a backoff wait.
+        // The auth middleware also passes the scheduled `delay` on to the provider, because
+        // the transport waits only after auth has run.
         $stack->push(new RetryMiddleware(
             $config->httpRetryMaxAttempts,
             $config->httpRetryBaseDelayMs,

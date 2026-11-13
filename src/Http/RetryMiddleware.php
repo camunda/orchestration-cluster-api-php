@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Http;
 
+use Camunda\Orchestration\Api\Model\ProblemDetail;
+use Camunda\Orchestration\Api\ObjectSerializer;
 use Camunda\Orchestration\Exception\RetryExhaustedException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TooManyRedirectsException;
 use GuzzleHttp\Promise\Create;
 use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Psr7\PumpStream;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -147,7 +150,11 @@ final class RetryMiddleware
         if ($size !== null && $size > self::MAX_CLASSIFIED_BODY_BYTES) {
             return [$response, false];
         }
-        [$response, $contents] = self::readBody($response);
+        [$response, $contents, $complete] = self::readBounded($response);
+        if (!$complete) {
+            // Larger than the classification limit (the size was not known up front).
+            return [$response, false];
+        }
         $problem = json_decode($contents, true);
         if (!is_array($problem)) {
             return [$response, false];
@@ -163,35 +170,90 @@ final class RetryMiddleware
     }
 
     /**
-     * @return array{ResponseInterface, string}
+     * Read at most {@see MAX_CLASSIFIED_BODY_BYTES} bytes of the body, so a streamed
+     * response of unknown size is never buffered whole.
+     *
+     * The returned response always still yields the complete original body: a seekable
+     * body is rewound, and a non-seekable one is replaced by the consumed bytes followed
+     * by the unread remainder of the original stream.
+     *
+     * @return array{ResponseInterface, string, bool} The response, the bytes read (the
+     *   whole body when `complete`, else its first {@see MAX_CLASSIFIED_BODY_BYTES} + 1
+     *   bytes), and whether the body ended within the limit.
      */
-    private static function readBody(ResponseInterface $response): array
+    private static function readBounded(ResponseInterface $response): array
     {
         $body = $response->getBody();
-        $contents = (string) $body;
-        if ($body->isSeekable()) {
+        $seekable = $body->isSeekable();
+        if ($seekable) {
             $body->rewind();
-        } else {
-            $response = $response->withBody(Utils::streamFor($contents));
         }
 
-        return [$response, $contents];
+        $limit = self::MAX_CLASSIFIED_BODY_BYTES;
+        $contents = '';
+        while (!$body->eof() && strlen($contents) <= $limit) {
+            $chunk = $body->read($limit + 1 - strlen($contents));
+            if ($chunk === '') {
+                break;
+            }
+            $contents .= $chunk;
+        }
+        $complete = strlen($contents) <= $limit;
+
+        if ($seekable) {
+            $body->rewind();
+        } elseif ($complete) {
+            $response = $response->withBody(Utils::streamFor($contents));
+        } else {
+            // A PumpStream, not an AppendStream: `(string) $stream` on a non-seekable
+            // AppendStream throws, and callers cast response bodies to string.
+            $pending = $contents;
+            $response = $response->withBody(new PumpStream(
+                static function (int $length) use (&$pending, $body): string|false {
+                    if ($pending !== '') {
+                        $chunk = substr($pending, 0, $length);
+                        $pending = (string) substr($pending, strlen($chunk));
+
+                        return $chunk;
+                    }
+                    $chunk = $body->eof() ? '' : $body->read($length);
+
+                    return $chunk === '' ? false : $chunk;
+                },
+            ));
+        }
+
+        return [$response, $contents, $complete];
     }
 
     private function exhaustedByResponse(ResponseInterface $response, int $attempts): RetryExhaustedException
     {
         $status = $response->getStatusCode();
-        [, $contents] = self::readBody($response);
+        // Only 429 can get here with an oversized body (500/503 are classified within the
+        // limit); the exception carries the first MAX_CLASSIFIED_BODY_BYTES bytes of it.
+        [, $contents] = self::readBounded($response);
+        $contents = substr($contents, 0, self::MAX_CLASSIFIED_BODY_BYTES);
         $problem = json_decode($contents, true);
         $title = is_array($problem) && is_string($problem['title'] ?? null) ? $problem['title'] : null;
 
-        return new RetryExhaustedException(
+        $exception = new RetryExhaustedException(
             sprintf('[%d] Request failed after %d attempts%s', $status, $attempts, $title !== null ? " ($title)" : ''),
             $status,
             $attempts,
             $response->getHeaders(),
             $contents,
         );
+        // The generated response parsers never see an exhausted response, so populate the
+        // deserialized problem here, as they do for any other error response.
+        try {
+            $exception->setResponseObject(
+                ObjectSerializer::deserialize(json_decode($contents), ProblemDetail::class, []),
+            );
+        } catch (\Throwable) {
+            // Non-problem error bodies stay available through getResponseBody().
+        }
+
+        return $exception;
     }
 
     private function delayMs(int $failedAttempt, ?ResponseInterface $response): int

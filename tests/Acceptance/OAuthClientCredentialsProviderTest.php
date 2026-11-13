@@ -53,6 +53,57 @@ final class OAuthClientCredentialsProviderTest extends TestCase
             (string) $httpClient->requests[0]->getBody(),
         );
     }
+
+    /**
+     * A cached token that is still usable now may not survive a scheduled delay:
+     * the provider must refresh when the token would be inside its refresh window
+     * by the time the delayed request is sent.
+     */
+    public function testRefreshesACachedTokenThatWouldExpireDuringTheScheduledDelay(): void
+    {
+        // expires_in 75 s -> cached for 45 s (refresh leeway is 30 s).
+        $httpClient = new RecordingTokenClient(
+            new Response(200, ['Content-Type' => 'application/json'], '{"access_token":"short-lived","expires_in":75}'),
+            new Response(200, ['Content-Type' => 'application/json'], '{"access_token":"fresh","expires_in":3600}'),
+        );
+        $provider = $this->provider($httpClient);
+
+        self::assertSame('Bearer short-lived', $provider->getHeaders()['Authorization']);
+        self::assertSame('Bearer short-lived', $provider->getHeadersValidFor(10.0)['Authorization']);
+        self::assertCount(1, $httpClient->requests, 'A token that outlives the delay is reused.');
+
+        self::assertSame('Bearer fresh', $provider->getHeadersValidFor(60.0)['Authorization']);
+        self::assertCount(2, $httpClient->requests, 'A token that would be stale after 60 s is refreshed.');
+
+        self::assertSame('Bearer fresh', $provider->getHeaders()['Authorization']);
+        self::assertCount(2, $httpClient->requests);
+    }
+
+    public function testAZeroDelayBehavesLikeGetHeaders(): void
+    {
+        $httpClient = new RecordingTokenClient(
+            new Response(200, ['Content-Type' => 'application/json'], '{"access_token":"only","expires_in":3600}'),
+        );
+        $provider = $this->provider($httpClient);
+
+        self::assertSame($provider->getHeaders(), $provider->getHeadersValidFor(0.0));
+        self::assertCount(1, $httpClient->requests);
+    }
+
+    private function provider(RecordingTokenClient $httpClient): OAuthClientCredentialsProvider
+    {
+        $factories = new Psr17Factory();
+
+        return new OAuthClientCredentialsProvider(
+            httpClient: $httpClient,
+            requestFactory: $factories,
+            streamFactory: $factories,
+            tokenUrl: 'https://login.example.test/oauth/token',
+            clientId: 'client id',
+            clientSecret: 'client secret',
+            audience: 'zeebe-api',
+        );
+    }
 }
 
 final class RecordingTokenClient implements ClientInterface

@@ -8,6 +8,7 @@ use Camunda\Orchestration\Api\ApiException;
 use Camunda\Orchestration\Api\Model\TopologyResponse;
 use Camunda\Orchestration\Auth\AuthProvider;
 use Camunda\Orchestration\Auth\AuthProviderFactory;
+use Camunda\Orchestration\Auth\OAuthClientCredentialsProvider;
 use Camunda\Orchestration\CamundaAsyncClient;
 use Camunda\Orchestration\CamundaClient;
 use Camunda\Orchestration\Config\CamundaConfiguration;
@@ -21,9 +22,12 @@ use GuzzleHttp\Promise\Create;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Http\Discovery\Psr17Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface as PsrClient;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Retry configuration (`CAMUNDA_SDK_HTTP_RETRY_*`, same names and defaults as the
@@ -255,6 +259,76 @@ final class HttpRetryClientTest extends TestCase
         self::assertSame(2, $provider->calls);
         self::assertSame(['Bearer token-1'], $this->requests[0]->getHeader('Authorization'));
         self::assertSame(['Bearer token-2'], $this->requests[1]->getHeader('Authorization'));
+    }
+
+    /**
+     * The transport applies `delay` after the auth middleware has run, so a cached
+     * OAuth token with 45 s left (refresh leeway 30 s) would be sent 60 s later,
+     * already expired, and the retry would fail with a non-retryable 401. The auth
+     * step must pick a token that is still valid when the delayed request goes out.
+     */
+    public function testRetryAfterDelayDoesNotReuseATokenThatExpiresBeforeTheRequestIsSent(): void
+    {
+        $tokenClient = new class () implements PsrClient {
+            public int $issued = 0;
+
+            public function sendRequest(RequestInterface $request): ResponseInterface
+            {
+                ++$this->issued;
+                // The first token lives 75 s (cached for 45 s); later ones are long-lived.
+                $expiresIn = $this->issued === 1 ? 75 : 3600;
+
+                return new Response(
+                    200,
+                    ['Content-Type' => 'application/json'],
+                    (string) json_encode(['access_token' => 'token-' . $this->issued, 'expires_in' => $expiresIn]),
+                );
+            }
+        };
+        $factories = new Psr17Factory();
+        $provider = new OAuthClientCredentialsProvider(
+            $tokenClient,
+            $factories,
+            $factories,
+            'https://login.example.test/oauth/token',
+            'id',
+            'secret',
+            'zeebe-api',
+        );
+        // Prime the cache: a first call earlier in the process lifetime.
+        $provider->getHeaders();
+        self::assertSame(1, $tokenClient->issued);
+
+        /** @var list<array<int|string, mixed>> $optionsSeen */
+        $optionsSeen = [];
+        // Not a MockHandler: it would really sleep for the 60 s `delay`.
+        $responses = [
+            new Response(
+                429,
+                ['Content-Type' => 'application/problem+json', 'Retry-After' => '60'],
+                '{"title":"RESOURCE_EXHAUSTED","status":429}',
+            ),
+            new Response(200, ['Content-Type' => 'application/json'], '{"clusterSize":3,"brokers":[]}'),
+        ];
+        $this->requests = [];
+        $handler = function (RequestInterface $request, array $options) use (&$responses, &$optionsSeen): PromiseInterface {
+            $this->requests[] = $request;
+            $optionsSeen[] = $options;
+
+            return Create::promiseFor(array_shift($responses));
+        };
+        $config = $this->config();
+        $client = CamundaClient::fromConfiguration($config, HttpClientFactory::create($config, $provider, $handler));
+
+        $client->getTopology();
+
+        self::assertSame(60_000, $optionsSeen[1]['delay'] ?? null);
+        self::assertSame(['Bearer token-1'], $this->requests[0]->getHeader('Authorization'));
+        self::assertSame(
+            ['Bearer token-2'],
+            $this->requests[1]->getHeader('Authorization'),
+            'The delayed attempt must not carry a token that expires before it is sent.',
+        );
     }
 
     /**
