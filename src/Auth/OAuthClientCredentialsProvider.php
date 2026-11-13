@@ -20,6 +20,12 @@ final class OAuthClientCredentialsProvider implements AuthProvider
     /** Refresh this many seconds before the token actually expires. */
     private const EXPIRY_LEEWAY_SECONDS = 30;
 
+    /** Upper bound on the error summary carried in an {@see AuthenticationException}. */
+    private const MAX_ERROR_SUMMARY_LENGTH = 200;
+
+    /** Stand-in for the client secret wherever it would otherwise be reported. */
+    private const REDACTED = '***';
+
     private ?string $accessToken = null;
     private float $expiresAtEpoch = 0.0;
 
@@ -65,8 +71,10 @@ final class OAuthClientCredentialsProvider implements AuthProvider
         try {
             $response = $this->httpClient->sendRequest($request);
         } catch (\Psr\Http\Client\ClientExceptionInterface $e) {
+            // A transport error message can quote the request it failed to send, and
+            // that request carries the client secret (issue #110).
             throw new AuthenticationException(
-                'Failed to reach the OAuth token endpoint: ' . $e->getMessage(),
+                'Failed to reach the OAuth token endpoint: ' . $this->redactSecret($e->getMessage()),
                 0,
                 $e
             );
@@ -76,7 +84,7 @@ final class OAuthClientCredentialsProvider implements AuthProvider
         $raw = (string) $response->getBody();
         if ($status < 200 || $status >= 300) {
             throw new AuthenticationException(
-                "OAuth token request failed with HTTP $status: $raw"
+                'OAuth token request failed with HTTP ' . $status . $this->errorSummary($raw)
             );
         }
 
@@ -91,5 +99,61 @@ final class OAuthClientCredentialsProvider implements AuthProvider
         $this->expiresAtEpoch = microtime(true) + max(1, $expiresIn - self::EXPIRY_LEEWAY_SECONDS);
 
         return $this->accessToken;
+    }
+
+    /**
+     * Summarise a token-endpoint error body instead of echoing it.
+     *
+     * The request sent to the token endpoint is a form containing `client_secret`, and
+     * an identity provider is free to quote the request it rejected. Only the
+     * well-known OAuth 2.0 `error` and `error_description` fields of a JSON body are
+     * reported, bounded in length and scrubbed of the configured secret (issue #110).
+     */
+    private function errorSummary(string $raw): string
+    {
+        /** @var mixed $payload */
+        $payload = json_decode($raw, true);
+        if (!is_array($payload)) {
+            return '.';
+        }
+
+        $parts = [];
+        foreach (['error', 'error_description'] as $field) {
+            /** @var mixed $value */
+            $value = $payload[$field] ?? null;
+            if (is_string($value) && $value !== '') {
+                $parts[] = $value;
+            }
+        }
+        if ($parts === []) {
+            return '.';
+        }
+
+        $summary = $this->redactSecret(implode(': ', $parts));
+        if (mb_strlen($summary) > self::MAX_ERROR_SUMMARY_LENGTH) {
+            $summary = mb_substr($summary, 0, self::MAX_ERROR_SUMMARY_LENGTH) . '...';
+        }
+
+        return ' (' . $summary . ').';
+    }
+
+    /**
+     * Replace the configured client secret wherever it appears in text destined for an
+     * exception message — a backstop for every place the secret could be reflected back
+     * to us, not only the structured fields we choose to report.
+     */
+    private function redactSecret(string $text): string
+    {
+        if ($this->clientSecret === '') {
+            return $text;
+        }
+
+        $needles = array_values(array_unique([
+            $this->clientSecret,
+            rawurlencode($this->clientSecret),
+            urlencode($this->clientSecret),
+        ]));
+
+        return str_replace($needles, self::REDACTED, $text);
     }
 }
