@@ -227,6 +227,63 @@ final class JobWorkerHandlerExceptionTest extends TestCase
     }
 
     /**
+     * A terminal action the handler asked for explicitly must not be replaced by the
+     * worker's own failure when its request fails. Doing so would discard the retries,
+     * back-off and message the handler chose and swallow the transport error.
+     *
+     * @param \Closure(ActivatedJobResult, JobActionClient): void $handler
+     * @param non-empty-string $expectedPath
+     */
+    #[DataProvider('explicitTerminalActions')]
+    public function testAFailedExplicitTerminalActionIsNotReplacedByTheWorker(
+        \Closure $handler,
+        string $expectedPath,
+    ): void {
+        $worker = $this->worker([
+            $this->activationResponse([['jobKey' => '1', 'retries' => 3]]),
+            new Response(503, ['Content-Type' => 'application/problem+json'], '{"title":"RESOURCE_EXHAUSTED"}'),
+            new Response(204),
+        ]);
+
+        try {
+            $worker->pollOnce($handler);
+            self::fail('Expected the failed terminal action to surface to the caller.');
+        } catch (\Camunda\Orchestration\Api\ApiException $exception) {
+            self::assertSame(503, $exception->getCode());
+        }
+
+        self::assertCount(2, $this->requests, 'The worker must not send a substitute terminal action.');
+        self::assertStringEndsWith($expectedPath, $this->requests[1]->getUri()->getPath());
+    }
+
+    /**
+     * @return iterable<string, array{\Closure, non-empty-string}>
+     */
+    public static function explicitTerminalActions(): iterable
+    {
+        yield 'fail' => [
+            static function (ActivatedJobResult $job, JobActionClient $action): void {
+                $action->fail(retries: 0, errorMessage: 'give up on this one', retryBackOffMs: 5_000);
+            },
+            '/jobs/1/failure',
+        ];
+
+        yield 'complete' => [
+            static function (ActivatedJobResult $job, JobActionClient $action): void {
+                $action->complete(['done' => true]);
+            },
+            '/jobs/1/completion',
+        ];
+
+        yield 'bpmn error' => [
+            static function (ActivatedJobResult $job, JobActionClient $action): void {
+                $action->error('PAYMENT_DECLINED', 'the card was declined');
+            },
+            '/jobs/1/error',
+        ];
+    }
+
+    /**
      * A failure report that itself fails is a transport problem, not a handler problem:
      * it keeps the existing behaviour of surfacing to the caller, exactly as a failing
      * auto-completion does today.

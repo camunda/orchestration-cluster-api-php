@@ -174,6 +174,14 @@ final class JobWorker
                 ? $handler->handle($job, $action)
                 : $handler($job, $action);
         } catch (\Throwable $throwable) {
+            if ($action->hasInterruptedAction()) {
+                // The handler asked for a terminal action and the request for it
+                // failed. Substituting our own failure would discard the retries,
+                // back-off and message it asked for and hide the transport error, so
+                // this keeps propagating as it always has.
+                throw $throwable;
+            }
+
             // Issue #109: an uncaught handler exception used to propagate out of the
             // dispatch loop, leaving the job leased until `timeoutMs`, dropping the
             // rest of the batch and stopping `run()`. Mirror the JS SDK instead: fail

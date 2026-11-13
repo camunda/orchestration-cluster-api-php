@@ -333,7 +333,7 @@ What you can rely on:
 
 To choose the retry count, the back-off, or the message yourself, catch the error inside your handler and call `$action->fail(...)` explicitly.
 
-Note that a transport error raised while reporting the failure — for example broker backpressure on the fail call itself — still surfaces to the caller of `run()` or `pollOnce()`, exactly as a failing auto-completion does.
+Note that a transport error raised while reporting the failure — for example broker backpressure on the fail call itself — still surfaces to the caller of `run()` or `pollOnce()`, exactly as a failing auto-completion does. The same holds when your handler calls `$action->complete()`, `fail()` or `error()` itself and that request fails: the worker surfaces the error rather than replacing the terminal action you asked for with one of its own.
 
 ### Object-oriented handlers
 
