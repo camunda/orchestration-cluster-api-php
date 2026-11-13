@@ -26,12 +26,14 @@ final class HttpClientFactory
         ?callable $handler = null,
     ): ClientInterface {
         $stack = HandlerStack::create($handler);
-        $stack->push(new AuthMiddleware($auth), 'camunda_auth');
+        // Retry wraps auth (it is pushed first, so it sits outside), which makes every
+        // attempt ask the auth provider again: a token can expire during a backoff wait.
         $stack->push(new RetryMiddleware(
             $config->httpRetryMaxAttempts,
             $config->httpRetryBaseDelayMs,
             $config->httpRetryMaxDelayMs,
         ), 'camunda_retry');
+        $stack->push(new AuthMiddleware($auth), 'camunda_auth');
 
         /** @var array<string, mixed> $options */
         $options = [

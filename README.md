@@ -293,8 +293,9 @@ function custom_http_client_with_retry(CamundaConfiguration $configuration): Cam
     // A client you supply is not wrapped by the SDK: push the retry middleware yourself
     // if you want the same behaviour.
     $stack = HandlerStack::create();
-    $stack->push(new AuthMiddleware(AuthProviderFactory::fromConfiguration($configuration)), 'camunda_auth');
+    // Push retry before auth so that every attempt picks up a fresh auth header.
     $stack->push(new RetryMiddleware(maxAttempts: 3, baseDelayMs: 100, maxDelayMs: 2_000), 'camunda_retry');
+    $stack->push(new AuthMiddleware(AuthProviderFactory::fromConfiguration($configuration)), 'camunda_auth');
 
     return CamundaClient::fromConfiguration(
         $configuration,
