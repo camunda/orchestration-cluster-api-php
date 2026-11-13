@@ -18,6 +18,7 @@ use Camunda\Orchestration\Worker\JobWorkerOptions;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Promise\Create;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -274,7 +275,9 @@ final class HttpRetryClientTest extends TestCase
         );
 
         try {
-            $client->{$operation}(...self::asyncArguments($operation))->wait();
+            $promise = $client->{$operation}(...self::asyncArguments($operation));
+            self::assertInstanceOf(PromiseInterface::class, $promise);
+            $promise->wait();
             self::fail('Expected RetryExhaustedException');
         } catch (RetryExhaustedException $e) {
             self::assertSame(429, $e->getCode());
