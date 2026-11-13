@@ -59,6 +59,7 @@ class SetVariableRequest implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     protected static array $openAPITypes = [
         'variables' => 'array<string,mixed>',
+        'variablesMetadata' => 'array<string,\Camunda\Orchestration\Api\Model\VariableMetadata>',
         'local' => 'bool',
         'operationReference' => 'int'
     ];
@@ -70,6 +71,7 @@ class SetVariableRequest implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     protected static array $openAPIFormats = [
         'variables' => null,
+        'variablesMetadata' => null,
         'local' => null,
         'operationReference' => 'int64'
     ];
@@ -81,6 +83,7 @@ class SetVariableRequest implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     protected static array $openAPINullables = [
         'variables' => false,
+        'variablesMetadata' => false,
         'local' => false,
         'operationReference' => false
     ];
@@ -185,6 +188,7 @@ class SetVariableRequest implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     protected static array $attributeMap = [
         'variables' => 'variables',
+        'variablesMetadata' => 'variablesMetadata',
         'local' => 'local',
         'operationReference' => 'operationReference'
     ];
@@ -196,6 +200,7 @@ class SetVariableRequest implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     protected static array $setters = [
         'variables' => 'setVariables',
+        'variablesMetadata' => 'setVariablesMetadata',
         'local' => 'setLocal',
         'operationReference' => 'setOperationReference'
     ];
@@ -207,6 +212,7 @@ class SetVariableRequest implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     protected static array $getters = [
         'variables' => 'getVariables',
+        'variablesMetadata' => 'getVariablesMetadata',
         'local' => 'getLocal',
         'operationReference' => 'getOperationReference'
     ];
@@ -259,6 +265,7 @@ class SetVariableRequest implements ModelInterface, ArrayAccess, JsonSerializabl
     public function __construct(?array $data = null)
     {
         $this->setIfExists('variables', $data ?? [], null);
+        $this->setIfExists('variablesMetadata', $data ?? [], null);
         $this->setIfExists('local', $data ?? [], false);
         $this->setIfExists('operationReference', $data ?? [], null);
     }
@@ -338,6 +345,38 @@ class SetVariableRequest implements ModelInterface, ArrayAccess, JsonSerializabl
             unset($this->openAPIFieldsSet['variables']);
         } else {
             $this->openAPIFieldsSet['variables'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets variablesMetadata
+     *
+     * @return array<string,\Camunda\Orchestration\Api\Model\VariableMetadata>|null
+     */
+    public function getVariablesMetadata(): ?array
+    {
+        return $this->container['variablesMetadata'];
+    }
+
+    /**
+     * Sets variablesMetadata
+     *
+     * @param array<string,\Camunda\Orchestration\Api\Model\VariableMetadata>|null $variablesMetadata Metadata of the variables, keyed by variable name. Use it to set how a variable is treated, for example to protect its value. Each key must be the name of a variable in `variables`. A variable without an entry keeps the metadata it has, or has none.
+     *
+     * @return $this
+     */
+    public function setVariablesMetadata(?array $variablesMetadata): static
+    {
+        if (is_null($variablesMetadata)) {
+            throw new InvalidArgumentException('non-nullable variablesMetadata cannot be null');
+        }
+        $this->container['variablesMetadata'] = $variablesMetadata;
+        if ($variablesMetadata === null) {
+            unset($this->openAPIFieldsSet['variablesMetadata']);
+        } else {
+            $this->openAPIFieldsSet['variablesMetadata'] = true;
         }
 
         return $this;

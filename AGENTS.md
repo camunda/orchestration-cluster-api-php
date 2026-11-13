@@ -66,7 +66,7 @@ Upstream dependencies — when they misbehave, fix them at the source rather tha
 - **`examples/operation-map.json` integrity is enforced** by `make example-coverage` in CI: every entry must resolve to a real spec operation and an existing example region.
 - **README snippets are generated**, not written by hand. Edit the region in `examples/readme.php` and run `make sync-readme`.
 - **`src/Version.php` is stamped by release tooling.** Do not bump it manually.
-- **Spec ref is `stable/8.10`.** SDK major `n` ↔ server `8.n`.
+- **Spec ref is camunda `main` on this branch (Camunda 8.11, SDK 11.0.0-alpha.N); `stable/10` builds `stable/8.10`.** SDK major `n` ↔ server `8.n`. There is no `stable/8.11` until 8.11 ships.
 
 ### Common commands
 

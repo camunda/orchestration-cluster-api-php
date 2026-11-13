@@ -74,6 +74,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
         'processDefinitionVersion' => 'int',
         'customHeaders' => 'array<string,string>',
         'priority' => 'int',
+        'isSuspended' => 'bool',
         'userTaskKey' => '\Camunda\Orchestration\Semantic\UserTaskKey',
         'elementInstanceKey' => '\Camunda\Orchestration\Semantic\ElementInstanceKey',
         'processName' => 'string',
@@ -107,6 +108,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
         'processDefinitionVersion' => 'int32',
         'customHeaders' => null,
         'priority' => null,
+        'isSuspended' => null,
         'userTaskKey' => null,
         'elementInstanceKey' => null,
         'processName' => null,
@@ -140,6 +142,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
         'processDefinitionVersion' => false,
         'customHeaders' => false,
         'priority' => false,
+        'isSuspended' => false,
         'userTaskKey' => false,
         'elementInstanceKey' => false,
         'processName' => true,
@@ -266,6 +269,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
         'processDefinitionVersion' => 'processDefinitionVersion',
         'customHeaders' => 'customHeaders',
         'priority' => 'priority',
+        'isSuspended' => 'isSuspended',
         'userTaskKey' => 'userTaskKey',
         'elementInstanceKey' => 'elementInstanceKey',
         'processName' => 'processName',
@@ -299,6 +303,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
         'processDefinitionVersion' => 'setProcessDefinitionVersion',
         'customHeaders' => 'setCustomHeaders',
         'priority' => 'setPriority',
+        'isSuspended' => 'setIsSuspended',
         'userTaskKey' => 'setUserTaskKey',
         'elementInstanceKey' => 'setElementInstanceKey',
         'processName' => 'setProcessName',
@@ -332,6 +337,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
         'processDefinitionVersion' => 'getProcessDefinitionVersion',
         'customHeaders' => 'getCustomHeaders',
         'priority' => 'getPriority',
+        'isSuspended' => 'getIsSuspended',
         'userTaskKey' => 'getUserTaskKey',
         'elementInstanceKey' => 'getElementInstanceKey',
         'processName' => 'getProcessName',
@@ -406,6 +412,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
         $this->setIfExists('processDefinitionVersion', $data ?? [], null);
         $this->setIfExists('customHeaders', $data ?? [], null);
         $this->setIfExists('priority', $data ?? [], 50);
+        $this->setIfExists('isSuspended', $data ?? [], null);
         $this->setIfExists('userTaskKey', $data ?? [], null);
         $this->setIfExists('elementInstanceKey', $data ?? [], null);
         $this->setIfExists('processName', $data ?? [], null);
@@ -531,6 +538,9 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
             $invalidProperties[] = "invalid value for 'priority', must be bigger than or equal to 0.";
         }
 
+        if ($this->container['isSuspended'] === null) {
+            $invalidProperties[] = "'isSuspended' can't be null";
+        }
         if ($this->container['userTaskKey'] === null) {
             $invalidProperties[] = "'userTaskKey' can't be null";
         }
@@ -1129,6 +1139,38 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
             unset($this->openAPIFieldsSet['priority']);
         } else {
             $this->openAPIFieldsSet['priority'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets isSuspended
+     *
+     * @return bool
+     */
+    public function getIsSuspended(): bool
+    {
+        return $this->container['isSuspended'];
+    }
+
+    /**
+     * Sets isSuspended
+     *
+     * @param bool $isSuspended Whether the user task is suspended because its owning process instance is suspended.
+     *
+     * @return $this
+     */
+    public function setIsSuspended(bool $isSuspended): static
+    {
+        if (is_null($isSuspended)) {
+            throw new InvalidArgumentException('non-nullable isSuspended cannot be null');
+        }
+        $this->container['isSuspended'] = $isSuspended;
+        if ($isSuspended === null) {
+            unset($this->openAPIFieldsSet['isSuspended']);
+        } else {
+            $this->openAPIFieldsSet['isSuspended'] = true;
         }
 
         return $this;

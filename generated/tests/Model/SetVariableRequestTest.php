@@ -87,6 +87,15 @@ class SetVariableRequestTest extends TestCase
     }
 
     /**
+     * Test attribute "variablesMetadata"
+     */
+    public function testPropertyVariablesMetadata()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
      * Test attribute "local"
      */
     public function testPropertyLocal()

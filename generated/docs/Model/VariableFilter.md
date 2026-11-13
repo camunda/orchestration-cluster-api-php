@@ -11,5 +11,6 @@ Name | Type | Description | Notes
 **variableKey** | [**\Camunda\Orchestration\Api\Model\VariableKeyFilterProperty**](VariableKeyFilterProperty.md) | The key for this variable. | [optional]
 **scopeKey** | [**\Camunda\Orchestration\Api\Model\ScopeKeyFilterProperty**](ScopeKeyFilterProperty.md) | The key of the scope that defines where this variable is directly defined. This can be a process instance key (for process-level variables) or an element instance key (for local variables scoped to tasks, subprocesses, gateways, events, etc.). Use this filter to find variables directly defined in specific scopes. Note that this does not include variables from parent scopes that would be visible through the scope hierarchy. | [optional]
 **processInstanceKey** | [**\Camunda\Orchestration\Api\Model\ProcessInstanceKeyFilterProperty**](ProcessInstanceKeyFilterProperty.md) | The key of the process instance of this variable. | [optional]
+**protectionMode** | [**\Camunda\Orchestration\Api\Model\ProtectionModeFilterProperty**](ProtectionModeFilterProperty.md) | The protection modes applied to the variable. | [optional]
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)

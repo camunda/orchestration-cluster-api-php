@@ -70,7 +70,8 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
         'processInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
         'rootProcessInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
         'elementInstanceKey' => '\Camunda\Orchestration\Semantic\ElementInstanceKey',
-        'jobKey' => '\Camunda\Orchestration\Semantic\JobKey'
+        'jobKey' => '\Camunda\Orchestration\Semantic\JobKey',
+        'storageOrdinal' => 'int'
     ];
 
     /**
@@ -91,7 +92,8 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
         'processInstanceKey' => null,
         'rootProcessInstanceKey' => null,
         'elementInstanceKey' => null,
-        'jobKey' => null
+        'jobKey' => null,
+        'storageOrdinal' => 'int32'
     ];
 
     /**
@@ -112,7 +114,8 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
         'processInstanceKey' => false,
         'rootProcessInstanceKey' => true,
         'elementInstanceKey' => false,
-        'jobKey' => true
+        'jobKey' => true,
+        'storageOrdinal' => true
     ];
 
     /**
@@ -226,7 +229,8 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
         'processInstanceKey' => 'processInstanceKey',
         'rootProcessInstanceKey' => 'rootProcessInstanceKey',
         'elementInstanceKey' => 'elementInstanceKey',
-        'jobKey' => 'jobKey'
+        'jobKey' => 'jobKey',
+        'storageOrdinal' => 'storageOrdinal'
     ];
 
     /**
@@ -247,7 +251,8 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
         'processInstanceKey' => 'setProcessInstanceKey',
         'rootProcessInstanceKey' => 'setRootProcessInstanceKey',
         'elementInstanceKey' => 'setElementInstanceKey',
-        'jobKey' => 'setJobKey'
+        'jobKey' => 'setJobKey',
+        'storageOrdinal' => 'setStorageOrdinal'
     ];
 
     /**
@@ -268,7 +273,8 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
         'processInstanceKey' => 'getProcessInstanceKey',
         'rootProcessInstanceKey' => 'getRootProcessInstanceKey',
         'elementInstanceKey' => 'getElementInstanceKey',
-        'jobKey' => 'getJobKey'
+        'jobKey' => 'getJobKey',
+        'storageOrdinal' => 'getStorageOrdinal'
     ];
 
     /**
@@ -331,6 +337,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
         $this->setIfExists('rootProcessInstanceKey', $data ?? [], null);
         $this->setIfExists('elementInstanceKey', $data ?? [], null);
         $this->setIfExists('jobKey', $data ?? [], null);
+        $this->setIfExists('storageOrdinal', $data ?? [], null);
     }
 
     /**
@@ -429,6 +436,9 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
         }
         if ($this->container['jobKey'] === null && !$this->isNullableSetToNull('jobKey')) {
             $invalidProperties[] = "'jobKey' is required";
+        }
+        if ($this->container['storageOrdinal'] === null && !$this->isNullableSetToNull('storageOrdinal')) {
+            $invalidProperties[] = "'storageOrdinal' is required";
         }
         return $invalidProperties;
     }
@@ -826,6 +836,45 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
             unset($this->openAPIFieldsSet['jobKey']);
         } else {
             $this->openAPIFieldsSet['jobKey'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets storageOrdinal
+     *
+     * @return int|null
+     */
+    public function getStorageOrdinal(): ?int
+    {
+        return $this->container['storageOrdinal'];
+    }
+
+    /**
+     * Sets storageOrdinal
+     *
+     * @param int|null $storageOrdinal The storage ordinal this incident's data belongs to. This is `null` for data exported before storage ordinals were introduced in version 8.11.
+     *
+     * @return $this
+     */
+    public function setStorageOrdinal(?int $storageOrdinal): static
+    {
+        if (is_null($storageOrdinal)) {
+            array_push($this->openAPINullablesSetToNull, 'storageOrdinal');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('storageOrdinal', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
+        $this->container['storageOrdinal'] = $storageOrdinal;
+        if ($storageOrdinal === null) {
+            unset($this->openAPIFieldsSet['storageOrdinal']);
+        } else {
+            $this->openAPIFieldsSet['storageOrdinal'] = true;
         }
 
         return $this;

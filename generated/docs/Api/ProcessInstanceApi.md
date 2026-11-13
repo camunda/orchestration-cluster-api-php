@@ -169,7 +169,7 @@ cancelProcessInstancesBatchOperation($processInstanceCancellationBatchOperationR
 
 Cancel process instances (batch)
 
-Cancels multiple active or suspended process instances. Since only ACTIVE and SUSPENDED root instances can be cancelled, any given filters for state and parentProcessInstanceKey are ignored and overridden during this batch operation. This is done asynchronously, the progress can be tracked using the batchOperationKey from the response and the batch operation status endpoint (/batch-operations/{batchOperationKey}).
+Cancels multiple active or suspended process instances. Only ACTIVE and SUSPENDED root instances are cancelled; child instances are cancelled together with their root instance. The given filter only narrows the batch, so a filter on parentProcessInstanceKey matches no instances. Other `state` operators (`$neq`, `$notIn`, `$exists`, `$like`) are applied as given and are not validated. This is done asynchronously, the progress can be tracked using the batchOperationKey from the response and the batch operation status endpoint (/batch-operations/{batchOperationKey}).
 
 ### Example
 
@@ -234,7 +234,7 @@ createProcessInstance($processInstanceCreationInstruction): \Camunda\Orchestrati
 
 Create process instance
 
-Creates and starts an instance of the specified process. The process definition to use to create the instance can be specified either using its unique key (as returned by Deploy resources), or using the BPMN process id and a version. If only the process definition id is given, the latest ACTIVE version is used. If no ACTIVE version exists, the request is rejected as not found.  Waits for the completion of the process instance before returning a result when awaitCompletion is enabled.
+Creates and starts an instance of the specified process. The process definition to use to create the instance can be specified either using its unique key (as returned by Deploy resources), or using the BPMN process id and either a version or a version tag. If only the process definition id is given, the latest ACTIVE version is used. If no ACTIVE version exists, the request is rejected as not found.  Waits for the completion of the process instance before returning a result when awaitCompletion is enabled.
 
 ### Example
 
@@ -821,7 +821,7 @@ migrateProcessInstancesBatchOperation($processInstanceMigrationBatchOperationReq
 
 Migrate process instances (batch)
 
-Migrate multiple process instances. Since only process instances with ACTIVE state can be migrated, any given filters for state are ignored and overridden during this batch operation. This is done asynchronously, the progress can be tracked using the batchOperationKey from the response and the batch operation status endpoint (/batch-operations/{batchOperationKey}).
+Migrate multiple process instances. Only ACTIVE process instances are migrated. The given filter only narrows the batch. This is done asynchronously, the progress can be tracked using the batchOperationKey from the response and the batch operation status endpoint (/batch-operations/{batchOperationKey}).
 
 ### Example
 
@@ -952,7 +952,7 @@ modifyProcessInstancesBatchOperation($processInstanceModificationBatchOperationR
 
 Modify process instances (batch)
 
-Modify multiple process instances. Since only process instances with ACTIVE state can be modified, any given filters for state are ignored and overridden during this batch operation. In contrast to single modification operation, it is not possible to add variable instructions or modify by element key. It is only possible to use the element id of the source and target. This is done asynchronously, the progress can be tracked using the batchOperationKey from the response and the batch operation status endpoint (/batch-operations/{batchOperationKey}).
+Modify multiple process instances. Only ACTIVE process instances are modified. The given filter only narrows the batch. In contrast to single modification operation, it is not possible to add variable instructions or modify by element key. It is only possible to use the element id of the source and target. This is done asynchronously, the progress can be tracked using the batchOperationKey from the response and the batch operation status endpoint (/batch-operations/{batchOperationKey}).
 
 ### Example
 
@@ -1017,7 +1017,7 @@ resolveIncidentsBatchOperation($processInstanceIncidentResolutionBatchOperationR
 
 Resolve related incidents (batch)
 
-Resolves multiple instances of process instances. Since only process instances with ACTIVE state can have unresolved incidents, any given filters for state are ignored and overridden during this batch operation. This is done asynchronously, the progress can be tracked using the batchOperationKey from the response and the batch operation status endpoint (/batch-operations/{batchOperationKey}).
+Resolves multiple instances of process instances. Only incidents of ACTIVE process instances are resolved. The given filter only narrows the batch. This is done asynchronously, the progress can be tracked using the batchOperationKey from the response and the batch operation status endpoint (/batch-operations/{batchOperationKey}).
 
 ### Example
 
@@ -1055,7 +1055,7 @@ try {
 
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **processInstanceIncidentResolutionBatchOperationRequest** | [**\Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest**](../Model/ProcessInstanceIncidentResolutionBatchOperationRequest.md)|  | [optional] |
+| **processInstanceIncidentResolutionBatchOperationRequest** | [**\Camunda\Orchestration\Api\Model\ProcessInstanceIncidentResolutionBatchOperationRequest**](../Model/ProcessInstanceIncidentResolutionBatchOperationRequest.md)|  | |
 
 ### Return type
 
@@ -1213,7 +1213,7 @@ resumeProcessInstancesBatchOperation($processInstanceResumptionBatchOperationReq
 
 Resume process instances (batch)
 
-Resumes multiple suspended process instances. Any given filter for state or parentProcessInstanceKey is ignored and overridden, as only SUSPENDED process instances can be resumed and resumption does not cascade between parent and child instances, so child instances are resumed independently of their parent or root instance. This is done asynchronously, the progress can be tracked using the batchOperationKey from the response and the batch operation status endpoint (/batch-operations/{batchOperationKey}).
+Resumes multiple suspended process instances. Only SUSPENDED process instances are resumed. The given filter only narrows the batch. Other `state` operators (`$neq`, `$notIn`, `$exists`, `$like`) are applied as given and are not validated. Resumption does not cascade, so child instances are resumed independently of their parent or root instance. This is done asynchronously, the progress can be tracked using the batchOperationKey from the response and the batch operation status endpoint (/batch-operations/{batchOperationKey}).
 
 ### Example
 
@@ -1476,7 +1476,7 @@ suspendProcessInstancesBatchOperation($processInstanceSuspensionBatchOperationRe
 
 Suspend process instances (batch)
 
-Suspends multiple running process instances. Any given filter for state or parentProcessInstanceKey is ignored and overridden, as only ACTIVE process instances can be suspended and suspension does not cascade between parent and child instances, so child instances are suspended independently of their parent or root instance. This is done asynchronously, the progress can be tracked using the batchOperationKey from the response and the batch operation status endpoint (/batch-operations/{batchOperationKey}).
+Suspends multiple running process instances. Only ACTIVE process instances are suspended. The given filter only narrows the batch. Other `state` operators (`$neq`, `$notIn`, `$exists`, `$like`) are applied as given and are not validated. Suspension does not cascade, so child instances are suspended independently of their parent or root instance. This is done asynchronously, the progress can be tracked using the batchOperationKey from the response and the batch operation status endpoint (/batch-operations/{batchOperationKey}).
 
 ### Example
 

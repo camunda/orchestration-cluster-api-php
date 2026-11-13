@@ -60,7 +60,8 @@ class AuthenticationConfigurationResponse implements ModelInterface, ArrayAccess
      */
     protected static array $openAPITypes = [
         'canLogout' => 'bool',
-        'isLoginDelegated' => 'bool'
+        'isLoginDelegated' => 'bool',
+        'isCamundaGroupsEnabled' => 'bool'
     ];
 
     /**
@@ -70,7 +71,8 @@ class AuthenticationConfigurationResponse implements ModelInterface, ArrayAccess
      */
     protected static array $openAPIFormats = [
         'canLogout' => null,
-        'isLoginDelegated' => null
+        'isLoginDelegated' => null,
+        'isCamundaGroupsEnabled' => null
     ];
 
     /**
@@ -80,7 +82,8 @@ class AuthenticationConfigurationResponse implements ModelInterface, ArrayAccess
      */
     protected static array $openAPINullables = [
         'canLogout' => false,
-        'isLoginDelegated' => false
+        'isLoginDelegated' => false,
+        'isCamundaGroupsEnabled' => false
     ];
 
     /**
@@ -183,7 +186,8 @@ class AuthenticationConfigurationResponse implements ModelInterface, ArrayAccess
      */
     protected static array $attributeMap = [
         'canLogout' => 'canLogout',
-        'isLoginDelegated' => 'isLoginDelegated'
+        'isLoginDelegated' => 'isLoginDelegated',
+        'isCamundaGroupsEnabled' => 'isCamundaGroupsEnabled'
     ];
 
     /**
@@ -193,7 +197,8 @@ class AuthenticationConfigurationResponse implements ModelInterface, ArrayAccess
      */
     protected static array $setters = [
         'canLogout' => 'setCanLogout',
-        'isLoginDelegated' => 'setIsLoginDelegated'
+        'isLoginDelegated' => 'setIsLoginDelegated',
+        'isCamundaGroupsEnabled' => 'setIsCamundaGroupsEnabled'
     ];
 
     /**
@@ -203,7 +208,8 @@ class AuthenticationConfigurationResponse implements ModelInterface, ArrayAccess
      */
     protected static array $getters = [
         'canLogout' => 'getCanLogout',
-        'isLoginDelegated' => 'getIsLoginDelegated'
+        'isLoginDelegated' => 'getIsLoginDelegated',
+        'isCamundaGroupsEnabled' => 'getIsCamundaGroupsEnabled'
     ];
 
     /**
@@ -255,6 +261,7 @@ class AuthenticationConfigurationResponse implements ModelInterface, ArrayAccess
     {
         $this->setIfExists('canLogout', $data ?? [], null);
         $this->setIfExists('isLoginDelegated', $data ?? [], null);
+        $this->setIfExists('isCamundaGroupsEnabled', $data ?? [], null);
     }
 
     /**
@@ -291,6 +298,9 @@ class AuthenticationConfigurationResponse implements ModelInterface, ArrayAccess
         }
         if ($this->container['isLoginDelegated'] === null) {
             $invalidProperties[] = "'isLoginDelegated' can't be null";
+        }
+        if ($this->container['isCamundaGroupsEnabled'] === null) {
+            $invalidProperties[] = "'isCamundaGroupsEnabled' can't be null";
         }
         return $invalidProperties;
     }
@@ -363,6 +373,38 @@ class AuthenticationConfigurationResponse implements ModelInterface, ArrayAccess
             unset($this->openAPIFieldsSet['isLoginDelegated']);
         } else {
             $this->openAPIFieldsSet['isLoginDelegated'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets isCamundaGroupsEnabled
+     *
+     * @return bool
+     */
+    public function getIsCamundaGroupsEnabled(): bool
+    {
+        return $this->container['isCamundaGroupsEnabled'];
+    }
+
+    /**
+     * Sets isCamundaGroupsEnabled
+     *
+     * @param bool $isCamundaGroupsEnabled Whether Camunda manages group membership locally, as opposed to delegating it to the identity provider via a groups claim.
+     *
+     * @return $this
+     */
+    public function setIsCamundaGroupsEnabled(bool $isCamundaGroupsEnabled): static
+    {
+        if (is_null($isCamundaGroupsEnabled)) {
+            throw new InvalidArgumentException('non-nullable isCamundaGroupsEnabled cannot be null');
+        }
+        $this->container['isCamundaGroupsEnabled'] = $isCamundaGroupsEnabled;
+        if ($isCamundaGroupsEnabled === null) {
+            unset($this->openAPIFieldsSet['isCamundaGroupsEnabled']);
+        } else {
+            $this->openAPIFieldsSet['isCamundaGroupsEnabled'] = true;
         }
 
         return $this;

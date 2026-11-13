@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 return static function (array $ctx): void {
     $apiDir = $ctx['out_dir'] . '/src/Api';
+    $modelDir = $ctx['out_dir'] . '/src/Model';
 
     // Names that must not be shadowed by a generated forwarder because they are
     // defined by the client facades or the ApiAccessors trait.
@@ -28,17 +29,20 @@ return static function (array $ctx): void {
     // configured default (CAMUNDA_TENANT_ID) so the request is scoped to the
     // default tenant. This matches the behaviour of the JS, Python and C# SDKs.
     //
-    // Map: operation name => [body parameter variable name (without $), whether
-    // the model's setTenantId() takes a plain string rather than a TenantId].
-    // The body model must expose getTenantId()/setTenantId().
+    // Map: operation name => body parameter variable name (without $). Every
+    // model the body parameter accepts must expose getTenantId()/setTenantId().
+    // Whether the default is passed as a plain string or wrapped in a TenantId
+    // is read from the generated setters (see tenant_setter_takes_string()), not
+    // declared here, so an upstream change to the tenantId schema cannot leave
+    // the facade passing the wrong type.
     $tenantAwareBodyOps = [
-        'createProcessInstance' => ['processInstanceCreationInstruction', false],
-        'evaluateDecision' => ['decisionEvaluationInstruction', false],
-        'publishMessage' => ['messagePublicationRequest', false],
-        'correlateMessage' => ['messageCorrelationRequest', false],
-        'broadcastSignal' => ['signalBroadcastRequest', false],
-        'evaluateConditionals' => ['conditionalEvaluationInstruction', false],
-        'evaluateExpression' => ['expressionEvaluationRequest', true],
+        'createProcessInstance' => 'processInstanceCreationInstruction',
+        'evaluateDecision' => 'decisionEvaluationInstruction',
+        'publishMessage' => 'messagePublicationRequest',
+        'correlateMessage' => 'messageCorrelationRequest',
+        'broadcastSignal' => 'signalBroadcastRequest',
+        'evaluateConditionals' => 'conditionalEvaluationInstruction',
+        'evaluateExpression' => 'expressionEvaluationRequest',
     ];
 
     $syncMethods = '';
@@ -78,7 +82,12 @@ return static function (array $ctx): void {
             $isVoid = in_array($return, ['void', 'never'], true);
             $call = "\$this->api({$fqcn}::class)->{$name}({$args})";
 
-            $tenantInjection = tenant_injection($name, $tenantAwareBodyOps);
+            $tenantInjection = isset($tenantAwareBodyOps[$name])
+                ? tenant_injection(
+                    $tenantAwareBodyOps[$name],
+                    tenant_setter_takes_string($name, $m[3], $tenantAwareBodyOps[$name], $modelDir),
+                )
+                : '';
             // createDeployment takes tenantId as a direct query parameter rather
             // than inside a body model; default it when the caller omits it.
             if ($name === 'createDeployment') {
@@ -123,6 +132,11 @@ PHP;
         'asynchronous (Guzzle promise)',
         $asyncMethods,
     );
+
+    $missing = array_diff(array_keys($tenantAwareBodyOps), array_keys($seen));
+    if ($missing !== []) {
+        throw new RuntimeException('hook 0500: tenant-aware operations not found in the generated API: ' . implode(', ', $missing));
+    }
 
     fwrite(STDOUT, "  [flat-facade] wrote {$count} operations to src/GeneratedOperations.php + src/GeneratedAsyncOperations.php\n");
 };
@@ -197,16 +211,9 @@ function normalize_return(string $return): string
  * configured defaults must not leak the first client's tenant into the next
  * call.
  *
- * @param array<string, array{0: string, 1: bool}> $tenantAwareBodyOps
  */
-function tenant_injection(string $operationName, array $tenantAwareBodyOps): string
+function tenant_injection(string $param, bool $isStringTenant): string
 {
-    if (!isset($tenantAwareBodyOps[$operationName])) {
-        return '';
-    }
-
-    [$param, $isStringTenant] = $tenantAwareBodyOps[$operationName];
-
     $valueExpr = $isStringTenant
         ? '$this->config->tenantIds[0]'
         : 'new \\Camunda\\Orchestration\\Semantic\\TenantId($this->config->tenantIds[0])';
@@ -218,6 +225,52 @@ function tenant_injection(string $operationName, array $tenantAwareBodyOps): str
         }
 
 PHP;
+}
+
+/**
+ * Decide whether the default tenant is passed to the body model's setTenantId()
+ * as a plain string (true) or as a Semantic\TenantId (false).
+ *
+ * The body parameter can be a union of models (oneOf request bodies), so every
+ * member's generated setter is inspected. Generation fails if a member has no
+ * setTenantId() or the members disagree, because the facade would otherwise
+ * emit a call that throws a TypeError at runtime.
+ */
+function tenant_setter_takes_string(string $operationName, string $rawParams, string $param, string $modelDir): bool
+{
+    $type = null;
+    foreach (split_top_level(trim(preg_replace('/\s+/', ' ', $rawParams) ?? $rawParams)) as $p) {
+        if (preg_match('/^(\S+)\s+\$' . preg_quote($param, '/') . '\b/', trim($p), $pm) === 1) {
+            $type = $pm[1];
+            break;
+        }
+    }
+    if ($type === null) {
+        throw new RuntimeException("hook 0500: {$operationName} has no \${$param} body parameter for tenant injection");
+    }
+
+    $kinds = [];
+    foreach (explode('|', ltrim($type, '?')) as $class) {
+        $short = substr($class, (int) strrpos($class, '\\') + 1);
+        $source = @file_get_contents($modelDir . '/' . $short . '.php');
+        if ($source === false
+            || preg_match('/public function setTenantId\(\s*(\??[\\\\\w]+)\s+\$tenantId\b/', $source, $sm) !== 1) {
+            throw new RuntimeException("hook 0500: {$operationName}: model {$short} has no setTenantId() for tenant injection");
+        }
+        $setterType = ltrim($sm[1], '?\\');
+        if ($setterType === 'string') {
+            $kinds[$short] = true;
+        } elseif ($setterType === 'Camunda\\Orchestration\\Semantic\\TenantId') {
+            $kinds[$short] = false;
+        } else {
+            throw new RuntimeException("hook 0500: {$operationName}: {$short}::setTenantId() takes unsupported type {$sm[1]}");
+        }
+    }
+    if (count(array_unique($kinds)) !== 1) {
+        throw new RuntimeException("hook 0500: {$operationName}: body models disagree on the setTenantId() type: " . json_encode($kinds));
+    }
+
+    return reset($kinds);
 }
 
 /**

@@ -17,5 +17,6 @@ Name | Type | Description | Notes
 **rootProcessInstanceKey** | **string** | The key of the root process instance. The root process instance is the top-level ancestor in the process instance hierarchy. This field is only present for data belonging to process instance hierarchies created in version 8.9 or later. |
 **elementInstanceKey** | **string** | The element instance key associated to this incident. |
 **jobKey** | **string** | The job key, if exists, associated with this incident. |
+**storageOrdinal** | **int** | The storage ordinal this incident&#39;s data belongs to. This is &#x60;null&#x60; for data exported before storage ordinals were introduced in version 8.11. |
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)

@@ -58,7 +58,7 @@ class UpdateClusterVariableRequest implements ModelInterface, ArrayAccess, JsonS
      * @var array<string, string>
      */
     protected static array $openAPITypes = [
-        'value' => 'object',
+        'value' => 'mixed',
         'metadata' => 'array<string,\Camunda\Orchestration\Api\Model\CreateClusterVariableRequestMetadataValue>'
     ];
 
@@ -78,7 +78,7 @@ class UpdateClusterVariableRequest implements ModelInterface, ArrayAccess, JsonS
      * @var array<string, bool>
      */
     protected static array $openAPINullables = [
-        'value' => false,
+        'value' => true,
         'metadata' => false
     ];
 
@@ -285,8 +285,8 @@ class UpdateClusterVariableRequest implements ModelInterface, ArrayAccess, JsonS
     {
         $invalidProperties = [];
 
-        if ($this->container['value'] === null) {
-            $invalidProperties[] = "'value' can't be null";
+        if ($this->container['value'] === null && !$this->isNullableSetToNull('value')) {
+            $invalidProperties[] = "'value' is required";
         }
         if (!is_null($this->container['metadata']) && (count($this->container['metadata']) > 100)) {
             $invalidProperties[] = "invalid value for 'metadata', number of items must be less than or equal to 100.";
@@ -307,9 +307,9 @@ class UpdateClusterVariableRequest implements ModelInterface, ArrayAccess, JsonS
     /**
      * Gets value
      *
-     * @return object
+     * @return mixed|null
      */
-    public function getValue(): object
+    public function getValue(): mixed
     {
         return $this->container['value'];
     }
@@ -317,14 +317,21 @@ class UpdateClusterVariableRequest implements ModelInterface, ArrayAccess, JsonS
     /**
      * Sets value
      *
-     * @param object $value The new value of the cluster variable. Can be any JSON object or primitive value. Will be serialized as a JSON string in responses.
+     * @param mixed|null $value The new value of the cluster variable. Can be any JSON object or primitive value. Will be serialized as a JSON string in responses.
      *
      * @return $this
      */
-    public function setValue(object $value): static
+    public function setValue(mixed $value): static
     {
         if (is_null($value)) {
-            throw new InvalidArgumentException('non-nullable value cannot be null');
+            array_push($this->openAPINullablesSetToNull, 'value');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('value', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
         }
         $this->container['value'] = $value;
         if ($value === null) {

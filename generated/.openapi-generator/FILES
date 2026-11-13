@@ -97,6 +97,7 @@ docs/Model/AdvancedProcessDefinitionIdFilter.md
 docs/Model/AdvancedProcessDefinitionKeyFilter.md
 docs/Model/AdvancedProcessInstanceKeyFilter.md
 docs/Model/AdvancedProcessInstanceStateFilter.md
+docs/Model/AdvancedProtectionModeFilter.md
 docs/Model/AdvancedResourceKeyFilter.md
 docs/Model/AdvancedResultFilter.md
 docs/Model/AdvancedScopeKeyFilter.md
@@ -175,6 +176,7 @@ docs/Model/AuditLogResultFilterProperty.md
 docs/Model/AuditLogSearchQueryRequest.md
 docs/Model/AuditLogSearchQueryResult.md
 docs/Model/AuditLogSearchQuerySortRequest.md
+docs/Model/AuthenticatedCamundaUserResult.md
 docs/Model/AuthenticationConfigurationResponse.md
 docs/Model/AuthorizationCreateResult.md
 docs/Model/AuthorizationFilter.md
@@ -219,7 +221,9 @@ docs/Model/CategoryExactMatch.md
 docs/Model/CategoryFilterProperty.md
 docs/Model/Changeset.md
 docs/Model/CheckpointType.md
+docs/Model/ClockAddRequest.md
 docs/Model/ClockPinRequest.md
+docs/Model/ClockResult.md
 docs/Model/CloudConfigurationResponse.md
 docs/Model/CloudStage.md
 docs/Model/ClusterBalanceResponse.md
@@ -560,8 +564,10 @@ docs/Model/ProcessInstanceBusinessIdAssignmentInstruction.md
 docs/Model/ProcessInstanceCallHierarchyEntry.md
 docs/Model/ProcessInstanceCancellationBatchOperationRequest.md
 docs/Model/ProcessInstanceCreationInstruction.md
+docs/Model/ProcessInstanceCreationInstructionBase.md
 docs/Model/ProcessInstanceCreationInstructionById.md
 docs/Model/ProcessInstanceCreationInstructionByKey.md
+docs/Model/ProcessInstanceCreationInstructionByVersionTag.md
 docs/Model/ProcessInstanceCreationStartInstruction.md
 docs/Model/ProcessInstanceCreationTerminateInstruction.md
 docs/Model/ProcessInstanceDeletionBatchOperationRequest.md
@@ -596,6 +602,9 @@ docs/Model/ProcessInstanceStateFilterProperty.md
 docs/Model/ProcessInstanceSuspensionBatchOperationRequest.md
 docs/Model/ProcessInstanceWaitStateStatisticsQueryResult.md
 docs/Model/ProcessInstanceWaitStateStatisticsResult.md
+docs/Model/ProtectionModeEnum.md
+docs/Model/ProtectionModeExactMatch.md
+docs/Model/ProtectionModeFilterProperty.md
 docs/Model/RebalanceCancellationResponse.md
 docs/Model/ResolvedSecret.md
 docs/Model/ResourceFilter.md
@@ -631,6 +640,7 @@ docs/Model/RoleSearchQueryResult.md
 docs/Model/RoleSearchQuerySortRequest.md
 docs/Model/RoleUpdateRequest.md
 docs/Model/RoleUpdateResult.md
+docs/Model/RoleUserFilterRequest.md
 docs/Model/RoleUserResult.md
 docs/Model/RoleUserSearchQueryRequest.md
 docs/Model/RoleUserSearchQuerySortRequest.md
@@ -711,6 +721,9 @@ docs/Model/UserTaskCompletionRequest.md
 docs/Model/UserTaskEffectiveVariableSearchQueryRequest.md
 docs/Model/UserTaskFilter.md
 docs/Model/UserTaskFilterFields.md
+docs/Model/UserTaskLookupRequest.md
+docs/Model/UserTaskLookupResult.md
+docs/Model/UserTaskLookupStateEnum.md
 docs/Model/UserTaskProperties.md
 docs/Model/UserTaskResult.md
 docs/Model/UserTaskSearchQuery.md
@@ -729,6 +742,7 @@ docs/Model/UserUpdateResult.md
 docs/Model/VariableFilter.md
 docs/Model/VariableKeyExactMatch.md
 docs/Model/VariableKeyFilterProperty.md
+docs/Model/VariableMetadata.md
 docs/Model/VariableResult.md
 docs/Model/VariableResultBase.md
 docs/Model/VariableSearchQuery.md
@@ -842,6 +856,7 @@ src/Model/AdvancedProcessDefinitionIdFilter.php
 src/Model/AdvancedProcessDefinitionKeyFilter.php
 src/Model/AdvancedProcessInstanceKeyFilter.php
 src/Model/AdvancedProcessInstanceStateFilter.php
+src/Model/AdvancedProtectionModeFilter.php
 src/Model/AdvancedResourceKeyFilter.php
 src/Model/AdvancedResultFilter.php
 src/Model/AdvancedScopeKeyFilter.php
@@ -921,6 +936,7 @@ src/Model/AuditLogResultFilterProperty.php
 src/Model/AuditLogSearchQueryRequest.php
 src/Model/AuditLogSearchQueryResult.php
 src/Model/AuditLogSearchQuerySortRequest.php
+src/Model/AuthenticatedCamundaUserResult.php
 src/Model/AuthenticationConfigurationResponse.php
 src/Model/AuthorizationCreateResult.php
 src/Model/AuthorizationFilter.php
@@ -965,7 +981,9 @@ src/Model/CategoryExactMatch.php
 src/Model/CategoryFilterProperty.php
 src/Model/Changeset.php
 src/Model/CheckpointType.php
+src/Model/ClockAddRequest.php
 src/Model/ClockPinRequest.php
+src/Model/ClockResult.php
 src/Model/CloudConfigurationResponse.php
 src/Model/CloudStage.php
 src/Model/ClusterBalanceResponse.php
@@ -1308,8 +1326,10 @@ src/Model/ProcessInstanceBusinessIdAssignmentInstruction.php
 src/Model/ProcessInstanceCallHierarchyEntry.php
 src/Model/ProcessInstanceCancellationBatchOperationRequest.php
 src/Model/ProcessInstanceCreationInstruction.php
+src/Model/ProcessInstanceCreationInstructionBase.php
 src/Model/ProcessInstanceCreationInstructionById.php
 src/Model/ProcessInstanceCreationInstructionByKey.php
+src/Model/ProcessInstanceCreationInstructionByVersionTag.php
 src/Model/ProcessInstanceCreationStartInstruction.php
 src/Model/ProcessInstanceCreationTerminateInstruction.php
 src/Model/ProcessInstanceDeletionBatchOperationRequest.php
@@ -1344,6 +1364,9 @@ src/Model/ProcessInstanceStateFilterProperty.php
 src/Model/ProcessInstanceSuspensionBatchOperationRequest.php
 src/Model/ProcessInstanceWaitStateStatisticsQueryResult.php
 src/Model/ProcessInstanceWaitStateStatisticsResult.php
+src/Model/ProtectionModeEnum.php
+src/Model/ProtectionModeExactMatch.php
+src/Model/ProtectionModeFilterProperty.php
 src/Model/RebalanceCancellationResponse.php
 src/Model/ResolvedSecret.php
 src/Model/ResourceFilter.php
@@ -1379,6 +1402,7 @@ src/Model/RoleSearchQueryResult.php
 src/Model/RoleSearchQuerySortRequest.php
 src/Model/RoleUpdateRequest.php
 src/Model/RoleUpdateResult.php
+src/Model/RoleUserFilterRequest.php
 src/Model/RoleUserResult.php
 src/Model/RoleUserSearchQueryRequest.php
 src/Model/RoleUserSearchQuerySortRequest.php
@@ -1459,6 +1483,9 @@ src/Model/UserTaskCompletionRequest.php
 src/Model/UserTaskEffectiveVariableSearchQueryRequest.php
 src/Model/UserTaskFilter.php
 src/Model/UserTaskFilterFields.php
+src/Model/UserTaskLookupRequest.php
+src/Model/UserTaskLookupResult.php
+src/Model/UserTaskLookupStateEnum.php
 src/Model/UserTaskProperties.php
 src/Model/UserTaskResult.php
 src/Model/UserTaskSearchQuery.php
@@ -1477,6 +1504,7 @@ src/Model/UserUpdateResult.php
 src/Model/VariableFilter.php
 src/Model/VariableKeyExactMatch.php
 src/Model/VariableKeyFilterProperty.php
+src/Model/VariableMetadata.php
 src/Model/VariableResult.php
 src/Model/VariableResultBase.php
 src/Model/VariableSearchQuery.php
@@ -1585,6 +1613,7 @@ tests/Model/AdvancedProcessDefinitionIdFilterTest.php
 tests/Model/AdvancedProcessDefinitionKeyFilterTest.php
 tests/Model/AdvancedProcessInstanceKeyFilterTest.php
 tests/Model/AdvancedProcessInstanceStateFilterTest.php
+tests/Model/AdvancedProtectionModeFilterTest.php
 tests/Model/AdvancedResourceKeyFilterTest.php
 tests/Model/AdvancedResultFilterTest.php
 tests/Model/AdvancedScopeKeyFilterTest.php
@@ -1663,6 +1692,7 @@ tests/Model/AuditLogResultTest.php
 tests/Model/AuditLogSearchQueryRequestTest.php
 tests/Model/AuditLogSearchQueryResultTest.php
 tests/Model/AuditLogSearchQuerySortRequestTest.php
+tests/Model/AuthenticatedCamundaUserResultTest.php
 tests/Model/AuthenticationConfigurationResponseTest.php
 tests/Model/AuthorizationCreateResultTest.php
 tests/Model/AuthorizationFilterTest.php
@@ -1707,7 +1737,9 @@ tests/Model/CategoryExactMatchTest.php
 tests/Model/CategoryFilterPropertyTest.php
 tests/Model/ChangesetTest.php
 tests/Model/CheckpointTypeTest.php
+tests/Model/ClockAddRequestTest.php
 tests/Model/ClockPinRequestTest.php
+tests/Model/ClockResultTest.php
 tests/Model/CloudConfigurationResponseTest.php
 tests/Model/CloudStageTest.php
 tests/Model/ClusterBalanceResponseTest.php
@@ -2047,8 +2079,10 @@ tests/Model/ProcessElementStatisticsResultTest.php
 tests/Model/ProcessInstanceBusinessIdAssignmentInstructionTest.php
 tests/Model/ProcessInstanceCallHierarchyEntryTest.php
 tests/Model/ProcessInstanceCancellationBatchOperationRequestTest.php
+tests/Model/ProcessInstanceCreationInstructionBaseTest.php
 tests/Model/ProcessInstanceCreationInstructionByIdTest.php
 tests/Model/ProcessInstanceCreationInstructionByKeyTest.php
+tests/Model/ProcessInstanceCreationInstructionByVersionTagTest.php
 tests/Model/ProcessInstanceCreationInstructionTest.php
 tests/Model/ProcessInstanceCreationStartInstructionTest.php
 tests/Model/ProcessInstanceCreationTerminateInstructionTest.php
@@ -2084,6 +2118,9 @@ tests/Model/ProcessInstanceStateFilterPropertyTest.php
 tests/Model/ProcessInstanceSuspensionBatchOperationRequestTest.php
 tests/Model/ProcessInstanceWaitStateStatisticsQueryResultTest.php
 tests/Model/ProcessInstanceWaitStateStatisticsResultTest.php
+tests/Model/ProtectionModeEnumTest.php
+tests/Model/ProtectionModeExactMatchTest.php
+tests/Model/ProtectionModeFilterPropertyTest.php
 tests/Model/RebalanceCancellationResponseTest.php
 tests/Model/ResolvedSecretTest.php
 tests/Model/ResourceFilterTest.php
@@ -2119,6 +2156,7 @@ tests/Model/RoleSearchQueryResultTest.php
 tests/Model/RoleSearchQuerySortRequestTest.php
 tests/Model/RoleUpdateRequestTest.php
 tests/Model/RoleUpdateResultTest.php
+tests/Model/RoleUserFilterRequestTest.php
 tests/Model/RoleUserResultTest.php
 tests/Model/RoleUserSearchQueryRequestTest.php
 tests/Model/RoleUserSearchQuerySortRequestTest.php
@@ -2199,6 +2237,9 @@ tests/Model/UserTaskCompletionRequestTest.php
 tests/Model/UserTaskEffectiveVariableSearchQueryRequestTest.php
 tests/Model/UserTaskFilterFieldsTest.php
 tests/Model/UserTaskFilterTest.php
+tests/Model/UserTaskLookupRequestTest.php
+tests/Model/UserTaskLookupResultTest.php
+tests/Model/UserTaskLookupStateEnumTest.php
 tests/Model/UserTaskPropertiesTest.php
 tests/Model/UserTaskResultTest.php
 tests/Model/UserTaskSearchQueryResultTest.php
@@ -2217,6 +2258,7 @@ tests/Model/UserUpdateResultTest.php
 tests/Model/VariableFilterTest.php
 tests/Model/VariableKeyExactMatchTest.php
 tests/Model/VariableKeyFilterPropertyTest.php
+tests/Model/VariableMetadataTest.php
 tests/Model/VariableResultBaseTest.php
 tests/Model/VariableResultTest.php
 tests/Model/VariableSearchQueryResultTest.php

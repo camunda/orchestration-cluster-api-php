@@ -78,6 +78,15 @@ class CamundaUserResultTest extends TestCase
     }
 
     /**
+     * Test attribute "isAnonymous"
+     */
+    public function testPropertyIsAnonymous()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
      * Test attribute "username"
      */
     public function testPropertyUsername()
