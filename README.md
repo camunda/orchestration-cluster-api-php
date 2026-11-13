@@ -358,7 +358,7 @@ What the SDK does:
 
 What the SDK does not do:
 
-- **It enforces no payload size limit.** There is no cap on the byte size of an activation response or of an individual variable. If you need one, set it on the cluster side or enforce it in your handler.
+- **It enforces no payload size limit.** There is no cap on the byte size of an activation response or of an individual variable. Note where a cap has to go: the activation response is read into a string and decoded in full before any handler is dispatched, so a check inside your handler runs far too late to protect the worker's memory. A size limit must be imposed upstream — on the cluster, or in the HTTP layer, for example a Guzzle middleware on a custom client that rejects an over-large response before it is buffered. A handler-side check is still worth having against individual values you are about to act on; it is just not a defence against an over-large response.
 - **It does not validate or sanitise content.** Type-checking, range-checking, schema validation, and escaping before use in SQL, a shell command, a file path or HTML are the handler author's responsibility. In particular, never use a variable value as a file path, a class name or a callable without checking it against a list you control.
 
 ## Accessing every operation
