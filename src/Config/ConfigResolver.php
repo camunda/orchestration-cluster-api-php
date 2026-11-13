@@ -46,6 +46,9 @@ final class ConfigResolver
         'CAMUNDA_WORKER_MAX_CONCURRENT_JOBS',
         'CAMUNDA_WORKER_REQUEST_TIMEOUT',
         'CAMUNDA_WORKER_NAME',
+        'CAMUNDA_SDK_HTTP_RETRY_MAX_ATTEMPTS',
+        'CAMUNDA_SDK_HTTP_RETRY_BASE_DELAY_MS',
+        'CAMUNDA_SDK_HTTP_RETRY_MAX_DELAY_MS',
         'CAMUNDA_MTLS_CERT_PATH',
         'CAMUNDA_MTLS_KEY_PATH',
         'CAMUNDA_MTLS_CA_PATH',
@@ -81,6 +84,9 @@ final class ConfigResolver
             ['variable' => 'CAMUNDA_WORKER_TIMEOUT', 'default' => '60000', 'description' => 'Default job activation timeout, in milliseconds.'],
             ['variable' => 'CAMUNDA_WORKER_REQUEST_TIMEOUT', 'default' => '10000', 'description' => 'Default long-poll request timeout, in milliseconds.'],
             ['variable' => 'CAMUNDA_WORKER_NAME', 'default' => '', 'description' => 'Default worker name reported when activating jobs.'],
+            ['variable' => 'CAMUNDA_SDK_HTTP_RETRY_MAX_ATTEMPTS', 'default' => '3', 'description' => 'Maximum total HTTP attempts (including the first) for transient failures: 429, broker backpressure (`RESOURCE_EXHAUSTED` on 500/503) and, for idempotent methods, connection failures. `1` disables retry. Applies to the SDK-built HTTP client only; the job-activation long poll is never retried.'],
+            ['variable' => 'CAMUNDA_SDK_HTTP_RETRY_BASE_DELAY_MS', 'default' => '100', 'description' => 'Base delay in milliseconds for exponential backoff with full jitter between HTTP retries. A `Retry-After` header raises the wait to at least the server value (capped at 60 seconds).'],
+            ['variable' => 'CAMUNDA_SDK_HTTP_RETRY_MAX_DELAY_MS', 'default' => '2000', 'description' => 'Maximum delay cap in milliseconds for HTTP retry backoff.'],
             ['variable' => 'CAMUNDA_MTLS_CERT_PATH', 'default' => '', 'description' => 'Path to the client certificate for mutual TLS.'],
             ['variable' => 'CAMUNDA_MTLS_KEY_PATH', 'default' => '', 'description' => 'Path to the client private key for mutual TLS.'],
             ['variable' => 'CAMUNDA_MTLS_CA_PATH', 'default' => '', 'description' => 'Path to the CA bundle used to verify the server certificate.'],
@@ -129,6 +135,9 @@ final class ConfigResolver
             workerTimeoutMs: self::intValue($merged, 'CAMUNDA_WORKER_TIMEOUT', 60000),
             workerRequestTimeoutMs: self::intValue($merged, 'CAMUNDA_WORKER_REQUEST_TIMEOUT', 10000),
             workerName: self::value($merged, 'CAMUNDA_WORKER_NAME'),
+            httpRetryMaxAttempts: max(1, self::intValue($merged, 'CAMUNDA_SDK_HTTP_RETRY_MAX_ATTEMPTS', 3)),
+            httpRetryBaseDelayMs: self::intValue($merged, 'CAMUNDA_SDK_HTTP_RETRY_BASE_DELAY_MS', 100),
+            httpRetryMaxDelayMs: self::intValue($merged, 'CAMUNDA_SDK_HTTP_RETRY_MAX_DELAY_MS', 2000),
         );
     }
 
