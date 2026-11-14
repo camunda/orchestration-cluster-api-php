@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+  Psalm configuration for the security (taint) analysis. See `make security-scan`.
+
+  Psalm is used here ONLY for its taint analysis mode (the taint-analysis flag): it tracks untrusted data (sources such as
+  $_GET, $_SERVER, getenv(), HTTP response bodies) into dangerous sinks (shell, eval, include,
+  file access, SQL, ...). Type correctness is enforced separately by PHPStan (level max).
+
+  Scope: the hand-written runtime in src/. The machine-generated code is excluded:
+    - generated/                       (openapi-generator output, never hand-edited)
+    - src/GeneratedOperations.php      (emitted by hooks/post_gen/0500_flat_facade.php)
+    - src/GeneratedAsyncOperations.php (emitted by hooks/post_gen/0500_flat_facade.php)
+    - src/ApiAccessors.php             (emitted by hooks/post_gen/0400_api_accessors.php)
+  Excluded files are still scanned for type information, they are just not reported on.
+-->
+<psalm
+    errorLevel="1"
+    resolveFromConfigFile="true"
+    findUnusedBaselineEntry="false"
+    findUnusedCode="false"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <directory name="src"/>
+        <ignoreFiles>
+            <directory name="vendor"/>
+            <directory name="generated"/>
+            <file name="src/GeneratedOperations.php"/>
+            <file name="src/GeneratedAsyncOperations.php"/>
+            <file name="src/ApiAccessors.php"/>
+        </ignoreFiles>
+    </projectFiles>
+</psalm>

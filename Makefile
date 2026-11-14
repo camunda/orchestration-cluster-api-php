@@ -1,4 +1,4 @@
-.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan examples advanced-examples example-showcase example-report check sync-readme sync-readme-check docs-md docs-docusaurus config-reference config-reference-check example-coverage
+.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan examples advanced-examples example-showcase example-report check sync-readme sync-readme-check docs-md docs-docusaurus config-reference config-reference-check example-coverage security-scan security-selftest
 
 # Git ref/branch/tag/SHA in https://github.com/camunda/camunda.git to fetch the OpenAPI
 # spec from. Override like: `make generate SPEC_REF=stable/8.9`
@@ -42,6 +42,15 @@ lint-fix:
 
 phpstan:
 	vendor/bin/phpstan analyse --memory-limit=1G
+
+# Security (taint) analysis of the hand-written runtime in src/ (generated code excluded).
+# Needs a recent PHP patch release (Psalm refuses to run on e.g. PHP < 8.3.16).
+security-scan:
+	vendor/bin/psalm --taint-analysis --no-cache --no-progress
+
+# Proves the taint analysis can find a known-vulnerable fixture (guards against a silent no-op scan).
+security-selftest:
+	bash scripts/security-selftest.sh
 
 examples:
 	find examples -type f -name '*.php' -exec php -l {} \;

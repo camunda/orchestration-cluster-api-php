@@ -32,7 +32,8 @@
         "phpstan/phpstan": "^2.0",
         "friendsofphp/php-cs-fixer": "^3.64",
         "vlucas/phpdotenv": "^5.6",
-        "symfony/http-client": "^7.0"
+        "symfony/http-client": "^7.0",
+        "vimeo/psalm": "^6.5"
     },
     "suggest": {
         "vlucas/phpdotenv": "Load Camunda configuration from a .env file (CAMUNDA_LOAD_ENVFILE)",

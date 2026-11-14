@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+  Liveness check for the taint analysis (see `make security-selftest`).
+
+  Runs Psalm over a deliberately vulnerable fixture and the CI step asserts that it reports a
+  TaintedShell finding. This guards against the scan silently turning into a no-op (for example a
+  misconfigured project path or a Psalm upgrade that stops tracking sources), which would leave
+  the real scan green while analysing nothing.
+-->
+<psalm
+    errorLevel="1"
+    resolveFromConfigFile="true"
+    findUnusedBaselineEntry="false"
+    findUnusedCode="false"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config ../vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <directory name="selftest"/>
+    </projectFiles>
+</psalm>
