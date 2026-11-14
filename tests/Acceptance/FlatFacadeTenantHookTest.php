@@ -14,8 +14,8 @@ use RuntimeException;
  */
 final class FlatFacadeTenantHookTest extends TestCase
 {
-    private const STRING_INJECTION = '$expressionEvaluationRequest->setTenantId($this->config->tenantIds[0]);';
-    private const SEMANTIC_INJECTION = '$expressionEvaluationRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));';
+    private const STRING_INJECTION = '$expressionEvaluationRequest->setTenantId($this->config->defaultTenantId());';
+    private const SEMANTIC_INJECTION = '$expressionEvaluationRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));';
 
     /** @var (Closure(array{out_dir: string, root: string}): void)|null */
     private static ?Closure $hook = null;

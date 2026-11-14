@@ -1166,9 +1166,9 @@ trait GeneratedOperations
      */
     public function evaluateConditionals(\Camunda\Orchestration\Api\Model\ConditionalEvaluationInstruction $conditionalEvaluationInstruction, string $contentType = \Camunda\Orchestration\Api\Api\ConditionalApi::contentTypes['evaluateConditionals'][0]): \Camunda\Orchestration\Api\Model\EvaluateConditionalResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
-        if ($this->config->tenantIds !== [] && $conditionalEvaluationInstruction->getTenantId() === null) {
+        if ($conditionalEvaluationInstruction->getTenantId() === null) {
             $conditionalEvaluationInstruction = clone $conditionalEvaluationInstruction;
-            $conditionalEvaluationInstruction->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));
+            $conditionalEvaluationInstruction->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));
         }
         return $this->api(\Camunda\Orchestration\Api\Api\ConditionalApi::class)->evaluateConditionals($conditionalEvaluationInstruction, $contentType);
     }
@@ -1185,9 +1185,9 @@ trait GeneratedOperations
      */
     public function evaluateDecision(\Camunda\Orchestration\Api\Model\DecisionEvaluationById|\Camunda\Orchestration\Api\Model\DecisionEvaluationByKey $decisionEvaluationInstruction, string $contentType = \Camunda\Orchestration\Api\Api\DecisionDefinitionApi::contentTypes['evaluateDecision'][0]): \Camunda\Orchestration\Api\Model\EvaluateDecisionResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
-        if ($this->config->tenantIds !== [] && $decisionEvaluationInstruction->getTenantId() === null) {
+        if ($decisionEvaluationInstruction->getTenantId() === null) {
             $decisionEvaluationInstruction = clone $decisionEvaluationInstruction;
-            $decisionEvaluationInstruction->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));
+            $decisionEvaluationInstruction->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));
         }
         return $this->api(\Camunda\Orchestration\Api\Api\DecisionDefinitionApi::class)->evaluateDecision($decisionEvaluationInstruction, $contentType);
     }
@@ -1634,9 +1634,9 @@ trait GeneratedOperations
      */
     public function evaluateExpression(\Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest $expressionEvaluationRequest, string $contentType = \Camunda\Orchestration\Api\Api\ExpressionApi::contentTypes['evaluateExpression'][0]): \Camunda\Orchestration\Api\Model\ExpressionEvaluationResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
-        if ($this->config->tenantIds !== [] && $expressionEvaluationRequest->getTenantId() === null) {
+        if ($expressionEvaluationRequest->getTenantId() === null) {
             $expressionEvaluationRequest = clone $expressionEvaluationRequest;
-            $expressionEvaluationRequest->setTenantId($this->config->tenantIds[0]);
+            $expressionEvaluationRequest->setTenantId($this->config->defaultTenantId());
         }
         return $this->api(\Camunda\Orchestration\Api\Api\ExpressionApi::class)->evaluateExpression($expressionEvaluationRequest, $contentType);
     }
@@ -2056,6 +2056,12 @@ trait GeneratedOperations
      */
     public function activateJobs(\Camunda\Orchestration\Api\Model\JobActivationRequest $jobActivationRequest, string $contentType = \Camunda\Orchestration\Api\Api\JobApi::contentTypes['activateJobs'][0]): \Camunda\Orchestration\Api\Model\JobActivationResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
+        $tenantFilter = $jobActivationRequest->getTenantFilter();
+        if (($tenantFilter === null || $tenantFilter === \Camunda\Orchestration\Api\Model\TenantFilterEnum::PROVIDED)
+            && ($jobActivationRequest->getTenantIds() ?? []) === []) {
+            $jobActivationRequest = clone $jobActivationRequest;
+            $jobActivationRequest->setTenantIds($this->config->defaultJobTenantIds());
+        }
         return $this->api(\Camunda\Orchestration\Api\Api\JobApi::class)->activateJobs($jobActivationRequest, $contentType);
     }
 
@@ -2332,9 +2338,9 @@ trait GeneratedOperations
      */
     public function correlateMessage(\Camunda\Orchestration\Api\Model\MessageCorrelationRequest $messageCorrelationRequest, string $contentType = \Camunda\Orchestration\Api\Api\MessageApi::contentTypes['correlateMessage'][0]): \Camunda\Orchestration\Api\Model\MessageCorrelationResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
-        if ($this->config->tenantIds !== [] && $messageCorrelationRequest->getTenantId() === null) {
+        if ($messageCorrelationRequest->getTenantId() === null) {
             $messageCorrelationRequest = clone $messageCorrelationRequest;
-            $messageCorrelationRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));
+            $messageCorrelationRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));
         }
         return $this->api(\Camunda\Orchestration\Api\Api\MessageApi::class)->correlateMessage($messageCorrelationRequest, $contentType);
     }
@@ -2351,9 +2357,9 @@ trait GeneratedOperations
      */
     public function publishMessage(\Camunda\Orchestration\Api\Model\MessagePublicationRequest $messagePublicationRequest, string $contentType = \Camunda\Orchestration\Api\Api\MessageApi::contentTypes['publishMessage'][0]): \Camunda\Orchestration\Api\Model\MessagePublicationResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
-        if ($this->config->tenantIds !== [] && $messagePublicationRequest->getTenantId() === null) {
+        if ($messagePublicationRequest->getTenantId() === null) {
             $messagePublicationRequest = clone $messagePublicationRequest;
-            $messagePublicationRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));
+            $messagePublicationRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));
         }
         return $this->api(\Camunda\Orchestration\Api\Api\MessageApi::class)->publishMessage($messagePublicationRequest, $contentType);
     }
@@ -2584,9 +2590,9 @@ trait GeneratedOperations
      */
     public function createProcessInstance(\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById $processInstanceCreationInstruction, string $contentType = \Camunda\Orchestration\Api\Api\ProcessInstanceApi::contentTypes['createProcessInstance'][0]): \Camunda\Orchestration\Api\Model\CreateProcessInstanceResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
-        if ($this->config->tenantIds !== [] && $processInstanceCreationInstruction->getTenantId() === null) {
+        if ($processInstanceCreationInstruction->getTenantId() === null) {
             $processInstanceCreationInstruction = clone $processInstanceCreationInstruction;
-            $processInstanceCreationInstruction->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));
+            $processInstanceCreationInstruction->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));
         }
         return $this->api(\Camunda\Orchestration\Api\Api\ProcessInstanceApi::class)->createProcessInstance($processInstanceCreationInstruction, $contentType);
     }
@@ -2995,8 +3001,8 @@ trait GeneratedOperations
      */
     public function createDeployment(array $resources, ?string $tenantId = null, string $contentType = \Camunda\Orchestration\Api\Api\ResourceApi::contentTypes['createDeployment'][0]): \Camunda\Orchestration\Api\Model\DeploymentResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
-        if ($tenantId === null && $this->config->tenantIds !== []) {
-            $tenantId = $this->config->tenantIds[0];
+        if ($tenantId === null) {
+            $tenantId = $this->config->defaultTenantId();
         }
         return $this->api(\Camunda\Orchestration\Api\Api\ResourceApi::class)->createDeployment($resources, $tenantId, $contentType);
     }
@@ -3403,9 +3409,9 @@ trait GeneratedOperations
      */
     public function broadcastSignal(\Camunda\Orchestration\Api\Model\SignalBroadcastRequest $signalBroadcastRequest, string $contentType = \Camunda\Orchestration\Api\Api\SignalApi::contentTypes['broadcastSignal'][0]): \Camunda\Orchestration\Api\Model\SignalBroadcastResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
-        if ($this->config->tenantIds !== [] && $signalBroadcastRequest->getTenantId() === null) {
+        if ($signalBroadcastRequest->getTenantId() === null) {
             $signalBroadcastRequest = clone $signalBroadcastRequest;
-            $signalBroadcastRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->tenantIds[0]));
+            $signalBroadcastRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));
         }
         return $this->api(\Camunda\Orchestration\Api\Api\SignalApi::class)->broadcastSignal($signalBroadcastRequest, $contentType);
     }

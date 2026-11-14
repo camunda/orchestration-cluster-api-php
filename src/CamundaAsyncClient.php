@@ -135,7 +135,7 @@ final class CamundaAsyncClient
             $resources[] = new \SplFileObject($path, 'r');
         }
 
-        $tenantId = $this->config->tenantIds[0] ?? null;
+        $tenantId = $this->config->defaultTenantId();
 
         /** @var ResourceApi $resourceApi */
         $resourceApi = $this->api(ResourceApi::class);
