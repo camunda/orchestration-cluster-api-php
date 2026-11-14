@@ -15,14 +15,23 @@ use Psr\Http\Message\StreamFactoryInterface;
  * Acquires a bearer token from the configured token endpoint and caches it in memory
  * until shortly before it expires, transparently refreshing on demand.
  */
-final class OAuthClientCredentialsProvider implements AuthProvider
+final class OAuthClientCredentialsProvider implements DelayAwareAuthProvider
 {
     /** Refresh this many seconds before the token actually expires. */
     private const EXPIRY_LEEWAY_SECONDS = 30;
 
     private ?string $accessToken = null;
     private float $expiresAtEpoch = 0.0;
+    /** Epoch second at which the cached token is actually no longer accepted (no leeway). */
+    private float $hardExpiresAtEpoch = 0.0;
+    /** @var \Closure(): float */
+    private readonly \Closure $clock;
 
+    /**
+     * @param (\Closure(): float)|null $clock Returns the current time as epoch seconds with
+     *   sub-second precision. Defaults to `microtime(true)`; injectable so tests can drive time
+     *   deterministically.
+     */
     public function __construct(
         private readonly ClientInterface $httpClient,
         private readonly RequestFactoryInterface $requestFactory,
@@ -31,21 +40,46 @@ final class OAuthClientCredentialsProvider implements AuthProvider
         private readonly string $clientId,
         private readonly string $clientSecret,
         private readonly string $audience,
+        ?\Closure $clock = null,
     ) {
+        $this->clock = $clock ?? static fn (): float => microtime(true);
     }
 
     /** @return array{Authorization: string} */
     public function getHeaders(): array
     {
-        return ['Authorization' => 'Bearer ' . $this->token()];
+        return $this->getHeadersValidFor(0.0);
     }
 
-    private function token(): string
+    /**
+     * A cached token is reused only if it will still be outside its refresh window
+     * when a request delayed by `$seconds` is sent; otherwise a fresh one is fetched.
+     *
+     * @return array{Authorization: string}
+     */
+    public function getHeadersValidFor(float $seconds): array
     {
-        if ($this->accessToken !== null && microtime(true) < $this->expiresAtEpoch) {
-            return $this->accessToken;
+        return ['Authorization' => 'Bearer ' . $this->token(max(0.0, $seconds))];
+    }
+
+    private function token(float $validForSeconds): string
+    {
+        $cached = $this->accessToken;
+        if ($cached !== null && ($this->clock)() + $validForSeconds < $this->expiresAtEpoch) {
+            return $cached;
         }
-        return $this->fetchToken();
+        $token = $this->fetchToken();
+        // A fresh token is subject to the same rule as a cached one: if it cannot
+        // outlive the scheduled delay the request would be sent with an expired
+        // credential and fail with a non-retryable 401, so fail explicitly instead.
+        if ($validForSeconds > 0.0 && ($this->clock)() + $validForSeconds >= $this->hardExpiresAtEpoch) {
+            throw new AuthenticationException(
+                'The OAuth token lifetime is shorter than the scheduled retry delay '
+                . '(' . (int) ceil($validForSeconds) . ' s), so the delayed request could not be authenticated.'
+            );
+        }
+
+        return $token;
     }
 
     private function fetchToken(): string
@@ -61,6 +95,11 @@ final class OAuthClientCredentialsProvider implements AuthProvider
             ->withHeader('Content-Type', 'application/x-www-form-urlencoded')
             ->withHeader('Accept', 'application/json')
             ->withBody($this->streamFactory->createStream($body));
+
+        // The server's `expires_in` clock starts when it issues the token, which is no
+        // later than when the response reaches us. Measure from before the request is
+        // sent so token-endpoint latency can never make the token look fresher than it is.
+        $requestStartedAt = ($this->clock)();
 
         try {
             $response = $this->httpClient->sendRequest($request);
@@ -88,7 +127,8 @@ final class OAuthClientCredentialsProvider implements AuthProvider
 
         $expiresIn = isset($payload['expires_in']) ? (int) $payload['expires_in'] : 300;
         $this->accessToken = $payload['access_token'];
-        $this->expiresAtEpoch = microtime(true) + max(1, $expiresIn - self::EXPIRY_LEEWAY_SECONDS);
+        $this->expiresAtEpoch = $requestStartedAt + max(1, $expiresIn - self::EXPIRY_LEEWAY_SECONDS);
+        $this->hardExpiresAtEpoch = $requestStartedAt + max(1, $expiresIn);
 
         return $this->accessToken;
     }
