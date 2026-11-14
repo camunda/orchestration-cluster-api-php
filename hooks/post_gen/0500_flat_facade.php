@@ -28,18 +28,27 @@ return static function (array $ctx): void {
     // configured default (CAMUNDA_TENANT_ID) so the request is scoped to the
     // default tenant. This matches the behaviour of the JS, Python and C# SDKs.
     //
-    // Map: operation name => [body parameter variable name (without $), whether
-    // the model's setTenantId() takes a plain string rather than a TenantId].
-    // The body model must expose getTenantId()/setTenantId().
-    $tenantAwareBodyOps = [
-        'createProcessInstance' => ['processInstanceCreationInstruction', false],
-        'evaluateDecision' => ['decisionEvaluationInstruction', false],
-        'publishMessage' => ['messagePublicationRequest', false],
-        'correlateMessage' => ['messageCorrelationRequest', false],
-        'broadcastSignal' => ['signalBroadcastRequest', false],
-        'evaluateConditionals' => ['conditionalEvaluationInstruction', false],
-        'evaluateExpression' => ['expressionEvaluationRequest', true],
+    // Map: operation name => body parameter variable name (without $). The body
+    // model (class name = ucfirst of the variable) must expose
+    // getTenantId()/setTenantId(). Whether the setter takes a plain string or
+    // the semantic TenantId is detected from the generated model, so upstream
+    // schema changes (e.g. a string becoming a TenantId ref) don't break the build.
+    $tenantAwareParams = [
+        'createProcessInstance' => 'processInstanceCreationInstruction',
+        'evaluateDecision' => 'decisionEvaluationInstruction',
+        'publishMessage' => 'messagePublicationRequest',
+        'correlateMessage' => 'messageCorrelationRequest',
+        'broadcastSignal' => 'signalBroadcastRequest',
+        'evaluateConditionals' => 'conditionalEvaluationInstruction',
+        'evaluateExpression' => 'expressionEvaluationRequest',
     ];
+    $tenantAwareBodyOps = [];
+    foreach ($tenantAwareParams as $op => $param) {
+        $tenantAwareBodyOps[$op] = [
+            $param,
+            tenant_setter_takes_string($ctx['out_dir'] . '/src/Model/' . ucfirst($param) . '.php'),
+        ];
+    }
 
     $syncMethods = '';
     $asyncMethods = '';
@@ -185,6 +194,26 @@ function split_top_level(string $params): array
 function normalize_return(string $return): string
 {
     return trim(preg_replace('/\s+/', ' ', $return) ?? $return);
+}
+
+/**
+ * Inspect a generated model's setTenantId() signature: true when it takes a
+ * plain string, false when it takes the semantic TenantId.
+ *
+ * Union (oneOf) body models declare no setter of their own; their variants are
+ * retyped to TenantId by 0300_retype_models, so they default to TenantId.
+ */
+function tenant_setter_takes_string(string $modelFile): bool
+{
+    $src = is_file($modelFile) ? (string) file_get_contents($modelFile) : '';
+    if (!str_contains($src, 'function setTenantId(')) {
+        return false;
+    }
+    if (preg_match('/function setTenantId\(\s*\??\s*([^\s?$]+)\s+\$/', $src, $m) !== 1) {
+        throw new \RuntimeException("Cannot determine setTenantId() parameter type in {$modelFile}");
+    }
+
+    return strtolower(ltrim($m[1], '\\')) === 'string';
 }
 
 /**
