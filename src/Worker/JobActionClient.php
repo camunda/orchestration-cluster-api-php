@@ -21,6 +21,9 @@ final class JobActionClient
 {
     private bool $handled = false;
 
+    /** True while a terminal-action request is in flight; still true if it threw. */
+    private bool $actionInFlight = false;
+
     public function __construct(
         private readonly JobApi $jobApi,
         private readonly ActivatedJobResult $job,
@@ -38,7 +41,9 @@ final class JobActionClient
         if ($variables !== []) {
             $request->setVariables($variables);
         }
+        $this->actionInFlight = true;
         $this->jobApi->completeJob($this->jobKey(), $request);
+        $this->actionInFlight = false;
         $this->handled = true;
     }
 
@@ -60,7 +65,9 @@ final class JobActionClient
         if ($variables !== []) {
             $request->setVariables($variables);
         }
+        $this->actionInFlight = true;
         $this->jobApi->failJob($this->jobKey(), $request);
+        $this->actionInFlight = false;
         $this->handled = true;
     }
 
@@ -79,13 +86,28 @@ final class JobActionClient
         if ($variables !== []) {
             $request->setVariables($variables);
         }
+        $this->actionInFlight = true;
         $this->jobApi->throwJobError($this->jobKey(), $request);
+        $this->actionInFlight = false;
         $this->handled = true;
     }
 
     public function wasHandled(): bool
     {
         return $this->handled;
+    }
+
+    /**
+     * Whether a terminal action was started and did not come back.
+     *
+     * The worker uses this to tell "the handler's own code threw" from "the handler
+     * asked for a terminal action and the request for it failed". Substituting its own
+     * failure for the second case would discard the retries, back-off and message the
+     * handler asked for, and swallow the transport error.
+     */
+    public function hasInterruptedAction(): bool
+    {
+        return $this->actionInFlight;
     }
 
     private function jobKey(): string
