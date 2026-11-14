@@ -202,7 +202,7 @@ final class OAuthTokenLifecycleTest extends TestCase
         yield '200 with a null token' => [[200, '{"access_token":null}'], 'did not contain an access_token'];
     }
 
-    public function testTransportFailureIsWrappedAndKeepsThePreviousException(): void
+    public function testTransportFailureIsWrappedWithoutChainingThePreviousException(): void
     {
         $transport = new class ('connection refused') extends \RuntimeException implements ClientExceptionInterface {
         };
@@ -212,8 +212,13 @@ final class OAuthTokenLifecycleTest extends TestCase
             $provider->getHeaders();
             self::fail('Expected an AuthenticationException.');
         } catch (AuthenticationException $e) {
-            self::assertSame('Failed to reach the OAuth token endpoint: connection refused', $e->getMessage());
-            self::assertSame($transport, $e->getPrevious());
+            self::assertSame(
+                sprintf('Failed to reach the OAuth token endpoint (%s): connection refused', $transport::class),
+                $e->getMessage(),
+            );
+            // The cause is deliberately not chained: its rendering could quote the request,
+            // and with it the client secret (issue #110).
+            self::assertNull($e->getPrevious());
         }
     }
 

@@ -211,39 +211,35 @@ final class JobWorkerBehaviourTest extends TestCase
 
     // ------------------------------------------------------------------ handler failures
 
-    public function testHandlerExceptionPropagatesAndTheJobIsNeitherCompletedNorFailedByTheWorker(): void
+    public function testHandlerExceptionFailsTheJobAndTheWorkerCarriesOnWithTheBatch(): void
     {
-        $worker = $this->worker([JobFixtures::activation('101', '102')]);
-        $boom = new \DomainException('handler blew up');
+        $worker = $this->worker([JobFixtures::activation('101', '102'), new Response(204), new Response(204)]);
+        $calls = 0;
 
-        try {
-            $worker->pollOnce(static function () use ($boom): never {
-                throw $boom;
-            });
-            self::fail('Expected the handler exception to propagate.');
-        } catch (\DomainException $e) {
-            self::assertSame($boom, $e);
-        }
+        $processed = $worker->pollOnce(static function () use (&$calls): never {
+            ++$calls;
+            throw new \DomainException('handler blew up');
+        });
 
-        // Characterisation: the worker does not catch handler exceptions. The job is left to
-        // time out on the broker, and the remaining jobs of the batch are not dispatched.
-        self::assertCount(1, $this->http->requests, 'only the activation request: no completion, no failure');
+        // Issue #109: a throwing handler fails its job on the broker instead of leaving it
+        // to time out, and the remaining jobs of the batch are still dispatched.
+        self::assertSame(2, $processed);
+        self::assertSame(2, $calls);
+        self::assertCount(3, $this->http->requests, 'activation, then one failure per job');
+        self::assertStringEndsWith('/jobs/101/failure', $this->http->requests[1]->getUri()->getPath());
+        self::assertStringEndsWith('/jobs/102/failure', $this->http->requests[2]->getUri()->getPath());
     }
 
     public function testHandlerExceptionAfterAnExplicitActionDoesNotCauseASecondAction(): void
     {
         $worker = $this->worker([JobFixtures::activation('7'), new Response(204)]);
 
-        try {
-            $worker->pollOnce(static function (ActivatedJobResult $job, JobActionClient $action): never {
-                $action->complete();
-                throw new \DomainException('late failure');
-            });
-            self::fail('Expected the handler exception to propagate.');
-        } catch (\DomainException) {
-        }
+        $worker->pollOnce(static function (ActivatedJobResult $job, JobActionClient $action): never {
+            $action->complete();
+            throw new \DomainException('late failure');
+        });
 
-        self::assertCount(2, $this->http->requests);
+        self::assertCount(2, $this->http->requests, 'the completion already took the terminal action: no failure on top');
         self::assertStringEndsWith('/jobs/7/completion', $this->http->requests[1]->getUri()->getPath());
     }
 
@@ -367,26 +363,27 @@ final class JobWorkerBehaviourTest extends TestCase
         self::assertLessThan(5.0, $elapsed);
     }
 
-    public function testHandlerFailureInsideRunTerminatesTheLoopWithoutFurtherDispatch(): void
+    public function testHandlerFailureInsideRunDoesNotTerminateTheLoop(): void
     {
         $worker = $this->worker([
             JobFixtures::activation('7'),
+            new Response(204),
             JobFixtures::activation('8'),
             new Response(204),
         ], new JobWorkerOptions(type: 'greet', pollIntervalMs: 0));
         $calls = 0;
 
-        try {
-            $worker->run(static function () use (&$calls): never {
-                ++$calls;
-                throw new \DomainException('boom');
-            });
-            self::fail('Expected run() to propagate the handler exception.');
-        } catch (\DomainException) {
-        }
+        $worker->run(static function () use (&$calls, &$worker): never {
+            if (++$calls === 2) {
+                $worker->stop();
+            }
+            throw new \DomainException('boom');
+        });
 
-        self::assertSame(1, $calls, 'the loop must not keep dispatching after a handler exception');
-        self::assertCount(1, $this->http->requests);
+        self::assertSame(2, $calls, 'a handler exception must not stop the loop from polling again');
+        self::assertCount(4, $this->http->requests);
+        self::assertStringEndsWith('/jobs/7/failure', $this->http->requests[1]->getUri()->getPath());
+        self::assertStringEndsWith('/jobs/8/failure', $this->http->requests[3]->getUri()->getPath());
     }
 
     // ------------------------------------------------------------------ backpressure
