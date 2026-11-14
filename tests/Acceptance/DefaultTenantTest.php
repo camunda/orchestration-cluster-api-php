@@ -39,6 +39,19 @@ final class DefaultTenantTest extends TestCase
     /** @var list<RequestInterface> */
     private array $requests = [];
 
+    /** @var list<string> */
+    private array $tempFiles = [];
+
+    protected function tearDown(): void
+    {
+        foreach ($this->tempFiles as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+        $this->tempFiles = [];
+    }
+
     /**
      * @return iterable<string, array{0: \Closure(CamundaClient, ?string): mixed}>
      */
@@ -169,7 +182,11 @@ final class DefaultTenantTest extends TestCase
 
     private function bpmnFile(): \SplFileObject
     {
-        $path = tempnam(sys_get_temp_dir(), 'bpmn') . '.bpmn';
+        $tmp = tempnam(sys_get_temp_dir(), 'bpmn');
+        self::assertNotFalse($tmp);
+        $path = $tmp . '.bpmn';
+        rename($tmp, $path);
+        $this->tempFiles[] = $path;
         file_put_contents($path, '<definitions/>');
         return new \SplFileObject($path, 'r');
     }
