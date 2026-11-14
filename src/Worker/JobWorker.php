@@ -160,19 +160,61 @@ final class JobWorker
     }
 
     /**
+     * Dispatch a single job to the handler, turning a throwing handler into a job
+     * failure rather than letting it escape the worker.
+     *
      * @param callable(ActivatedJobResult, JobActionClient): (array<string,mixed>|null|void)|JobHandler $handler
      */
     private function dispatch(callable|JobHandler $handler, ActivatedJobResult $job): void
     {
         $action = new JobActionClient($this->jobApi(), $job);
 
-        $result = $handler instanceof JobHandler
-            ? $handler->handle($job, $action)
-            : $handler($job, $action);
+        try {
+            $result = $handler instanceof JobHandler
+                ? $handler->handle($job, $action)
+                : $handler($job, $action);
+        } catch (\Throwable $throwable) {
+            if ($action->hasInterruptedAction()) {
+                // The handler asked for a terminal action and the request for it
+                // failed. Substituting our own failure would discard the retries,
+                // back-off and message it asked for and hide the transport error, so
+                // this keeps propagating as it always has.
+                throw $throwable;
+            }
+
+            // Issue #109: an uncaught handler exception used to propagate out of the
+            // dispatch loop, leaving the job leased until `timeoutMs`, dropping the
+            // rest of the batch and stopping `run()`. Mirror the JS SDK instead: fail
+            // the job unless the handler already took a terminal action, then carry on
+            // with the batch and keep polling. The message carries the exception class
+            // and message only — never the stack trace, which can hold unrelated data.
+            if (!$action->wasHandled()) {
+                $action->fail(
+                    retries: max(0, $job->getRetries() - 1),
+                    errorMessage: self::failureMessage($throwable),
+                );
+            }
+
+            return;
+        }
 
         if (!$action->wasHandled() && $this->options->autoComplete) {
             $action->complete(\is_array($result) ? $result : []);
         }
+    }
+
+    /**
+     * The message reported to the broker for a job whose handler threw.
+     *
+     * Carries the exception class and message only — never the stack trace, which can
+     * hold unrelated data. The text is forced to valid UTF-8 first: a handler is free
+     * to throw with a message built from binary data, and the fail request is JSON, so
+     * an unencodable message would throw out of the catch block above and re-create the
+     * very defect this guards against.
+     */
+    private static function failureMessage(\Throwable $throwable): string
+    {
+        return mb_convert_encoding($throwable::class . ': ' . $throwable->getMessage(), 'UTF-8', 'UTF-8');
     }
 
     private function reap(int $count): void

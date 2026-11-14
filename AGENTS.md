@@ -78,6 +78,7 @@ Upstream dependencies — when they misbehave, fix them at the source rather tha
 | `make test` | Run the acceptance test suite. |
 | `make itest` | Run integration tests (requires a running cluster; see `make docker-start`). |
 | `make phpstan` | Static analysis at level `max`. |
+| `make security-scan` / `make security-selftest` | Psalm taint analysis of `src/` (CodeQL has no PHP support) / proof that the scan can find a known-vulnerable fixture. |
 | `make lint` / `make lint-fix` | Coding-standards check / auto-fix. |
 | `make sync-readme` / `make sync-readme-check` | Regenerate / verify README snippets. |
 | `make docs-md` | Regenerate `docs/` reference markdown. |

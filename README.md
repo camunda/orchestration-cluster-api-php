@@ -237,6 +237,73 @@ function custom_http_client(CamundaConfiguration $configuration): CamundaClient
 }
 ```
 
+### Retry and backoff
+
+The SDK-built HTTP client retries transient failures with exponential backoff and full jitter. Option names, environment variables and defaults match the JS SDK:
+
+<!-- snippet-source: examples/readme.php | regions: ReadmeRetryConfig -->
+```php
+function retry_config_client(): CamundaClient
+{
+    // Same options and defaults as the JS SDK: 3 attempts, 100 ms base delay, 2 s cap.
+    // Equivalent environment variables: CAMUNDA_SDK_HTTP_RETRY_MAX_ATTEMPTS,
+    // CAMUNDA_SDK_HTTP_RETRY_BASE_DELAY_MS and CAMUNDA_SDK_HTTP_RETRY_MAX_DELAY_MS.
+    return CamundaClient::fromConfiguration(new CamundaConfiguration(
+        restAddress: 'https://my-cluster.example.com/v2',
+        authStrategy: 'NONE',
+        httpRetryMaxAttempts: 5,
+        httpRetryBaseDelayMs: 200,
+        httpRetryMaxDelayMs: 5_000,
+    ));
+}
+```
+
+What is retried:
+
+- **HTTP 429**, always.
+- **HTTP 503 and 500 that signal broker backpressure** (problem `title` or, for 500, `detail` containing `RESOURCE_EXHAUSTED`). Any other 500 or 503 is returned after a single request, as before.
+- **Connection failures** (no response received), for idempotent methods only (`GET`, `HEAD`, `PUT`, `DELETE`, `OPTIONS`). A transport failure on a `POST` may have happened after the cluster accepted the command, so it is never replayed.
+
+The wait before retry `n + 1` is a random value between 0 and `min(CAMUNDA_SDK_HTTP_RETRY_BASE_DELAY_MS * 2^(n-1), CAMUNDA_SDK_HTTP_RETRY_MAX_DELAY_MS)`. When the response carries a usable `Retry-After` header the wait is raised to at least that value (bounded at 60 seconds). Set `CAMUNDA_SDK_HTTP_RETRY_MAX_ATTEMPTS=1` to disable retry.
+
+When every attempt fails, the SDK throws `RetryExhaustedException`, a subclass of `ApiException`. `getCode()` is the HTTP status of the final attempt (`0` if the final attempt received no response), the response headers and body are those of the final response, and `getAttempts()` reports how many requests were sent:
+
+<!-- snippet-source: examples/readme.php | regions: ReadmeRetryExhausted -->
+```php
+function retry_exhausted(CamundaClient $client): void
+{
+    try {
+        $client->completeJob('2251799813686200');
+    } catch (RetryExhaustedException $e) {
+        // The final status (429 here) and the number of requests actually sent.
+        error_log(sprintf('gave up with HTTP %d after %d attempts', $e->getCode(), $e->getAttempts()));
+    }
+}
+```
+
+Notes:
+
+- **Job activation is not retried inside the long poll.** `JobWorker` activation requests (`POST /jobs/activation`) are sent exactly once; a failed activation surfaces to the worker loop as it always has. Retrying inside a long poll would hold it open for several times its request timeout.
+- **A Guzzle client you supply is not modified.** Retry is part of the SDK-built client only. Push `RetryMiddleware` onto your own handler stack to get the same behaviour:
+
+<!-- snippet-source: examples/readme.php | regions: ReadmeRetryCustomHttpClient -->
+```php
+function custom_http_client_with_retry(CamundaConfiguration $configuration): CamundaClient
+{
+    // A client you supply is not wrapped by the SDK: push the retry middleware yourself
+    // if you want the same behaviour.
+    $stack = HandlerStack::create();
+    // Push retry before auth so that every attempt picks up a fresh auth header.
+    $stack->push(new RetryMiddleware(maxAttempts: 3, baseDelayMs: 100, maxDelayMs: 2_000), 'camunda_retry');
+    $stack->push(new AuthMiddleware(AuthProviderFactory::fromConfiguration($configuration)), 'camunda_auth');
+
+    return CamundaClient::fromConfiguration(
+        $configuration,
+        new GuzzleClient(['handler' => $stack, 'http_errors' => false]),
+    );
+}
+```
+
 ### Credentials in debug output
 
 `CamundaConfiguration` redacts `clientSecret`, `basicAuthPassword` and `mtlsKeyPassphrase` on the debug surfaces PHP lets an object intercept: `var_dump()` and `print_r()`, which both honour `__debugInfo()`, and `json_encode()`, which uses the configuration's `JsonSerializable` implementation. A credential that is set shows as `***`; one that is not set stays `null`. `CamundaClient` and `CamundaAsyncClient` do the same on `var_dump()` and `print_r()` and additionally summarise their Guzzle client by class name, because its options carry the mTLS key passphrase. The clients have no public properties, so `json_encode()` of a client contains no credentials either. Reading `$config->clientSecret` in your own code still returns the real value.
@@ -272,6 +339,9 @@ Do not pass a configuration or client object to either, and keep their output ou
 | `CAMUNDA_WORKER_TIMEOUT` | `60000` | Default job activation timeout, in milliseconds. |
 | `CAMUNDA_WORKER_REQUEST_TIMEOUT` | `10000` | Default long-poll request timeout, in milliseconds. |
 | `CAMUNDA_WORKER_NAME` | — | Default worker name reported when activating jobs. |
+| `CAMUNDA_SDK_HTTP_RETRY_MAX_ATTEMPTS` | `3` | Maximum total HTTP attempts (including the first) for transient failures: 429, broker backpressure (`RESOURCE_EXHAUSTED` on 500/503) and, for idempotent methods, connection failures. `1` disables retry. Applies to the SDK-built HTTP client only; the job-activation long poll is never retried. |
+| `CAMUNDA_SDK_HTTP_RETRY_BASE_DELAY_MS` | `100` | Base delay in milliseconds for exponential backoff with full jitter between HTTP retries. A `Retry-After` header raises the wait to at least the server value (capped at 60 seconds). |
+| `CAMUNDA_SDK_HTTP_RETRY_MAX_DELAY_MS` | `2000` | Maximum delay cap in milliseconds for HTTP retry backoff. |
 | `CAMUNDA_MTLS_CERT_PATH` | — | Path to the client certificate for mutual TLS. |
 | `CAMUNDA_MTLS_KEY_PATH` | — | Path to the client private key for mutual TLS. |
 | `CAMUNDA_MTLS_CA_PATH` | — | Path to the CA bundle used to verify the server certificate. |
@@ -331,6 +401,23 @@ function readme_job_worker(): void
 
 When `ext-pcntl` is available and `forked: true` is set, each job is processed in its own child process, bounded to `maxJobs` concurrent children.
 
+### When a handler throws
+
+If your handler throws, the worker catches the `Throwable` and fails the job for you, then carries on: the remaining jobs of the batch are still dispatched and the poll loop keeps running, so one bad job never stops the worker.
+
+What you can rely on:
+
+- The job is failed with one retry consumed — `retries - 1`, floored at zero — so the broker schedules a retry while retries remain and creates an incident when they are exhausted. No retry back-off is set.
+- The failure message is the exception class and its message. The stack trace is never sent to the broker.
+- If your handler already completed the job, failed it, or raised a BPMN error before throwing, the worker leaves that terminal action alone and sends nothing further.
+- Auto-completion is skipped for a job whose handler threw.
+
+To choose the retry count, the back-off, or the message yourself, catch the error inside your handler and call `$action->fail(...)` explicitly.
+
+Note that a transport error raised while reporting the failure — for example broker backpressure on the fail call itself — still surfaces to the caller of `run()` or `pollOnce()`, exactly as a failing auto-completion does. The same holds when your handler calls `$action->complete()`, `fail()` or `error()` itself and that request fails: the worker surfaces the error rather than replacing the terminal action you asked for with one of its own.
+
+In forked mode that last point works differently, because nothing crosses the process boundary. A handler exception is still turned into a job failure, in the child, before it exits. But a transport error while reporting the terminal action ends the child instead of reaching the parent: the parent reaps it and polls on, so the job is left to its lease timeout and you do not see the error. If your handler needs to observe its own transport failures, handle them inside the handler.
+
 ### Object-oriented handlers
 
 <!-- snippet-source: examples/readme.php | regions: ReadmeObjectJobHandler -->
@@ -355,6 +442,22 @@ function object_job_handler(CamundaClient $client): void
     $worker->run(new PaymentJobHandler());
 }
 ```
+
+### Job variables are untrusted input
+
+Job variables and custom headers reach your handler through the cluster, but neither is shaped by your worker. Variables carry whatever is in scope for the task at activation — input supplied by whoever started the process instance, values written by earlier tasks, and data from any external caller along the way. Custom headers come from the deployed process model, so they are as trustworthy as your deployment pipeline and no more. Treat both as untrusted input.
+
+What the SDK does:
+
+- **Deserialization is JSON only.** Variables and custom headers are typed `array<string,mixed>` and are hydrated from `json_decode` alone. The top level is a PHP array; a nested JSON object arrives as a `stdClass`, a JSON array as a PHP array, and everything else as a scalar or `null`. No class is instantiated from the payload, and nothing in it reaches `unserialize()` or `eval()` — a string that looks like serialized PHP stays a string.
+- **Nesting is bounded** at `json_decode`'s default depth of 512, applied to the whole response. A payload nested beyond that is rejected with an `ApiException` (`Error JSON decoding server response`) before your handler is called, so an over-deep payload cannot drive the SDK into unbounded recursion.
+- **The SDK adds no variable content to its own output.** There is no logger in the SDK, and it never appends a payload to an exception message it raises: a failed activation reports the `title` and `detail` the cluster returned, nothing more. Note that those two fields are the server's text, passed through unredacted, and that a generated `ApiException` still carries the raw HTTP response body on `getResponseBody()` — for an activation response that body *is* the variables. Log the exception's message, not the whole exception, if variable values are sensitive in your deployment.
+- **Each job gets its own objects.** Every dispatched job is given its own `ActivatedJobResult` and its own `JobActionClient`, and the variables handed to one handler call are a separate value from any other's, so no payload is shared or mutated across jobs. That is object isolation, not sandboxing: a stateful handler — properties, captured references, statics, globals — can still carry data from one job to the next, and forked mode separates jobs into processes for concurrency, not as a security boundary.
+
+What the SDK does not do:
+
+- **It enforces no payload size limit.** There is no cap on the byte size of an activation response or of an individual variable. Note where a cap has to go: the activation response is read into a string and decoded in full before any handler is dispatched, so a check inside your handler runs far too late to protect the worker's memory. A size limit must be imposed upstream — on the cluster, or in the HTTP layer, for example a Guzzle middleware on a custom client that rejects an over-large response before it is buffered. A handler-side check is still worth having against individual values you are about to act on; it is just not a defence against an over-large response.
+- **It does not validate or sanitise content.** Type-checking, range-checking, schema validation, and escaping before use in SQL, a shell command, a file path or HTML are the handler author's responsibility. In particular, never use a variable value as a file path, a class name or a callable without checking it against a list you control.
 
 ## Accessing every operation
 

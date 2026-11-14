@@ -322,6 +322,11 @@ class ClockApi
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
                 function ($exception) {
+                    if (!$exception instanceof \GuzzleHttp\Exception\RequestException || $exception->getResponse() === null) {
+                        // Not a response-bearing HTTP failure (transport error, or an
+                        // ApiException raised by SDK middleware): propagate unchanged.
+                        throw $exception;
+                    }
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
                     throw new ApiException(
@@ -623,6 +628,11 @@ class ClockApi
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
                 function ($exception) {
+                    if (!$exception instanceof \GuzzleHttp\Exception\RequestException || $exception->getResponse() === null) {
+                        // Not a response-bearing HTTP failure (transport error, or an
+                        // ApiException raised by SDK middleware): propagate unchanged.
+                        throw $exception;
+                    }
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
                     throw new ApiException(
