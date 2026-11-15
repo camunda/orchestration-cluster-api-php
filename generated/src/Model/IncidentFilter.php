@@ -371,9 +371,9 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets errorType
      *
-     * @return \Camunda\Orchestration\Api\Model\IncidentErrorTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedIncidentErrorTypeFilter|null
+     * @return \Camunda\Orchestration\Api\Model\IncidentErrorTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedIncidentErrorTypeFilter|null
      */
-    public function getErrorType(): \Camunda\Orchestration\Api\Model\IncidentErrorTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedIncidentErrorTypeFilter|null
+    public function getErrorType(): \Camunda\Orchestration\Api\Model\IncidentErrorTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedIncidentErrorTypeFilter|null
     {
         return $this->container['errorType'];
     }
@@ -381,11 +381,11 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets errorType
      *
-     * @param \Camunda\Orchestration\Api\Model\IncidentErrorTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedIncidentErrorTypeFilter|null $errorType Incident error type with a defined set of values.
+     * @param \Camunda\Orchestration\Api\Model\IncidentErrorTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedIncidentErrorTypeFilter|null $errorType Incident error type with a defined set of values.
      *
      * @return $this
      */
-    public function setErrorType(\Camunda\Orchestration\Api\Model\IncidentErrorTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedIncidentErrorTypeFilter|null $errorType): static
+    public function setErrorType(\Camunda\Orchestration\Api\Model\IncidentErrorTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedIncidentErrorTypeFilter|null $errorType): static
     {
         if (is_null($errorType)) {
             throw new InvalidArgumentException('non-nullable errorType cannot be null');
@@ -479,9 +479,9 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets state
      *
-     * @return \Camunda\Orchestration\Api\Model\IncidentStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedIncidentStateFilter|null
+     * @return \Camunda\Orchestration\Api\Model\IncidentStateEnum|\Camunda\Orchestration\Api\Model\AdvancedIncidentStateFilter|null
      */
-    public function getState(): \Camunda\Orchestration\Api\Model\IncidentStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedIncidentStateFilter|null
+    public function getState(): \Camunda\Orchestration\Api\Model\IncidentStateEnum|\Camunda\Orchestration\Api\Model\AdvancedIncidentStateFilter|null
     {
         return $this->container['state'];
     }
@@ -489,11 +489,11 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets state
      *
-     * @param \Camunda\Orchestration\Api\Model\IncidentStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedIncidentStateFilter|null $state State of this incident with a defined set of values.
+     * @param \Camunda\Orchestration\Api\Model\IncidentStateEnum|\Camunda\Orchestration\Api\Model\AdvancedIncidentStateFilter|null $state State of this incident with a defined set of values.
      *
      * @return $this
      */
-    public function setState(\Camunda\Orchestration\Api\Model\IncidentStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedIncidentStateFilter|null $state): static
+    public function setState(\Camunda\Orchestration\Api\Model\IncidentStateEnum|\Camunda\Orchestration\Api\Model\AdvancedIncidentStateFilter|null $state): static
     {
         if (is_null($state)) {
             throw new InvalidArgumentException('non-nullable state cannot be null');
@@ -560,9 +560,9 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets processDefinitionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
      */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+    public function getProcessDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
     {
         return $this->container['processDefinitionKey'];
     }
@@ -570,11 +570,11 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets processDefinitionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The process definition key associated to this incident.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The process definition key associated to this incident.
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
+    public function setProcessDefinitionKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
     {
         if (is_null($processDefinitionKey)) {
             throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');
@@ -587,9 +587,9 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets processInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['processInstanceKey'];
     }
@@ -597,11 +597,11 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets processInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The process instance key associated to this incident.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The process instance key associated to this incident.
      *
      * @return $this
      */
-    public function setProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
+    public function setProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
     {
         if (is_null($processInstanceKey)) {
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
@@ -614,9 +614,9 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets elementInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
      */
-    public function getElementInstanceKey(): \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+    public function getElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
         return $this->container['elementInstanceKey'];
     }
@@ -624,11 +624,11 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets elementInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The element instance key associated to this incident.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The element instance key associated to this incident.
      *
      * @return $this
      */
-    public function setElementInstanceKey(\Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
+    public function setElementInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
     {
         if (is_null($elementInstanceKey)) {
             throw new InvalidArgumentException('non-nullable elementInstanceKey cannot be null');
@@ -641,9 +641,9 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets jobKey
      *
-     * @return \Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
      */
-    public function getJobKey(): \Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
+    public function getJobKey(): string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
     {
         return $this->container['jobKey'];
     }
@@ -651,11 +651,11 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets jobKey
      *
-     * @param \Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey The job key, if exists, associated with this incident.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey The job key, if exists, associated with this incident.
      *
      * @return $this
      */
-    public function setJobKey(\Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey): static
+    public function setJobKey(string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey): static
     {
         if (is_null($jobKey)) {
             throw new InvalidArgumentException('non-nullable jobKey cannot be null');

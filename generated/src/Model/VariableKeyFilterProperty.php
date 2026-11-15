@@ -57,7 +57,7 @@ class VariableKeyFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\VariableKeyExactMatch',
+            'string',
             '\Camunda\Orchestration\Api\Model\AdvancedVariableKeyFilter'
         ];
     }

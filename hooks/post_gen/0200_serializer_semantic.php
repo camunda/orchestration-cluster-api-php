@@ -41,6 +41,29 @@ return static function (array $ctx): void {
         $src = str_replace_once($src, $enumDeserialize, $semanticDeserialize, 'deserialize branch');
     }
 
+    // --- oneOf/anyOf: keep numeric-looking strings as strings ---------------------
+    // A nested value such as a key filter "2251799813686749" is already a PHP string;
+    // json_decode() would turn it into an int, so the `string` member of e.g.
+    // ProcessDefinitionKeyFilterProperty no longer matches and the value is lost
+    // (#145 / #147). For union dispatch, only accept the decoded form when it is
+    // structured (array/object) or the literal null.
+    $decodeAnchor = "                \$decoded = json_decode(\$data);\n"
+        . "                // Keep the original string if decode fails (nested values are already PHP strings).\n"
+        . "                \$data = (\$decoded !== null || \$data === 'null') ? \$decoded : \$data;\n";
+    $decodePatched = "                \$decoded = json_decode(\$data);\n"
+        . "                // Keep the original string if decode fails (nested values are already PHP strings).\n"
+        . "                // For oneOf/anyOf unions also keep it when it decodes to a scalar, so numeric-looking\n"
+        . "                // key strings still match a `string` member.\n"
+        . "                \$isUnion = is_subclass_of(\$class, '\\Camunda\\Orchestration\\Api\\Model\\OneOfInterface')\n"
+        . "                    || is_subclass_of(\$class, '\\Camunda\\Orchestration\\Api\\Model\\AnyOfInterface');\n"
+        . "                if (\$isUnion && \$decoded !== null && !is_array(\$decoded) && !is_object(\$decoded)) {\n"
+        . "                    \$decoded = null;\n"
+        . "                }\n"
+        . "                \$data = (\$decoded !== null || \$data === 'null') ? \$decoded : \$data;\n";
+    if (!str_contains($src, '$isUnion = ')) {
+        $src = str_replace_once($src, $decodeAnchor, $decodePatched, 'union scalar decode');
+    }
+
     file_put_contents($file, $src);
     fwrite(STDOUT, "  [serializer] patched ObjectSerializer for semantic value objects\n");
 };

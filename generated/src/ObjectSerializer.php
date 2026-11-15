@@ -573,6 +573,13 @@ class ObjectSerializer
             if (is_string($data)) {
                 $decoded = json_decode($data);
                 // Keep the original string if decode fails (nested values are already PHP strings).
+                // For oneOf/anyOf unions also keep it when it decodes to a scalar, so numeric-looking
+                // key strings still match a `string` member.
+                $isUnion = is_subclass_of($class, '\Camunda\Orchestration\Api\Model\OneOfInterface')
+                    || is_subclass_of($class, '\Camunda\Orchestration\Api\Model\AnyOfInterface');
+                if ($isUnion && $decoded !== null && !is_array($decoded) && !is_object($decoded)) {
+                    $decoded = null;
+                }
                 $data = ($decoded !== null || $data === 'null') ? $decoded : $data;
             }
 

@@ -51,6 +51,11 @@ return static function (array $ctx): void {
         if (!contains_semantic_union_type($src, $unionNames)) {
             continue;
         }
+        // oneOf wrapper classes (e.g. ResourceKeyFilterProperty, whose exact-match member
+        // is a semantic union) only list member types; they have no setIfExists() to patch.
+        if (str_contains($src, ' implements OneOfInterface')) {
+            continue;
+        }
 
         [$patched, $replaced] = patch_semantic_union_set_if_exists($src);
         if (!$replaced) {

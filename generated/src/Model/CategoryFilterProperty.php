@@ -57,7 +57,7 @@ class CategoryFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\CategoryExactMatch',
+            '\Camunda\Orchestration\Api\Model\AuditLogCategoryEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedCategoryFilter'
         ];
     }

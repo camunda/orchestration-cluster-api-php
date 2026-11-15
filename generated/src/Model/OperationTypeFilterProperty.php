@@ -57,7 +57,7 @@ class OperationTypeFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\OperationTypeExactMatch',
+            '\Camunda\Orchestration\Api\Model\AuditLogOperationTypeEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter'
         ];
     }

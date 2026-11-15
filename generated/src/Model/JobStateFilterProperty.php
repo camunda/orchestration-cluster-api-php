@@ -57,7 +57,7 @@ class JobStateFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\JobStateExactMatch',
+            '\Camunda\Orchestration\Api\Model\JobStateEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedJobStateFilter'
         ];
     }

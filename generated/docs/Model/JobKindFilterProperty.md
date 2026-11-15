@@ -5,7 +5,7 @@ It is never instantiated directly — use one of the concrete types.
 
 ## oneOf
 
-- [**\Camunda\Orchestration\Api\Model\JobKindExactMatch**](JobKindExactMatch.md)
+- [**\Camunda\Orchestration\Api\Model\JobKindEnum**](JobKindEnum.md)
 - [**\Camunda\Orchestration\Api\Model\AdvancedJobKindFilter**](AdvancedJobKindFilter.md)
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)

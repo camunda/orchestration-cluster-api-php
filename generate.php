@@ -56,12 +56,35 @@ function log_step(string $msg): void
 
 // 1. openapi-generator ---------------------------------------------------------
 if (!isset($opts['skip-openapi-generator'])) {
+    // 0. pre-gen spec transforms (hooks/pre_gen/*.php, sorted). Each returns a
+    //    callable(\stdClass $spec): \stdClass. The bundled spec on disk is left untouched;
+    //    the generator reads a transformed temporary copy.
+    $preHooks = glob($root . '/hooks/pre_gen/*.php') ?: [];
+    sort($preHooks);
+    if ($preHooks !== []) {
+        $doc = json_decode((string) file_get_contents($specPath), false, 512, JSON_THROW_ON_ERROR);
+        foreach ($preHooks as $hook) {
+            $transform = require $hook;
+            if (!is_callable($transform)) {
+                fwrite(STDERR, "warning: pre-gen hook " . basename($hook) . " did not return a callable; skipping\n");
+                continue;
+            }
+            log_step('pre-gen hook: ' . basename($hook));
+            $doc = $transform($doc);
+        }
+        $genSpecPath = sys_get_temp_dir() . '/camunda-php-sdk-spec-' . getmypid() . '.json';
+        file_put_contents($genSpecPath, json_encode($doc, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+        register_shutdown_function(static fn () => @unlink($genSpecPath));
+    } else {
+        $genSpecPath = $specPath;
+    }
+
     log_step('running openapi-generator (php-nextgen)...');
     // Regenerate cleanly so removed operations/models do not linger.
     exec('rm -rf ' . escapeshellarg($outDir));
     $cmd = 'npx --yes @openapitools/openapi-generator-cli generate -c '
         . escapeshellarg($config)
-        . ' -i ' . escapeshellarg($specPath)
+        . ' -i ' . escapeshellarg($genSpecPath)
         . ' -o ' . escapeshellarg($outDir)
         . ' 2>&1';
     passthru($cmd, $code);

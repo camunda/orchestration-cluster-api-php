@@ -459,9 +459,9 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
     /**
      * Gets elementInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
      */
-    public function getElementInstanceKey(): \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+    public function getElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
         return $this->container['elementInstanceKey'];
     }
@@ -469,11 +469,11 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
     /**
      * Sets elementInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The element instance key that received the message.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The element instance key that received the message.
      *
      * @return $this
      */
-    public function setElementInstanceKey(\Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
+    public function setElementInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
     {
         if (is_null($elementInstanceKey)) {
             throw new InvalidArgumentException('non-nullable elementInstanceKey cannot be null');
@@ -594,9 +594,9 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
     /**
      * Gets processDefinitionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
      */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+    public function getProcessDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
     {
         return $this->container['processDefinitionKey'];
     }
@@ -604,11 +604,11 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
     /**
      * Sets processDefinitionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The process definition key associated with this correlated message subscription. For intermediate message events, this only works for data created with 8.9 and later.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The process definition key associated with this correlated message subscription. For intermediate message events, this only works for data created with 8.9 and later.
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
+    public function setProcessDefinitionKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
     {
         if (is_null($processDefinitionKey)) {
             throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');
@@ -621,9 +621,9 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
     /**
      * Gets processInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['processInstanceKey'];
     }
@@ -631,11 +631,11 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
     /**
      * Sets processInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The process instance key associated with this correlated message subscription.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The process instance key associated with this correlated message subscription.
      *
      * @return $this
      */
-    public function setProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
+    public function setProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
     {
         if (is_null($processInstanceKey)) {
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
@@ -648,9 +648,9 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
     /**
      * Gets subscriptionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\MessageSubscriptionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null
      */
-    public function getSubscriptionKey(): \Camunda\Orchestration\Api\Model\MessageSubscriptionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null
+    public function getSubscriptionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null
     {
         return $this->container['subscriptionKey'];
     }
@@ -658,11 +658,11 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
     /**
      * Sets subscriptionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\MessageSubscriptionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null $subscriptionKey The subscription key that received the message.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null $subscriptionKey The subscription key that received the message.
      *
      * @return $this
      */
-    public function setSubscriptionKey(\Camunda\Orchestration\Api\Model\MessageSubscriptionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null $subscriptionKey): static
+    public function setSubscriptionKey(string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null $subscriptionKey): static
     {
         if (is_null($subscriptionKey)) {
             throw new InvalidArgumentException('non-nullable subscriptionKey cannot be null');

@@ -57,7 +57,7 @@ class AgentInstanceStatusFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\AgentInstanceStatusExactMatch',
+            '\Camunda\Orchestration\Api\Model\AgentInstanceStatusEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceStatusFilter'
         ];
     }

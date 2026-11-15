@@ -5,7 +5,7 @@ It is never instantiated directly — use one of the concrete types.
 
 ## oneOf
 
-- [**\Camunda\Orchestration\Api\Model\ScopeKeyExactMatch**](ScopeKeyExactMatch.md)
+- [**\Camunda\Orchestration\Api\Model\ScopeKey**](ScopeKey.md)
 - [**\Camunda\Orchestration\Api\Model\AdvancedScopeKeyFilter**](AdvancedScopeKeyFilter.md)
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)

@@ -435,9 +435,9 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets state
      *
-     * @return \Camunda\Orchestration\Api\Model\DecisionInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionInstanceStateFilter|null
+     * @return \Camunda\Orchestration\Api\Model\DecisionInstanceStateEnum|\Camunda\Orchestration\Api\Model\AdvancedDecisionInstanceStateFilter|null
      */
-    public function getState(): \Camunda\Orchestration\Api\Model\DecisionInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionInstanceStateFilter|null
+    public function getState(): \Camunda\Orchestration\Api\Model\DecisionInstanceStateEnum|\Camunda\Orchestration\Api\Model\AdvancedDecisionInstanceStateFilter|null
     {
         return $this->container['state'];
     }
@@ -445,11 +445,11 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets state
      *
-     * @param \Camunda\Orchestration\Api\Model\DecisionInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionInstanceStateFilter|null $state The state of the decision instance.
+     * @param \Camunda\Orchestration\Api\Model\DecisionInstanceStateEnum|\Camunda\Orchestration\Api\Model\AdvancedDecisionInstanceStateFilter|null $state The state of the decision instance.
      *
      * @return $this
      */
-    public function setState(\Camunda\Orchestration\Api\Model\DecisionInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionInstanceStateFilter|null $state): static
+    public function setState(\Camunda\Orchestration\Api\Model\DecisionInstanceStateEnum|\Camunda\Orchestration\Api\Model\AdvancedDecisionInstanceStateFilter|null $state): static
     {
         if (is_null($state)) {
             throw new InvalidArgumentException('non-nullable state cannot be null');
@@ -744,9 +744,9 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets decisionDefinitionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\DecisionDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null
      */
-    public function getDecisionDefinitionKey(): \Camunda\Orchestration\Api\Model\DecisionDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null
+    public function getDecisionDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null
     {
         return $this->container['decisionDefinitionKey'];
     }
@@ -754,11 +754,11 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets decisionDefinitionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\DecisionDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null $decisionDefinitionKey The key of the decision.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null $decisionDefinitionKey The key of the decision.
      *
      * @return $this
      */
-    public function setDecisionDefinitionKey(\Camunda\Orchestration\Api\Model\DecisionDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null $decisionDefinitionKey): static
+    public function setDecisionDefinitionKey(string|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null $decisionDefinitionKey): static
     {
         if (is_null($decisionDefinitionKey)) {
             throw new InvalidArgumentException('non-nullable decisionDefinitionKey cannot be null');
@@ -771,9 +771,9 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets elementInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
      */
-    public function getElementInstanceKey(): \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+    public function getElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
         return $this->container['elementInstanceKey'];
     }
@@ -781,11 +781,11 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets elementInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The key of the element instance this decision instance is linked to.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The key of the element instance this decision instance is linked to.
      *
      * @return $this
      */
-    public function setElementInstanceKey(\Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
+    public function setElementInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
     {
         if (is_null($elementInstanceKey)) {
             throw new InvalidArgumentException('non-nullable elementInstanceKey cannot be null');
@@ -798,9 +798,9 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets rootDecisionDefinitionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\DecisionDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null
      */
-    public function getRootDecisionDefinitionKey(): \Camunda\Orchestration\Api\Model\DecisionDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null
+    public function getRootDecisionDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null
     {
         return $this->container['rootDecisionDefinitionKey'];
     }
@@ -808,11 +808,11 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets rootDecisionDefinitionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\DecisionDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null $rootDecisionDefinitionKey The key of the root decision definition.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null $rootDecisionDefinitionKey The key of the root decision definition.
      *
      * @return $this
      */
-    public function setRootDecisionDefinitionKey(\Camunda\Orchestration\Api\Model\DecisionDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null $rootDecisionDefinitionKey): static
+    public function setRootDecisionDefinitionKey(string|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null $rootDecisionDefinitionKey): static
     {
         if (is_null($rootDecisionDefinitionKey)) {
             throw new InvalidArgumentException('non-nullable rootDecisionDefinitionKey cannot be null');
@@ -825,9 +825,9 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets decisionRequirementsKey
      *
-     * @return \Camunda\Orchestration\Api\Model\DecisionRequirementsKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null
      */
-    public function getDecisionRequirementsKey(): \Camunda\Orchestration\Api\Model\DecisionRequirementsKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null
+    public function getDecisionRequirementsKey(): string|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null
     {
         return $this->container['decisionRequirementsKey'];
     }
@@ -835,11 +835,11 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets decisionRequirementsKey
      *
-     * @param \Camunda\Orchestration\Api\Model\DecisionRequirementsKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null $decisionRequirementsKey The key of the decision requirements definition.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null $decisionRequirementsKey The key of the decision requirements definition.
      *
      * @return $this
      */
-    public function setDecisionRequirementsKey(\Camunda\Orchestration\Api\Model\DecisionRequirementsKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null $decisionRequirementsKey): static
+    public function setDecisionRequirementsKey(string|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null $decisionRequirementsKey): static
     {
         if (is_null($decisionRequirementsKey)) {
             throw new InvalidArgumentException('non-nullable decisionRequirementsKey cannot be null');

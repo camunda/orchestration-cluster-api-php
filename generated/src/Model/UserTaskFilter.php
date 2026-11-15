@@ -427,9 +427,9 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets state
      *
-     * @return \Camunda\Orchestration\Api\Model\UserTaskStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedUserTaskStateFilter|null
+     * @return \Camunda\Orchestration\Api\Model\UserTaskStateEnum|\Camunda\Orchestration\Api\Model\AdvancedUserTaskStateFilter|null
      */
-    public function getState(): \Camunda\Orchestration\Api\Model\UserTaskStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedUserTaskStateFilter|null
+    public function getState(): \Camunda\Orchestration\Api\Model\UserTaskStateEnum|\Camunda\Orchestration\Api\Model\AdvancedUserTaskStateFilter|null
     {
         return $this->container['state'];
     }
@@ -437,11 +437,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets state
      *
-     * @param \Camunda\Orchestration\Api\Model\UserTaskStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedUserTaskStateFilter|null $state The user task state.
+     * @param \Camunda\Orchestration\Api\Model\UserTaskStateEnum|\Camunda\Orchestration\Api\Model\AdvancedUserTaskStateFilter|null $state The user task state.
      *
      * @return $this
      */
-    public function setState(\Camunda\Orchestration\Api\Model\UserTaskStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedUserTaskStateFilter|null $state): static
+    public function setState(\Camunda\Orchestration\Api\Model\UserTaskStateEnum|\Camunda\Orchestration\Api\Model\AdvancedUserTaskStateFilter|null $state): static
     {
         if (is_null($state)) {
             throw new InvalidArgumentException('non-nullable state cannot be null');
@@ -880,9 +880,9 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets processDefinitionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
      */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+    public function getProcessDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
     {
         return $this->container['processDefinitionKey'];
     }
@@ -890,11 +890,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets processDefinitionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The key of the process definition.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The key of the process definition.
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
+    public function setProcessDefinitionKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
     {
         if (is_null($processDefinitionKey)) {
             throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');
@@ -907,9 +907,9 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets processInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['processInstanceKey'];
     }
@@ -917,11 +917,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets processInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The key of the process instance.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The key of the process instance.
      *
      * @return $this
      */
-    public function setProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
+    public function setProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
     {
         if (is_null($processInstanceKey)) {
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');

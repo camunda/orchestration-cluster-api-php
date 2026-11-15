@@ -57,7 +57,7 @@ class WaitStateTypeFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\WaitStateTypeExactMatch',
+            '\Camunda\Orchestration\Api\Model\WaitStateTypeEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedWaitStateTypeFilter'
         ];
     }

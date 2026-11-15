@@ -5,7 +5,7 @@ It is never instantiated directly — use one of the concrete types.
 
 ## oneOf
 
-- [**\Camunda\Orchestration\Api\Model\UserTaskStateExactMatch**](UserTaskStateExactMatch.md)
+- [**\Camunda\Orchestration\Api\Model\UserTaskStateEnum**](UserTaskStateEnum.md)
 - [**\Camunda\Orchestration\Api\Model\AdvancedUserTaskStateFilter**](AdvancedUserTaskStateFilter.md)
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)

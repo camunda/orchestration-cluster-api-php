@@ -349,9 +349,9 @@ class BatchOperationItemFilter implements ModelInterface, ArrayAccess, JsonSeria
     /**
      * Gets processInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['processInstanceKey'];
     }
@@ -359,11 +359,11 @@ class BatchOperationItemFilter implements ModelInterface, ArrayAccess, JsonSeria
     /**
      * Sets processInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The process instance key of the processed item.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The process instance key of the processed item.
      *
      * @return $this
      */
-    public function setProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
+    public function setProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
     {
         if (is_null($processInstanceKey)) {
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
@@ -376,9 +376,9 @@ class BatchOperationItemFilter implements ModelInterface, ArrayAccess, JsonSeria
     /**
      * Gets state
      *
-     * @return \Camunda\Orchestration\Api\Model\BatchOperationItemStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationItemStateFilter|null
+     * @return \Camunda\Orchestration\Api\Model\BatchOperationItemStateEnum|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationItemStateFilter|null
      */
-    public function getState(): \Camunda\Orchestration\Api\Model\BatchOperationItemStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationItemStateFilter|null
+    public function getState(): \Camunda\Orchestration\Api\Model\BatchOperationItemStateEnum|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationItemStateFilter|null
     {
         return $this->container['state'];
     }
@@ -386,11 +386,11 @@ class BatchOperationItemFilter implements ModelInterface, ArrayAccess, JsonSeria
     /**
      * Sets state
      *
-     * @param \Camunda\Orchestration\Api\Model\BatchOperationItemStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationItemStateFilter|null $state The state of the batch operation.
+     * @param \Camunda\Orchestration\Api\Model\BatchOperationItemStateEnum|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationItemStateFilter|null $state The state of the batch operation.
      *
      * @return $this
      */
-    public function setState(\Camunda\Orchestration\Api\Model\BatchOperationItemStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationItemStateFilter|null $state): static
+    public function setState(\Camunda\Orchestration\Api\Model\BatchOperationItemStateEnum|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationItemStateFilter|null $state): static
     {
         if (is_null($state)) {
             throw new InvalidArgumentException('non-nullable state cannot be null');
@@ -403,9 +403,9 @@ class BatchOperationItemFilter implements ModelInterface, ArrayAccess, JsonSeria
     /**
      * Gets operationType
      *
-     * @return \Camunda\Orchestration\Api\Model\BatchOperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null
+     * @return \Camunda\Orchestration\Api\Model\BatchOperationTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null
      */
-    public function getOperationType(): \Camunda\Orchestration\Api\Model\BatchOperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null
+    public function getOperationType(): \Camunda\Orchestration\Api\Model\BatchOperationTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null
     {
         return $this->container['operationType'];
     }
@@ -413,11 +413,11 @@ class BatchOperationItemFilter implements ModelInterface, ArrayAccess, JsonSeria
     /**
      * Sets operationType
      *
-     * @param \Camunda\Orchestration\Api\Model\BatchOperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null $operationType The type of the batch operation.
+     * @param \Camunda\Orchestration\Api\Model\BatchOperationTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null $operationType The type of the batch operation.
      *
      * @return $this
      */
-    public function setOperationType(\Camunda\Orchestration\Api\Model\BatchOperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null $operationType): static
+    public function setOperationType(\Camunda\Orchestration\Api\Model\BatchOperationTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null $operationType): static
     {
         if (is_null($operationType)) {
             throw new InvalidArgumentException('non-nullable operationType cannot be null');

@@ -57,7 +57,7 @@ class ClusterVariableKindFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\ClusterVariableKindExactMatch',
+            '\Camunda\Orchestration\Api\Model\ClusterVariableKindEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedClusterVariableKindFilter'
         ];
     }

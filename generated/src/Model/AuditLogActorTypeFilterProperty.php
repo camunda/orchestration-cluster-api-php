@@ -57,7 +57,7 @@ class AuditLogActorTypeFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\AuditLogActorTypeExactMatch',
+            '\Camunda\Orchestration\Api\Model\AuditLogActorTypeEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter'
         ];
     }

@@ -57,7 +57,7 @@ class BatchOperationItemStateFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\BatchOperationItemStateExactMatch',
+            '\Camunda\Orchestration\Api\Model\BatchOperationItemStateEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedBatchOperationItemStateFilter'
         ];
     }

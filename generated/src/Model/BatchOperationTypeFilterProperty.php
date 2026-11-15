@@ -57,7 +57,7 @@ class BatchOperationTypeFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\BatchOperationTypeExactMatch',
+            '\Camunda\Orchestration\Api\Model\BatchOperationTypeEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter'
         ];
     }

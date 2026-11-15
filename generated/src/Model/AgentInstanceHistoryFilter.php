@@ -309,9 +309,9 @@ class AgentInstanceHistoryFilter implements ModelInterface, ArrayAccess, JsonSer
     /**
      * Gets historyItemKey
      *
-     * @return \Camunda\Orchestration\Api\Model\AgentHistoryItemKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentHistoryItemKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedAgentHistoryItemKeyFilter|null
      */
-    public function getHistoryItemKey(): \Camunda\Orchestration\Api\Model\AgentHistoryItemKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentHistoryItemKeyFilter|null
+    public function getHistoryItemKey(): string|\Camunda\Orchestration\Api\Model\AdvancedAgentHistoryItemKeyFilter|null
     {
         return $this->container['historyItemKey'];
     }
@@ -319,11 +319,11 @@ class AgentInstanceHistoryFilter implements ModelInterface, ArrayAccess, JsonSer
     /**
      * Sets historyItemKey
      *
-     * @param \Camunda\Orchestration\Api\Model\AgentHistoryItemKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentHistoryItemKeyFilter|null $historyItemKey The unique key of the history item.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedAgentHistoryItemKeyFilter|null $historyItemKey The unique key of the history item.
      *
      * @return $this
      */
-    public function setHistoryItemKey(\Camunda\Orchestration\Api\Model\AgentHistoryItemKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentHistoryItemKeyFilter|null $historyItemKey): static
+    public function setHistoryItemKey(string|\Camunda\Orchestration\Api\Model\AdvancedAgentHistoryItemKeyFilter|null $historyItemKey): static
     {
         if (is_null($historyItemKey)) {
             throw new InvalidArgumentException('non-nullable historyItemKey cannot be null');
@@ -336,9 +336,9 @@ class AgentInstanceHistoryFilter implements ModelInterface, ArrayAccess, JsonSer
     /**
      * Gets role
      *
-     * @return \Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryRoleFilter|null
+     * @return \Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleEnum|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryRoleFilter|null
      */
-    public function getRole(): \Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryRoleFilter|null
+    public function getRole(): \Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleEnum|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryRoleFilter|null
     {
         return $this->container['role'];
     }
@@ -346,11 +346,11 @@ class AgentInstanceHistoryFilter implements ModelInterface, ArrayAccess, JsonSer
     /**
      * Sets role
      *
-     * @param \Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryRoleFilter|null $role The role of the history item.
+     * @param \Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleEnum|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryRoleFilter|null $role The role of the history item.
      *
      * @return $this
      */
-    public function setRole(\Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryRoleFilter|null $role): static
+    public function setRole(\Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleEnum|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryRoleFilter|null $role): static
     {
         if (is_null($role)) {
             throw new InvalidArgumentException('non-nullable role cannot be null');
@@ -363,9 +363,9 @@ class AgentInstanceHistoryFilter implements ModelInterface, ArrayAccess, JsonSer
     /**
      * Gets elementInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
      */
-    public function getElementInstanceKey(): \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+    public function getElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
         return $this->container['elementInstanceKey'];
     }
@@ -373,11 +373,11 @@ class AgentInstanceHistoryFilter implements ModelInterface, ArrayAccess, JsonSer
     /**
      * Sets elementInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The key of the element instance under which the history item was produced.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The key of the element instance under which the history item was produced.
      *
      * @return $this
      */
-    public function setElementInstanceKey(\Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
+    public function setElementInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
     {
         if (is_null($elementInstanceKey)) {
             throw new InvalidArgumentException('non-nullable elementInstanceKey cannot be null');
@@ -390,9 +390,9 @@ class AgentInstanceHistoryFilter implements ModelInterface, ArrayAccess, JsonSer
     /**
      * Gets jobKey
      *
-     * @return \Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
      */
-    public function getJobKey(): \Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
+    public function getJobKey(): string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
     {
         return $this->container['jobKey'];
     }
@@ -400,11 +400,11 @@ class AgentInstanceHistoryFilter implements ModelInterface, ArrayAccess, JsonSer
     /**
      * Sets jobKey
      *
-     * @param \Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey The key of the job activation that produced the history item.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey The key of the job activation that produced the history item.
      *
      * @return $this
      */
-    public function setJobKey(\Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey): static
+    public function setJobKey(string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey): static
     {
         if (is_null($jobKey)) {
             throw new InvalidArgumentException('non-nullable jobKey cannot be null');
@@ -444,9 +444,9 @@ class AgentInstanceHistoryFilter implements ModelInterface, ArrayAccess, JsonSer
     /**
      * Gets commitStatus
      *
-     * @return \Camunda\Orchestration\Api\Model\AgentInstanceHistoryCommitStatusExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryCommitStatusFilter|null
+     * @return \Camunda\Orchestration\Api\Model\AgentInstanceHistoryCommitStatusEnum|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryCommitStatusFilter|null
      */
-    public function getCommitStatus(): \Camunda\Orchestration\Api\Model\AgentInstanceHistoryCommitStatusExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryCommitStatusFilter|null
+    public function getCommitStatus(): \Camunda\Orchestration\Api\Model\AgentInstanceHistoryCommitStatusEnum|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryCommitStatusFilter|null
     {
         return $this->container['commitStatus'];
     }
@@ -454,11 +454,11 @@ class AgentInstanceHistoryFilter implements ModelInterface, ArrayAccess, JsonSer
     /**
      * Sets commitStatus
      *
-     * @param \Camunda\Orchestration\Api\Model\AgentInstanceHistoryCommitStatusExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryCommitStatusFilter|null $commitStatus The commit status of the history item. Defaults to COMMITTED only. Include PENDING or DISCARDED explicitly to debug in-flight or failed activations.
+     * @param \Camunda\Orchestration\Api\Model\AgentInstanceHistoryCommitStatusEnum|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryCommitStatusFilter|null $commitStatus The commit status of the history item. Defaults to COMMITTED only. Include PENDING or DISCARDED explicitly to debug in-flight or failed activations.
      *
      * @return $this
      */
-    public function setCommitStatus(\Camunda\Orchestration\Api\Model\AgentInstanceHistoryCommitStatusExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryCommitStatusFilter|null $commitStatus): static
+    public function setCommitStatus(\Camunda\Orchestration\Api\Model\AgentInstanceHistoryCommitStatusEnum|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryCommitStatusFilter|null $commitStatus): static
     {
         if (is_null($commitStatus)) {
             throw new InvalidArgumentException('non-nullable commitStatus cannot be null');

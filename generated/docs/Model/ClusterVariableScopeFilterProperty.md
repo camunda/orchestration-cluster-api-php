@@ -5,7 +5,7 @@ It is never instantiated directly — use one of the concrete types.
 
 ## oneOf
 
-- [**\Camunda\Orchestration\Api\Model\ClusterVariableScopeExactMatch**](ClusterVariableScopeExactMatch.md)
+- [**\Camunda\Orchestration\Api\Model\ClusterVariableScopeEnum**](ClusterVariableScopeEnum.md)
 - [**\Camunda\Orchestration\Api\Model\AdvancedClusterVariableScopeFilter**](AdvancedClusterVariableScopeFilter.md)
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)

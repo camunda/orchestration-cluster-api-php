@@ -57,7 +57,7 @@ class GlobalTaskListenerEventTypeFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\GlobalTaskListenerEventTypeExactMatch',
+            '\Camunda\Orchestration\Api\Model\GlobalTaskListenerEventTypeEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedGlobalTaskListenerEventTypeFilter'
         ];
     }
