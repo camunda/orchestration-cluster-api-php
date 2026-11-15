@@ -86,6 +86,21 @@ Upstream dependencies — when they misbehave, fix them at the source rather tha
 | `make config-reference` / `make config-reference-check` | Regenerate / verify the README configuration reference. |
 | `make example-coverage` | Verify `examples/operation-map.json` integrity and report example coverage. |
 
+### Backporting to stable branches
+
+`.github/workflows/backport.yml` calls camunda/sdk-infra's shared `sdk-backport.yml` (`korthout/backport-action`, running as `camunda-sdk-automation`; the same flow as the other SDKs). It is configured by `.github/backport.yml` and `.github/actions/codegen-setup` (PHP, Java, Node), both read from the **target** branch, so keep them on `main` and on every live `stable/N`.
+
+- Add the label `backport stable/<N>` to a PR. The backport PR opens when the PR merges, or right away if it is already merged.
+- Or comment `/backport` on a merged PR to re-run it for its labels. PRs from forks can only be backported this way.
+
+Backport hand-written runtime, hook and infra changes when the affected code exists on the stable branch. Never backport generated output on its own; each branch regenerates from its own spec.
+
+After the cherry-pick, the workflow adds a `chore(gen): regenerate for backport of #N` commit. The derived files (`generated-paths`: `external-spec/`, `generated/`, `src/GeneratedOperations.php`, `src/GeneratedAsyncOperations.php`) are restored from the target branch and regenerated with `make generate-only`, then checked with `make test`. PRs are squash-merged, so the cherry-pick carries `main`'s copies, but a stable branch must build from its own spec. This also clears cherry-pick conflicts in those files. When a hook starts writing a new file outside `generated/`, add it to `generated-paths` on every branch.
+
+If the cherry-pick conflicts, the action opens a **draft** PR with the conflicts committed. A draft always means a conflict, even without conflict markers: if the source changes a file the target lacks, `main`'s whole file is committed. Resolve it on the backport branch, then comment `/backport` on the source PR to regenerate. If fix B builds on fix A, merge A's backport first, then rebuild B's branch from the updated target (`git switch -C backport-<B>-to-stable/N origin/stable/N && git cherry-pick -x <B's merge commit>`, push with `--force-with-lease`, comment `/backport`).
+
+If regenerating fails, the bot comments on the backport PR. If the change depends on spec the stable branch doesn't have, it can't be backported as-is: close the backport PR, or reduce it to what applies to the stable spec.
+
 ## Working on an issue
 
 Every change must be traceable to a tracked, claimed, in-progress work item **before implementation starts**.
