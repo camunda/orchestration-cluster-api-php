@@ -11,6 +11,7 @@ generated-paths:
   - generated
   - src/GeneratedOperations.php
   - src/GeneratedAsyncOperations.php
+  - src/ApiAccessors.php
 
 # Regenerates from the committed spec (generate-only doesn't bundle). The acceptance
 # tests catch a backport that breaks against this branch's generated code.
