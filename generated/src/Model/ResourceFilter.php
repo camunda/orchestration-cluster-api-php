@@ -357,9 +357,9 @@ class ResourceFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets resourceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ResourceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null
      */
-    public function getResourceKey(): \Camunda\Orchestration\Api\Model\ResourceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null
+    public function getResourceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null
     {
         return $this->container['resourceKey'];
     }
@@ -367,11 +367,11 @@ class ResourceFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets resourceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ResourceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null $resourceKey The key for this resource.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null $resourceKey The key for this resource.
      *
      * @return $this
      */
-    public function setResourceKey(\Camunda\Orchestration\Api\Model\ResourceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null $resourceKey): static
+    public function setResourceKey(string|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null $resourceKey): static
     {
         if (is_null($resourceKey)) {
             throw new InvalidArgumentException('non-nullable resourceKey cannot be null');
@@ -517,9 +517,9 @@ class ResourceFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets deploymentKey
      *
-     * @return \Camunda\Orchestration\Api\Model\DeploymentKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null
      */
-    public function getDeploymentKey(): \Camunda\Orchestration\Api\Model\DeploymentKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null
+    public function getDeploymentKey(): string|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null
     {
         return $this->container['deploymentKey'];
     }
@@ -527,11 +527,11 @@ class ResourceFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets deploymentKey
      *
-     * @param \Camunda\Orchestration\Api\Model\DeploymentKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null $deploymentKey Deployment key of this resource.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null $deploymentKey Deployment key of this resource.
      *
      * @return $this
      */
-    public function setDeploymentKey(\Camunda\Orchestration\Api\Model\DeploymentKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null $deploymentKey): static
+    public function setDeploymentKey(string|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null $deploymentKey): static
     {
         if (is_null($deploymentKey)) {
             throw new InvalidArgumentException('non-nullable deploymentKey cannot be null');

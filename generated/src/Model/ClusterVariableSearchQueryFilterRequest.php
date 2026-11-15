@@ -400,9 +400,9 @@ class ClusterVariableSearchQueryFilterRequest implements ModelInterface, ArrayAc
     /**
      * Gets scope
      *
-     * @return \Camunda\Orchestration\Api\Model\ClusterVariableScopeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableScopeFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableScopeFilter|null
      */
-    public function getScope(): \Camunda\Orchestration\Api\Model\ClusterVariableScopeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableScopeFilter|null
+    public function getScope(): string|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableScopeFilter|null
     {
         return $this->container['scope'];
     }
@@ -410,11 +410,11 @@ class ClusterVariableSearchQueryFilterRequest implements ModelInterface, ArrayAc
     /**
      * Sets scope
      *
-     * @param \Camunda\Orchestration\Api\Model\ClusterVariableScopeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableScopeFilter|null $scope The scope filter for cluster variables.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableScopeFilter|null $scope The scope filter for cluster variables.
      *
      * @return $this
      */
-    public function setScope(\Camunda\Orchestration\Api\Model\ClusterVariableScopeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableScopeFilter|null $scope): static
+    public function setScope(string|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableScopeFilter|null $scope): static
     {
         if (is_null($scope)) {
             throw new InvalidArgumentException('non-nullable scope cannot be null');
@@ -528,9 +528,9 @@ class ClusterVariableSearchQueryFilterRequest implements ModelInterface, ArrayAc
     /**
      * Gets kind
      *
-     * @return \Camunda\Orchestration\Api\Model\ClusterVariableKindExactMatch|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableKindFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableKindFilter|null
      */
-    public function getKind(): \Camunda\Orchestration\Api\Model\ClusterVariableKindExactMatch|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableKindFilter|null
+    public function getKind(): string|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableKindFilter|null
     {
         return $this->container['kind'];
     }
@@ -538,11 +538,11 @@ class ClusterVariableSearchQueryFilterRequest implements ModelInterface, ArrayAc
     /**
      * Sets kind
      *
-     * @param \Camunda\Orchestration\Api\Model\ClusterVariableKindExactMatch|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableKindFilter|null $kind The kind filter for cluster variables.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableKindFilter|null $kind The kind filter for cluster variables.
      *
      * @return $this
      */
-    public function setKind(\Camunda\Orchestration\Api\Model\ClusterVariableKindExactMatch|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableKindFilter|null $kind): static
+    public function setKind(string|\Camunda\Orchestration\Api\Model\AdvancedClusterVariableKindFilter|null $kind): static
     {
         if (is_null($kind)) {
             throw new InvalidArgumentException('non-nullable kind cannot be null');

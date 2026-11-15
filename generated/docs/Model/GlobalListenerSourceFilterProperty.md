@@ -5,7 +5,7 @@ It is never instantiated directly — use one of the concrete types.
 
 ## oneOf
 
-- [**\Camunda\Orchestration\Api\Model\GlobalListenerSourceExactMatch**](GlobalListenerSourceExactMatch.md)
+- **string**
 - [**\Camunda\Orchestration\Api\Model\AdvancedGlobalListenerSourceFilter**](AdvancedGlobalListenerSourceFilter.md)
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)

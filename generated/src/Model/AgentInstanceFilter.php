@@ -392,9 +392,9 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Gets agentInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\AgentInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceKeyFilter|null
      */
-    public function getAgentInstanceKey(): \Camunda\Orchestration\Api\Model\AgentInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceKeyFilter|null
+    public function getAgentInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceKeyFilter|null
     {
         return $this->container['agentInstanceKey'];
     }
@@ -402,11 +402,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Sets agentInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\AgentInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceKeyFilter|null $agentInstanceKey The unique key of the agent instance.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceKeyFilter|null $agentInstanceKey The unique key of the agent instance.
      *
      * @return $this
      */
-    public function setAgentInstanceKey(\Camunda\Orchestration\Api\Model\AgentInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceKeyFilter|null $agentInstanceKey): static
+    public function setAgentInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceKeyFilter|null $agentInstanceKey): static
     {
         if (is_null($agentInstanceKey)) {
             throw new InvalidArgumentException('non-nullable agentInstanceKey cannot be null');
@@ -424,9 +424,9 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Gets agentDefinitionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\AgentDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null
      */
-    public function getAgentDefinitionKey(): \Camunda\Orchestration\Api\Model\AgentDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null
+    public function getAgentDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null
     {
         return $this->container['agentDefinitionKey'];
     }
@@ -434,11 +434,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Sets agentDefinitionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\AgentDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null $agentDefinitionKey The key of the agent definition this agent instance is an instance of.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null $agentDefinitionKey The key of the agent definition this agent instance is an instance of.
      *
      * @return $this
      */
-    public function setAgentDefinitionKey(\Camunda\Orchestration\Api\Model\AgentDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null $agentDefinitionKey): static
+    public function setAgentDefinitionKey(string|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null $agentDefinitionKey): static
     {
         if (is_null($agentDefinitionKey)) {
             throw new InvalidArgumentException('non-nullable agentDefinitionKey cannot be null');
@@ -456,9 +456,9 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Gets status
      *
-     * @return \Camunda\Orchestration\Api\Model\AgentInstanceStatusExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceStatusFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceStatusFilter|null
      */
-    public function getStatus(): \Camunda\Orchestration\Api\Model\AgentInstanceStatusExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceStatusFilter|null
+    public function getStatus(): string|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceStatusFilter|null
     {
         return $this->container['status'];
     }
@@ -466,11 +466,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Sets status
      *
-     * @param \Camunda\Orchestration\Api\Model\AgentInstanceStatusExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceStatusFilter|null $status The current status of the agent instance.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceStatusFilter|null $status The current status of the agent instance.
      *
      * @return $this
      */
-    public function setStatus(\Camunda\Orchestration\Api\Model\AgentInstanceStatusExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceStatusFilter|null $status): static
+    public function setStatus(string|\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceStatusFilter|null $status): static
     {
         if (is_null($status)) {
             throw new InvalidArgumentException('non-nullable status cannot be null');
@@ -520,9 +520,9 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Gets processInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['processInstanceKey'];
     }
@@ -530,11 +530,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Sets processInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The key of the process instance that owns this agent instance.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The key of the process instance that owns this agent instance.
      *
      * @return $this
      */
-    public function setProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
+    public function setProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
     {
         if (is_null($processInstanceKey)) {
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
@@ -552,9 +552,9 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Gets rootProcessInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getRootProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getRootProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['rootProcessInstanceKey'];
     }
@@ -562,11 +562,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Sets rootProcessInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $rootProcessInstanceKey The key of the root process instance. Filters agent instances belonging to a specific call hierarchy. The root process instance is the top-level ancestor in the process instance hierarchy.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $rootProcessInstanceKey The key of the root process instance. Filters agent instances belonging to a specific call hierarchy. The root process instance is the top-level ancestor in the process instance hierarchy.
      *
      * @return $this
      */
-    public function setRootProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $rootProcessInstanceKey): static
+    public function setRootProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $rootProcessInstanceKey): static
     {
         if (is_null($rootProcessInstanceKey)) {
             throw new InvalidArgumentException('non-nullable rootProcessInstanceKey cannot be null');
@@ -584,9 +584,9 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Gets processDefinitionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
      */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+    public function getProcessDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
     {
         return $this->container['processDefinitionKey'];
     }
@@ -594,11 +594,11 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Sets processDefinitionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The key of the process definition associated with this agent instance.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The key of the process definition associated with this agent instance.
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
+    public function setProcessDefinitionKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
     {
         if (is_null($processDefinitionKey)) {
             throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');
@@ -744,7 +744,7 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Gets elementInstanceKeys
      *
-     * @return (\Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter)[]|null
+     * @return (string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter)[]|null
      */
     public function getElementInstanceKeys(): ?array
     {
@@ -754,7 +754,7 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
     /**
      * Sets elementInstanceKeys
      *
-     * @param (\Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter)[]|null $elementInstanceKeys The keys of element instances associated with this agent instance. If multiple keys are provided, the filter matches agent instances associated with all of the provided keys at the same time.
+     * @param (string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter)[]|null $elementInstanceKeys The keys of element instances associated with this agent instance. If multiple keys are provided, the filter matches agent instances associated with all of the provided keys at the same time.
      *
      * @return $this
      */

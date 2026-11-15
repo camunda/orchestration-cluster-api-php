@@ -354,9 +354,9 @@ class BatchOperationFilter implements ModelInterface, ArrayAccess, JsonSerializa
     /**
      * Gets operationType
      *
-     * @return \Camunda\Orchestration\Api\Model\BatchOperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null
      */
-    public function getOperationType(): \Camunda\Orchestration\Api\Model\BatchOperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null
+    public function getOperationType(): string|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null
     {
         return $this->container['operationType'];
     }
@@ -364,11 +364,11 @@ class BatchOperationFilter implements ModelInterface, ArrayAccess, JsonSerializa
     /**
      * Sets operationType
      *
-     * @param \Camunda\Orchestration\Api\Model\BatchOperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null $operationType The type of the batch operation.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null $operationType The type of the batch operation.
      *
      * @return $this
      */
-    public function setOperationType(\Camunda\Orchestration\Api\Model\BatchOperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null $operationType): static
+    public function setOperationType(string|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null $operationType): static
     {
         if (is_null($operationType)) {
             throw new InvalidArgumentException('non-nullable operationType cannot be null');
@@ -386,9 +386,9 @@ class BatchOperationFilter implements ModelInterface, ArrayAccess, JsonSerializa
     /**
      * Gets state
      *
-     * @return \Camunda\Orchestration\Api\Model\BatchOperationStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationStateFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationStateFilter|null
      */
-    public function getState(): \Camunda\Orchestration\Api\Model\BatchOperationStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationStateFilter|null
+    public function getState(): string|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationStateFilter|null
     {
         return $this->container['state'];
     }
@@ -396,11 +396,11 @@ class BatchOperationFilter implements ModelInterface, ArrayAccess, JsonSerializa
     /**
      * Sets state
      *
-     * @param \Camunda\Orchestration\Api\Model\BatchOperationStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationStateFilter|null $state The state of the batch operation.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationStateFilter|null $state The state of the batch operation.
      *
      * @return $this
      */
-    public function setState(\Camunda\Orchestration\Api\Model\BatchOperationStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationStateFilter|null $state): static
+    public function setState(string|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationStateFilter|null $state): static
     {
         if (is_null($state)) {
             throw new InvalidArgumentException('non-nullable state cannot be null');

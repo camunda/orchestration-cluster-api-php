@@ -551,9 +551,9 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets elementInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
      */
-    public function getElementInstanceKey(): \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+    public function getElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
         return $this->container['elementInstanceKey'];
     }
@@ -561,11 +561,11 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets elementInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The element instance key associated with the job.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The element instance key associated with the job.
      *
      * @return $this
      */
-    public function setElementInstanceKey(\Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
+    public function setElementInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
     {
         if (is_null($elementInstanceKey)) {
             throw new InvalidArgumentException('non-nullable elementInstanceKey cannot be null');
@@ -750,9 +750,9 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets jobKey
      *
-     * @return \Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
      */
-    public function getJobKey(): \Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
+    public function getJobKey(): string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
     {
         return $this->container['jobKey'];
     }
@@ -760,11 +760,11 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets jobKey
      *
-     * @param \Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey The key, a unique identifier for the job.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey The key, a unique identifier for the job.
      *
      * @return $this
      */
-    public function setJobKey(\Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey): static
+    public function setJobKey(string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey): static
     {
         if (is_null($jobKey)) {
             throw new InvalidArgumentException('non-nullable jobKey cannot be null');
@@ -782,9 +782,9 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets kind
      *
-     * @return \Camunda\Orchestration\Api\Model\JobKindExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKindFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedJobKindFilter|null
      */
-    public function getKind(): \Camunda\Orchestration\Api\Model\JobKindExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKindFilter|null
+    public function getKind(): string|\Camunda\Orchestration\Api\Model\AdvancedJobKindFilter|null
     {
         return $this->container['kind'];
     }
@@ -792,11 +792,11 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets kind
      *
-     * @param \Camunda\Orchestration\Api\Model\JobKindExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKindFilter|null $kind The kind of the job.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedJobKindFilter|null $kind The kind of the job.
      *
      * @return $this
      */
-    public function setKind(\Camunda\Orchestration\Api\Model\JobKindExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKindFilter|null $kind): static
+    public function setKind(string|\Camunda\Orchestration\Api\Model\AdvancedJobKindFilter|null $kind): static
     {
         if (is_null($kind)) {
             throw new InvalidArgumentException('non-nullable kind cannot be null');
@@ -814,9 +814,9 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets listenerEventType
      *
-     * @return \Camunda\Orchestration\Api\Model\JobListenerEventTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobListenerEventTypeFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedJobListenerEventTypeFilter|null
      */
-    public function getListenerEventType(): \Camunda\Orchestration\Api\Model\JobListenerEventTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobListenerEventTypeFilter|null
+    public function getListenerEventType(): string|\Camunda\Orchestration\Api\Model\AdvancedJobListenerEventTypeFilter|null
     {
         return $this->container['listenerEventType'];
     }
@@ -824,11 +824,11 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets listenerEventType
      *
-     * @param \Camunda\Orchestration\Api\Model\JobListenerEventTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobListenerEventTypeFilter|null $listenerEventType The listener event type of the job.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedJobListenerEventTypeFilter|null $listenerEventType The listener event type of the job.
      *
      * @return $this
      */
-    public function setListenerEventType(\Camunda\Orchestration\Api\Model\JobListenerEventTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobListenerEventTypeFilter|null $listenerEventType): static
+    public function setListenerEventType(string|\Camunda\Orchestration\Api\Model\AdvancedJobListenerEventTypeFilter|null $listenerEventType): static
     {
         if (is_null($listenerEventType)) {
             throw new InvalidArgumentException('non-nullable listenerEventType cannot be null');
@@ -910,9 +910,9 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets processDefinitionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
      */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+    public function getProcessDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
     {
         return $this->container['processDefinitionKey'];
     }
@@ -920,11 +920,11 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets processDefinitionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The process definition key associated with the job.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The process definition key associated with the job.
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
+    public function setProcessDefinitionKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
     {
         if (is_null($processDefinitionKey)) {
             throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');
@@ -942,9 +942,9 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets processInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['processInstanceKey'];
     }
@@ -952,11 +952,11 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets processInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The process instance key associated with the job.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The process instance key associated with the job.
      *
      * @return $this
      */
-    public function setProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
+    public function setProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
     {
         if (is_null($processInstanceKey)) {
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
@@ -1006,9 +1006,9 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets state
      *
-     * @return \Camunda\Orchestration\Api\Model\JobStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobStateFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedJobStateFilter|null
      */
-    public function getState(): \Camunda\Orchestration\Api\Model\JobStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobStateFilter|null
+    public function getState(): string|\Camunda\Orchestration\Api\Model\AdvancedJobStateFilter|null
     {
         return $this->container['state'];
     }
@@ -1016,11 +1016,11 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets state
      *
-     * @param \Camunda\Orchestration\Api\Model\JobStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobStateFilter|null $state The state of the job.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedJobStateFilter|null $state The state of the job.
      *
      * @return $this
      */
-    public function setState(\Camunda\Orchestration\Api\Model\JobStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobStateFilter|null $state): static
+    public function setState(string|\Camunda\Orchestration\Api\Model\AdvancedJobStateFilter|null $state): static
     {
         if (is_null($state)) {
             throw new InvalidArgumentException('non-nullable state cannot be null');

@@ -57,7 +57,7 @@ class AgentInstanceKeyFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\AgentInstanceKeyExactMatch',
+            'string',
             '\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceKeyFilter'
         ];
     }
