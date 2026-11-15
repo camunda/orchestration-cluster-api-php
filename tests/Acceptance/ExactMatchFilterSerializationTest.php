@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Tests\Acceptance;
 
 use Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter;
+use Camunda\Orchestration\Api\Model\IntegerFilterProperty;
 use Camunda\Orchestration\Api\Model\ProcessInstanceFilter;
 use Camunda\Orchestration\Api\Model\ProcessInstanceStateEnum;
+use Camunda\Orchestration\Api\Model\StringFilterProperty;
 use Camunda\Orchestration\Api\ObjectSerializer;
 use PHPUnit\Framework\TestCase;
 
@@ -66,6 +68,25 @@ final class ExactMatchFilterSerializationTest extends TestCase
         $key = $advanced->getProcessDefinitionKey();
         self::assertInstanceOf(AdvancedProcessDefinitionKeyFilter::class, $key);
         self::assertSame('2251799813686749', $key->getEq());
+    }
+
+    public function testTopLevelScalarJsonIsDecodedForUnions(): void
+    {
+        self::assertSame(5, ObjectSerializer::deserialize('5', IntegerFilterProperty::class));
+        self::assertSame('hello', ObjectSerializer::deserialize('"hello"', StringFilterProperty::class));
+    }
+
+    public function testNestedNumericKeyStringsSurviveJsonStringInput(): void
+    {
+        $filter = ObjectSerializer::deserialize(
+            '{"processDefinitionKey":"2251799813686749"}',
+            ProcessInstanceFilter::class,
+        );
+        self::assertInstanceOf(ProcessInstanceFilter::class, $filter);
+        self::assertSame('2251799813686749', $filter->getProcessDefinitionKey());
+
+        $list = ObjectSerializer::deserialize('["2251799813686749"]', StringFilterProperty::class . '[]');
+        self::assertSame(['2251799813686749'], $list);
     }
 
     private function toJson(object $model): string
