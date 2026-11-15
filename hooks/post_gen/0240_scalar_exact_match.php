@@ -124,7 +124,8 @@ return static function (array $ctx): void {
  * ObjectSerializer::deserialize() json-decodes string data before dispatching to a
  * oneOf/anyOf member, which turns a numeric key string like "2251799813686749" into an
  * int — and then no `string` member matches. Keep the original string when the decoded
- * value is a scalar and the union has a `string` member.
+ * value is a scalar and the union has a `string` member and no numeric/boolean member
+ * (so existing string|float unions still decode numbers as numbers).
  */
 function patch_one_of_numeric_string_decode(string $file): void
 {
@@ -156,7 +157,10 @@ function patch_one_of_numeric_string_decode(string $file): void
         . "                is_string(\$rawData) && is_scalar(\$data) && !is_string(\$data)\n"
         . "                && (is_subclass_of(\$class, '\\Camunda\\Orchestration\\Api\\Model\\OneOfInterface')\n"
         . "                    || is_subclass_of(\$class, '\\Camunda\\Orchestration\\Api\\Model\\AnyOfInterface'))\n"
-        . "                && in_array('string', is_subclass_of(\$class, '\\Camunda\\Orchestration\\Api\\Model\\OneOfInterface') ? \$class::getOneOfTypes() : \$class::getAnyOfTypes(), true)\n"
+        . "                && (\$scalarExactMatchTypes = is_subclass_of(\$class, '\\Camunda\\Orchestration\\Api\\Model\\OneOfInterface') ? \$class::getOneOfTypes() : \$class::getAnyOfTypes()) !== []\n"
+        . "                && in_array('string', \$scalarExactMatchTypes, true)\n"
+        . "                // Unions with a numeric/boolean alternative (e.g. string|float) keep json decoding.\n"
+        . "                && array_intersect(\$scalarExactMatchTypes, ['int', 'integer', 'float', 'double', 'number', 'bool', 'boolean']) === []\n"
         . "            ) {\n"
         . "                \$data = \$rawData;\n"
         . "            }\n"

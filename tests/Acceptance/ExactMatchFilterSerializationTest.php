@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Tests\Acceptance;
 
+use Camunda\Orchestration\Api\Model\AdvancedMetadataValueFilterEq;
 use Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter;
 use Camunda\Orchestration\Api\Model\ProcessInstanceFilter;
 use Camunda\Orchestration\Api\Model\ProcessInstanceSearchQuery;
@@ -72,6 +73,13 @@ final class ExactMatchFilterSerializationTest extends TestCase
         $key = $advanced->getProcessDefinitionKey();
         self::assertInstanceOf(AdvancedProcessDefinitionKeyFilter::class, $key);
         self::assertSame('2251799813686749', $key->getEq());
+    }
+
+    public function testNumericUnionStillDecodesNumbers(): void
+    {
+        // string|float unions must keep json-decoding numeric strings as numbers.
+        self::assertSame(12.5, ObjectSerializer::deserialize('12.5', AdvancedMetadataValueFilterEq::class));
+        self::assertSame('abc', ObjectSerializer::deserialize('"abc"', AdvancedMetadataValueFilterEq::class));
     }
 
     /**
