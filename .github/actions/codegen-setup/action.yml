@@ -1,0 +1,23 @@
+# Toolchain for the backport regeneration (sdk-backport.yml), as in ci.yml:
+# setup-sdk-toolchain has no PHP. Read from the backport's TARGET branch.
+name: Codegen setup
+description: Install PHP, Java (openapi-generator) and Node.
+runs:
+  using: composite
+  steps:
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: json, pcntl, mbstring
+        coverage: none
+        tools: composer:v2
+    - uses: actions/setup-java@v5
+      with:
+        distribution: temurin
+        java-version: 21
+    # No caches: this job runs the backport branch's code, and a cache it saved would
+    # be restored by trusted workflows.
+    - uses: actions/setup-node@v5
+      with:
+        node-version: 20
+        package-manager-cache: false
