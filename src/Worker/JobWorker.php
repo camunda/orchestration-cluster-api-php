@@ -8,12 +8,7 @@ use Camunda\Orchestration\Api\Api\JobApi;
 use Camunda\Orchestration\Api\ApiException;
 use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\Api\Model\JobActivationRequest;
-<<<<<<< HEAD
-use Camunda\Orchestration\Api\Model\JobActivationResult;
-=======
 use Camunda\Orchestration\Api\Model\ProblemDetail;
-use Camunda\Orchestration\Api\Model\TenantFilterEnum;
->>>>>>> d30832c (fix: async client rejects with ApiException on HTTP 4xx/5xx (#86))
 use Camunda\Orchestration\CamundaClient;
 
 /**
