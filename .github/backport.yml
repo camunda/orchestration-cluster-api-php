@@ -1,0 +1,20 @@
+# Backport configuration for camunda/sdk-infra's sdk-backport.yml
+# (schema: https://github.com/camunda/sdk-infra/blob/main/schema/backport.schema.json).
+# Read from the TARGET branch: keep a copy on main and on every live stable/N.
+# No `language`: setup-sdk-toolchain has no PHP, so .github/actions/codegen-setup
+# installs PHP, Java (openapi-generator) and Node.
+
+# Derived from the upstream spec or the generator. Restored from the target branch
+# and regenerated there. The two src/ files are written by hook 0500_flat_facade.php.
+generated-paths:
+  - external-spec
+  - generated
+  - src/GeneratedOperations.php
+  - src/GeneratedAsyncOperations.php
+  - src/ApiAccessors.php
+
+# Regenerates from the committed spec (generate-only doesn't bundle). The acceptance
+# tests catch a backport that breaks against this branch's generated code.
+regenerate: >-
+  composer install --no-interaction --no-progress && npm ci &&
+  make generate-only && make test
