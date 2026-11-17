@@ -57,7 +57,7 @@ class ProcessDefinitionKeyFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch',
+            'string',
             '\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter'
         ];
     }

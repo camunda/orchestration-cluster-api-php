@@ -504,9 +504,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets auditLogKey
      *
-     * @return \Camunda\Orchestration\Api\Model\AuditLogKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAuditLogKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedAuditLogKeyFilter|null
      */
-    public function getAuditLogKey(): \Camunda\Orchestration\Api\Model\AuditLogKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAuditLogKeyFilter|null
+    public function getAuditLogKey(): string|\Camunda\Orchestration\Api\Model\AdvancedAuditLogKeyFilter|null
     {
         return $this->container['auditLogKey'];
     }
@@ -514,11 +514,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets auditLogKey
      *
-     * @param \Camunda\Orchestration\Api\Model\AuditLogKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAuditLogKeyFilter|null $auditLogKey The audit log key search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedAuditLogKeyFilter|null $auditLogKey The audit log key search filter.
      *
      * @return $this
      */
-    public function setAuditLogKey(\Camunda\Orchestration\Api\Model\AuditLogKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAuditLogKeyFilter|null $auditLogKey): static
+    public function setAuditLogKey(string|\Camunda\Orchestration\Api\Model\AdvancedAuditLogKeyFilter|null $auditLogKey): static
     {
         if (is_null($auditLogKey)) {
             throw new InvalidArgumentException('non-nullable auditLogKey cannot be null');
@@ -536,9 +536,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets processDefinitionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
      */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+    public function getProcessDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
     {
         return $this->container['processDefinitionKey'];
     }
@@ -546,11 +546,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets processDefinitionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The process definition key search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The process definition key search filter.
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
+    public function setProcessDefinitionKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
     {
         if (is_null($processDefinitionKey)) {
             throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');
@@ -568,9 +568,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets processInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['processInstanceKey'];
     }
@@ -578,11 +578,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets processInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The process instance key search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The process instance key search filter.
      *
      * @return $this
      */
-    public function setProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
+    public function setProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
     {
         if (is_null($processInstanceKey)) {
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
@@ -600,9 +600,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets elementInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
      */
-    public function getElementInstanceKey(): \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+    public function getElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
         return $this->container['elementInstanceKey'];
     }
@@ -610,11 +610,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets elementInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The element instance key search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The element instance key search filter.
      *
      * @return $this
      */
-    public function setElementInstanceKey(\Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
+    public function setElementInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
     {
         if (is_null($elementInstanceKey)) {
             throw new InvalidArgumentException('non-nullable elementInstanceKey cannot be null');
@@ -632,9 +632,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets operationType
      *
-     * @return \Camunda\Orchestration\Api\Model\OperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null
      */
-    public function getOperationType(): \Camunda\Orchestration\Api\Model\OperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null
+    public function getOperationType(): string|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null
     {
         return $this->container['operationType'];
     }
@@ -642,11 +642,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets operationType
      *
-     * @param \Camunda\Orchestration\Api\Model\OperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null $operationType The operation type search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null $operationType The operation type search filter.
      *
      * @return $this
      */
-    public function setOperationType(\Camunda\Orchestration\Api\Model\OperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null $operationType): static
+    public function setOperationType(string|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null $operationType): static
     {
         if (is_null($operationType)) {
             throw new InvalidArgumentException('non-nullable operationType cannot be null');
@@ -664,9 +664,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets result
      *
-     * @return \Camunda\Orchestration\Api\Model\AuditLogResultExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null
      */
-    public function getResult(): \Camunda\Orchestration\Api\Model\AuditLogResultExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null
+    public function getResult(): string|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null
     {
         return $this->container['result'];
     }
@@ -674,11 +674,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets result
      *
-     * @param \Camunda\Orchestration\Api\Model\AuditLogResultExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null $result The result search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null $result The result search filter.
      *
      * @return $this
      */
-    public function setResult(\Camunda\Orchestration\Api\Model\AuditLogResultExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null $result): static
+    public function setResult(string|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null $result): static
     {
         if (is_null($result)) {
             throw new InvalidArgumentException('non-nullable result cannot be null');
@@ -760,9 +760,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets actorType
      *
-     * @return \Camunda\Orchestration\Api\Model\AuditLogActorTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null
      */
-    public function getActorType(): \Camunda\Orchestration\Api\Model\AuditLogActorTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null
+    public function getActorType(): string|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null
     {
         return $this->container['actorType'];
     }
@@ -770,11 +770,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets actorType
      *
-     * @param \Camunda\Orchestration\Api\Model\AuditLogActorTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null $actorType The actor type search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null $actorType The actor type search filter.
      *
      * @return $this
      */
-    public function setActorType(\Camunda\Orchestration\Api\Model\AuditLogActorTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null $actorType): static
+    public function setActorType(string|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null $actorType): static
     {
         if (is_null($actorType)) {
             throw new InvalidArgumentException('non-nullable actorType cannot be null');
@@ -856,9 +856,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets entityType
      *
-     * @return \Camunda\Orchestration\Api\Model\EntityTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null
      */
-    public function getEntityType(): \Camunda\Orchestration\Api\Model\EntityTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null
+    public function getEntityType(): string|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null
     {
         return $this->container['entityType'];
     }
@@ -866,11 +866,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets entityType
      *
-     * @param \Camunda\Orchestration\Api\Model\EntityTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null $entityType The entity type search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null $entityType The entity type search filter.
      *
      * @return $this
      */
-    public function setEntityType(\Camunda\Orchestration\Api\Model\EntityTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null $entityType): static
+    public function setEntityType(string|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null $entityType): static
     {
         if (is_null($entityType)) {
             throw new InvalidArgumentException('non-nullable entityType cannot be null');
@@ -920,9 +920,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets category
      *
-     * @return \Camunda\Orchestration\Api\Model\CategoryExactMatch|\Camunda\Orchestration\Api\Model\AdvancedCategoryFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedCategoryFilter|null
      */
-    public function getCategory(): \Camunda\Orchestration\Api\Model\CategoryExactMatch|\Camunda\Orchestration\Api\Model\AdvancedCategoryFilter|null
+    public function getCategory(): string|\Camunda\Orchestration\Api\Model\AdvancedCategoryFilter|null
     {
         return $this->container['category'];
     }
@@ -930,11 +930,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets category
      *
-     * @param \Camunda\Orchestration\Api\Model\CategoryExactMatch|\Camunda\Orchestration\Api\Model\AdvancedCategoryFilter|null $category The category search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedCategoryFilter|null $category The category search filter.
      *
      * @return $this
      */
-    public function setCategory(\Camunda\Orchestration\Api\Model\CategoryExactMatch|\Camunda\Orchestration\Api\Model\AdvancedCategoryFilter|null $category): static
+    public function setCategory(string|\Camunda\Orchestration\Api\Model\AdvancedCategoryFilter|null $category): static
     {
         if (is_null($category)) {
             throw new InvalidArgumentException('non-nullable category cannot be null');
@@ -952,9 +952,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets deploymentKey
      *
-     * @return \Camunda\Orchestration\Api\Model\DeploymentKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null
      */
-    public function getDeploymentKey(): \Camunda\Orchestration\Api\Model\DeploymentKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null
+    public function getDeploymentKey(): string|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null
     {
         return $this->container['deploymentKey'];
     }
@@ -962,11 +962,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets deploymentKey
      *
-     * @param \Camunda\Orchestration\Api\Model\DeploymentKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null $deploymentKey The deployment key search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null $deploymentKey The deployment key search filter.
      *
      * @return $this
      */
-    public function setDeploymentKey(\Camunda\Orchestration\Api\Model\DeploymentKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null $deploymentKey): static
+    public function setDeploymentKey(string|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null $deploymentKey): static
     {
         if (is_null($deploymentKey)) {
             throw new InvalidArgumentException('non-nullable deploymentKey cannot be null');
@@ -984,9 +984,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets formKey
      *
-     * @return \Camunda\Orchestration\Api\Model\FormKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedFormKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedFormKeyFilter|null
      */
-    public function getFormKey(): \Camunda\Orchestration\Api\Model\FormKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedFormKeyFilter|null
+    public function getFormKey(): string|\Camunda\Orchestration\Api\Model\AdvancedFormKeyFilter|null
     {
         return $this->container['formKey'];
     }
@@ -994,11 +994,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets formKey
      *
-     * @param \Camunda\Orchestration\Api\Model\FormKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedFormKeyFilter|null $formKey The form key search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedFormKeyFilter|null $formKey The form key search filter.
      *
      * @return $this
      */
-    public function setFormKey(\Camunda\Orchestration\Api\Model\FormKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedFormKeyFilter|null $formKey): static
+    public function setFormKey(string|\Camunda\Orchestration\Api\Model\AdvancedFormKeyFilter|null $formKey): static
     {
         if (is_null($formKey)) {
             throw new InvalidArgumentException('non-nullable formKey cannot be null');
@@ -1016,9 +1016,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets resourceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ResourceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null
      */
-    public function getResourceKey(): \Camunda\Orchestration\Api\Model\ResourceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null
+    public function getResourceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null
     {
         return $this->container['resourceKey'];
     }
@@ -1026,11 +1026,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets resourceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ResourceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null $resourceKey The resource key search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null $resourceKey The resource key search filter.
      *
      * @return $this
      */
-    public function setResourceKey(\Camunda\Orchestration\Api\Model\ResourceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null $resourceKey): static
+    public function setResourceKey(string|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null $resourceKey): static
     {
         if (is_null($resourceKey)) {
             throw new InvalidArgumentException('non-nullable resourceKey cannot be null');
@@ -1048,9 +1048,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets batchOperationType
      *
-     * @return \Camunda\Orchestration\Api\Model\BatchOperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null
      */
-    public function getBatchOperationType(): \Camunda\Orchestration\Api\Model\BatchOperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null
+    public function getBatchOperationType(): string|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null
     {
         return $this->container['batchOperationType'];
     }
@@ -1058,11 +1058,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets batchOperationType
      *
-     * @param \Camunda\Orchestration\Api\Model\BatchOperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null $batchOperationType The batch operation type search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null $batchOperationType The batch operation type search filter.
      *
      * @return $this
      */
-    public function setBatchOperationType(\Camunda\Orchestration\Api\Model\BatchOperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null $batchOperationType): static
+    public function setBatchOperationType(string|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null $batchOperationType): static
     {
         if (is_null($batchOperationType)) {
             throw new InvalidArgumentException('non-nullable batchOperationType cannot be null');
@@ -1112,9 +1112,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets jobKey
      *
-     * @return \Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
      */
-    public function getJobKey(): \Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
+    public function getJobKey(): string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
     {
         return $this->container['jobKey'];
     }
@@ -1122,11 +1122,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets jobKey
      *
-     * @param \Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey The job key search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey The job key search filter.
      *
      * @return $this
      */
-    public function setJobKey(\Camunda\Orchestration\Api\Model\JobKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey): static
+    public function setJobKey(string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null $jobKey): static
     {
         if (is_null($jobKey)) {
             throw new InvalidArgumentException('non-nullable jobKey cannot be null');
@@ -1208,9 +1208,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets decisionRequirementsKey
      *
-     * @return \Camunda\Orchestration\Api\Model\DecisionRequirementsKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null
      */
-    public function getDecisionRequirementsKey(): \Camunda\Orchestration\Api\Model\DecisionRequirementsKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null
+    public function getDecisionRequirementsKey(): string|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null
     {
         return $this->container['decisionRequirementsKey'];
     }
@@ -1218,11 +1218,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets decisionRequirementsKey
      *
-     * @param \Camunda\Orchestration\Api\Model\DecisionRequirementsKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null $decisionRequirementsKey The decision requirements key search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null $decisionRequirementsKey The decision requirements key search filter.
      *
      * @return $this
      */
-    public function setDecisionRequirementsKey(\Camunda\Orchestration\Api\Model\DecisionRequirementsKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null $decisionRequirementsKey): static
+    public function setDecisionRequirementsKey(string|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null $decisionRequirementsKey): static
     {
         if (is_null($decisionRequirementsKey)) {
             throw new InvalidArgumentException('non-nullable decisionRequirementsKey cannot be null');
@@ -1272,9 +1272,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets decisionDefinitionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\DecisionDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null
      */
-    public function getDecisionDefinitionKey(): \Camunda\Orchestration\Api\Model\DecisionDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null
+    public function getDecisionDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null
     {
         return $this->container['decisionDefinitionKey'];
     }
@@ -1282,11 +1282,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets decisionDefinitionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\DecisionDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null $decisionDefinitionKey The decision definition key search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null $decisionDefinitionKey The decision definition key search filter.
      *
      * @return $this
      */
-    public function setDecisionDefinitionKey(\Camunda\Orchestration\Api\Model\DecisionDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null $decisionDefinitionKey): static
+    public function setDecisionDefinitionKey(string|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null $decisionDefinitionKey): static
     {
         if (is_null($decisionDefinitionKey)) {
             throw new InvalidArgumentException('non-nullable decisionDefinitionKey cannot be null');
@@ -1304,9 +1304,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets decisionEvaluationKey
      *
-     * @return \Camunda\Orchestration\Api\Model\DecisionEvaluationKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionEvaluationKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedDecisionEvaluationKeyFilter|null
      */
-    public function getDecisionEvaluationKey(): \Camunda\Orchestration\Api\Model\DecisionEvaluationKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionEvaluationKeyFilter|null
+    public function getDecisionEvaluationKey(): string|\Camunda\Orchestration\Api\Model\AdvancedDecisionEvaluationKeyFilter|null
     {
         return $this->container['decisionEvaluationKey'];
     }
@@ -1314,11 +1314,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets decisionEvaluationKey
      *
-     * @param \Camunda\Orchestration\Api\Model\DecisionEvaluationKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionEvaluationKeyFilter|null $decisionEvaluationKey The decision evaluation key search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedDecisionEvaluationKeyFilter|null $decisionEvaluationKey The decision evaluation key search filter.
      *
      * @return $this
      */
-    public function setDecisionEvaluationKey(\Camunda\Orchestration\Api\Model\DecisionEvaluationKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedDecisionEvaluationKeyFilter|null $decisionEvaluationKey): static
+    public function setDecisionEvaluationKey(string|\Camunda\Orchestration\Api\Model\AdvancedDecisionEvaluationKeyFilter|null $decisionEvaluationKey): static
     {
         if (is_null($decisionEvaluationKey)) {
             throw new InvalidArgumentException('non-nullable decisionEvaluationKey cannot be null');
@@ -1368,9 +1368,9 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets relatedEntityType
      *
-     * @return \Camunda\Orchestration\Api\Model\EntityTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null
      */
-    public function getRelatedEntityType(): \Camunda\Orchestration\Api\Model\EntityTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null
+    public function getRelatedEntityType(): string|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null
     {
         return $this->container['relatedEntityType'];
     }
@@ -1378,11 +1378,11 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets relatedEntityType
      *
-     * @param \Camunda\Orchestration\Api\Model\EntityTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null $relatedEntityType The related entity type search filter.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null $relatedEntityType The related entity type search filter.
      *
      * @return $this
      */
-    public function setRelatedEntityType(\Camunda\Orchestration\Api\Model\EntityTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null $relatedEntityType): static
+    public function setRelatedEntityType(string|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null $relatedEntityType): static
     {
         if (is_null($relatedEntityType)) {
             throw new InvalidArgumentException('non-nullable relatedEntityType cannot be null');

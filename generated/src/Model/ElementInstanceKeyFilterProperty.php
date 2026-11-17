@@ -57,7 +57,7 @@ class ElementInstanceKeyFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch',
+            'string',
             '\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter'
         ];
     }

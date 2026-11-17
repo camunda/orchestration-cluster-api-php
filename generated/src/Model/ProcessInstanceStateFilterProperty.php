@@ -57,7 +57,7 @@ class ProcessInstanceStateFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\ProcessInstanceStateExactMatch',
+            'string',
             '\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceStateFilter'
         ];
     }

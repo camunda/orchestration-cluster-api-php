@@ -575,6 +575,7 @@ class ObjectSerializer
             }
             return $data;
         } else {
+            $rawData = $data;
             if (is_string($data)) {
                 $decoded = json_decode($data);
                 // Keep the original string if decode fails (nested values are already PHP strings).
@@ -583,6 +584,19 @@ class ObjectSerializer
 
             // A oneOf/anyOf schema is not a value object: dispatch here, after json_decode (so
             // members get the decoded value) but before the array-to-object cast (which breaks arrays).
+            // [scalar-exact-match] A string member (e.g. a key exact-match filter) must keep a
+            // numeric string as a string rather than its json-decoded int/float.
+            if (
+                is_string($rawData) && is_scalar($data) && !is_string($data)
+                && (is_subclass_of($class, '\Camunda\Orchestration\Api\Model\OneOfInterface')
+                    || is_subclass_of($class, '\Camunda\Orchestration\Api\Model\AnyOfInterface'))
+                && ($scalarExactMatchTypes = is_subclass_of($class, '\Camunda\Orchestration\Api\Model\OneOfInterface') ? $class::getOneOfTypes() : $class::getAnyOfTypes()) !== []
+                && in_array('string', $scalarExactMatchTypes, true)
+                // Unions with a numeric/boolean alternative (e.g. string|float) keep json decoding.
+                && array_intersect($scalarExactMatchTypes, ['int', 'integer', 'float', 'double', 'number', 'bool', 'boolean']) === []
+            ) {
+                $data = $rawData;
+            }
             if (is_subclass_of($class, '\Camunda\Orchestration\Api\Model\OneOfInterface')) {
                 return self::deserializeOneOf($data, $class, $httpHeaders);
             }

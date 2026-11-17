@@ -57,7 +57,7 @@ class DecisionInstanceStateFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\DecisionInstanceStateExactMatch',
+            'string',
             '\Camunda\Orchestration\Api\Model\AdvancedDecisionInstanceStateFilter'
         ];
     }

@@ -57,7 +57,7 @@ class DecisionEvaluationKeyFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\DecisionEvaluationKeyExactMatch',
+            'string',
             '\Camunda\Orchestration\Api\Model\AdvancedDecisionEvaluationKeyFilter'
         ];
     }

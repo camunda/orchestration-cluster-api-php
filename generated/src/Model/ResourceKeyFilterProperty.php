@@ -57,7 +57,7 @@ class ResourceKeyFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\ResourceKeyExactMatch',
+            'string',
             '\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter'
         ];
     }
