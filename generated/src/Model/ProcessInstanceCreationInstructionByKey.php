@@ -408,70 +408,6 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
 
 
     /**
-<<<<<<< HEAD
-=======
-     * Gets processDefinitionKey
-     *
-     * @return string
-     */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Semantic\ProcessDefinitionKey
-    {
-        return $this->container['processDefinitionKey'];
-    }
-
-    /**
-     * Sets processDefinitionKey
-     *
-     * @param string $processDefinitionKey The unique key identifying the process definition, for example, returned for a process in the deploy resources endpoint.
-     *
-     * @return $this
-     */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
-    {
-        $this->container['processDefinitionKey'] = $processDefinitionKey;
-        if ($processDefinitionKey === null) {
-            unset($this->openAPIFieldsSet['processDefinitionKey']);
-        } else {
-            $this->openAPIFieldsSet['processDefinitionKey'] = true;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Gets processDefinitionVersion
-     *
-     * @return int|null
-     */
-    public function getProcessDefinitionVersion(): ?int
-    {
-        return $this->container['processDefinitionVersion'];
-    }
-
-    /**
-     * Sets processDefinitionVersion
-     *
-     * @param int|null $processDefinitionVersion As the version is already identified by the `processDefinitionKey`, the value of this field is ignored. It's here for backwards-compatibility only as previous releases accepted it in request bodies.
-     *
-     * @return $this
-     */
-    public function setProcessDefinitionVersion(?int $processDefinitionVersion): static
-    {
-        if (is_null($processDefinitionVersion)) {
-            throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
-        }
-        $this->container['processDefinitionVersion'] = $processDefinitionVersion;
-        if ($processDefinitionVersion === null) {
-            unset($this->openAPIFieldsSet['processDefinitionVersion']);
-        } else {
-            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
-        }
-
-        return $this;
-    }
-
-    /**
->>>>>>> 3dbb98d (fix: omit unset optional fields from serialized request bodies (#62))
      * Gets variables
      *
      * @return array<string,mixed>|null
@@ -504,73 +440,6 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     }
 
     /**
-<<<<<<< HEAD
-=======
-     * Gets startInstructions
-     *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceCreationStartInstruction[]|null
-     */
-    public function getStartInstructions(): ?array
-    {
-        return $this->container['startInstructions'];
-    }
-
-    /**
-     * Sets startInstructions
-     *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceCreationStartInstruction[]|null $startInstructions List of start instructions. By default, the process instance will start at the start event. If provided, the process instance will apply start instructions after it has been created.
-     *
-     * @return $this
-     */
-    public function setStartInstructions(?array $startInstructions): static
-    {
-        if (is_null($startInstructions)) {
-            throw new InvalidArgumentException('non-nullable startInstructions cannot be null');
-        }
-        $this->container['startInstructions'] = $startInstructions;
-        if ($startInstructions === null) {
-            unset($this->openAPIFieldsSet['startInstructions']);
-        } else {
-            $this->openAPIFieldsSet['startInstructions'] = true;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Gets runtimeInstructions
-     *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceCreationTerminateInstruction[]|null
-     */
-    public function getRuntimeInstructions(): ?array
-    {
-        return $this->container['runtimeInstructions'];
-    }
-
-    /**
-     * Sets runtimeInstructions
-     *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceCreationTerminateInstruction[]|null $runtimeInstructions Runtime instructions (alpha). List of instructions that affect the runtime behavior of the process instance. Refer to specific instruction types for more details.  This parameter is an alpha feature and may be subject to change in future releases.
-     *
-     * @return $this
-     */
-    public function setRuntimeInstructions(?array $runtimeInstructions): static
-    {
-        if (is_null($runtimeInstructions)) {
-            throw new InvalidArgumentException('non-nullable runtimeInstructions cannot be null');
-        }
-        $this->container['runtimeInstructions'] = $runtimeInstructions;
-        if ($runtimeInstructions === null) {
-            unset($this->openAPIFieldsSet['runtimeInstructions']);
-        } else {
-            $this->openAPIFieldsSet['runtimeInstructions'] = true;
-        }
-
-        return $this;
-    }
-
-    /**
->>>>>>> 3dbb98d (fix: omit unset optional fields from serialized request bodies (#62))
      * Gets tenantId
      *
      * @return string|null
@@ -658,6 +527,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable startInstructions cannot be null');
         }
         $this->container['startInstructions'] = $startInstructions;
+        if ($startInstructions === null) {
+            unset($this->openAPIFieldsSet['startInstructions']);
+        } else {
+            $this->openAPIFieldsSet['startInstructions'] = true;
+        }
 
         return $this;
     }
@@ -685,6 +559,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable runtimeInstructions cannot be null');
         }
         $this->container['runtimeInstructions'] = $runtimeInstructions;
+        if ($runtimeInstructions === null) {
+            unset($this->openAPIFieldsSet['runtimeInstructions']);
+        } else {
+            $this->openAPIFieldsSet['runtimeInstructions'] = true;
+        }
 
         return $this;
     }
@@ -722,41 +601,6 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     }
 
     /**
-<<<<<<< HEAD
-=======
-     * Gets requestTimeout
-     *
-     * @return int|null
-     */
-    public function getRequestTimeout(): ?int
-    {
-        return $this->container['requestTimeout'];
-    }
-
-    /**
-     * Sets requestTimeout
-     *
-     * @param int|null $requestTimeout Timeout (in ms) the request waits for the process to complete. By default or when set to 0, the generic request timeout configured in the cluster is applied.
-     *
-     * @return $this
-     */
-    public function setRequestTimeout(?int $requestTimeout): static
-    {
-        if (is_null($requestTimeout)) {
-            throw new InvalidArgumentException('non-nullable requestTimeout cannot be null');
-        }
-        $this->container['requestTimeout'] = $requestTimeout;
-        if ($requestTimeout === null) {
-            unset($this->openAPIFieldsSet['requestTimeout']);
-        } else {
-            $this->openAPIFieldsSet['requestTimeout'] = true;
-        }
-
-        return $this;
-    }
-
-    /**
->>>>>>> 3dbb98d (fix: omit unset optional fields from serialized request bodies (#62))
      * Gets fetchVariables
      *
      * @return string[]|null
@@ -811,6 +655,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable requestTimeout cannot be null');
         }
         $this->container['requestTimeout'] = $requestTimeout;
+        if ($requestTimeout === null) {
+            unset($this->openAPIFieldsSet['requestTimeout']);
+        } else {
+            $this->openAPIFieldsSet['requestTimeout'] = true;
+        }
 
         return $this;
     }
@@ -899,6 +748,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
     public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
         $this->container['processDefinitionKey'] = $processDefinitionKey;
+        if ($processDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['processDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -926,6 +780,11 @@ class ProcessInstanceCreationInstructionByKey implements ModelInterface, ArrayAc
             throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
         }
         $this->container['processDefinitionVersion'] = $processDefinitionVersion;
+        if ($processDefinitionVersion === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersion']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
+        }
 
         return $this;
     }

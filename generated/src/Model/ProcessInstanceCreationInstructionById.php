@@ -416,70 +416,6 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
 
 
     /**
-<<<<<<< HEAD
-=======
-     * Gets processDefinitionId
-     *
-     * @return string
-     */
-    public function getProcessDefinitionId(): \Camunda\Orchestration\Semantic\ProcessDefinitionId
-    {
-        return $this->container['processDefinitionId'];
-    }
-
-    /**
-     * Sets processDefinitionId
-     *
-     * @param string $processDefinitionId The BPMN process id of the process definition to start an instance of.
-     *
-     * @return $this
-     */
-    public function setProcessDefinitionId(\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
-    {
-        $this->container['processDefinitionId'] = $processDefinitionId;
-        if ($processDefinitionId === null) {
-            unset($this->openAPIFieldsSet['processDefinitionId']);
-        } else {
-            $this->openAPIFieldsSet['processDefinitionId'] = true;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Gets processDefinitionVersion
-     *
-     * @return int|null
-     */
-    public function getProcessDefinitionVersion(): ?int
-    {
-        return $this->container['processDefinitionVersion'];
-    }
-
-    /**
-     * Sets processDefinitionVersion
-     *
-     * @param int|null $processDefinitionVersion The version of the process. If omitted, the latest active version is used.
-     *
-     * @return $this
-     */
-    public function setProcessDefinitionVersion(?int $processDefinitionVersion): static
-    {
-        if (is_null($processDefinitionVersion)) {
-            throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
-        }
-        $this->container['processDefinitionVersion'] = $processDefinitionVersion;
-        if ($processDefinitionVersion === null) {
-            unset($this->openAPIFieldsSet['processDefinitionVersion']);
-        } else {
-            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
-        }
-
-        return $this;
-    }
-
-    /**
->>>>>>> 3dbb98d (fix: omit unset optional fields from serialized request bodies (#62))
      * Gets variables
      *
      * @return array<string,mixed>|null
@@ -820,6 +756,11 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
     public function setProcessDefinitionId(\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -847,6 +788,11 @@ class ProcessInstanceCreationInstructionById implements ModelInterface, ArrayAcc
             throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
         }
         $this->container['processDefinitionVersion'] = $processDefinitionVersion;
+        if ($processDefinitionVersion === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersion']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
+        }
 
         return $this;
     }

@@ -27,7 +27,7 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'overrides' => ['tenant-a' => new RestoreRequest(['backupIds' => [55]])],
         ]);
 
-        self::assertSame(
+        self::assertJsonStringEqualsJsonString(
             '{"overrides":{"tenant-a":{"backupIds":[55]}}}',
             $this->toJson($request),
         );
@@ -39,7 +39,7 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'processDefinitionKey' => '2251799813685249',
         ]);
 
-        self::assertSame(
+        self::assertJsonStringEqualsJsonString(
             '{"processDefinitionKey":"2251799813685249"}',
             $this->toJson($request),
         );
@@ -55,7 +55,7 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'requestTimeout' => 0,
         ]);
 
-        self::assertSame(
+        self::assertJsonStringEqualsJsonString(
             '{"processDefinitionKey":"2251799813685249","processDefinitionVersion":-1,'
                 . '"awaitCompletion":false,"requestTimeout":0}',
             $this->toJson($request),
@@ -69,7 +69,7 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'overrides' => ['tenant-a' => new RestoreRequest(['backupIds' => [55]])],
         ]);
 
-        self::assertSame(
+        self::assertJsonStringEqualsJsonString(
             '{"from":null,"overrides":{"tenant-a":{"backupIds":[55]}}}',
             $this->toJson($request),
         );
@@ -82,13 +82,13 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             ->setAwaitCompletion(true)
             ->setRequestTimeout(5_000);
 
-        self::assertSame(
+        self::assertJsonStringEqualsJsonString(
             '{"processDefinitionKey":"2251799813685249","awaitCompletion":true,"requestTimeout":5000}',
             $this->toJson($request),
         );
     }
 
-    public function testSetterNullOnNullableFieldUnsetsIt(): void
+    public function testSetterNullOnNullableFieldIsExplicitNull(): void
     {
         $request = new ClusterRestoreRequest([
             'overrides' => ['tenant-a' => new RestoreRequest(['backupIds' => [55]])],
@@ -96,11 +96,12 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
         $request->setFrom(new DateTime('2024-01-01T00:00:00Z'));
         self::assertStringContainsString('"from":"2024-01-01T00:00:00', $this->toJson($request));
 
-        // Assigning null through a setter mirrors ArrayAccess semantics: the field
-        // becomes unset again and is omitted (explicit constructor null stays explicit).
+        // stable/10 contract (released 10.x behaviour, guarded by ModelSemanticTypingTest):
+        // set<Prop>(null) on a nullable field is an explicit null on the wire, not "unset".
+        // Only fields the caller never provided are omitted.
         $request->setFrom(null);
-        self::assertSame(
-            '{"overrides":{"tenant-a":{"backupIds":[55]}}}',
+        self::assertJsonStringEqualsJsonString(
+            '{"from":null,"overrides":{"tenant-a":{"backupIds":[55]}}}',
             $this->toJson($request),
         );
     }
@@ -111,7 +112,7 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
         $request['processDefinitionKey'] = new ProcessDefinitionKey('2251799813685249');
         $request['requestTimeout'] = 5_000;
 
-        self::assertSame(
+        self::assertJsonStringEqualsJsonString(
             '{"processDefinitionKey":"2251799813685249","requestTimeout":5000}',
             $this->toJson($request),
         );
@@ -133,7 +134,7 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'overrides' => ['tenant-a' => new RestoreRequest(['backupIds' => [56]])],
         ]);
 
-        self::assertSame(
+        self::assertJsonStringEqualsJsonString(
             '{"backupIds":[55],"overrides":{"tenant-a":{"backupIds":[56]}}}',
             $this->toJson($request),
         );
