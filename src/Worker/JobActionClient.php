@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Worker;
 
 use Camunda\Orchestration\Api\Api\JobApi;
+use Camunda\Orchestration\Api\ApiException;
 use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\Api\Model\JobCompletionRequest;
 use Camunda\Orchestration\Api\Model\JobErrorRequest;
@@ -104,11 +105,18 @@ final class JobActionClient
     /**
      * Send a terminal-action request, recording whether it was interrupted.
      *
-     * An `\\InvalidArgumentException` is raised by the generated client while it builds
-     * the request (e.g. variables that cannot be JSON-encoded), before anything is
-     * sent. That is a local data problem, not an interrupted request, so it does not
-     * mark the action as in flight: the worker then turns it into a normal job failure
-     * instead of leaving the job leased.
+     * The flag is set only while the request is on the wire. Anything thrown while the
+     * generated client builds the request — an `InvalidArgumentException` for variables
+     * that cannot be JSON-encoded, or any other `Throwable` escaping serialization
+     * (e.g. a lazy value that throws mid-encode) — is a local data problem raised
+     * before anything was sent, not an interrupted request. It therefore never leaves
+     * the flag set: the worker turns it into a normal job failure instead of leaving
+     * the job leased.
+     *
+     * An `ApiException` is different: the generated client raises it for the HTTP
+     * exchange itself (a non-2xx response, or a request/connect failure it wraps), so
+     * the request did go out and its outcome is unknown. The flag stays set and the
+     * worker keeps propagating it rather than substituting its own failure.
      *
      * @param \Closure(JobApi, string): mixed $request
      */
@@ -117,10 +125,12 @@ final class JobActionClient
         $this->actionInFlight = true;
         try {
             $request($this->jobApi, $this->jobKey());
-        } catch (\InvalidArgumentException $invalid) {
+        } catch (ApiException $transport) {
+            throw $transport;
+        } catch (\Throwable $throwable) {
             $this->actionInFlight = false;
 
-            throw $invalid;
+            throw $throwable;
         }
         $this->actionInFlight = false;
         $this->handled = true;

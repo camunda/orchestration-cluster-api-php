@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Tests\Acceptance;
 
 use Camunda\Orchestration\Api\Model\ActivatedJobResult;
+use Camunda\Orchestration\Api\Model\JobCompletionRequest;
 use Camunda\Orchestration\CamundaClient;
 use Camunda\Orchestration\Config\ConfigResolver;
 use Camunda\Orchestration\Worker\JobActionClient;
@@ -374,6 +375,42 @@ final class JobWorkerHandlerExceptionTest extends TestCase
     }
 
     /**
+     * A serialization failure that is not an `InvalidArgumentException` — e.g. a lazy
+     * value that throws `RuntimeException` while the generated client encodes the
+     * request — is still a local data problem raised before anything was sent. It must
+     * not leave the action marked as interrupted: the worker fails the job and carries
+     * on with the batch instead of rethrowing and leaving the job leased.
+     */
+    public function testANonInvalidArgumentSerializationFailureFailsTheJobAndContinuesTheBatch(): void
+    {
+        $worker = $this->worker([
+            $this->activationResponse([['jobKey' => '1', 'retries' => 3], ['jobKey' => '2', 'retries' => 3]]),
+            new Response(204),
+            new Response(204),
+        ]);
+
+        $processed = $worker->pollOnce(
+            static function (ActivatedJobResult $job, JobActionClient $action): void {
+                if ((string) $job->getJobKey() === '1') {
+                    $action->complete(['result' => new ExplodingVariable()]);
+                } else {
+                    $action->complete();
+                }
+            },
+        );
+
+        self::assertSame(2, $processed);
+        self::assertCount(3, $this->requests, 'Only the substitute failure for job 1 and job 2 must be sent.');
+        self::assertStringEndsWith('/jobs/1/failure', $this->requests[1]->getUri()->getPath());
+        $body = $this->jsonBody($this->requests[1]);
+        self::assertSame(2, $body['retries']);
+        self::assertIsString($body['errorMessage']);
+        self::assertStringContainsString('RuntimeException', $body['errorMessage']);
+        self::assertStringContainsString('exploded mid-serialization', $body['errorMessage']);
+        self::assertStringEndsWith('/jobs/2/completion', $this->requests[2]->getUri()->getPath());
+    }
+
+    /**
      * A failure report that itself fails is a transport problem, not a handler problem:
      * it keeps the existing behaviour of surfacing to the caller, exactly as a failing
      * auto-completion does today.
@@ -473,5 +510,21 @@ final class JobWorkerHandlerExceptionTest extends TestCase
         $body = json_decode((string) $request->getBody(), true, flags: JSON_THROW_ON_ERROR);
 
         return $body;
+    }
+}
+
+/**
+ * A variable value whose serialization throws a `RuntimeException` rather than the
+ * `InvalidArgumentException` the generated client raises for unencodable JSON — the
+ * shape of a lazy value (e.g. backed by a generator) that fails mid-encode.
+ *
+ * It reuses the generated model machinery so the exception escapes from inside
+ * `ObjectSerializer::sanitizeForSerialization()`, while the request is being built.
+ */
+final class ExplodingVariable extends JobCompletionRequest
+{
+    public function getVariables(): ?array
+    {
+        throw new \RuntimeException('exploded mid-serialization');
     }
 }
