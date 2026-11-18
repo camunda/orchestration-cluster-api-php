@@ -41,10 +41,7 @@ final class JobActionClient
         if ($variables !== []) {
             $request->setVariables($variables);
         }
-        $this->actionInFlight = true;
-        $this->jobApi->completeJob($this->jobKey(), $request);
-        $this->actionInFlight = false;
-        $this->handled = true;
+        $this->send(static fn (JobApi $api, string $key) => $api->completeJob($key, $request));
     }
 
     /**
@@ -65,10 +62,7 @@ final class JobActionClient
         if ($variables !== []) {
             $request->setVariables($variables);
         }
-        $this->actionInFlight = true;
-        $this->jobApi->failJob($this->jobKey(), $request);
-        $this->actionInFlight = false;
-        $this->handled = true;
+        $this->send(static fn (JobApi $api, string $key) => $api->failJob($key, $request));
     }
 
     /**
@@ -86,10 +80,7 @@ final class JobActionClient
         if ($variables !== []) {
             $request->setVariables($variables);
         }
-        $this->actionInFlight = true;
-        $this->jobApi->throwJobError($this->jobKey(), $request);
-        $this->actionInFlight = false;
-        $this->handled = true;
+        $this->send(static fn (JobApi $api, string $key) => $api->throwJobError($key, $request));
     }
 
     public function wasHandled(): bool
@@ -108,6 +99,31 @@ final class JobActionClient
     public function hasInterruptedAction(): bool
     {
         return $this->actionInFlight;
+    }
+
+    /**
+     * Send a terminal-action request, recording whether it was interrupted.
+     *
+     * An `\\InvalidArgumentException` is raised by the generated client while it builds
+     * the request (e.g. variables that cannot be JSON-encoded), before anything is
+     * sent. That is a local data problem, not an interrupted request, so it does not
+     * mark the action as in flight: the worker then turns it into a normal job failure
+     * instead of leaving the job leased.
+     *
+     * @param \Closure(JobApi, string): mixed $request
+     */
+    private function send(\Closure $request): void
+    {
+        $this->actionInFlight = true;
+        try {
+            $request($this->jobApi, $this->jobKey());
+        } catch (\InvalidArgumentException $invalid) {
+            $this->actionInFlight = false;
+
+            throw $invalid;
+        }
+        $this->actionInFlight = false;
+        $this->handled = true;
     }
 
     private function jobKey(): string

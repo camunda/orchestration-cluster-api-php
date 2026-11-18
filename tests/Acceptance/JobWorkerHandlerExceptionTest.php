@@ -322,6 +322,58 @@ final class JobWorkerHandlerExceptionTest extends TestCase
     }
 
     /**
+     * A terminal action whose data cannot be JSON-encoded throws while the request is
+     * still being built — nothing was sent, so it is a handler data problem, not an
+     * interrupted request. It must become a normal job failure. Covers every terminal
+     * action and the auto-completion of a handler's returned variables.
+     *
+     * @param \Closure(ActivatedJobResult, JobActionClient): (array<string, mixed>|null|void) $handler
+     */
+    #[DataProvider('unencodableTerminalActions')]
+    public function testUnencodableTerminalActionDataFailsTheJobAndContinuesTheBatch(\Closure $handler): void
+    {
+        $worker = $this->worker([
+            $this->activationResponse([['jobKey' => '1', 'retries' => 3], ['jobKey' => '2', 'retries' => 3]]),
+            new Response(204),
+            new Response(204),
+            new Response(204),
+        ]);
+
+        $processed = $worker->pollOnce($handler);
+
+        self::assertSame(2, $processed);
+        self::assertCount(3, $this->requests, 'Only the substitute failure for job 1 and job 2 must be sent.');
+        self::assertStringEndsWith('/jobs/1/failure', $this->requests[1]->getUri()->getPath());
+        $body = $this->jsonBody($this->requests[1]);
+        self::assertSame(2, $body['retries']);
+        self::assertIsString($body['errorMessage']);
+        self::assertStringContainsString('InvalidArgumentException', $body['errorMessage']);
+        self::assertStringContainsString('/jobs/2/', $this->requests[2]->getUri()->getPath());
+    }
+
+    /**
+     * @return iterable<string, array{\Closure}>
+     */
+    public static function unencodableTerminalActions(): iterable
+    {
+        $bad = ['result' => "\xB1"];
+        $isFirst = static fn (ActivatedJobResult $job): bool => (string) $job->getJobKey() === '1';
+
+        yield 'complete' => [static function (ActivatedJobResult $job, JobActionClient $action) use ($bad, $isFirst): void {
+            $action->complete($isFirst($job) ? $bad : []);
+        }];
+        yield 'fail' => [static function (ActivatedJobResult $job, JobActionClient $action) use ($bad, $isFirst): void {
+            $action->fail(retries: 1, variables: $isFirst($job) ? $bad : []);
+        }];
+        yield 'bpmn error' => [static function (ActivatedJobResult $job, JobActionClient $action) use ($bad, $isFirst): void {
+            $action->error('CODE', variables: $isFirst($job) ? $bad : []);
+        }];
+        yield 'auto-complete' => [static function (ActivatedJobResult $job, JobActionClient $action) use ($bad, $isFirst): array {
+            return $isFirst($job) ? $bad : [];
+        }];
+    }
+
+    /**
      * A failure report that itself fails is a transport problem, not a handler problem:
      * it keeps the existing behaviour of surfacing to the caller, exactly as a failing
      * auto-completion does today.

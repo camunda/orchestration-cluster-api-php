@@ -147,12 +147,19 @@ final class JobWorker
             $result = $handler instanceof JobHandler
                 ? $handler->handle($job, $action)
                 : $handler($job, $action);
+
+            // Auto-completion sits inside the guard so a handler result that cannot be
+            // encoded (a local request-construction error) also becomes a job failure.
+            if (!$action->wasHandled() && $this->options->autoComplete) {
+                $action->complete(\is_array($result) ? $result : []);
+            }
         } catch (\Throwable $throwable) {
             if ($action->hasInterruptedAction()) {
                 // The handler asked for a terminal action and the request for it
                 // failed. Substituting our own failure would discard the retries,
                 // back-off and message it asked for and hide the transport error, so
-                // this keeps propagating as it always has.
+                // this keeps propagating as it always has. This covers the auto-completion
+                // above too: a transport error there surfaces exactly as before.
                 throw $throwable;
             }
 
@@ -170,10 +177,6 @@ final class JobWorker
             }
 
             return;
-        }
-
-        if (!$action->wasHandled() && $this->options->autoComplete) {
-            $action->complete(\is_array($result) ? $result : []);
         }
     }
 
