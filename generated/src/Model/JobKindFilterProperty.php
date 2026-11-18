@@ -57,7 +57,7 @@ class JobKindFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\JobKindExactMatch',
+            'string',
             '\Camunda\Orchestration\Api\Model\AdvancedJobKindFilter'
         ];
     }

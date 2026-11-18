@@ -438,9 +438,9 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Gets messageSubscriptionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\MessageSubscriptionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null
      */
-    public function getMessageSubscriptionKey(): \Camunda\Orchestration\Api\Model\MessageSubscriptionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null
+    public function getMessageSubscriptionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null
     {
         return $this->container['messageSubscriptionKey'];
     }
@@ -448,11 +448,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Sets messageSubscriptionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\MessageSubscriptionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null $messageSubscriptionKey The message subscription key associated with this message subscription.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null $messageSubscriptionKey The message subscription key associated with this message subscription.
      *
      * @return $this
      */
-    public function setMessageSubscriptionKey(\Camunda\Orchestration\Api\Model\MessageSubscriptionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null $messageSubscriptionKey): static
+    public function setMessageSubscriptionKey(string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null $messageSubscriptionKey): static
     {
         if (is_null($messageSubscriptionKey)) {
             throw new InvalidArgumentException('non-nullable messageSubscriptionKey cannot be null');
@@ -470,9 +470,9 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Gets processDefinitionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
      */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+    public function getProcessDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
     {
         return $this->container['processDefinitionKey'];
     }
@@ -480,11 +480,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Sets processDefinitionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The process definition key associated with this correlated message subscription. This only works for data created with 8.9 and later.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The process definition key associated with this correlated message subscription. This only works for data created with 8.9 and later.
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
+    public function setProcessDefinitionKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
     {
         if (is_null($processDefinitionKey)) {
             throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');
@@ -534,9 +534,9 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Gets processInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['processInstanceKey'];
     }
@@ -544,11 +544,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Sets processInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The process instance key associated with this message subscription.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The process instance key associated with this message subscription.
      *
      * @return $this
      */
-    public function setProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
+    public function setProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
     {
         if (is_null($processInstanceKey)) {
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
@@ -598,9 +598,9 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Gets elementInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
      */
-    public function getElementInstanceKey(): \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+    public function getElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
         return $this->container['elementInstanceKey'];
     }
@@ -608,11 +608,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Sets elementInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The element instance key associated with this message subscription.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey The element instance key associated with this message subscription.
      *
      * @return $this
      */
-    public function setElementInstanceKey(\Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
+    public function setElementInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
     {
         if (is_null($elementInstanceKey)) {
             throw new InvalidArgumentException('non-nullable elementInstanceKey cannot be null');
@@ -630,9 +630,9 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Gets messageSubscriptionState
      *
-     * @return \Camunda\Orchestration\Api\Model\MessageSubscriptionStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionStateFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionStateFilter|null
      */
-    public function getMessageSubscriptionState(): \Camunda\Orchestration\Api\Model\MessageSubscriptionStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionStateFilter|null
+    public function getMessageSubscriptionState(): string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionStateFilter|null
     {
         return $this->container['messageSubscriptionState'];
     }
@@ -640,11 +640,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Sets messageSubscriptionState
      *
-     * @param \Camunda\Orchestration\Api\Model\MessageSubscriptionStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionStateFilter|null $messageSubscriptionState The message subscription state.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionStateFilter|null $messageSubscriptionState The message subscription state.
      *
      * @return $this
      */
-    public function setMessageSubscriptionState(\Camunda\Orchestration\Api\Model\MessageSubscriptionStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionStateFilter|null $messageSubscriptionState): static
+    public function setMessageSubscriptionState(string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionStateFilter|null $messageSubscriptionState): static
     {
         if (is_null($messageSubscriptionState)) {
             throw new InvalidArgumentException('non-nullable messageSubscriptionState cannot be null');
@@ -790,9 +790,9 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Gets messageSubscriptionType
      *
-     * @return \Camunda\Orchestration\Api\Model\MessageSubscriptionTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionTypeFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionTypeFilter|null
      */
-    public function getMessageSubscriptionType(): \Camunda\Orchestration\Api\Model\MessageSubscriptionTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionTypeFilter|null
+    public function getMessageSubscriptionType(): string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionTypeFilter|null
     {
         return $this->container['messageSubscriptionType'];
     }
@@ -800,11 +800,11 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Sets messageSubscriptionType
      *
-     * @param \Camunda\Orchestration\Api\Model\MessageSubscriptionTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionTypeFilter|null $messageSubscriptionType The type of message subscription to filter by. When omitted, both `START_EVENT` and `PROCESS_EVENT` are returned. Only available for data created with Camunda 8.10 or later.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionTypeFilter|null $messageSubscriptionType The type of message subscription to filter by. When omitted, both `START_EVENT` and `PROCESS_EVENT` are returned. Only available for data created with Camunda 8.10 or later.
      *
      * @return $this
      */
-    public function setMessageSubscriptionType(\Camunda\Orchestration\Api\Model\MessageSubscriptionTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionTypeFilter|null $messageSubscriptionType): static
+    public function setMessageSubscriptionType(string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionTypeFilter|null $messageSubscriptionType): static
     {
         if (is_null($messageSubscriptionType)) {
             throw new InvalidArgumentException('non-nullable messageSubscriptionType cannot be null');

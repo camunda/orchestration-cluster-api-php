@@ -495,9 +495,9 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
     /**
      * Gets state
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceStateFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceStateFilter|null
      */
-    public function getState(): \Camunda\Orchestration\Api\Model\ProcessInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceStateFilter|null
+    public function getState(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceStateFilter|null
     {
         return $this->container['state'];
     }
@@ -505,11 +505,11 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
     /**
      * Sets state
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceStateFilter|null $state The process instance state.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceStateFilter|null $state The process instance state.
      *
      * @return $this
      */
-    public function setState(\Camunda\Orchestration\Api\Model\ProcessInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceStateFilter|null $state): static
+    public function setState(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceStateFilter|null $state): static
     {
         if (is_null($state)) {
             throw new InvalidArgumentException('non-nullable state cannot be null');
@@ -655,9 +655,9 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
     /**
      * Gets processInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['processInstanceKey'];
     }
@@ -665,11 +665,11 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
     /**
      * Sets processInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The key of this process instance.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The key of this process instance.
      *
      * @return $this
      */
-    public function setProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
+    public function setProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
     {
         if (is_null($processInstanceKey)) {
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
@@ -687,9 +687,9 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
     /**
      * Gets parentProcessInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getParentProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getParentProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['parentProcessInstanceKey'];
     }
@@ -697,11 +697,11 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
     /**
      * Sets parentProcessInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $parentProcessInstanceKey The parent process instance key.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $parentProcessInstanceKey The parent process instance key.
      *
      * @return $this
      */
-    public function setParentProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $parentProcessInstanceKey): static
+    public function setParentProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $parentProcessInstanceKey): static
     {
         if (is_null($parentProcessInstanceKey)) {
             throw new InvalidArgumentException('non-nullable parentProcessInstanceKey cannot be null');
@@ -719,9 +719,9 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
     /**
      * Gets parentElementInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
      */
-    public function getParentElementInstanceKey(): \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+    public function getParentElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
         return $this->container['parentElementInstanceKey'];
     }
@@ -729,11 +729,11 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
     /**
      * Sets parentElementInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $parentElementInstanceKey The parent element instance key.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $parentElementInstanceKey The parent element instance key.
      *
      * @return $this
      */
-    public function setParentElementInstanceKey(\Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $parentElementInstanceKey): static
+    public function setParentElementInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $parentElementInstanceKey): static
     {
         if (is_null($parentElementInstanceKey)) {
             throw new InvalidArgumentException('non-nullable parentElementInstanceKey cannot be null');
@@ -881,9 +881,9 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
     /**
      * Gets elementInstanceState
      *
-     * @return \Camunda\Orchestration\Api\Model\ElementInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null
      */
-    public function getElementInstanceState(): \Camunda\Orchestration\Api\Model\ElementInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null
+    public function getElementInstanceState(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null
     {
         return $this->container['elementInstanceState'];
     }
@@ -891,11 +891,11 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
     /**
      * Sets elementInstanceState
      *
-     * @param \Camunda\Orchestration\Api\Model\ElementInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null $elementInstanceState The state of the element instances associated with the process instance.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null $elementInstanceState The state of the element instances associated with the process instance.
      *
      * @return $this
      */
-    public function setElementInstanceState(\Camunda\Orchestration\Api\Model\ElementInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null $elementInstanceState): static
+    public function setElementInstanceState(string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null $elementInstanceState): static
     {
         if (is_null($elementInstanceState)) {
             throw new InvalidArgumentException('non-nullable elementInstanceState cannot be null');

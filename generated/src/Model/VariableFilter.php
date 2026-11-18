@@ -482,9 +482,9 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets variableKey
      *
-     * @return \Camunda\Orchestration\Api\Model\VariableKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedVariableKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedVariableKeyFilter|null
      */
-    public function getVariableKey(): \Camunda\Orchestration\Api\Model\VariableKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedVariableKeyFilter|null
+    public function getVariableKey(): string|\Camunda\Orchestration\Api\Model\AdvancedVariableKeyFilter|null
     {
         return $this->container['variableKey'];
     }
@@ -492,11 +492,11 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets variableKey
      *
-     * @param \Camunda\Orchestration\Api\Model\VariableKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedVariableKeyFilter|null $variableKey The key for this variable.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedVariableKeyFilter|null $variableKey The key for this variable.
      *
      * @return $this
      */
-    public function setVariableKey(\Camunda\Orchestration\Api\Model\VariableKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedVariableKeyFilter|null $variableKey): static
+    public function setVariableKey(string|\Camunda\Orchestration\Api\Model\AdvancedVariableKeyFilter|null $variableKey): static
     {
         if (is_null($variableKey)) {
             throw new InvalidArgumentException('non-nullable variableKey cannot be null');
@@ -514,9 +514,9 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets scopeKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ScopeKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedScopeKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedScopeKeyFilter|null
      */
-    public function getScopeKey(): \Camunda\Orchestration\Api\Model\ScopeKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedScopeKeyFilter|null
+    public function getScopeKey(): string|\Camunda\Orchestration\Api\Model\AdvancedScopeKeyFilter|null
     {
         return $this->container['scopeKey'];
     }
@@ -524,11 +524,11 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets scopeKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ScopeKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedScopeKeyFilter|null $scopeKey The key of the scope that defines where this variable is directly defined. This can be a process instance key (for process-level variables) or an element instance key (for local variables scoped to tasks, subprocesses, gateways, events, etc.). Use this filter to find variables directly defined in specific scopes. Note that this does not include variables from parent scopes that would be visible through the scope hierarchy.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedScopeKeyFilter|null $scopeKey The key of the scope that defines where this variable is directly defined. This can be a process instance key (for process-level variables) or an element instance key (for local variables scoped to tasks, subprocesses, gateways, events, etc.). Use this filter to find variables directly defined in specific scopes. Note that this does not include variables from parent scopes that would be visible through the scope hierarchy.
      *
      * @return $this
      */
-    public function setScopeKey(\Camunda\Orchestration\Api\Model\ScopeKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedScopeKeyFilter|null $scopeKey): static
+    public function setScopeKey(string|\Camunda\Orchestration\Api\Model\AdvancedScopeKeyFilter|null $scopeKey): static
     {
         if (is_null($scopeKey)) {
             throw new InvalidArgumentException('non-nullable scopeKey cannot be null');
@@ -546,9 +546,9 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Gets processInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['processInstanceKey'];
     }
@@ -556,11 +556,11 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
     /**
      * Sets processInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The key of the process instance of this variable.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey The key of the process instance of this variable.
      *
      * @return $this
      */
-    public function setProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
+    public function setProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
     {
         if (is_null($processInstanceKey)) {
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');

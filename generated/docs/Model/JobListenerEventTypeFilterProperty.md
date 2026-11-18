@@ -5,7 +5,7 @@ It is never instantiated directly — use one of the concrete types.
 
 ## oneOf
 
-- [**\Camunda\Orchestration\Api\Model\JobListenerEventTypeExactMatch**](JobListenerEventTypeExactMatch.md)
+- **string**
 - [**\Camunda\Orchestration\Api\Model\AdvancedJobListenerEventTypeFilter**](AdvancedJobListenerEventTypeFilter.md)
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
