@@ -99,6 +99,15 @@ class DocumentReference implements ModelInterface, ArrayAccess, JsonSerializable
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -158,6 +167,20 @@ class DocumentReference implements ModelInterface, ArrayAccess, JsonSerializable
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -278,6 +301,10 @@ class DocumentReference implements ModelInterface, ArrayAccess, JsonSerializable
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -370,6 +397,11 @@ class DocumentReference implements ModelInterface, ArrayAccess, JsonSerializable
             );
         }
         $this->container['camundaDocumentType'] = $camundaDocumentType;
+        if ($camundaDocumentType === null) {
+            unset($this->openAPIFieldsSet['camundaDocumentType']);
+        } else {
+            $this->openAPIFieldsSet['camundaDocumentType'] = true;
+        }
 
         return $this;
     }
@@ -397,6 +429,11 @@ class DocumentReference implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable storeId cannot be null');
         }
         $this->container['storeId'] = $storeId;
+        if ($storeId === null) {
+            unset($this->openAPIFieldsSet['storeId']);
+        } else {
+            $this->openAPIFieldsSet['storeId'] = true;
+        }
 
         return $this;
     }
@@ -421,6 +458,11 @@ class DocumentReference implements ModelInterface, ArrayAccess, JsonSerializable
     public function setDocumentId(\Camunda\Orchestration\Semantic\DocumentId $documentId): static
     {
         $this->container['documentId'] = $documentId;
+        if ($documentId === null) {
+            unset($this->openAPIFieldsSet['documentId']);
+        } else {
+            $this->openAPIFieldsSet['documentId'] = true;
+        }
 
         return $this;
     }
@@ -455,6 +497,11 @@ class DocumentReference implements ModelInterface, ArrayAccess, JsonSerializable
             }
         }
         $this->container['contentHash'] = $contentHash;
+        if ($contentHash === null) {
+            unset($this->openAPIFieldsSet['contentHash']);
+        } else {
+            $this->openAPIFieldsSet['contentHash'] = true;
+        }
 
         return $this;
     }
@@ -482,6 +529,11 @@ class DocumentReference implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable metadata cannot be null');
         }
         $this->container['metadata'] = $metadata;
+        if ($metadata === null) {
+            unset($this->openAPIFieldsSet['metadata']);
+        } else {
+            $this->openAPIFieldsSet['metadata'] = true;
+        }
 
         return $this;
     }
@@ -524,6 +576,11 @@ class DocumentReference implements ModelInterface, ArrayAccess, JsonSerializable
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -537,6 +594,7 @@ class DocumentReference implements ModelInterface, ArrayAccess, JsonSerializable
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

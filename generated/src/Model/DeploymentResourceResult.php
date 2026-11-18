@@ -100,6 +100,15 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -159,6 +168,20 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -266,6 +289,10 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -362,6 +389,11 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable resourceId cannot be null');
         }
         $this->container['resourceId'] = $resourceId;
+        if ($resourceId === null) {
+            unset($this->openAPIFieldsSet['resourceId']);
+        } else {
+            $this->openAPIFieldsSet['resourceId'] = true;
+        }
 
         return $this;
     }
@@ -389,6 +421,11 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable resourceName cannot be null');
         }
         $this->container['resourceName'] = $resourceName;
+        if ($resourceName === null) {
+            unset($this->openAPIFieldsSet['resourceName']);
+        } else {
+            $this->openAPIFieldsSet['resourceName'] = true;
+        }
 
         return $this;
     }
@@ -416,6 +453,11 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable version cannot be null');
         }
         $this->container['version'] = $version;
+        if ($version === null) {
+            unset($this->openAPIFieldsSet['version']);
+        } else {
+            $this->openAPIFieldsSet['version'] = true;
+        }
 
         return $this;
     }
@@ -440,6 +482,11 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
     public function setTenantId(\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -467,6 +514,11 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
             throw new InvalidArgumentException('non-nullable resourceKey cannot be null');
         }
         $this->container['resourceKey'] = $resourceKey;
+        if ($resourceKey === null) {
+            unset($this->openAPIFieldsSet['resourceKey']);
+        } else {
+            $this->openAPIFieldsSet['resourceKey'] = true;
+        }
 
         return $this;
     }
@@ -509,6 +561,11 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -522,6 +579,7 @@ class DeploymentResourceResult implements ModelInterface, ArrayAccess, JsonSeria
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

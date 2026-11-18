@@ -9,6 +9,7 @@ use Camunda\Orchestration\Api\ApiException;
 use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\Api\Model\JobActivationRequest;
 use Camunda\Orchestration\Api\Model\ProblemDetail;
+use Camunda\Orchestration\Api\Model\TenantFilterEnum;
 use Camunda\Orchestration\CamundaClient;
 
 /**
@@ -130,6 +131,10 @@ final class JobWorker
         }
         if ($this->options->tenantIds !== []) {
             $request->setTenantIds($this->options->tenantIds);
+            // Tenant-scoped activation requires the explicit PROVIDED filter — the spec
+            // default only applies when the field is sent, and unset optional fields are
+            // omitted from the request body (issue #53).
+            $request->setTenantFilter(TenantFilterEnum::PROVIDED);
         }
 
         [$result, $httpStatus, $headers] = $this->jobApi()->activateJobsWithHttpInfo($request);

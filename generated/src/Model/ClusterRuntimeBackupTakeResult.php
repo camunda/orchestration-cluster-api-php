@@ -97,6 +97,15 @@ class ClusterRuntimeBackupTakeResult implements ModelInterface, ArrayAccess, Jso
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -156,6 +165,20 @@ class ClusterRuntimeBackupTakeResult implements ModelInterface, ArrayAccess, Jso
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -259,6 +282,10 @@ class ClusterRuntimeBackupTakeResult implements ModelInterface, ArrayAccess, Jso
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -324,6 +351,11 @@ class ClusterRuntimeBackupTakeResult implements ModelInterface, ArrayAccess, Jso
             throw new InvalidArgumentException('non-nullable physicalTenantId cannot be null');
         }
         $this->container['physicalTenantId'] = $physicalTenantId;
+        if ($physicalTenantId === null) {
+            unset($this->openAPIFieldsSet['physicalTenantId']);
+        } else {
+            $this->openAPIFieldsSet['physicalTenantId'] = true;
+        }
 
         return $this;
     }
@@ -362,6 +394,11 @@ class ClusterRuntimeBackupTakeResult implements ModelInterface, ArrayAccess, Jso
         }
 
         $this->container['backupId'] = $backupId;
+        if ($backupId === null) {
+            unset($this->openAPIFieldsSet['backupId']);
+        } else {
+            $this->openAPIFieldsSet['backupId'] = true;
+        }
 
         return $this;
     }
@@ -389,6 +426,11 @@ class ClusterRuntimeBackupTakeResult implements ModelInterface, ArrayAccess, Jso
             throw new InvalidArgumentException('non-nullable outcome cannot be null');
         }
         $this->container['outcome'] = $outcome;
+        if ($outcome === null) {
+            unset($this->openAPIFieldsSet['outcome']);
+        } else {
+            $this->openAPIFieldsSet['outcome'] = true;
+        }
 
         return $this;
     }
@@ -423,6 +465,11 @@ class ClusterRuntimeBackupTakeResult implements ModelInterface, ArrayAccess, Jso
             }
         }
         $this->container['reason'] = $reason;
+        if ($reason === null) {
+            unset($this->openAPIFieldsSet['reason']);
+        } else {
+            $this->openAPIFieldsSet['reason'] = true;
+        }
 
         return $this;
     }
@@ -465,6 +512,11 @@ class ClusterRuntimeBackupTakeResult implements ModelInterface, ArrayAccess, Jso
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -478,6 +530,7 @@ class ClusterRuntimeBackupTakeResult implements ModelInterface, ArrayAccess, Jso
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

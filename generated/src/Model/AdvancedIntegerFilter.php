@@ -109,6 +109,15 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -168,6 +177,20 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -287,6 +310,10 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -336,6 +363,11 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable eq cannot be null');
         }
         $this->container['eq'] = $eq;
+        if ($eq === null) {
+            unset($this->openAPIFieldsSet['eq']);
+        } else {
+            $this->openAPIFieldsSet['eq'] = true;
+        }
 
         return $this;
     }
@@ -363,6 +395,11 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable neq cannot be null');
         }
         $this->container['neq'] = $neq;
+        if ($neq === null) {
+            unset($this->openAPIFieldsSet['neq']);
+        } else {
+            $this->openAPIFieldsSet['neq'] = true;
+        }
 
         return $this;
     }
@@ -390,6 +427,11 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable exists cannot be null');
         }
         $this->container['exists'] = $exists;
+        if ($exists === null) {
+            unset($this->openAPIFieldsSet['exists']);
+        } else {
+            $this->openAPIFieldsSet['exists'] = true;
+        }
 
         return $this;
     }
@@ -417,6 +459,11 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable gt cannot be null');
         }
         $this->container['gt'] = $gt;
+        if ($gt === null) {
+            unset($this->openAPIFieldsSet['gt']);
+        } else {
+            $this->openAPIFieldsSet['gt'] = true;
+        }
 
         return $this;
     }
@@ -444,6 +491,11 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable gte cannot be null');
         }
         $this->container['gte'] = $gte;
+        if ($gte === null) {
+            unset($this->openAPIFieldsSet['gte']);
+        } else {
+            $this->openAPIFieldsSet['gte'] = true;
+        }
 
         return $this;
     }
@@ -471,6 +523,11 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable lt cannot be null');
         }
         $this->container['lt'] = $lt;
+        if ($lt === null) {
+            unset($this->openAPIFieldsSet['lt']);
+        } else {
+            $this->openAPIFieldsSet['lt'] = true;
+        }
 
         return $this;
     }
@@ -498,6 +555,11 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable lte cannot be null');
         }
         $this->container['lte'] = $lte;
+        if ($lte === null) {
+            unset($this->openAPIFieldsSet['lte']);
+        } else {
+            $this->openAPIFieldsSet['lte'] = true;
+        }
 
         return $this;
     }
@@ -525,6 +587,11 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable in cannot be null');
         }
         $this->container['in'] = $in;
+        if ($in === null) {
+            unset($this->openAPIFieldsSet['in']);
+        } else {
+            $this->openAPIFieldsSet['in'] = true;
+        }
 
         return $this;
     }
@@ -567,6 +634,11 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -580,6 +652,7 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

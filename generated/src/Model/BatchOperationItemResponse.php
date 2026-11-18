@@ -108,6 +108,15 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -167,6 +176,20 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -307,6 +330,10 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -398,6 +425,11 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
             throw new InvalidArgumentException('non-nullable operationType cannot be null');
         }
         $this->container['operationType'] = $operationType;
+        if ($operationType === null) {
+            unset($this->openAPIFieldsSet['operationType']);
+        } else {
+            $this->openAPIFieldsSet['operationType'] = true;
+        }
 
         return $this;
     }
@@ -422,6 +454,11 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
     public function setBatchOperationKey(\Camunda\Orchestration\Semantic\BatchOperationKey $batchOperationKey): static
     {
         $this->container['batchOperationKey'] = $batchOperationKey;
+        if ($batchOperationKey === null) {
+            unset($this->openAPIFieldsSet['batchOperationKey']);
+        } else {
+            $this->openAPIFieldsSet['batchOperationKey'] = true;
+        }
 
         return $this;
     }
@@ -449,6 +486,11 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
             throw new InvalidArgumentException('non-nullable itemKey cannot be null');
         }
         $this->container['itemKey'] = $itemKey;
+        if ($itemKey === null) {
+            unset($this->openAPIFieldsSet['itemKey']);
+        } else {
+            $this->openAPIFieldsSet['itemKey'] = true;
+        }
 
         return $this;
     }
@@ -483,6 +525,11 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
             }
         }
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -517,6 +564,11 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
             }
         }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
+        if ($rootProcessInstanceKey === null) {
+            unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['rootProcessInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -554,6 +606,11 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
             );
         }
         $this->container['state'] = $state;
+        if ($state === null) {
+            unset($this->openAPIFieldsSet['state']);
+        } else {
+            $this->openAPIFieldsSet['state'] = true;
+        }
 
         return $this;
     }
@@ -588,6 +645,11 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
             }
         }
         $this->container['processedDate'] = $processedDate;
+        if ($processedDate === null) {
+            unset($this->openAPIFieldsSet['processedDate']);
+        } else {
+            $this->openAPIFieldsSet['processedDate'] = true;
+        }
 
         return $this;
     }
@@ -622,6 +684,11 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
             }
         }
         $this->container['errorMessage'] = $errorMessage;
+        if ($errorMessage === null) {
+            unset($this->openAPIFieldsSet['errorMessage']);
+        } else {
+            $this->openAPIFieldsSet['errorMessage'] = true;
+        }
 
         return $this;
     }
@@ -664,6 +731,11 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -677,6 +749,7 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

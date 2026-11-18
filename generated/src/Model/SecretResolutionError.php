@@ -93,6 +93,15 @@ class SecretResolutionError implements ModelInterface, ArrayAccess, JsonSerializ
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -152,6 +161,20 @@ class SecretResolutionError implements ModelInterface, ArrayAccess, JsonSerializ
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -251,6 +274,10 @@ class SecretResolutionError implements ModelInterface, ArrayAccess, JsonSerializ
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -309,6 +336,11 @@ class SecretResolutionError implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable reference cannot be null');
         }
         $this->container['reference'] = $reference;
+        if ($reference === null) {
+            unset($this->openAPIFieldsSet['reference']);
+        } else {
+            $this->openAPIFieldsSet['reference'] = true;
+        }
 
         return $this;
     }
@@ -336,6 +368,11 @@ class SecretResolutionError implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable code cannot be null');
         }
         $this->container['code'] = $code;
+        if ($code === null) {
+            unset($this->openAPIFieldsSet['code']);
+        } else {
+            $this->openAPIFieldsSet['code'] = true;
+        }
 
         return $this;
     }
@@ -363,6 +400,11 @@ class SecretResolutionError implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable message cannot be null');
         }
         $this->container['message'] = $message;
+        if ($message === null) {
+            unset($this->openAPIFieldsSet['message']);
+        } else {
+            $this->openAPIFieldsSet['message'] = true;
+        }
 
         return $this;
     }
@@ -405,6 +447,11 @@ class SecretResolutionError implements ModelInterface, ArrayAccess, JsonSerializ
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -418,6 +465,7 @@ class SecretResolutionError implements ModelInterface, ArrayAccess, JsonSerializ
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

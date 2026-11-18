@@ -112,6 +112,15 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -171,6 +180,20 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -294,6 +317,10 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -343,6 +370,11 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable agentDefinitionKey cannot be null');
         }
         $this->container['agentDefinitionKey'] = $agentDefinitionKey;
+        if ($agentDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['agentDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['agentDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -370,6 +402,11 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable agentType cannot be null');
         }
         $this->container['agentType'] = $agentType;
+        if ($agentType === null) {
+            unset($this->openAPIFieldsSet['agentType']);
+        } else {
+            $this->openAPIFieldsSet['agentType'] = true;
+        }
 
         return $this;
     }
@@ -397,6 +434,11 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable name cannot be null');
         }
         $this->container['name'] = $name;
+        if ($name === null) {
+            unset($this->openAPIFieldsSet['name']);
+        } else {
+            $this->openAPIFieldsSet['name'] = true;
+        }
 
         return $this;
     }
@@ -424,6 +466,11 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable elementId cannot be null');
         }
         $this->container['elementId'] = $elementId;
+        if ($elementId === null) {
+            unset($this->openAPIFieldsSet['elementId']);
+        } else {
+            $this->openAPIFieldsSet['elementId'] = true;
+        }
 
         return $this;
     }
@@ -451,6 +498,11 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable processDefinitionId cannot be null');
         }
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -478,6 +530,11 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');
         }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
+        if ($processDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['processDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -505,6 +562,11 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
         }
         $this->container['processDefinitionVersion'] = $processDefinitionVersion;
+        if ($processDefinitionVersion === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersion']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
+        }
 
         return $this;
     }
@@ -532,6 +594,11 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable processDefinitionVersionTag cannot be null');
         }
         $this->container['processDefinitionVersionTag'] = $processDefinitionVersionTag;
+        if ($processDefinitionVersionTag === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersionTag']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersionTag'] = true;
+        }
 
         return $this;
     }
@@ -559,6 +626,11 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable tenantId cannot be null');
         }
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -601,6 +673,11 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -614,6 +691,7 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

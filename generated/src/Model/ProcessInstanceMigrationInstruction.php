@@ -94,6 +94,15 @@ class ProcessInstanceMigrationInstruction implements ModelInterface, ArrayAccess
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -153,6 +162,20 @@ class ProcessInstanceMigrationInstruction implements ModelInterface, ArrayAccess
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -252,6 +275,10 @@ class ProcessInstanceMigrationInstruction implements ModelInterface, ArrayAccess
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -317,6 +344,11 @@ class ProcessInstanceMigrationInstruction implements ModelInterface, ArrayAccess
     public function setTargetProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $targetProcessDefinitionKey): static
     {
         $this->container['targetProcessDefinitionKey'] = $targetProcessDefinitionKey;
+        if ($targetProcessDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['targetProcessDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['targetProcessDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -344,6 +376,11 @@ class ProcessInstanceMigrationInstruction implements ModelInterface, ArrayAccess
             throw new InvalidArgumentException('non-nullable mappingInstructions cannot be null');
         }
         $this->container['mappingInstructions'] = $mappingInstructions;
+        if ($mappingInstructions === null) {
+            unset($this->openAPIFieldsSet['mappingInstructions']);
+        } else {
+            $this->openAPIFieldsSet['mappingInstructions'] = true;
+        }
 
         return $this;
     }
@@ -375,6 +412,11 @@ class ProcessInstanceMigrationInstruction implements ModelInterface, ArrayAccess
         }
 
         $this->container['operationReference'] = $operationReference;
+        if ($operationReference === null) {
+            unset($this->openAPIFieldsSet['operationReference']);
+        } else {
+            $this->openAPIFieldsSet['operationReference'] = true;
+        }
 
         return $this;
     }
@@ -417,6 +459,11 @@ class ProcessInstanceMigrationInstruction implements ModelInterface, ArrayAccess
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -430,6 +477,7 @@ class ProcessInstanceMigrationInstruction implements ModelInterface, ArrayAccess
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

@@ -111,6 +111,15 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -170,6 +179,20 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -293,6 +316,10 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -351,6 +378,11 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable type cannot be null');
         }
         $this->container['type'] = $type;
+        if ($type === null) {
+            unset($this->openAPIFieldsSet['type']);
+        } else {
+            $this->openAPIFieldsSet['type'] = true;
+        }
 
         return $this;
     }
@@ -378,6 +410,11 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable worker cannot be null');
         }
         $this->container['worker'] = $worker;
+        if ($worker === null) {
+            unset($this->openAPIFieldsSet['worker']);
+        } else {
+            $this->openAPIFieldsSet['worker'] = true;
+        }
 
         return $this;
     }
@@ -405,6 +442,11 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable timeout cannot be null');
         }
         $this->container['timeout'] = $timeout;
+        if ($timeout === null) {
+            unset($this->openAPIFieldsSet['timeout']);
+        } else {
+            $this->openAPIFieldsSet['timeout'] = true;
+        }
 
         return $this;
     }
@@ -432,6 +474,11 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable maxJobsToActivate cannot be null');
         }
         $this->container['maxJobsToActivate'] = $maxJobsToActivate;
+        if ($maxJobsToActivate === null) {
+            unset($this->openAPIFieldsSet['maxJobsToActivate']);
+        } else {
+            $this->openAPIFieldsSet['maxJobsToActivate'] = true;
+        }
 
         return $this;
     }
@@ -459,6 +506,11 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable fetchVariable cannot be null');
         }
         $this->container['fetchVariable'] = $fetchVariable;
+        if ($fetchVariable === null) {
+            unset($this->openAPIFieldsSet['fetchVariable']);
+        } else {
+            $this->openAPIFieldsSet['fetchVariable'] = true;
+        }
 
         return $this;
     }
@@ -486,6 +538,11 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable requestTimeout cannot be null');
         }
         $this->container['requestTimeout'] = $requestTimeout;
+        if ($requestTimeout === null) {
+            unset($this->openAPIFieldsSet['requestTimeout']);
+        } else {
+            $this->openAPIFieldsSet['requestTimeout'] = true;
+        }
 
         return $this;
     }
@@ -513,6 +570,11 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable tenantIds cannot be null');
         }
         $this->container['tenantIds'] = $tenantIds;
+        if ($tenantIds === null) {
+            unset($this->openAPIFieldsSet['tenantIds']);
+        } else {
+            $this->openAPIFieldsSet['tenantIds'] = true;
+        }
 
         return $this;
     }
@@ -540,6 +602,11 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable tenantFilter cannot be null');
         }
         $this->container['tenantFilter'] = $tenantFilter;
+        if ($tenantFilter === null) {
+            unset($this->openAPIFieldsSet['tenantFilter']);
+        } else {
+            $this->openAPIFieldsSet['tenantFilter'] = true;
+        }
 
         return $this;
     }
@@ -574,6 +641,11 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
             }
         }
         $this->container['withLease'] = $withLease;
+        if ($withLease === null) {
+            unset($this->openAPIFieldsSet['withLease']);
+        } else {
+            $this->openAPIFieldsSet['withLease'] = true;
+        }
 
         return $this;
     }
@@ -616,6 +688,11 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -629,6 +706,7 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**
