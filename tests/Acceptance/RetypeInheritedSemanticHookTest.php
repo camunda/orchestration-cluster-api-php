@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Tests\Acceptance;
 
 use Closure;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -32,9 +33,7 @@ final class RetypeInheritedSemanticHookTest extends TestCase
         yield 'ByVersionTag' => ['ProcessInstanceCreationInstructionByVersionTag'];
     }
 
-    /**
-     * @dataProvider variantProvider
-     */
+    #[DataProvider('variantProvider')]
     public function testInheritedIdentifiersKeepSemanticTypes(string $variant): void
     {
         $dir = $this->createFixture();
