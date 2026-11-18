@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Tests\Acceptance;
 
+use Camunda\Orchestration\Api\Api\JobApi;
 use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\Api\Model\JobCompletionRequest;
 use Camunda\Orchestration\CamundaClient;
 use Camunda\Orchestration\Config\ConfigResolver;
+use Camunda\Orchestration\Exception\AuthenticationException;
 use Camunda\Orchestration\Worker\JobActionClient;
 use Camunda\Orchestration\Worker\JobHandler;
 use Camunda\Orchestration\Worker\JobWorker;
@@ -432,6 +434,32 @@ final class JobWorkerHandlerExceptionTest extends TestCase
     }
 
     /**
+     * A failed OAuth token refresh during a terminal action is an interrupted action,
+     * not a handler data problem: the auth middleware raises `AuthenticationException`
+     * (not `ApiException`) while the request is on the wire. The action must stay
+     * marked as interrupted so the exception surfaces to the caller — clearing the flag
+     * would let the worker substitute a `fail(retries - 1)` that consumes a retry or
+     * creates an incident, hiding the authentication failure.
+     */
+    public function testAFailedAuthRefreshDuringCompletionSurfacesAndSendsNoSubstitute(): void
+    {
+        $action = new JobActionClient(new AuthFailingJobApi(), new ActivatedJobResult(['jobKey' => '1']));
+
+        try {
+            $action->complete(['done' => true]);
+            self::fail('Expected the failed token refresh to surface to the caller.');
+        } catch (AuthenticationException $exception) {
+            self::assertSame('OAuth token request failed with HTTP 401: unauthorized', $exception->getMessage());
+        }
+
+        self::assertTrue(
+            $action->hasInterruptedAction(),
+            'A failed token refresh must leave the action marked as interrupted, so the worker propagates it instead of substituting a retry-consuming failure.',
+        );
+        self::assertFalse($action->wasHandled());
+    }
+
+    /**
      * @param list<Response> $responses
      */
     private function worker(array $responses, ?JobWorkerOptions $options = null): JobWorker
@@ -526,5 +554,21 @@ final class ExplodingVariable extends JobCompletionRequest
     public function getVariables(): ?array
     {
         throw new \RuntimeException('exploded mid-serialization');
+    }
+}
+
+/**
+ * A {@see JobApi} whose completion throws `AuthenticationException`, the shape of a
+ * failed OAuth token refresh raised by the auth middleware while the request is on the
+ * wire. It never reaches the network.
+ */
+final class AuthFailingJobApi extends JobApi
+{
+    public function completeJob(
+        string $jobKey,
+        ?JobCompletionRequest $jobCompletionRequest = null,
+        string $contentType = 'application/json',
+    ): ?\Camunda\Orchestration\Api\Model\ProblemDetail {
+        throw new AuthenticationException('OAuth token request failed with HTTP 401: unauthorized');
     }
 }

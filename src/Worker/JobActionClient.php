@@ -10,6 +10,7 @@ use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\Api\Model\JobCompletionRequest;
 use Camunda\Orchestration\Api\Model\JobErrorRequest;
 use Camunda\Orchestration\Api\Model\JobFailRequest;
+use Camunda\Orchestration\Exception\AuthenticationException;
 
 /**
  * The action surface handed to a job handler: complete, fail, or raise a BPMN error
@@ -118,6 +119,12 @@ final class JobActionClient
      * the request did go out and its outcome is unknown. The flag stays set and the
      * worker keeps propagating it rather than substituting its own failure.
      *
+     * An `AuthenticationException` is interrupted the same way: the auth middleware
+     * raises it while the request is on the wire when an OAuth token refresh fails, so
+     * the action never completed. Clearing the flag would let the worker substitute a
+     * `fail(retries - 1)` that consumes a retry or creates an incident, hiding the
+     * authentication failure — so it is preserved alongside `ApiException`.
+     *
      * @param \Closure(JobApi, string): mixed $request
      */
     private function send(\Closure $request): void
@@ -125,8 +132,8 @@ final class JobActionClient
         $this->actionInFlight = true;
         try {
             $request($this->jobApi, $this->jobKey());
-        } catch (ApiException $transport) {
-            throw $transport;
+        } catch (ApiException|AuthenticationException $interrupted) {
+            throw $interrupted;
         } catch (\Throwable $throwable) {
             $this->actionInFlight = false;
 
