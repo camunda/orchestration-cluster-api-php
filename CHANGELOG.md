@@ -1,3 +1,10 @@
+## [10.0.2](https://github.com/camunda/orchestration-cluster-api-php/compare/v10.0.1...v10.0.2) (2026-11-19)
+
+
+### Bug Fixes
+
+* keep key and enum exact-match filter values (stable/10 backport of [#145](https://github.com/camunda/orchestration-cluster-api-php/issues/145)) ([#149](https://github.com/camunda/orchestration-cluster-api-php/issues/149)) ([dcbef7b](https://github.com/camunda/orchestration-cluster-api-php/commit/dcbef7b83a5519d544a2d3446291c4bf53ce9cc9)), closes [#147](https://github.com/camunda/orchestration-cluster-api-php/issues/147) [#147](https://github.com/camunda/orchestration-cluster-api-php/issues/147) [#147](https://github.com/camunda/orchestration-cluster-api-php/issues/147) [#147](https://github.com/camunda/orchestration-cluster-api-php/issues/147) [#147](https://github.com/camunda/orchestration-cluster-api-php/issues/147)
+
 ## [10.0.1](https://github.com/camunda/orchestration-cluster-api-php/compare/v10.0.0...v10.0.1) (2026-11-19)
 
 
