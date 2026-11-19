@@ -60,7 +60,7 @@ final class DefaultTenantTest extends TestCase
         $t = static fn (?string $tenant): array => $tenant === null ? [] : ['tenantId' => new TenantId($tenant)];
         yield 'createProcessInstance by id' => [static fn (CamundaClient $c, ?string $tenant) => $c->createProcessInstance(new ProcessInstanceCreationInstructionById(['processDefinitionId' => 'p'] + $t($tenant)))];
         yield 'createProcessInstance by key' => [static fn (CamundaClient $c, ?string $tenant) => $c->createProcessInstance(new ProcessInstanceCreationInstructionByKey(['processDefinitionKey' => '2251799813685249'] + $t($tenant)))];
-        yield 'createProcessInstance by version tag' => [static fn (CamundaClient $c, ?string $tenant) => $c->createProcessInstance(new ProcessInstanceCreationInstructionById(['processDefinitionId' => 'p', 'processDefinitionVersionTag' => 'v1'] + $t($tenant)))];
+        yield 'createProcessInstance by id with version' => [static fn (CamundaClient $c, ?string $tenant) => $c->createProcessInstance(new ProcessInstanceCreationInstructionById(['processDefinitionId' => 'p', 'processDefinitionVersion' => 2] + $t($tenant)))];
         yield 'publishMessage' => [static fn (CamundaClient $c, ?string $tenant) => $c->publishMessage(new MessagePublicationRequest(['name' => 'm'] + $t($tenant)))];
         yield 'correlateMessage' => [static fn (CamundaClient $c, ?string $tenant) => $c->correlateMessage(new MessageCorrelationRequest(['name' => 'm', 'correlationKey' => 'k'] + $t($tenant)))];
         yield 'broadcastSignal' => [static fn (CamundaClient $c, ?string $tenant) => $c->broadcastSignal(new SignalBroadcastRequest(['signalName' => 's'] + $t($tenant)))];
