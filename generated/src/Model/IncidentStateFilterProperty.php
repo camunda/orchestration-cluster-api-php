@@ -57,7 +57,7 @@ class IncidentStateFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\IncidentStateExactMatch',
+            '\Camunda\Orchestration\Api\Model\IncidentStateEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedIncidentStateFilter'
         ];
     }

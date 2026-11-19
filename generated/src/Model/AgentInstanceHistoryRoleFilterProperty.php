@@ -57,7 +57,7 @@ class AgentInstanceHistoryRoleFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleExactMatch',
+            '\Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryRoleFilter'
         ];
     }

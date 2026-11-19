@@ -466,6 +466,22 @@ class ObjectSerializer
         };
     }
 
+    /** Recursion depth of deserialize(); > 0 while hydrating values nested in a decoded parent. */
+    private static int $nestingDepth = 0;
+
+    /**
+     * Deserialize a value nested inside an already-decoded parent (property or element).
+     */
+    private static function deserializeNested(mixed $data, string $class): mixed
+    {
+        self::$nestingDepth++;
+        try {
+            return self::deserialize($data, $class, null);
+        } finally {
+            self::$nestingDepth--;
+        }
+    }
+
     /**
      * Deserialize a JSON string into an object
      *
@@ -491,7 +507,7 @@ class ObjectSerializer
             $subClass = substr($class, 0, -2);
             $values = [];
             foreach ($data as $key => $value) {
-                $values[] = self::deserialize($value, $subClass, null);
+                $values[] = self::deserializeNested($value, $subClass);
             }
             return $values;
         }
@@ -505,7 +521,7 @@ class ObjectSerializer
                 $subClass_array = explode(',', $inner, 2);
                 $subClass = $subClass_array[1];
                 foreach ($data as $key => $value) {
-                    $deserialized[$key] = self::deserialize($value, $subClass, null);
+                    $deserialized[$key] = self::deserializeNested($value, $subClass);
                 }
             }
             return $deserialized;
@@ -593,6 +609,13 @@ class ObjectSerializer
             if (is_string($data)) {
                 $decoded = json_decode($data);
                 // Keep the original string if decode fails (nested values are already PHP strings).
+                // For oneOf/anyOf unions also keep it when it decodes to a scalar, so numeric-looking
+                // key strings still match a `string` member.
+                $isUnion = is_subclass_of($class, '\Camunda\Orchestration\Api\Model\OneOfInterface')
+                    || is_subclass_of($class, '\Camunda\Orchestration\Api\Model\AnyOfInterface');
+                if ($isUnion && self::$nestingDepth > 0 && $decoded !== null && !is_array($decoded) && !is_object($decoded)) {
+                    $decoded = null;
+                }
                 $data = ($decoded !== null || $data === 'null') ? $decoded : $data;
             }
 
@@ -637,7 +660,7 @@ class ObjectSerializer
 
                 if (isset($data->{$instance::attributeMap()[$property]})) {
                     $propertyValue = $data->{$instance::attributeMap()[$property]};
-                    $instance->$propertySetter(self::deserialize($propertyValue, $type, null));
+                    $instance->$propertySetter(self::deserializeNested($propertyValue, $type));
                 }
             }
             return $instance;

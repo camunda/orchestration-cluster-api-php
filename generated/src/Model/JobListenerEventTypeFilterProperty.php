@@ -57,7 +57,7 @@ class JobListenerEventTypeFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\JobListenerEventTypeExactMatch',
+            '\Camunda\Orchestration\Api\Model\JobListenerEventTypeEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedJobListenerEventTypeFilter'
         ];
     }

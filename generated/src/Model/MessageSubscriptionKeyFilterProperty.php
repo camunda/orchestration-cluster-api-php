@@ -57,7 +57,7 @@ class MessageSubscriptionKeyFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\MessageSubscriptionKeyExactMatch',
+            'string',
             '\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter'
         ];
     }

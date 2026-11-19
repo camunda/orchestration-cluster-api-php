@@ -57,7 +57,7 @@ class AuditLogResultFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\AuditLogResultExactMatch',
+            '\Camunda\Orchestration\Api\Model\AuditLogResultEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedResultFilter'
         ];
     }

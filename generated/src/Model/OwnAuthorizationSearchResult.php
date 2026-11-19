@@ -390,7 +390,7 @@ class OwnAuthorizationSearchResult implements ModelInterface, ArrayAccess, JsonS
     /**
      * Sets authorizationsEnabled
      *
-     * @param bool $authorizationsEnabled Indicates whether authorization checks are enabled for the cluster.
+     * @param bool $authorizationsEnabled Indicates whether authorization checks are enabled for the physical tenant of the request.
      *
      * @return $this
      */

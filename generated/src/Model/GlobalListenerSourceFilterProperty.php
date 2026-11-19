@@ -57,7 +57,7 @@ class GlobalListenerSourceFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\GlobalListenerSourceExactMatch',
+            '\Camunda\Orchestration\Api\Model\GlobalListenerSourceEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedGlobalListenerSourceFilter'
         ];
     }

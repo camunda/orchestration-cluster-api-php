@@ -57,7 +57,7 @@ class IncidentErrorTypeFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\IncidentErrorTypeExactMatch',
+            '\Camunda\Orchestration\Api\Model\IncidentErrorTypeEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedIncidentErrorTypeFilter'
         ];
     }

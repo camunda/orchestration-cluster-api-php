@@ -57,7 +57,7 @@ class ScopeKeyFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\ScopeKeyExactMatch',
+            '\Camunda\Orchestration\Semantic\ScopeKey',
             '\Camunda\Orchestration\Api\Model\AdvancedScopeKeyFilter'
         ];
     }

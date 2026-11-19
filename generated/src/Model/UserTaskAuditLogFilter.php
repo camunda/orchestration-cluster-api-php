@@ -322,9 +322,9 @@ class UserTaskAuditLogFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets operationType
      *
-     * @return \Camunda\Orchestration\Api\Model\OperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null
+     * @return \Camunda\Orchestration\Api\Model\AuditLogOperationTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null
      */
-    public function getOperationType(): \Camunda\Orchestration\Api\Model\OperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null
+    public function getOperationType(): \Camunda\Orchestration\Api\Model\AuditLogOperationTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null
     {
         return $this->container['operationType'];
     }
@@ -332,11 +332,11 @@ class UserTaskAuditLogFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets operationType
      *
-     * @param \Camunda\Orchestration\Api\Model\OperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null $operationType The audit log operation type search filter.
+     * @param \Camunda\Orchestration\Api\Model\AuditLogOperationTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null $operationType The audit log operation type search filter.
      *
      * @return $this
      */
-    public function setOperationType(\Camunda\Orchestration\Api\Model\OperationTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null $operationType): static
+    public function setOperationType(\Camunda\Orchestration\Api\Model\AuditLogOperationTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null $operationType): static
     {
         if (is_null($operationType)) {
             throw new InvalidArgumentException('non-nullable operationType cannot be null');
@@ -354,9 +354,9 @@ class UserTaskAuditLogFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets result
      *
-     * @return \Camunda\Orchestration\Api\Model\AuditLogResultExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null
+     * @return \Camunda\Orchestration\Api\Model\AuditLogResultEnum|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null
      */
-    public function getResult(): \Camunda\Orchestration\Api\Model\AuditLogResultExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null
+    public function getResult(): \Camunda\Orchestration\Api\Model\AuditLogResultEnum|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null
     {
         return $this->container['result'];
     }
@@ -364,11 +364,11 @@ class UserTaskAuditLogFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets result
      *
-     * @param \Camunda\Orchestration\Api\Model\AuditLogResultExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null $result The audit log result search filter.
+     * @param \Camunda\Orchestration\Api\Model\AuditLogResultEnum|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null $result The audit log result search filter.
      *
      * @return $this
      */
-    public function setResult(\Camunda\Orchestration\Api\Model\AuditLogResultExactMatch|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null $result): static
+    public function setResult(\Camunda\Orchestration\Api\Model\AuditLogResultEnum|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null $result): static
     {
         if (is_null($result)) {
             throw new InvalidArgumentException('non-nullable result cannot be null');
@@ -418,9 +418,9 @@ class UserTaskAuditLogFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Gets actorType
      *
-     * @return \Camunda\Orchestration\Api\Model\AuditLogActorTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null
+     * @return \Camunda\Orchestration\Api\Model\AuditLogActorTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null
      */
-    public function getActorType(): \Camunda\Orchestration\Api\Model\AuditLogActorTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null
+    public function getActorType(): \Camunda\Orchestration\Api\Model\AuditLogActorTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null
     {
         return $this->container['actorType'];
     }
@@ -428,11 +428,11 @@ class UserTaskAuditLogFilter implements ModelInterface, ArrayAccess, JsonSeriali
     /**
      * Sets actorType
      *
-     * @param \Camunda\Orchestration\Api\Model\AuditLogActorTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null $actorType The actor type search filter.
+     * @param \Camunda\Orchestration\Api\Model\AuditLogActorTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null $actorType The actor type search filter.
      *
      * @return $this
      */
-    public function setActorType(\Camunda\Orchestration\Api\Model\AuditLogActorTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null $actorType): static
+    public function setActorType(\Camunda\Orchestration\Api\Model\AuditLogActorTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null $actorType): static
     {
         if (is_null($actorType)) {
             throw new InvalidArgumentException('non-nullable actorType cannot be null');

@@ -57,7 +57,7 @@ class ElementInstanceStateFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\ElementInstanceStateExactMatch',
+            '\Camunda\Orchestration\Api\Model\ElementInstanceStateEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter'
         ];
     }

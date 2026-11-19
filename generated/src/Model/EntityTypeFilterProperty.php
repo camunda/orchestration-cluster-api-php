@@ -57,7 +57,7 @@ class EntityTypeFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\EntityTypeExactMatch',
+            '\Camunda\Orchestration\Api\Model\AuditLogEntityTypeEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter'
         ];
     }

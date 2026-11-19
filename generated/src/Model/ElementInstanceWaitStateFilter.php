@@ -329,9 +329,9 @@ class ElementInstanceWaitStateFilter implements ModelInterface, ArrayAccess, Jso
     /**
      * Gets elementInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
      */
-    public function getElementInstanceKey(): \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
+    public function getElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
         return $this->container['elementInstanceKey'];
     }
@@ -339,11 +339,11 @@ class ElementInstanceWaitStateFilter implements ModelInterface, ArrayAccess, Jso
     /**
      * Sets elementInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey Filter by element instance key.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey Filter by element instance key.
      *
      * @return $this
      */
-    public function setElementInstanceKey(\Camunda\Orchestration\Api\Model\ElementInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
+    public function setElementInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null $elementInstanceKey): static
     {
         if (is_null($elementInstanceKey)) {
             throw new InvalidArgumentException('non-nullable elementInstanceKey cannot be null');
@@ -361,9 +361,9 @@ class ElementInstanceWaitStateFilter implements ModelInterface, ArrayAccess, Jso
     /**
      * Gets processInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['processInstanceKey'];
     }
@@ -371,11 +371,11 @@ class ElementInstanceWaitStateFilter implements ModelInterface, ArrayAccess, Jso
     /**
      * Sets processInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey Filter by process instance key.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey Filter by process instance key.
      *
      * @return $this
      */
-    public function setProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
+    public function setProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $processInstanceKey): static
     {
         if (is_null($processInstanceKey)) {
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
@@ -393,9 +393,9 @@ class ElementInstanceWaitStateFilter implements ModelInterface, ArrayAccess, Jso
     /**
      * Gets rootProcessInstanceKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
      */
-    public function getRootProcessInstanceKey(): \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
+    public function getRootProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
         return $this->container['rootProcessInstanceKey'];
     }
@@ -403,11 +403,11 @@ class ElementInstanceWaitStateFilter implements ModelInterface, ArrayAccess, Jso
     /**
      * Sets rootProcessInstanceKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $rootProcessInstanceKey Filter by root process instance key.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $rootProcessInstanceKey Filter by root process instance key.
      *
      * @return $this
      */
-    public function setRootProcessInstanceKey(\Camunda\Orchestration\Api\Model\ProcessInstanceKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $rootProcessInstanceKey): static
+    public function setRootProcessInstanceKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null $rootProcessInstanceKey): static
     {
         if (is_null($rootProcessInstanceKey)) {
             throw new InvalidArgumentException('non-nullable rootProcessInstanceKey cannot be null');
@@ -457,9 +457,9 @@ class ElementInstanceWaitStateFilter implements ModelInterface, ArrayAccess, Jso
     /**
      * Gets elementType
      *
-     * @return \Camunda\Orchestration\Api\Model\WaitStateElementTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedWaitStateElementTypeFilter|null
+     * @return \Camunda\Orchestration\Api\Model\WaitStateElementTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedWaitStateElementTypeFilter|null
      */
-    public function getElementType(): \Camunda\Orchestration\Api\Model\WaitStateElementTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedWaitStateElementTypeFilter|null
+    public function getElementType(): \Camunda\Orchestration\Api\Model\WaitStateElementTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedWaitStateElementTypeFilter|null
     {
         return $this->container['elementType'];
     }
@@ -467,11 +467,11 @@ class ElementInstanceWaitStateFilter implements ModelInterface, ArrayAccess, Jso
     /**
      * Sets elementType
      *
-     * @param \Camunda\Orchestration\Api\Model\WaitStateElementTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedWaitStateElementTypeFilter|null $elementType Filter by element type.
+     * @param \Camunda\Orchestration\Api\Model\WaitStateElementTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedWaitStateElementTypeFilter|null $elementType Filter by element type.
      *
      * @return $this
      */
-    public function setElementType(\Camunda\Orchestration\Api\Model\WaitStateElementTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedWaitStateElementTypeFilter|null $elementType): static
+    public function setElementType(\Camunda\Orchestration\Api\Model\WaitStateElementTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedWaitStateElementTypeFilter|null $elementType): static
     {
         if (is_null($elementType)) {
             throw new InvalidArgumentException('non-nullable elementType cannot be null');
@@ -489,9 +489,9 @@ class ElementInstanceWaitStateFilter implements ModelInterface, ArrayAccess, Jso
     /**
      * Gets waitStateType
      *
-     * @return \Camunda\Orchestration\Api\Model\WaitStateTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedWaitStateTypeFilter|null
+     * @return \Camunda\Orchestration\Api\Model\WaitStateTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedWaitStateTypeFilter|null
      */
-    public function getWaitStateType(): \Camunda\Orchestration\Api\Model\WaitStateTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedWaitStateTypeFilter|null
+    public function getWaitStateType(): \Camunda\Orchestration\Api\Model\WaitStateTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedWaitStateTypeFilter|null
     {
         return $this->container['waitStateType'];
     }
@@ -499,11 +499,11 @@ class ElementInstanceWaitStateFilter implements ModelInterface, ArrayAccess, Jso
     /**
      * Sets waitStateType
      *
-     * @param \Camunda\Orchestration\Api\Model\WaitStateTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedWaitStateTypeFilter|null $waitStateType Filter by wait state type.
+     * @param \Camunda\Orchestration\Api\Model\WaitStateTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedWaitStateTypeFilter|null $waitStateType Filter by wait state type.
      *
      * @return $this
      */
-    public function setWaitStateType(\Camunda\Orchestration\Api\Model\WaitStateTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedWaitStateTypeFilter|null $waitStateType): static
+    public function setWaitStateType(\Camunda\Orchestration\Api\Model\WaitStateTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedWaitStateTypeFilter|null $waitStateType): static
     {
         if (is_null($waitStateType)) {
             throw new InvalidArgumentException('non-nullable waitStateType cannot be null');

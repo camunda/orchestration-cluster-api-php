@@ -57,7 +57,7 @@ class AgentDefinitionTypeFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\AgentDefinitionTypeExactMatch',
+            '\Camunda\Orchestration\Api\Model\AgentDefinitionTypeEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionTypeFilter'
         ];
     }

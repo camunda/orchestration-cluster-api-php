@@ -57,7 +57,7 @@ class ClusterVariableScopeFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\ClusterVariableScopeExactMatch',
+            '\Camunda\Orchestration\Api\Model\ClusterVariableScopeEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedClusterVariableScopeFilter'
         ];
     }

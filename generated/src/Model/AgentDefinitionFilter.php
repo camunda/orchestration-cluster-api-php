@@ -350,9 +350,9 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
     /**
      * Gets agentDefinitionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\AgentDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null
      */
-    public function getAgentDefinitionKey(): \Camunda\Orchestration\Api\Model\AgentDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null
+    public function getAgentDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null
     {
         return $this->container['agentDefinitionKey'];
     }
@@ -360,11 +360,11 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
     /**
      * Sets agentDefinitionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\AgentDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null $agentDefinitionKey The unique key of the agent definition.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null $agentDefinitionKey The unique key of the agent definition.
      *
      * @return $this
      */
-    public function setAgentDefinitionKey(\Camunda\Orchestration\Api\Model\AgentDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null $agentDefinitionKey): static
+    public function setAgentDefinitionKey(string|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionKeyFilter|null $agentDefinitionKey): static
     {
         if (is_null($agentDefinitionKey)) {
             throw new InvalidArgumentException('non-nullable agentDefinitionKey cannot be null');
@@ -382,9 +382,9 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
     /**
      * Gets agentType
      *
-     * @return \Camunda\Orchestration\Api\Model\AgentDefinitionTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionTypeFilter|null
+     * @return \Camunda\Orchestration\Api\Model\AgentDefinitionTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionTypeFilter|null
      */
-    public function getAgentType(): \Camunda\Orchestration\Api\Model\AgentDefinitionTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionTypeFilter|null
+    public function getAgentType(): \Camunda\Orchestration\Api\Model\AgentDefinitionTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionTypeFilter|null
     {
         return $this->container['agentType'];
     }
@@ -392,11 +392,11 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
     /**
      * Sets agentType
      *
-     * @param \Camunda\Orchestration\Api\Model\AgentDefinitionTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionTypeFilter|null $agentType The kind of agent this agent definition describes.
+     * @param \Camunda\Orchestration\Api\Model\AgentDefinitionTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionTypeFilter|null $agentType The kind of agent this agent definition describes.
      *
      * @return $this
      */
-    public function setAgentType(\Camunda\Orchestration\Api\Model\AgentDefinitionTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionTypeFilter|null $agentType): static
+    public function setAgentType(\Camunda\Orchestration\Api\Model\AgentDefinitionTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedAgentDefinitionTypeFilter|null $agentType): static
     {
         if (is_null($agentType)) {
             throw new InvalidArgumentException('non-nullable agentType cannot be null');
@@ -510,9 +510,9 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
     /**
      * Gets processDefinitionKey
      *
-     * @return \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+     * @return string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
      */
-    public function getProcessDefinitionKey(): \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
+    public function getProcessDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
     {
         return $this->container['processDefinitionKey'];
     }
@@ -520,11 +520,11 @@ class AgentDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerializ
     /**
      * Sets processDefinitionKey
      *
-     * @param \Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The key of the process definition that owns the agent definition.
+     * @param string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey The key of the process definition that owns the agent definition.
      *
      * @return $this
      */
-    public function setProcessDefinitionKey(\Camunda\Orchestration\Api\Model\ProcessDefinitionKeyExactMatch|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
+    public function setProcessDefinitionKey(string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null $processDefinitionKey): static
     {
         if (is_null($processDefinitionKey)) {
             throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');

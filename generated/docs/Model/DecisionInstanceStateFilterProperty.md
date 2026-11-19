@@ -5,7 +5,7 @@ It is never instantiated directly — use one of the concrete types.
 
 ## oneOf
 
-- [**\Camunda\Orchestration\Api\Model\DecisionInstanceStateExactMatch**](DecisionInstanceStateExactMatch.md)
+- [**\Camunda\Orchestration\Api\Model\DecisionInstanceStateEnum**](DecisionInstanceStateEnum.md)
 - [**\Camunda\Orchestration\Api\Model\AdvancedDecisionInstanceStateFilter**](AdvancedDecisionInstanceStateFilter.md)
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)

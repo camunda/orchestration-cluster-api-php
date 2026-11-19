@@ -517,9 +517,9 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
     /**
      * Gets state
      *
-     * @return \Camunda\Orchestration\Api\Model\ElementInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null
+     * @return \Camunda\Orchestration\Api\Model\ElementInstanceStateEnum|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null
      */
-    public function getState(): \Camunda\Orchestration\Api\Model\ElementInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null
+    public function getState(): \Camunda\Orchestration\Api\Model\ElementInstanceStateEnum|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null
     {
         return $this->container['state'];
     }
@@ -527,11 +527,11 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
     /**
      * Sets state
      *
-     * @param \Camunda\Orchestration\Api\Model\ElementInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null $state State of element instance as defined set of values.
+     * @param \Camunda\Orchestration\Api\Model\ElementInstanceStateEnum|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null $state State of element instance as defined set of values.
      *
      * @return $this
      */
-    public function setState(\Camunda\Orchestration\Api\Model\ElementInstanceStateExactMatch|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null $state): static
+    public function setState(\Camunda\Orchestration\Api\Model\ElementInstanceStateEnum|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null $state): static
     {
         if (is_null($state)) {
             throw new InvalidArgumentException('non-nullable state cannot be null');

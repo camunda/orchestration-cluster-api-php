@@ -57,7 +57,7 @@ class AgentInstanceHistoryCommitStatusFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\AgentInstanceHistoryCommitStatusExactMatch',
+            '\Camunda\Orchestration\Api\Model\AgentInstanceHistoryCommitStatusEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedAgentInstanceHistoryCommitStatusFilter'
         ];
     }

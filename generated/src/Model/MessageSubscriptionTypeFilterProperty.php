@@ -57,7 +57,7 @@ class MessageSubscriptionTypeFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\MessageSubscriptionTypeExactMatch',
+            '\Camunda\Orchestration\Api\Model\MessageSubscriptionTypeEnum',
             '\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionTypeFilter'
         ];
     }

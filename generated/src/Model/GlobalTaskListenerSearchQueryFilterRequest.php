@@ -432,7 +432,7 @@ class GlobalTaskListenerSearchQueryFilterRequest implements ModelInterface, Arra
     /**
      * Gets eventTypes
      *
-     * @return (\Camunda\Orchestration\Api\Model\GlobalTaskListenerEventTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedGlobalTaskListenerEventTypeFilter)[]|null
+     * @return (\Camunda\Orchestration\Api\Model\GlobalTaskListenerEventTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedGlobalTaskListenerEventTypeFilter)[]|null
      */
     public function getEventTypes(): ?array
     {
@@ -442,7 +442,7 @@ class GlobalTaskListenerSearchQueryFilterRequest implements ModelInterface, Arra
     /**
      * Sets eventTypes
      *
-     * @param (\Camunda\Orchestration\Api\Model\GlobalTaskListenerEventTypeExactMatch|\Camunda\Orchestration\Api\Model\AdvancedGlobalTaskListenerEventTypeFilter)[]|null $eventTypes Event types of the global listener.
+     * @param (\Camunda\Orchestration\Api\Model\GlobalTaskListenerEventTypeEnum|\Camunda\Orchestration\Api\Model\AdvancedGlobalTaskListenerEventTypeFilter)[]|null $eventTypes Event types of the global listener.
      *
      * @return $this
      */
@@ -528,9 +528,9 @@ class GlobalTaskListenerSearchQueryFilterRequest implements ModelInterface, Arra
     /**
      * Gets source
      *
-     * @return \Camunda\Orchestration\Api\Model\GlobalListenerSourceExactMatch|\Camunda\Orchestration\Api\Model\AdvancedGlobalListenerSourceFilter|null
+     * @return \Camunda\Orchestration\Api\Model\GlobalListenerSourceEnum|\Camunda\Orchestration\Api\Model\AdvancedGlobalListenerSourceFilter|null
      */
-    public function getSource(): \Camunda\Orchestration\Api\Model\GlobalListenerSourceExactMatch|\Camunda\Orchestration\Api\Model\AdvancedGlobalListenerSourceFilter|null
+    public function getSource(): \Camunda\Orchestration\Api\Model\GlobalListenerSourceEnum|\Camunda\Orchestration\Api\Model\AdvancedGlobalListenerSourceFilter|null
     {
         return $this->container['source'];
     }
@@ -538,11 +538,11 @@ class GlobalTaskListenerSearchQueryFilterRequest implements ModelInterface, Arra
     /**
      * Sets source
      *
-     * @param \Camunda\Orchestration\Api\Model\GlobalListenerSourceExactMatch|\Camunda\Orchestration\Api\Model\AdvancedGlobalListenerSourceFilter|null $source How the global listener was defined.
+     * @param \Camunda\Orchestration\Api\Model\GlobalListenerSourceEnum|\Camunda\Orchestration\Api\Model\AdvancedGlobalListenerSourceFilter|null $source How the global listener was defined.
      *
      * @return $this
      */
-    public function setSource(\Camunda\Orchestration\Api\Model\GlobalListenerSourceExactMatch|\Camunda\Orchestration\Api\Model\AdvancedGlobalListenerSourceFilter|null $source): static
+    public function setSource(\Camunda\Orchestration\Api\Model\GlobalListenerSourceEnum|\Camunda\Orchestration\Api\Model\AdvancedGlobalListenerSourceFilter|null $source): static
     {
         if (is_null($source)) {
             throw new InvalidArgumentException('non-nullable source cannot be null');

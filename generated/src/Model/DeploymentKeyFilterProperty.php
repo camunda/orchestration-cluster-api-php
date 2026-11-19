@@ -57,7 +57,7 @@ class DeploymentKeyFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\DeploymentKeyExactMatch',
+            'string',
             '\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter'
         ];
     }

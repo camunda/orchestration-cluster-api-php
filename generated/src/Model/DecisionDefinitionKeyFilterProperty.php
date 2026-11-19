@@ -57,7 +57,7 @@ class DecisionDefinitionKeyFilterProperty implements OneOfInterface
     public static function getOneOfTypes(): array
     {
         return [
-            '\Camunda\Orchestration\Api\Model\DecisionDefinitionKeyExactMatch',
+            'string',
             '\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter'
         ];
     }
