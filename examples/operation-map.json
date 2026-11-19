@@ -1742,5 +1742,19 @@
       "region": "LookupUserTask",
       "label": "Look up user task"
     }
+  ],
+  "suspendProcessDefinitions": [
+    {
+      "file": "process_definition.php",
+      "region": "SuspendProcessDefinitions",
+      "label": "Suspend process definitions"
+    }
+  ],
+  "resumeProcessDefinitions": [
+    {
+      "file": "process_definition.php",
+      "region": "ResumeProcessDefinitions",
+      "label": "Resume process definitions"
+    }
   ]
 }
