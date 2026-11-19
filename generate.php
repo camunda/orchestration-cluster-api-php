@@ -72,9 +72,25 @@ if (!isset($opts['skip-openapi-generator'])) {
             log_step('pre-gen hook: ' . basename($hook));
             $doc = $transform($doc);
         }
-        $genSpecPath = sys_get_temp_dir() . '/camunda-php-sdk-spec-' . getmypid() . '.json';
-        file_put_contents($genSpecPath, json_encode($doc, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
-        register_shutdown_function(static fn () => @unlink($genSpecPath));
+        // Create a private, unpredictable directory (mode 0700, mkdir fails if the path
+        // already exists) so another local user cannot pre-plant a symlink at the path.
+        $genSpecDir = sys_get_temp_dir() . '/camunda-php-sdk-spec-' . bin2hex(random_bytes(16));
+        if (!@mkdir($genSpecDir, 0700)) {
+            fwrite(STDERR, "error: could not create temporary directory {$genSpecDir}\n");
+            exit(1);
+        }
+        $genSpecPath = $genSpecDir . '/spec.json';
+        $fh = @fopen($genSpecPath, 'x');
+        if ($fh === false
+            || fwrite($fh, json_encode($doc, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)) === false
+            || !fclose($fh)) {
+            fwrite(STDERR, "error: could not write temporary spec {$genSpecPath}\n");
+            exit(1);
+        }
+        register_shutdown_function(static function () use ($genSpecPath, $genSpecDir): void {
+            @unlink($genSpecPath);
+            @rmdir($genSpecDir);
+        });
     } else {
         $genSpecPath = $specPath;
     }
