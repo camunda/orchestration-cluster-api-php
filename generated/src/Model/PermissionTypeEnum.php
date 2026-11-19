@@ -39,6 +39,8 @@ enum PermissionTypeEnum: string
 {
     case ACCESS = 'ACCESS';
 
+    case ANSWER = 'ANSWER';
+
     case CANCEL_PROCESS_INSTANCE = 'CANCEL_PROCESS_INSTANCE';
 
     case CLAIM = 'CLAIM';
@@ -120,6 +122,8 @@ enum PermissionTypeEnum: string
     case RESTORE = 'RESTORE';
 
     case REVEAL = 'REVEAL';
+
+    case SUSPEND_PROCESS_DEFINITION = 'SUSPEND_PROCESS_DEFINITION';
 
     case SUSPEND_PROCESS_INSTANCE = 'SUSPEND_PROCESS_INSTANCE';
 

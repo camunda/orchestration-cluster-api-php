@@ -60,6 +60,7 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
      */
     protected static array $openAPITypes = [
         'state' => '\Camunda\Orchestration\Api\Model\UserTaskStateFilterProperty',
+        'isSuspended' => 'bool',
         'assignee' => '\Camunda\Orchestration\Api\Model\StringFilterProperty',
         'businessId' => '\Camunda\Orchestration\Api\Model\StringFilterProperty',
         'priority' => '\Camunda\Orchestration\Api\Model\IntegerFilterProperty',
@@ -89,6 +90,7 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
      */
     protected static array $openAPIFormats = [
         'state' => null,
+        'isSuspended' => null,
         'assignee' => null,
         'businessId' => null,
         'priority' => null,
@@ -118,6 +120,7 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
      */
     protected static array $openAPINullables = [
         'state' => false,
+        'isSuspended' => false,
         'assignee' => false,
         'businessId' => false,
         'priority' => false,
@@ -240,6 +243,7 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
      */
     protected static array $attributeMap = [
         'state' => 'state',
+        'isSuspended' => 'isSuspended',
         'assignee' => 'assignee',
         'businessId' => 'businessId',
         'priority' => 'priority',
@@ -269,6 +273,7 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
      */
     protected static array $setters = [
         'state' => 'setState',
+        'isSuspended' => 'setIsSuspended',
         'assignee' => 'setAssignee',
         'businessId' => 'setBusinessId',
         'priority' => 'setPriority',
@@ -298,6 +303,7 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
      */
     protected static array $getters = [
         'state' => 'getState',
+        'isSuspended' => 'getIsSuspended',
         'assignee' => 'getAssignee',
         'businessId' => 'getBusinessId',
         'priority' => 'getPriority',
@@ -368,6 +374,7 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
     public function __construct(?array $data = null)
     {
         $this->setIfExists('state', $data ?? [], null);
+        $this->setIfExists('isSuspended', $data ?? [], null);
         $this->setIfExists('assignee', $data ?? [], null);
         $this->setIfExists('businessId', $data ?? [], null);
         $this->setIfExists('priority', $data ?? [], null);
@@ -471,6 +478,38 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
             unset($this->openAPIFieldsSet['state']);
         } else {
             $this->openAPIFieldsSet['state'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets isSuspended
+     *
+     * @return bool|null
+     */
+    public function getIsSuspended(): ?bool
+    {
+        return $this->container['isSuspended'];
+    }
+
+    /**
+     * Sets isSuspended
+     *
+     * @param bool|null $isSuspended Whether the user task is suspended because its owning process instance is suspended.
+     *
+     * @return $this
+     */
+    public function setIsSuspended(?bool $isSuspended): static
+    {
+        if (is_null($isSuspended)) {
+            throw new InvalidArgumentException('non-nullable isSuspended cannot be null');
+        }
+        $this->container['isSuspended'] = $isSuspended;
+        if ($isSuspended === null) {
+            unset($this->openAPIFieldsSet['isSuspended']);
+        } else {
+            $this->openAPIFieldsSet['isSuspended'] = true;
         }
 
         return $this;

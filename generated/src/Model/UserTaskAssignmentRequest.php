@@ -292,6 +292,9 @@ class UserTaskAssignmentRequest implements ModelInterface, ArrayAccess, JsonSeri
     {
         $invalidProperties = [];
 
+        if ($this->container['assignee'] === null) {
+            $invalidProperties[] = "'assignee' can't be null";
+        }
         return $invalidProperties;
     }
 
@@ -307,9 +310,9 @@ class UserTaskAssignmentRequest implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Gets assignee
      *
-     * @return string|null
+     * @return string
      */
-    public function getAssignee(): ?string
+    public function getAssignee(): string
     {
         return $this->container['assignee'];
     }
@@ -317,11 +320,11 @@ class UserTaskAssignmentRequest implements ModelInterface, ArrayAccess, JsonSeri
     /**
      * Sets assignee
      *
-     * @param string|null $assignee The assignee for the user task. The assignee must not be empty or `null`.
+     * @param string $assignee The assignee for the user task. The assignee must not be empty or `null`.
      *
      * @return $this
      */
-    public function setAssignee(?string $assignee): static
+    public function setAssignee(string $assignee): static
     {
         if (is_null($assignee)) {
             throw new InvalidArgumentException('non-nullable assignee cannot be null');

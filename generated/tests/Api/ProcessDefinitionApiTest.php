@@ -154,6 +154,18 @@ class ProcessDefinitionApiTest extends TestCase
     }
 
     /**
+     * Test case for resumeProcessDefinitions
+     *
+     * Resume process definitions.
+     *
+     */
+    public function testResumeProcessDefinitions()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
      * Test case for searchProcessDefinitionVariableNames
      *
      * Search process definition variable names.
@@ -172,6 +184,18 @@ class ProcessDefinitionApiTest extends TestCase
      *
      */
     public function testSearchProcessDefinitions()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
+     * Test case for suspendProcessDefinitions
+     *
+     * Suspend process definitions.
+     *
+     */
+    public function testSuspendProcessDefinitions()
     {
         // TODO: implement
         self::markTestIncomplete('Not implemented');

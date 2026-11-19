@@ -85,7 +85,7 @@ try {
 ## `createDocumentLink()`
 
 ```php
-createDocumentLink($documentId, $storeId, $contentHash, $documentLinkRequest): \Camunda\Orchestration\Api\Model\DocumentLink
+createDocumentLink($documentId, $documentLinkRequest, $storeId, $contentHash): \Camunda\Orchestration\Api\Model\DocumentLink
 ```
 
 Create document link
@@ -115,12 +115,12 @@ $apiInstance = new Camunda\Orchestration\Api\Api\DocumentApi(
     $config
 );
 $documentId = 'documentId_example'; // string | The ID of the document to link.
+$documentLinkRequest = new \Camunda\Orchestration\Api\Model\DocumentLinkRequest(); // \Camunda\Orchestration\Api\Model\DocumentLinkRequest
 $storeId = 'storeId_example'; // string | The ID of the document store where the document is located.
 $contentHash = 'contentHash_example'; // string | The hash of the document content that was computed by the document store during upload. The hash is part of the document reference that is returned when uploading a document. If the client fails to provide the correct hash, the request will be rejected.
-$documentLinkRequest = new \Camunda\Orchestration\Api\Model\DocumentLinkRequest(); // \Camunda\Orchestration\Api\Model\DocumentLinkRequest
 
 try {
-    $result = $apiInstance->createDocumentLink($documentId, $storeId, $contentHash, $documentLinkRequest);
+    $result = $apiInstance->createDocumentLink($documentId, $documentLinkRequest, $storeId, $contentHash);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling DocumentApi->createDocumentLink: ', $e->getMessage(), PHP_EOL;
@@ -132,9 +132,9 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **documentId** | **string**| The ID of the document to link. | |
+| **documentLinkRequest** | [**\Camunda\Orchestration\Api\Model\DocumentLinkRequest**](../Model/DocumentLinkRequest.md)|  | |
 | **storeId** | **string**| The ID of the document store where the document is located. | [optional] |
 | **contentHash** | **string**| The hash of the document content that was computed by the document store during upload. The hash is part of the document reference that is returned when uploading a document. If the client fails to provide the correct hash, the request will be rejected. | [optional] |
-| **documentLinkRequest** | [**\Camunda\Orchestration\Api\Model\DocumentLinkRequest**](../Model/DocumentLinkRequest.md)|  | [optional] |
 
 ### Return type
 

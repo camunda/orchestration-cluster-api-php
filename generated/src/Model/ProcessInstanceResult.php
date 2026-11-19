@@ -75,7 +75,8 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
         'parentElementInstanceKey' => '\Camunda\Orchestration\Semantic\ElementInstanceKey',
         'rootProcessInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
         'tags' => 'string[]',
-        'businessId' => '\Camunda\Orchestration\Semantic\BusinessId'
+        'businessId' => '\Camunda\Orchestration\Semantic\BusinessId',
+        'storageOrdinal' => 'int'
     ];
 
     /**
@@ -100,7 +101,8 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
         'parentElementInstanceKey' => null,
         'rootProcessInstanceKey' => null,
         'tags' => 'Tag',
-        'businessId' => 'BusinessId'
+        'businessId' => 'BusinessId',
+        'storageOrdinal' => 'int32'
     ];
 
     /**
@@ -125,7 +127,8 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
         'parentElementInstanceKey' => true,
         'rootProcessInstanceKey' => true,
         'tags' => false,
-        'businessId' => true
+        'businessId' => true,
+        'storageOrdinal' => true
     ];
 
     /**
@@ -243,7 +246,8 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
         'parentElementInstanceKey' => 'parentElementInstanceKey',
         'rootProcessInstanceKey' => 'rootProcessInstanceKey',
         'tags' => 'tags',
-        'businessId' => 'businessId'
+        'businessId' => 'businessId',
+        'storageOrdinal' => 'storageOrdinal'
     ];
 
     /**
@@ -268,7 +272,8 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
         'parentElementInstanceKey' => 'setParentElementInstanceKey',
         'rootProcessInstanceKey' => 'setRootProcessInstanceKey',
         'tags' => 'setTags',
-        'businessId' => 'setBusinessId'
+        'businessId' => 'setBusinessId',
+        'storageOrdinal' => 'setStorageOrdinal'
     ];
 
     /**
@@ -293,7 +298,8 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
         'parentElementInstanceKey' => 'getParentElementInstanceKey',
         'rootProcessInstanceKey' => 'getRootProcessInstanceKey',
         'tags' => 'getTags',
-        'businessId' => 'getBusinessId'
+        'businessId' => 'getBusinessId',
+        'storageOrdinal' => 'getStorageOrdinal'
     ];
 
     /**
@@ -360,6 +366,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
         $this->setIfExists('rootProcessInstanceKey', $data ?? [], null);
         $this->setIfExists('tags', $data ?? [], null);
         $this->setIfExists('businessId', $data ?? [], null);
+        $this->setIfExists('storageOrdinal', $data ?? [], null);
     }
 
     /**
@@ -483,6 +490,9 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
             $invalidProperties[] = "invalid value for 'businessId', the character length must be bigger than or equal to 1.";
         }
 
+        if ($this->container['storageOrdinal'] === null && !$this->isNullableSetToNull('storageOrdinal')) {
+            $invalidProperties[] = "'storageOrdinal' is required";
+        }
         return $invalidProperties;
     }
 
@@ -1041,6 +1051,45 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
             unset($this->openAPIFieldsSet['businessId']);
         } else {
             $this->openAPIFieldsSet['businessId'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets storageOrdinal
+     *
+     * @return int|null
+     */
+    public function getStorageOrdinal(): ?int
+    {
+        return $this->container['storageOrdinal'];
+    }
+
+    /**
+     * Sets storageOrdinal
+     *
+     * @param int|null $storageOrdinal The storage ordinal this process instance's data belongs to. This is `null` for data exported before storage ordinals were introduced in version 8.11.
+     *
+     * @return $this
+     */
+    public function setStorageOrdinal(?int $storageOrdinal): static
+    {
+        if (is_null($storageOrdinal)) {
+            array_push($this->openAPINullablesSetToNull, 'storageOrdinal');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('storageOrdinal', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
+        $this->container['storageOrdinal'] = $storageOrdinal;
+        if ($storageOrdinal === null) {
+            unset($this->openAPIFieldsSet['storageOrdinal']);
+        } else {
+            $this->openAPIFieldsSet['storageOrdinal'] = true;
         }
 
         return $this;

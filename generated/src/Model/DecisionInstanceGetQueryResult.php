@@ -75,6 +75,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
         'rootDecisionDefinitionKey' => '\Camunda\Orchestration\Semantic\DecisionDefinitionKey',
         'rootProcessInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
         'state' => '\Camunda\Orchestration\Api\Model\DecisionInstanceStateEnum',
+        'storageOrdinal' => 'int',
         'tenantId' => '\Camunda\Orchestration\Semantic\TenantId',
         'evaluatedInputs' => '\Camunda\Orchestration\Api\Model\EvaluatedDecisionInputItem[]',
         'matchedRules' => '\Camunda\Orchestration\Api\Model\MatchedDecisionRuleItem[]'
@@ -103,6 +104,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
         'rootDecisionDefinitionKey' => null,
         'rootProcessInstanceKey' => null,
         'state' => null,
+        'storageOrdinal' => 'int32',
         'tenantId' => 'TenantId',
         'evaluatedInputs' => null,
         'matchedRules' => null
@@ -131,6 +133,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
         'rootDecisionDefinitionKey' => false,
         'rootProcessInstanceKey' => true,
         'state' => false,
+        'storageOrdinal' => true,
         'tenantId' => false,
         'evaluatedInputs' => false,
         'matchedRules' => false
@@ -252,6 +255,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
         'rootDecisionDefinitionKey' => 'rootDecisionDefinitionKey',
         'rootProcessInstanceKey' => 'rootProcessInstanceKey',
         'state' => 'state',
+        'storageOrdinal' => 'storageOrdinal',
         'tenantId' => 'tenantId',
         'evaluatedInputs' => 'evaluatedInputs',
         'matchedRules' => 'matchedRules'
@@ -280,6 +284,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
         'rootDecisionDefinitionKey' => 'setRootDecisionDefinitionKey',
         'rootProcessInstanceKey' => 'setRootProcessInstanceKey',
         'state' => 'setState',
+        'storageOrdinal' => 'setStorageOrdinal',
         'tenantId' => 'setTenantId',
         'evaluatedInputs' => 'setEvaluatedInputs',
         'matchedRules' => 'setMatchedRules'
@@ -308,6 +313,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
         'rootDecisionDefinitionKey' => 'getRootDecisionDefinitionKey',
         'rootProcessInstanceKey' => 'getRootProcessInstanceKey',
         'state' => 'getState',
+        'storageOrdinal' => 'getStorageOrdinal',
         'tenantId' => 'getTenantId',
         'evaluatedInputs' => 'getEvaluatedInputs',
         'matchedRules' => 'getMatchedRules'
@@ -377,6 +383,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
         $this->setIfExists('rootDecisionDefinitionKey', $data ?? [], null);
         $this->setIfExists('rootProcessInstanceKey', $data ?? [], null);
         $this->setIfExists('state', $data ?? [], null);
+        $this->setIfExists('storageOrdinal', $data ?? [], null);
         $this->setIfExists('tenantId', $data ?? [], null);
         $this->setIfExists('evaluatedInputs', $data ?? [], null);
         $this->setIfExists('matchedRules', $data ?? [], null);
@@ -498,6 +505,9 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
         }
         if ($this->container['state'] === null) {
             $invalidProperties[] = "'state' can't be null";
+        }
+        if ($this->container['storageOrdinal'] === null && !$this->isNullableSetToNull('storageOrdinal')) {
+            $invalidProperties[] = "'storageOrdinal' is required";
         }
         if ($this->container['tenantId'] === null) {
             $invalidProperties[] = "'tenantId' can't be null";
@@ -1048,6 +1058,45 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
             unset($this->openAPIFieldsSet['state']);
         } else {
             $this->openAPIFieldsSet['state'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets storageOrdinal
+     *
+     * @return int|null
+     */
+    public function getStorageOrdinal(): ?int
+    {
+        return $this->container['storageOrdinal'];
+    }
+
+    /**
+     * Sets storageOrdinal
+     *
+     * @param int|null $storageOrdinal The storage ordinal this decision instance's data belongs to. This is `null` for data exported before storage ordinals were introduced in version 8.11.
+     *
+     * @return $this
+     */
+    public function setStorageOrdinal(?int $storageOrdinal): static
+    {
+        if (is_null($storageOrdinal)) {
+            array_push($this->openAPINullablesSetToNull, 'storageOrdinal');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('storageOrdinal', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
+        $this->container['storageOrdinal'] = $storageOrdinal;
+        if ($storageOrdinal === null) {
+            unset($this->openAPIFieldsSet['storageOrdinal']);
+        } else {
+            $this->openAPIFieldsSet['storageOrdinal'] = true;
         }
 
         return $this;

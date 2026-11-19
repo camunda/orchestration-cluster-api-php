@@ -78,45 +78,9 @@ class ProcessInstanceCreationInstructionByKeyTest extends TestCase
     }
 
     /**
-     * Test attribute "processDefinitionKey"
-     */
-    public function testPropertyProcessDefinitionKey()
-    {
-        // TODO: implement
-        self::markTestIncomplete('Not implemented');
-    }
-
-    /**
-     * Test attribute "processDefinitionVersion"
-     */
-    public function testPropertyProcessDefinitionVersion()
-    {
-        // TODO: implement
-        self::markTestIncomplete('Not implemented');
-    }
-
-    /**
      * Test attribute "variables"
      */
     public function testPropertyVariables()
-    {
-        // TODO: implement
-        self::markTestIncomplete('Not implemented');
-    }
-
-    /**
-     * Test attribute "startInstructions"
-     */
-    public function testPropertyStartInstructions()
-    {
-        // TODO: implement
-        self::markTestIncomplete('Not implemented');
-    }
-
-    /**
-     * Test attribute "runtimeInstructions"
-     */
-    public function testPropertyRuntimeInstructions()
     {
         // TODO: implement
         self::markTestIncomplete('Not implemented');
@@ -141,6 +105,24 @@ class ProcessInstanceCreationInstructionByKeyTest extends TestCase
     }
 
     /**
+     * Test attribute "startInstructions"
+     */
+    public function testPropertyStartInstructions()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
+     * Test attribute "runtimeInstructions"
+     */
+    public function testPropertyRuntimeInstructions()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
      * Test attribute "awaitCompletion"
      */
     public function testPropertyAwaitCompletion()
@@ -150,18 +132,18 @@ class ProcessInstanceCreationInstructionByKeyTest extends TestCase
     }
 
     /**
-     * Test attribute "requestTimeout"
+     * Test attribute "fetchVariables"
      */
-    public function testPropertyRequestTimeout()
+    public function testPropertyFetchVariables()
     {
         // TODO: implement
         self::markTestIncomplete('Not implemented');
     }
 
     /**
-     * Test attribute "fetchVariables"
+     * Test attribute "requestTimeout"
      */
-    public function testPropertyFetchVariables()
+    public function testPropertyRequestTimeout()
     {
         // TODO: implement
         self::markTestIncomplete('Not implemented');
@@ -180,6 +162,24 @@ class ProcessInstanceCreationInstructionByKeyTest extends TestCase
      * Test attribute "businessId"
      */
     public function testPropertyBusinessId()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
+     * Test attribute "processDefinitionKey"
+     */
+    public function testPropertyProcessDefinitionKey()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
+     * Test attribute "processDefinitionVersion"
+     */
+    public function testPropertyProcessDefinitionVersion()
     {
         // TODO: implement
         self::markTestIncomplete('Not implemented');

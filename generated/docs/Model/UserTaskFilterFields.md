@@ -5,6 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **state** | [**\Camunda\Orchestration\Api\Model\UserTaskStateFilterProperty**](UserTaskStateFilterProperty.md) | The user task state. | [optional]
+**isSuspended** | **bool** | Whether the user task is suspended because its owning process instance is suspended. | [optional]
 **assignee** | [**\Camunda\Orchestration\Api\Model\StringFilterProperty**](StringFilterProperty.md) | The assignee of the user task. | [optional]
 **businessId** | [**\Camunda\Orchestration\Api\Model\StringFilterProperty**](StringFilterProperty.md) | The business ID of the owning process instance the user task belongs to. This only works for user tasks created with 8.10 and onwards. Tasks from prior versions don&#39;t contain this data and cannot be found. | [optional]
 **priority** | [**\Camunda\Orchestration\Api\Model\IntegerFilterProperty**](IntegerFilterProperty.md) | The priority of the user task. | [optional]

@@ -118,6 +118,18 @@ class UserTaskApiTest extends TestCase
     }
 
     /**
+     * Test case for lookupUserTask
+     *
+     * Look up an active user task (alpha).
+     *
+     */
+    public function testLookupUserTask()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
      * Test case for searchUserTaskAuditLogs
      *
      * Search user task audit logs.

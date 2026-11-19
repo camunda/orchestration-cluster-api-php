@@ -60,8 +60,8 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     protected static array $openAPITypes = [
         'assignee' => 'string',
-        'dueDate' => '\DateTime',
-        'followUpDate' => '\DateTime',
+        'dueDate' => '\Camunda\Orchestration\Api\Model\ClearableDateTime',
+        'followUpDate' => '\Camunda\Orchestration\Api\Model\ClearableDateTime',
         'candidateUsers' => 'string[]',
         'candidateGroups' => 'string[]',
         'priority' => 'int'
@@ -74,8 +74,8 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     protected static array $openAPIFormats = [
         'assignee' => null,
-        'dueDate' => 'date-time',
-        'followUpDate' => 'date-time',
+        'dueDate' => null,
+        'followUpDate' => null,
         'candidateUsers' => null,
         'candidateGroups' => null,
         'priority' => 'int32'
@@ -376,9 +376,9 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
     /**
      * Gets dueDate
      *
-     * @return \DateTime|null
+     * @return \DateTime|string|null
      */
-    public function getDueDate(): ?\DateTime
+    public function getDueDate(): \DateTime|string|null
     {
         return $this->container['dueDate'];
     }
@@ -386,11 +386,11 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
     /**
      * Sets dueDate
      *
-     * @param \DateTime|null $dueDate The due date of the task.
+     * @param \DateTime|string|null $dueDate The due date of the task. Clear by providing an empty String.
      *
      * @return $this
      */
-    public function setDueDate(?\DateTime $dueDate): static
+    public function setDueDate(\DateTime|string|null $dueDate): static
     {
         if (is_null($dueDate)) {
             array_push($this->openAPINullablesSetToNull, 'dueDate');
@@ -415,9 +415,9 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
     /**
      * Gets followUpDate
      *
-     * @return \DateTime|null
+     * @return \DateTime|string|null
      */
-    public function getFollowUpDate(): ?\DateTime
+    public function getFollowUpDate(): \DateTime|string|null
     {
         return $this->container['followUpDate'];
     }
@@ -425,11 +425,11 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
     /**
      * Sets followUpDate
      *
-     * @param \DateTime|null $followUpDate The follow-up date of the task.
+     * @param \DateTime|string|null $followUpDate The follow-up date of the task. Clear by providing an empty String.
      *
      * @return $this
      */
-    public function setFollowUpDate(?\DateTime $followUpDate): static
+    public function setFollowUpDate(\DateTime|string|null $followUpDate): static
     {
         if (is_null($followUpDate)) {
             array_push($this->openAPINullablesSetToNull, 'followUpDate');
