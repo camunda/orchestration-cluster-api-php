@@ -343,7 +343,7 @@ class JobSearchQuery implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class JobSearchQuery implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\JobFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

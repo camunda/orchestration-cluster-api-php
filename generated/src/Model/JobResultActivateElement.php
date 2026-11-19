@@ -314,7 +314,7 @@ class JobResultActivateElement implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getElementId(): ?\Camunda\Orchestration\Semantic\ElementId
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**
@@ -343,7 +343,7 @@ class JobResultActivateElement implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**

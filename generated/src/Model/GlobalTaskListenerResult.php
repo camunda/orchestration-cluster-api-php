@@ -366,7 +366,7 @@ class GlobalTaskListenerResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getType(): ?string
     {
-        return $this->container['type'];
+        return $this->container['type'] ?? null;
     }
 
     /**
@@ -398,7 +398,7 @@ class GlobalTaskListenerResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getRetries(): ?int
     {
-        return $this->container['retries'];
+        return $this->container['retries'] ?? null;
     }
 
     /**
@@ -430,7 +430,7 @@ class GlobalTaskListenerResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getAfterNonGlobal(): ?bool
     {
-        return $this->container['afterNonGlobal'];
+        return $this->container['afterNonGlobal'] ?? null;
     }
 
     /**
@@ -462,7 +462,7 @@ class GlobalTaskListenerResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getPriority(): ?int
     {
-        return $this->container['priority'];
+        return $this->container['priority'] ?? null;
     }
 
     /**
@@ -494,7 +494,7 @@ class GlobalTaskListenerResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getEventTypes(): ?array
     {
-        return $this->container['eventTypes'];
+        return $this->container['eventTypes'] ?? null;
     }
 
     /**

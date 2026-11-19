@@ -442,7 +442,7 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getExpiresAt(): ?\DateTime
     {
-        return $this->container['expiresAt'];
+        return $this->container['expiresAt'] ?? null;
     }
 
     /**
@@ -513,7 +513,7 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -552,7 +552,7 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**

@@ -317,7 +317,7 @@ class ProcessInstanceCreationTerminateInstruction implements ModelInterface, Arr
      */
     public function getType(): ?string
     {
-        return $this->container['type'];
+        return $this->container['type'] ?? null;
     }
 
     /**

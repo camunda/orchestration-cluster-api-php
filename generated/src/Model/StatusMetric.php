@@ -343,7 +343,7 @@ class StatusMetric implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getLastUpdatedAt(): ?\DateTime
     {
-        return $this->container['lastUpdatedAt'];
+        return $this->container['lastUpdatedAt'] ?? null;
     }
 
     /**

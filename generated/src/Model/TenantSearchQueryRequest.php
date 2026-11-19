@@ -343,7 +343,7 @@ class TenantSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class TenantSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\TenantFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

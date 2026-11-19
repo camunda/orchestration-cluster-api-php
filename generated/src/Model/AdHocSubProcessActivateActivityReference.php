@@ -345,7 +345,7 @@ class AdHocSubProcessActivateActivityReference implements ModelInterface, ArrayA
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**

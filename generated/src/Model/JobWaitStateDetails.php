@@ -484,7 +484,7 @@ class JobWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getListenerEventType(): ?\Camunda\Orchestration\Api\Model\JobListenerEventTypeEnum
     {
-        return $this->container['listenerEventType'];
+        return $this->container['listenerEventType'] ?? null;
     }
 
     /**
@@ -523,7 +523,7 @@ class JobWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getRetries(): ?int
     {
-        return $this->container['retries'];
+        return $this->container['retries'] ?? null;
     }
 
     /**

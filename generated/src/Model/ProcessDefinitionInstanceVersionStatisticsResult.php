@@ -448,7 +448,7 @@ class ProcessDefinitionInstanceVersionStatisticsResult implements ModelInterface
      */
     public function getProcessDefinitionName(): ?string
     {
-        return $this->container['processDefinitionName'];
+        return $this->container['processDefinitionName'] ?? null;
     }
 
     /**

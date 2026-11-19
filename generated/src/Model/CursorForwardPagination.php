@@ -325,7 +325,7 @@ class CursorForwardPagination implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getAfter(): ?\Camunda\Orchestration\Semantic\EndCursor
     {
-        return $this->container['after'];
+        return $this->container['after'] ?? null;
     }
 
     /**
@@ -354,7 +354,7 @@ class CursorForwardPagination implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getLimit(): ?int
     {
-        return $this->container['limit'];
+        return $this->container['limit'] ?? null;
     }
 
     /**

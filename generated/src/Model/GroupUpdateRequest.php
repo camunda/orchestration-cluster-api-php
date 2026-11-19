@@ -339,7 +339,7 @@ class GroupUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getDescription(): ?string
     {
-        return $this->container['description'];
+        return $this->container['description'] ?? null;
     }
 
     /**

@@ -387,7 +387,7 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getTenantId(): ?string
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -419,7 +419,7 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getScopeKey(): ?\Camunda\Orchestration\Semantic\ScopeKey
     {
-        return $this->container['scopeKey'];
+        return $this->container['scopeKey'] ?? null;
     }
 
     /**
@@ -451,7 +451,7 @@ class ExpressionEvaluationRequest implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**

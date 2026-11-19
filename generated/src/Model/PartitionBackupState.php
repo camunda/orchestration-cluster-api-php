@@ -427,7 +427,7 @@ class PartitionBackupState implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getPartitionId(): ?int
     {
-        return $this->container['partitionId'];
+        return $this->container['partitionId'] ?? null;
     }
 
     /**

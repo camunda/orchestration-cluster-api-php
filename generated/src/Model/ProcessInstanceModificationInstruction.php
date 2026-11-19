@@ -322,7 +322,7 @@ class ProcessInstanceModificationInstruction implements ModelInterface, ArrayAcc
      */
     public function getOperationReference(): ?int
     {
-        return $this->container['operationReference'];
+        return $this->container['operationReference'] ?? null;
     }
 
     /**
@@ -358,7 +358,7 @@ class ProcessInstanceModificationInstruction implements ModelInterface, ArrayAcc
      */
     public function getActivateInstructions(): ?array
     {
-        return $this->container['activateInstructions'];
+        return $this->container['activateInstructions'] ?? null;
     }
 
     /**
@@ -390,7 +390,7 @@ class ProcessInstanceModificationInstruction implements ModelInterface, ArrayAcc
      */
     public function getMoveInstructions(): ?array
     {
-        return $this->container['moveInstructions'];
+        return $this->container['moveInstructions'] ?? null;
     }
 
     /**
@@ -422,7 +422,7 @@ class ProcessInstanceModificationInstruction implements ModelInterface, ArrayAcc
      */
     public function getTerminateInstructions(): ?array
     {
-        return $this->container['terminateInstructions'];
+        return $this->container['terminateInstructions'] ?? null;
     }
 
     /**

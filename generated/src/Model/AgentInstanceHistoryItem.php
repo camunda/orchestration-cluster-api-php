@@ -540,7 +540,7 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getToolCalls(): ?array
     {
-        return $this->container['toolCalls'];
+        return $this->container['toolCalls'] ?? null;
     }
 
     /**
@@ -579,7 +579,7 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getMetrics(): ?\Camunda\Orchestration\Api\Model\AgentInstanceHistoryItemMetricsRequest
     {
-        return $this->container['metrics'];
+        return $this->container['metrics'] ?? null;
     }
 
     /**
@@ -650,7 +650,7 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getTools(): ?array
     {
-        return $this->container['tools'];
+        return $this->container['tools'] ?? null;
     }
 
     /**
@@ -689,7 +689,7 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getModel(): ?string
     {
-        return $this->container['model'];
+        return $this->container['model'] ?? null;
     }
 
     /**
@@ -721,7 +721,7 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getProvider(): ?string
     {
-        return $this->container['provider'];
+        return $this->container['provider'] ?? null;
     }
 
     /**
@@ -753,7 +753,7 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getLimits(): ?\Camunda\Orchestration\Api\Model\AgentInstanceLimits
     {
-        return $this->container['limits'];
+        return $this->container['limits'] ?? null;
     }
 
     /**
@@ -785,7 +785,7 @@ class AgentInstanceHistoryItem implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getSystemPrompt(): ?array
     {
-        return $this->container['systemPrompt'];
+        return $this->container['systemPrompt'] ?? null;
     }
 
     /**

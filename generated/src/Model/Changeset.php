@@ -334,7 +334,7 @@ class Changeset implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDueDate(): ?\DateTime
     {
-        return $this->container['dueDate'];
+        return $this->container['dueDate'] ?? null;
     }
 
     /**
@@ -373,7 +373,7 @@ class Changeset implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getFollowUpDate(): ?\DateTime
     {
-        return $this->container['followUpDate'];
+        return $this->container['followUpDate'] ?? null;
     }
 
     /**
@@ -412,7 +412,7 @@ class Changeset implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getCandidateUsers(): ?array
     {
-        return $this->container['candidateUsers'];
+        return $this->container['candidateUsers'] ?? null;
     }
 
     /**
@@ -451,7 +451,7 @@ class Changeset implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getCandidateGroups(): ?array
     {
-        return $this->container['candidateGroups'];
+        return $this->container['candidateGroups'] ?? null;
     }
 
     /**
@@ -490,7 +490,7 @@ class Changeset implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getPriority(): ?int
     {
-        return $this->container['priority'];
+        return $this->container['priority'] ?? null;
     }
 
     /**

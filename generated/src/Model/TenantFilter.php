@@ -326,7 +326,7 @@ class TenantFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -355,7 +355,7 @@ class TenantFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getName(): ?string
     {
-        return $this->container['name'];
+        return $this->container['name'] ?? null;
     }
 
     /**

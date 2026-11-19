@@ -366,7 +366,7 @@ class JobErrorRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getErrorMessage(): ?string
     {
-        return $this->container['errorMessage'];
+        return $this->container['errorMessage'] ?? null;
     }
 
     /**
@@ -405,7 +405,7 @@ class JobErrorRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**
@@ -444,7 +444,7 @@ class JobErrorRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getJobLeaseToken(): ?\Camunda\Orchestration\Semantic\JobLeaseToken
     {
-        return $this->container['jobLeaseToken'];
+        return $this->container['jobLeaseToken'] ?? null;
     }
 
     /**

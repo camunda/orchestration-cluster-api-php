@@ -343,7 +343,7 @@ class ClusterModeChangeOperation implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getMode(): ?string
     {
-        return $this->container['mode'];
+        return $this->container['mode'] ?? null;
     }
 
     /**

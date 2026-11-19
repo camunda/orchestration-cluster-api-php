@@ -403,7 +403,7 @@ class BackupInfo implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getFailureReason(): ?string
     {
-        return $this->container['failureReason'];
+        return $this->container['failureReason'] ?? null;
     }
 
     /**

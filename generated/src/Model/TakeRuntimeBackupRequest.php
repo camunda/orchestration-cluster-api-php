@@ -302,7 +302,7 @@ class TakeRuntimeBackupRequest implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getBackupId(): ?int
     {
-        return $this->container['backupId'];
+        return $this->container['backupId'] ?? null;
     }
 
     /**

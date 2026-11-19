@@ -422,7 +422,7 @@ class BatchOperationFilter implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getActorType(): ?\Camunda\Orchestration\Api\Model\AuditLogActorTypeEnum
     {
-        return $this->container['actorType'];
+        return $this->container['actorType'] ?? null;
     }
 
     /**

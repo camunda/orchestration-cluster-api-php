@@ -305,7 +305,7 @@ class JobTypeStatisticsQuery implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\JobTypeStatisticsFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**
@@ -337,7 +337,7 @@ class JobTypeStatisticsQuery implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getPage(): ?\Camunda\Orchestration\Api\Model\CursorForwardPagination
     {
-        return $this->container['page'];
+        return $this->container['page'] ?? null;
     }
 
     /**

@@ -340,7 +340,7 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getProcessDefinition(): ?\Camunda\Orchestration\Api\Model\DeploymentProcessResult
     {
-        return $this->container['processDefinition'];
+        return $this->container['processDefinition'] ?? null;
     }
 
     /**
@@ -379,7 +379,7 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getDecisionDefinition(): ?\Camunda\Orchestration\Api\Model\DeploymentDecisionResult
     {
-        return $this->container['decisionDefinition'];
+        return $this->container['decisionDefinition'] ?? null;
     }
 
     /**
@@ -418,7 +418,7 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getDecisionRequirements(): ?\Camunda\Orchestration\Api\Model\DeploymentDecisionRequirementsResult
     {
-        return $this->container['decisionRequirements'];
+        return $this->container['decisionRequirements'] ?? null;
     }
 
     /**
@@ -457,7 +457,7 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getForm(): ?\Camunda\Orchestration\Api\Model\DeploymentFormResult
     {
-        return $this->container['form'];
+        return $this->container['form'] ?? null;
     }
 
     /**
@@ -496,7 +496,7 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getResource(): ?\Camunda\Orchestration\Api\Model\DeploymentResourceResult
     {
-        return $this->container['resource'];
+        return $this->container['resource'] ?? null;
     }
 
     /**

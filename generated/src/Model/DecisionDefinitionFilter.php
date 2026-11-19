@@ -390,7 +390,7 @@ class DecisionDefinitionFilter implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getDecisionDefinitionId(): ?\Camunda\Orchestration\Semantic\DecisionDefinitionId
     {
-        return $this->container['decisionDefinitionId'];
+        return $this->container['decisionDefinitionId'] ?? null;
     }
 
     /**
@@ -419,7 +419,7 @@ class DecisionDefinitionFilter implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getName(): ?string
     {
-        return $this->container['name'];
+        return $this->container['name'] ?? null;
     }
 
     /**
@@ -451,7 +451,7 @@ class DecisionDefinitionFilter implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getIsLatestVersion(): ?bool
     {
-        return $this->container['isLatestVersion'];
+        return $this->container['isLatestVersion'] ?? null;
     }
 
     /**
@@ -483,7 +483,7 @@ class DecisionDefinitionFilter implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getVersion(): ?int
     {
-        return $this->container['version'];
+        return $this->container['version'] ?? null;
     }
 
     /**
@@ -515,7 +515,7 @@ class DecisionDefinitionFilter implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getDecisionRequirementsId(): ?string
     {
-        return $this->container['decisionRequirementsId'];
+        return $this->container['decisionRequirementsId'] ?? null;
     }
 
     /**
@@ -547,7 +547,7 @@ class DecisionDefinitionFilter implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -576,7 +576,7 @@ class DecisionDefinitionFilter implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getDecisionDefinitionKey(): ?\Camunda\Orchestration\Semantic\DecisionDefinitionKey
     {
-        return $this->container['decisionDefinitionKey'];
+        return $this->container['decisionDefinitionKey'] ?? null;
     }
 
     /**
@@ -605,7 +605,7 @@ class DecisionDefinitionFilter implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getDecisionRequirementsKey(): ?\Camunda\Orchestration\Semantic\DecisionRequirementsKey
     {
-        return $this->container['decisionRequirementsKey'];
+        return $this->container['decisionRequirementsKey'] ?? null;
     }
 
     /**
@@ -634,7 +634,7 @@ class DecisionDefinitionFilter implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getDecisionRequirementsName(): ?string
     {
-        return $this->container['decisionRequirementsName'];
+        return $this->container['decisionRequirementsName'] ?? null;
     }
 
     /**
@@ -666,7 +666,7 @@ class DecisionDefinitionFilter implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getDecisionRequirementsVersion(): ?int
     {
-        return $this->container['decisionRequirementsVersion'];
+        return $this->container['decisionRequirementsVersion'] ?? null;
     }
 
     /**

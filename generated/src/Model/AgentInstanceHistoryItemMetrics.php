@@ -351,7 +351,7 @@ class AgentInstanceHistoryItemMetrics implements ModelInterface, ArrayAccess, Js
      */
     public function getInputTokens(): ?int
     {
-        return $this->container['inputTokens'];
+        return $this->container['inputTokens'] ?? null;
     }
 
     /**
@@ -390,7 +390,7 @@ class AgentInstanceHistoryItemMetrics implements ModelInterface, ArrayAccess, Js
      */
     public function getOutputTokens(): ?int
     {
-        return $this->container['outputTokens'];
+        return $this->container['outputTokens'] ?? null;
     }
 
     /**
@@ -429,7 +429,7 @@ class AgentInstanceHistoryItemMetrics implements ModelInterface, ArrayAccess, Js
      */
     public function getReasoningTokenCount(): ?int
     {
-        return $this->container['reasoningTokenCount'];
+        return $this->container['reasoningTokenCount'] ?? null;
     }
 
     /**
@@ -468,7 +468,7 @@ class AgentInstanceHistoryItemMetrics implements ModelInterface, ArrayAccess, Js
      */
     public function getCacheCreationTokenCount(): ?int
     {
-        return $this->container['cacheCreationTokenCount'];
+        return $this->container['cacheCreationTokenCount'] ?? null;
     }
 
     /**
@@ -507,7 +507,7 @@ class AgentInstanceHistoryItemMetrics implements ModelInterface, ArrayAccess, Js
      */
     public function getCacheReadTokenCount(): ?int
     {
-        return $this->container['cacheReadTokenCount'];
+        return $this->container['cacheReadTokenCount'] ?? null;
     }
 
     /**
@@ -546,7 +546,7 @@ class AgentInstanceHistoryItemMetrics implements ModelInterface, ArrayAccess, Js
      */
     public function getDurationMs(): ?int
     {
-        return $this->container['durationMs'];
+        return $this->container['durationMs'] ?? null;
     }
 
     /**

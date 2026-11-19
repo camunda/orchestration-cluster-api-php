@@ -503,7 +503,7 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getEvaluationFailure(): ?string
     {
-        return $this->container['evaluationFailure'];
+        return $this->container['evaluationFailure'] ?? null;
     }
 
     /**
@@ -567,7 +567,7 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getDecisionDefinitionId(): ?\Camunda\Orchestration\Semantic\DecisionDefinitionId
     {
-        return $this->container['decisionDefinitionId'];
+        return $this->container['decisionDefinitionId'] ?? null;
     }
 
     /**
@@ -596,7 +596,7 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getDecisionDefinitionName(): ?string
     {
-        return $this->container['decisionDefinitionName'];
+        return $this->container['decisionDefinitionName'] ?? null;
     }
 
     /**
@@ -628,7 +628,7 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getDecisionDefinitionVersion(): ?int
     {
-        return $this->container['decisionDefinitionVersion'];
+        return $this->container['decisionDefinitionVersion'] ?? null;
     }
 
     /**
@@ -660,7 +660,7 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getDecisionDefinitionType(): ?\Camunda\Orchestration\Api\Model\DecisionDefinitionTypeEnum
     {
-        return $this->container['decisionDefinitionType'];
+        return $this->container['decisionDefinitionType'] ?? null;
     }
 
     /**
@@ -692,7 +692,7 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -721,7 +721,7 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getDecisionEvaluationKey(): ?\Camunda\Orchestration\Semantic\DecisionEvaluationKey
     {
-        return $this->container['decisionEvaluationKey'];
+        return $this->container['decisionEvaluationKey'] ?? null;
     }
 
     /**
@@ -750,7 +750,7 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -779,7 +779,7 @@ class DecisionInstanceFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**

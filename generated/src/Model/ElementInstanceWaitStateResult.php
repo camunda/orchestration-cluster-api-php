@@ -392,7 +392,7 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**

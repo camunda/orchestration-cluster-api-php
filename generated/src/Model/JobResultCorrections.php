@@ -341,7 +341,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getAssignee(): ?string
     {
-        return $this->container['assignee'];
+        return $this->container['assignee'] ?? null;
     }
 
     /**
@@ -380,7 +380,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getDueDate(): ?\DateTime
     {
-        return $this->container['dueDate'];
+        return $this->container['dueDate'] ?? null;
     }
 
     /**
@@ -419,7 +419,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getFollowUpDate(): ?\DateTime
     {
-        return $this->container['followUpDate'];
+        return $this->container['followUpDate'] ?? null;
     }
 
     /**
@@ -458,7 +458,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getCandidateUsers(): ?array
     {
-        return $this->container['candidateUsers'];
+        return $this->container['candidateUsers'] ?? null;
     }
 
     /**
@@ -497,7 +497,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getCandidateGroups(): ?array
     {
-        return $this->container['candidateGroups'];
+        return $this->container['candidateGroups'] ?? null;
     }
 
     /**
@@ -536,7 +536,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getPriority(): ?int
     {
-        return $this->container['priority'];
+        return $this->container['priority'] ?? null;
     }
 
     /**

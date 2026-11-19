@@ -805,7 +805,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getBatchOperationKey(): ?\Camunda\Orchestration\Semantic\BatchOperationKey
     {
-        return $this->container['batchOperationKey'];
+        return $this->container['batchOperationKey'] ?? null;
     }
 
     /**
@@ -844,7 +844,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getBatchOperationType(): ?\Camunda\Orchestration\Api\Model\BatchOperationTypeEnum
     {
-        return $this->container['batchOperationType'];
+        return $this->container['batchOperationType'] ?? null;
     }
 
     /**
@@ -915,7 +915,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getActorId(): ?string
     {
-        return $this->container['actorId'];
+        return $this->container['actorId'] ?? null;
     }
 
     /**
@@ -954,7 +954,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getActorType(): ?\Camunda\Orchestration\Api\Model\AuditLogActorTypeEnum
     {
-        return $this->container['actorType'];
+        return $this->container['actorType'] ?? null;
     }
 
     /**
@@ -993,7 +993,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getAgentElementId(): ?string
     {
-        return $this->container['agentElementId'];
+        return $this->container['agentElementId'] ?? null;
     }
 
     /**
@@ -1032,7 +1032,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -1135,7 +1135,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -1174,7 +1174,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -1213,7 +1213,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -1252,7 +1252,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -1291,7 +1291,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -1330,7 +1330,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getJobKey(): ?\Camunda\Orchestration\Semantic\JobKey
     {
-        return $this->container['jobKey'];
+        return $this->container['jobKey'] ?? null;
     }
 
     /**
@@ -1369,7 +1369,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getUserTaskKey(): ?\Camunda\Orchestration\Semantic\UserTaskKey
     {
-        return $this->container['userTaskKey'];
+        return $this->container['userTaskKey'] ?? null;
     }
 
     /**
@@ -1408,7 +1408,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionRequirementsId(): ?string
     {
-        return $this->container['decisionRequirementsId'];
+        return $this->container['decisionRequirementsId'] ?? null;
     }
 
     /**
@@ -1447,7 +1447,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionRequirementsKey(): ?\Camunda\Orchestration\Semantic\DecisionRequirementsKey
     {
-        return $this->container['decisionRequirementsKey'];
+        return $this->container['decisionRequirementsKey'] ?? null;
     }
 
     /**
@@ -1486,7 +1486,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionDefinitionId(): ?\Camunda\Orchestration\Semantic\DecisionDefinitionId
     {
-        return $this->container['decisionDefinitionId'];
+        return $this->container['decisionDefinitionId'] ?? null;
     }
 
     /**
@@ -1525,7 +1525,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionDefinitionKey(): ?\Camunda\Orchestration\Semantic\DecisionDefinitionKey
     {
-        return $this->container['decisionDefinitionKey'];
+        return $this->container['decisionDefinitionKey'] ?? null;
     }
 
     /**
@@ -1564,7 +1564,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionEvaluationKey(): ?\Camunda\Orchestration\Semantic\DecisionEvaluationKey
     {
-        return $this->container['decisionEvaluationKey'];
+        return $this->container['decisionEvaluationKey'] ?? null;
     }
 
     /**
@@ -1603,7 +1603,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDeploymentKey(): ?\Camunda\Orchestration\Semantic\DeploymentKey
     {
-        return $this->container['deploymentKey'];
+        return $this->container['deploymentKey'] ?? null;
     }
 
     /**
@@ -1642,7 +1642,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getFormKey(): ?\Camunda\Orchestration\Semantic\FormKey
     {
-        return $this->container['formKey'];
+        return $this->container['formKey'] ?? null;
     }
 
     /**
@@ -1681,7 +1681,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getResourceKey(): ?\Camunda\Orchestration\Semantic\ResourceKey
     {
-        return $this->container['resourceKey'];
+        return $this->container['resourceKey'] ?? null;
     }
 
     /**
@@ -1720,7 +1720,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRelatedEntityKey(): ?\Camunda\Orchestration\Semantic\AuditLogEntityKey
     {
-        return $this->container['relatedEntityKey'];
+        return $this->container['relatedEntityKey'] ?? null;
     }
 
     /**
@@ -1759,7 +1759,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRelatedEntityType(): ?\Camunda\Orchestration\Api\Model\AuditLogEntityTypeEnum
     {
-        return $this->container['relatedEntityType'];
+        return $this->container['relatedEntityType'] ?? null;
     }
 
     /**
@@ -1798,7 +1798,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getEntityDescription(): ?string
     {
-        return $this->container['entityDescription'];
+        return $this->container['entityDescription'] ?? null;
     }
 
     /**
@@ -1837,7 +1837,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getInboundChannelType(): ?string
     {
-        return $this->container['inboundChannelType'];
+        return $this->container['inboundChannelType'] ?? null;
     }
 
     /**
@@ -1876,7 +1876,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getInboundChannelToolName(): ?string
     {
-        return $this->container['inboundChannelToolName'];
+        return $this->container['inboundChannelToolName'] ?? null;
     }
 
     /**

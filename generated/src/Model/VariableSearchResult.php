@@ -567,7 +567,7 @@ class VariableSearchResult implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**

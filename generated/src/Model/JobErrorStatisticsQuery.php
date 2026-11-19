@@ -340,7 +340,7 @@ class JobErrorStatisticsQuery implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getPage(): ?\Camunda\Orchestration\Api\Model\CursorForwardPagination
     {
-        return $this->container['page'];
+        return $this->container['page'] ?? null;
     }
 
     /**

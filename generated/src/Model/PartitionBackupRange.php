@@ -361,7 +361,7 @@ class PartitionBackupRange implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getStart(): ?\Camunda\Orchestration\Api\Model\PartitionBackupState
     {
-        return $this->container['start'];
+        return $this->container['start'] ?? null;
     }
 
     /**
@@ -400,7 +400,7 @@ class PartitionBackupRange implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getEnd(): ?\Camunda\Orchestration\Api\Model\PartitionBackupState
     {
-        return $this->container['end'];
+        return $this->container['end'] ?? null;
     }
 
     /**

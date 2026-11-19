@@ -311,7 +311,7 @@ class UserUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getPassword(): ?string
     {
-        return $this->container['password'];
+        return $this->container['password'] ?? null;
     }
 
     /**
@@ -343,7 +343,7 @@ class UserUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getName(): ?string
     {
-        return $this->container['name'];
+        return $this->container['name'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class UserUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getEmail(): ?string
     {
-        return $this->container['email'];
+        return $this->container['email'] ?? null;
     }
 
     /**

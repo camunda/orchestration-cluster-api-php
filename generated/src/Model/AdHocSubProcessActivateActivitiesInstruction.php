@@ -339,7 +339,7 @@ class AdHocSubProcessActivateActivitiesInstruction implements ModelInterface, Ar
      */
     public function getCancelRemainingInstances(): ?bool
     {
-        return $this->container['cancelRemainingInstances'];
+        return $this->container['cancelRemainingInstances'] ?? null;
     }
 
     /**

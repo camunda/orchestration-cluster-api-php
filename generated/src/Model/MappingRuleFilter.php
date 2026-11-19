@@ -326,7 +326,7 @@ class MappingRuleFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getClaimName(): ?string
     {
-        return $this->container['claimName'];
+        return $this->container['claimName'] ?? null;
     }
 
     /**
@@ -358,7 +358,7 @@ class MappingRuleFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getClaimValue(): ?string
     {
-        return $this->container['claimValue'];
+        return $this->container['claimValue'] ?? null;
     }
 
     /**
@@ -454,7 +454,7 @@ class MappingRuleFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getOr(): ?array
     {
-        return $this->container['or'];
+        return $this->container['or'] ?? null;
     }
 
     /**

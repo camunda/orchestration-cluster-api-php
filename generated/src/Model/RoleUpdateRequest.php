@@ -339,7 +339,7 @@ class RoleUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDescription(): ?string
     {
-        return $this->container['description'];
+        return $this->container['description'] ?? null;
     }
 
     /**

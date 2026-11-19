@@ -349,7 +349,7 @@ class AdvancedProcessDefinitionIdFilter implements ModelInterface, ArrayAccess, 
      */
     public function getEq(): ?string
     {
-        return $this->container['eq'];
+        return $this->container['eq'] ?? null;
     }
 
     /**
@@ -389,7 +389,7 @@ class AdvancedProcessDefinitionIdFilter implements ModelInterface, ArrayAccess, 
      */
     public function getNeq(): ?string
     {
-        return $this->container['neq'];
+        return $this->container['neq'] ?? null;
     }
 
     /**
@@ -429,7 +429,7 @@ class AdvancedProcessDefinitionIdFilter implements ModelInterface, ArrayAccess, 
      */
     public function getExists(): ?bool
     {
-        return $this->container['exists'];
+        return $this->container['exists'] ?? null;
     }
 
     /**
@@ -461,7 +461,7 @@ class AdvancedProcessDefinitionIdFilter implements ModelInterface, ArrayAccess, 
      */
     public function getIn(): ?array
     {
-        return $this->container['in'];
+        return $this->container['in'] ?? null;
     }
 
     /**
@@ -493,7 +493,7 @@ class AdvancedProcessDefinitionIdFilter implements ModelInterface, ArrayAccess, 
      */
     public function getNotIn(): ?array
     {
-        return $this->container['notIn'];
+        return $this->container['notIn'] ?? null;
     }
 
     /**
@@ -525,7 +525,7 @@ class AdvancedProcessDefinitionIdFilter implements ModelInterface, ArrayAccess, 
      */
     public function getLike(): ?string
     {
-        return $this->container['like'];
+        return $this->container['like'] ?? null;
     }
 
     /**

@@ -626,7 +626,7 @@ class CreateProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**

@@ -465,7 +465,7 @@ class AuthorizationResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getResourceId(): ?string
     {
-        return $this->container['resourceId'];
+        return $this->container['resourceId'] ?? null;
     }
 
     /**
@@ -504,7 +504,7 @@ class AuthorizationResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getResourcePropertyName(): ?string
     {
-        return $this->container['resourcePropertyName'];
+        return $this->container['resourcePropertyName'] ?? null;
     }
 
     /**

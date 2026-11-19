@@ -589,7 +589,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getName(): ?string
     {
-        return $this->container['name'];
+        return $this->container['name'] ?? null;
     }
 
     /**
@@ -660,7 +660,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getAssignee(): ?string
     {
-        return $this->container['assignee'];
+        return $this->container['assignee'] ?? null;
     }
 
     /**
@@ -853,7 +853,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getCompletionDate(): ?\DateTime
     {
-        return $this->container['completionDate'];
+        return $this->container['completionDate'] ?? null;
     }
 
     /**
@@ -892,7 +892,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getFollowUpDate(): ?\DateTime
     {
-        return $this->container['followUpDate'];
+        return $this->container['followUpDate'] ?? null;
     }
 
     /**
@@ -931,7 +931,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDueDate(): ?\DateTime
     {
-        return $this->container['dueDate'];
+        return $this->container['dueDate'] ?? null;
     }
 
     /**
@@ -999,7 +999,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getExternalFormReference(): ?string
     {
-        return $this->container['externalFormReference'];
+        return $this->container['externalFormReference'] ?? null;
     }
 
     /**
@@ -1199,7 +1199,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessName(): ?string
     {
-        return $this->container['processName'];
+        return $this->container['processName'] ?? null;
     }
 
     /**
@@ -1296,7 +1296,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -1335,7 +1335,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**
@@ -1374,7 +1374,7 @@ class UserTaskResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getFormKey(): ?\Camunda\Orchestration\Semantic\FormKey
     {
-        return $this->container['formKey'];
+        return $this->container['formKey'] ?? null;
     }
 
     /**

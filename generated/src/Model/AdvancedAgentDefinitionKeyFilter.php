@@ -326,7 +326,7 @@ class AdvancedAgentDefinitionKeyFilter implements ModelInterface, ArrayAccess, J
      */
     public function getEq(): ?string
     {
-        return $this->container['eq'];
+        return $this->container['eq'] ?? null;
     }
 
     /**
@@ -358,7 +358,7 @@ class AdvancedAgentDefinitionKeyFilter implements ModelInterface, ArrayAccess, J
      */
     public function getNeq(): ?string
     {
-        return $this->container['neq'];
+        return $this->container['neq'] ?? null;
     }
 
     /**
@@ -390,7 +390,7 @@ class AdvancedAgentDefinitionKeyFilter implements ModelInterface, ArrayAccess, J
      */
     public function getExists(): ?bool
     {
-        return $this->container['exists'];
+        return $this->container['exists'] ?? null;
     }
 
     /**
@@ -422,7 +422,7 @@ class AdvancedAgentDefinitionKeyFilter implements ModelInterface, ArrayAccess, J
      */
     public function getIn(): ?array
     {
-        return $this->container['in'];
+        return $this->container['in'] ?? null;
     }
 
     /**
@@ -454,7 +454,7 @@ class AdvancedAgentDefinitionKeyFilter implements ModelInterface, ArrayAccess, J
      */
     public function getNotIn(): ?array
     {
-        return $this->container['notIn'];
+        return $this->container['notIn'] ?? null;
     }
 
     /**

@@ -579,7 +579,7 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getElementId(): ?\Camunda\Orchestration\Semantic\ElementId
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**
@@ -896,7 +896,7 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getProcessInstanceVariables(): ?array
     {
-        return $this->container['processInstanceVariables'];
+        return $this->container['processInstanceVariables'] ?? null;
     }
 
     /**
@@ -928,7 +928,7 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getLocalVariables(): ?array
     {
-        return $this->container['localVariables'];
+        return $this->container['localVariables'] ?? null;
     }
 
     /**
@@ -960,7 +960,7 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getUserTaskKey(): ?\Camunda\Orchestration\Semantic\UserTaskKey
     {
-        return $this->container['userTaskKey'];
+        return $this->container['userTaskKey'] ?? null;
     }
 
     /**
@@ -1053,7 +1053,7 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -1082,7 +1082,7 @@ class UserTaskFilterFields implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getTags(): ?array
     {
-        return $this->container['tags'];
+        return $this->container['tags'] ?? null;
     }
 
     /**

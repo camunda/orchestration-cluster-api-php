@@ -389,7 +389,7 @@ class MessageCorrelationRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getCorrelationKey(): ?string
     {
-        return $this->container['correlationKey'];
+        return $this->container['correlationKey'] ?? null;
     }
 
     /**
@@ -421,7 +421,7 @@ class MessageCorrelationRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**
@@ -453,7 +453,7 @@ class MessageCorrelationRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -482,7 +482,7 @@ class MessageCorrelationRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**

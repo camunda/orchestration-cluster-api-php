@@ -336,7 +336,7 @@ class TenantClientSearchQueryRequest implements ModelInterface, ArrayAccess, Jso
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**

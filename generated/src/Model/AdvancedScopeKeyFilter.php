@@ -360,7 +360,7 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getEq(): ?\Camunda\Orchestration\Semantic\ScopeKey
     {
-        return $this->container['eq'];
+        return $this->container['eq'] ?? null;
     }
 
     /**
@@ -392,7 +392,7 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getNeq(): ?\Camunda\Orchestration\Semantic\ScopeKey
     {
-        return $this->container['neq'];
+        return $this->container['neq'] ?? null;
     }
 
     /**
@@ -424,7 +424,7 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getExists(): ?bool
     {
-        return $this->container['exists'];
+        return $this->container['exists'] ?? null;
     }
 
     /**
@@ -456,7 +456,7 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getIn(): ?array
     {
-        return $this->container['in'];
+        return $this->container['in'] ?? null;
     }
 
     /**
@@ -488,7 +488,7 @@ class AdvancedScopeKeyFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getNotIn(): ?array
     {
-        return $this->container['notIn'];
+        return $this->container['notIn'] ?? null;
     }
 
     /**

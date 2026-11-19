@@ -372,7 +372,7 @@ class DecisionEvaluationById implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**
@@ -404,7 +404,7 @@ class DecisionEvaluationById implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**

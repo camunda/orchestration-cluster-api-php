@@ -440,7 +440,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getIsLatestVersion(): ?bool
     {
-        return $this->container['isLatestVersion'];
+        return $this->container['isLatestVersion'] ?? null;
     }
 
     /**
@@ -472,7 +472,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getResourceName(): ?string
     {
-        return $this->container['resourceName'];
+        return $this->container['resourceName'] ?? null;
     }
 
     /**
@@ -504,7 +504,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getVersion(): ?int
     {
-        return $this->container['version'];
+        return $this->container['version'] ?? null;
     }
 
     /**
@@ -536,7 +536,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getVersionTag(): ?string
     {
-        return $this->container['versionTag'];
+        return $this->container['versionTag'] ?? null;
     }
 
     /**
@@ -600,7 +600,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -629,7 +629,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -658,7 +658,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getHasStartForm(): ?bool
     {
-        return $this->container['hasStartForm'];
+        return $this->container['hasStartForm'] ?? null;
     }
 
     /**
@@ -690,7 +690,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getState(): ?string
     {
-        return $this->container['state'];
+        return $this->container['state'] ?? null;
     }
 
     /**

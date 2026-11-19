@@ -539,7 +539,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**
@@ -790,7 +790,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -861,7 +861,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getEvaluationFailure(): ?string
     {
-        return $this->container['evaluationFailure'];
+        return $this->container['evaluationFailure'] ?? null;
     }
 
     /**
@@ -900,7 +900,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -939,7 +939,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -1039,7 +1039,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**

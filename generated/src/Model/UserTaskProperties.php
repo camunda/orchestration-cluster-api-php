@@ -440,7 +440,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getAssignee(): ?string
     {
-        return $this->container['assignee'];
+        return $this->container['assignee'] ?? null;
     }
 
     /**
@@ -575,7 +575,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getDueDate(): ?string
     {
-        return $this->container['dueDate'];
+        return $this->container['dueDate'] ?? null;
     }
 
     /**
@@ -614,7 +614,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getFollowUpDate(): ?string
     {
-        return $this->container['followUpDate'];
+        return $this->container['followUpDate'] ?? null;
     }
 
     /**
@@ -653,7 +653,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getFormKey(): ?\Camunda\Orchestration\Semantic\FormKey
     {
-        return $this->container['formKey'];
+        return $this->container['formKey'] ?? null;
     }
 
     /**
@@ -692,7 +692,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getPriority(): ?int
     {
-        return $this->container['priority'];
+        return $this->container['priority'] ?? null;
     }
 
     /**
@@ -738,7 +738,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getUserTaskKey(): ?\Camunda\Orchestration\Semantic\UserTaskKey
     {
-        return $this->container['userTaskKey'];
+        return $this->container['userTaskKey'] ?? null;
     }
 
     /**
