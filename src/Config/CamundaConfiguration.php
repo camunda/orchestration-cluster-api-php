@@ -73,9 +73,6 @@ final class CamundaConfiguration implements \JsonSerializable
             'workerTimeoutMs' => $this->workerTimeoutMs,
             'workerRequestTimeoutMs' => $this->workerRequestTimeoutMs,
             'workerName' => $this->workerName,
-            'httpRetryMaxAttempts' => $this->httpRetryMaxAttempts,
-            'httpRetryBaseDelayMs' => $this->httpRetryBaseDelayMs,
-            'httpRetryMaxDelayMs' => $this->httpRetryMaxDelayMs,
         ];
     }
 

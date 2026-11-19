@@ -171,9 +171,6 @@ final class ConfigurationSecretRedactionTest extends TestCase
         self::assertSame('operator', $debug['basicAuthUsername']);
         self::assertSame('/etc/camunda/client.pem', $debug['mtlsCertPath']);
         self::assertSame(['acme'], $debug['tenantIds']);
-        self::assertSame(3, $debug['httpRetryMaxAttempts']);
-        self::assertSame(100, $debug['httpRetryBaseDelayMs']);
-        self::assertSame(2000, $debug['httpRetryMaxDelayMs']);
     }
 
     public function testEveryPublicPropertyIsAccountedForInTheDebugView(): void
