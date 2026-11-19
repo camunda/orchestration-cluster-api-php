@@ -90,6 +90,15 @@ class UserTaskUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializ
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -149,6 +158,20 @@ class UserTaskUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializ
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -244,6 +267,10 @@ class UserTaskUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializ
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -300,6 +327,11 @@ class UserTaskUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializ
             }
         }
         $this->container['changeset'] = $changeset;
+        if ($changeset === null) {
+            unset($this->openAPIFieldsSet['changeset']);
+        } else {
+            $this->openAPIFieldsSet['changeset'] = true;
+        }
 
         return $this;
     }
@@ -334,6 +366,11 @@ class UserTaskUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializ
             }
         }
         $this->container['action'] = $action;
+        if ($action === null) {
+            unset($this->openAPIFieldsSet['action']);
+        } else {
+            $this->openAPIFieldsSet['action'] = true;
+        }
 
         return $this;
     }
@@ -376,6 +413,11 @@ class UserTaskUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializ
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -389,6 +431,7 @@ class UserTaskUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializ
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

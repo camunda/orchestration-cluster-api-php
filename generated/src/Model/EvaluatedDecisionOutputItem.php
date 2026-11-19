@@ -100,6 +100,15 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -159,6 +168,20 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -266,6 +289,10 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -330,6 +357,11 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
             throw new InvalidArgumentException('non-nullable outputId cannot be null');
         }
         $this->container['outputId'] = $outputId;
+        if ($outputId === null) {
+            unset($this->openAPIFieldsSet['outputId']);
+        } else {
+            $this->openAPIFieldsSet['outputId'] = true;
+        }
 
         return $this;
     }
@@ -357,6 +389,11 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
             throw new InvalidArgumentException('non-nullable outputName cannot be null');
         }
         $this->container['outputName'] = $outputName;
+        if ($outputName === null) {
+            unset($this->openAPIFieldsSet['outputName']);
+        } else {
+            $this->openAPIFieldsSet['outputName'] = true;
+        }
 
         return $this;
     }
@@ -384,6 +421,11 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
             throw new InvalidArgumentException('non-nullable outputValue cannot be null');
         }
         $this->container['outputValue'] = $outputValue;
+        if ($outputValue === null) {
+            unset($this->openAPIFieldsSet['outputValue']);
+        } else {
+            $this->openAPIFieldsSet['outputValue'] = true;
+        }
 
         return $this;
     }
@@ -418,6 +460,11 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
             }
         }
         $this->container['ruleId'] = $ruleId;
+        if ($ruleId === null) {
+            unset($this->openAPIFieldsSet['ruleId']);
+        } else {
+            $this->openAPIFieldsSet['ruleId'] = true;
+        }
 
         return $this;
     }
@@ -452,6 +499,11 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
             }
         }
         $this->container['ruleIndex'] = $ruleIndex;
+        if ($ruleIndex === null) {
+            unset($this->openAPIFieldsSet['ruleIndex']);
+        } else {
+            $this->openAPIFieldsSet['ruleIndex'] = true;
+        }
 
         return $this;
     }
@@ -494,6 +546,11 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -507,6 +564,7 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

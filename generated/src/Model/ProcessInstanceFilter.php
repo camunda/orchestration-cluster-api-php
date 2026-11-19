@@ -163,6 +163,15 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -222,6 +231,20 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -413,6 +436,10 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -466,6 +493,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable startDate cannot be null');
         }
         $this->container['startDate'] = $startDate;
+        if ($startDate === null) {
+            unset($this->openAPIFieldsSet['startDate']);
+        } else {
+            $this->openAPIFieldsSet['startDate'] = true;
+        }
 
         return $this;
     }
@@ -493,6 +525,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable endDate cannot be null');
         }
         $this->container['endDate'] = $endDate;
+        if ($endDate === null) {
+            unset($this->openAPIFieldsSet['endDate']);
+        } else {
+            $this->openAPIFieldsSet['endDate'] = true;
+        }
 
         return $this;
     }
@@ -520,6 +557,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable state cannot be null');
         }
         $this->container['state'] = $state;
+        if ($state === null) {
+            unset($this->openAPIFieldsSet['state']);
+        } else {
+            $this->openAPIFieldsSet['state'] = true;
+        }
 
         return $this;
     }
@@ -547,6 +589,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable hasIncident cannot be null');
         }
         $this->container['hasIncident'] = $hasIncident;
+        if ($hasIncident === null) {
+            unset($this->openAPIFieldsSet['hasIncident']);
+        } else {
+            $this->openAPIFieldsSet['hasIncident'] = true;
+        }
 
         return $this;
     }
@@ -574,6 +621,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable suspendedDate cannot be null');
         }
         $this->container['suspendedDate'] = $suspendedDate;
+        if ($suspendedDate === null) {
+            unset($this->openAPIFieldsSet['suspendedDate']);
+        } else {
+            $this->openAPIFieldsSet['suspendedDate'] = true;
+        }
 
         return $this;
     }
@@ -601,6 +653,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable tenantId cannot be null');
         }
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -628,6 +685,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable variables cannot be null');
         }
         $this->container['variables'] = $variables;
+        if ($variables === null) {
+            unset($this->openAPIFieldsSet['variables']);
+        } else {
+            $this->openAPIFieldsSet['variables'] = true;
+        }
 
         return $this;
     }
@@ -655,6 +717,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
         }
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -682,6 +749,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable parentProcessInstanceKey cannot be null');
         }
         $this->container['parentProcessInstanceKey'] = $parentProcessInstanceKey;
+        if ($parentProcessInstanceKey === null) {
+            unset($this->openAPIFieldsSet['parentProcessInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['parentProcessInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -709,6 +781,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable parentElementInstanceKey cannot be null');
         }
         $this->container['parentElementInstanceKey'] = $parentElementInstanceKey;
+        if ($parentElementInstanceKey === null) {
+            unset($this->openAPIFieldsSet['parentElementInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['parentElementInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -738,6 +815,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable batchOperationId cannot be null');
         }
         $this->container['batchOperationId'] = $batchOperationId;
+        if ($batchOperationId === null) {
+            unset($this->openAPIFieldsSet['batchOperationId']);
+        } else {
+            $this->openAPIFieldsSet['batchOperationId'] = true;
+        }
 
         return $this;
     }
@@ -765,6 +847,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable batchOperationKey cannot be null');
         }
         $this->container['batchOperationKey'] = $batchOperationKey;
+        if ($batchOperationKey === null) {
+            unset($this->openAPIFieldsSet['batchOperationKey']);
+        } else {
+            $this->openAPIFieldsSet['batchOperationKey'] = true;
+        }
 
         return $this;
     }
@@ -792,6 +879,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable errorMessage cannot be null');
         }
         $this->container['errorMessage'] = $errorMessage;
+        if ($errorMessage === null) {
+            unset($this->openAPIFieldsSet['errorMessage']);
+        } else {
+            $this->openAPIFieldsSet['errorMessage'] = true;
+        }
 
         return $this;
     }
@@ -819,6 +911,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable hasRetriesLeft cannot be null');
         }
         $this->container['hasRetriesLeft'] = $hasRetriesLeft;
+        if ($hasRetriesLeft === null) {
+            unset($this->openAPIFieldsSet['hasRetriesLeft']);
+        } else {
+            $this->openAPIFieldsSet['hasRetriesLeft'] = true;
+        }
 
         return $this;
     }
@@ -846,6 +943,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable elementInstanceState cannot be null');
         }
         $this->container['elementInstanceState'] = $elementInstanceState;
+        if ($elementInstanceState === null) {
+            unset($this->openAPIFieldsSet['elementInstanceState']);
+        } else {
+            $this->openAPIFieldsSet['elementInstanceState'] = true;
+        }
 
         return $this;
     }
@@ -873,6 +975,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable elementId cannot be null');
         }
         $this->container['elementId'] = $elementId;
+        if ($elementId === null) {
+            unset($this->openAPIFieldsSet['elementId']);
+        } else {
+            $this->openAPIFieldsSet['elementId'] = true;
+        }
 
         return $this;
     }
@@ -900,6 +1007,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable hasElementInstanceIncident cannot be null');
         }
         $this->container['hasElementInstanceIncident'] = $hasElementInstanceIncident;
+        if ($hasElementInstanceIncident === null) {
+            unset($this->openAPIFieldsSet['hasElementInstanceIncident']);
+        } else {
+            $this->openAPIFieldsSet['hasElementInstanceIncident'] = true;
+        }
 
         return $this;
     }
@@ -927,6 +1039,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable incidentErrorHashCode cannot be null');
         }
         $this->container['incidentErrorHashCode'] = $incidentErrorHashCode;
+        if ($incidentErrorHashCode === null) {
+            unset($this->openAPIFieldsSet['incidentErrorHashCode']);
+        } else {
+            $this->openAPIFieldsSet['incidentErrorHashCode'] = true;
+        }
 
         return $this;
     }
@@ -957,6 +1074,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('invalid value for $tags when calling ProcessInstanceFilter., number of items must be less than or equal to 10.');
         }
         $this->container['tags'] = $tags;
+        if ($tags === null) {
+            unset($this->openAPIFieldsSet['tags']);
+        } else {
+            $this->openAPIFieldsSet['tags'] = true;
+        }
 
         return $this;
     }
@@ -984,6 +1106,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable businessId cannot be null');
         }
         $this->container['businessId'] = $businessId;
+        if ($businessId === null) {
+            unset($this->openAPIFieldsSet['businessId']);
+        } else {
+            $this->openAPIFieldsSet['businessId'] = true;
+        }
 
         return $this;
     }
@@ -1011,6 +1138,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable processDefinitionId cannot be null');
         }
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -1038,6 +1170,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable processDefinitionName cannot be null');
         }
         $this->container['processDefinitionName'] = $processDefinitionName;
+        if ($processDefinitionName === null) {
+            unset($this->openAPIFieldsSet['processDefinitionName']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionName'] = true;
+        }
 
         return $this;
     }
@@ -1065,6 +1202,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
         }
         $this->container['processDefinitionVersion'] = $processDefinitionVersion;
+        if ($processDefinitionVersion === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersion']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
+        }
 
         return $this;
     }
@@ -1092,6 +1234,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable processDefinitionVersionTag cannot be null');
         }
         $this->container['processDefinitionVersionTag'] = $processDefinitionVersionTag;
+        if ($processDefinitionVersionTag === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersionTag']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersionTag'] = true;
+        }
 
         return $this;
     }
@@ -1119,6 +1266,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');
         }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
+        if ($processDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['processDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -1146,6 +1298,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             throw new InvalidArgumentException('non-nullable or cannot be null');
         }
         $this->container['or'] = $or;
+        if ($or === null) {
+            unset($this->openAPIFieldsSet['or']);
+        } else {
+            $this->openAPIFieldsSet['or'] = true;
+        }
 
         return $this;
     }
@@ -1188,6 +1345,11 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -1201,6 +1363,7 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

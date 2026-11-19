@@ -139,6 +139,15 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -198,6 +207,20 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -357,6 +380,10 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -482,6 +509,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
     public function setHistoryItemKey(\Camunda\Orchestration\Semantic\AgentHistoryItemKey $historyItemKey): static
     {
         $this->container['historyItemKey'] = $historyItemKey;
+        if ($historyItemKey === null) {
+            unset($this->openAPIFieldsSet['historyItemKey']);
+        } else {
+            $this->openAPIFieldsSet['historyItemKey'] = true;
+        }
 
         return $this;
     }
@@ -506,6 +538,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
     public function setHistoryItemId(\Camunda\Orchestration\Semantic\HistoryItemId $historyItemId): static
     {
         $this->container['historyItemId'] = $historyItemId;
+        if ($historyItemId === null) {
+            unset($this->openAPIFieldsSet['historyItemId']);
+        } else {
+            $this->openAPIFieldsSet['historyItemId'] = true;
+        }
 
         return $this;
     }
@@ -530,6 +567,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
     public function setAgentInstanceKey(\Camunda\Orchestration\Semantic\AgentInstanceKey $agentInstanceKey): static
     {
         $this->container['agentInstanceKey'] = $agentInstanceKey;
+        if ($agentInstanceKey === null) {
+            unset($this->openAPIFieldsSet['agentInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['agentInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -554,6 +596,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
     public function setElementInstanceKey(\Camunda\Orchestration\Semantic\ElementInstanceKey $elementInstanceKey): static
     {
         $this->container['elementInstanceKey'] = $elementInstanceKey;
+        if ($elementInstanceKey === null) {
+            unset($this->openAPIFieldsSet['elementInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['elementInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -578,6 +625,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
     public function setJobKey(\Camunda\Orchestration\Semantic\JobKey $jobKey): static
     {
         $this->container['jobKey'] = $jobKey;
+        if ($jobKey === null) {
+            unset($this->openAPIFieldsSet['jobKey']);
+        } else {
+            $this->openAPIFieldsSet['jobKey'] = true;
+        }
 
         return $this;
     }
@@ -602,6 +654,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
     public function setJobLeaseToken(\Camunda\Orchestration\Semantic\JobLeaseToken $jobLeaseToken): static
     {
         $this->container['jobLeaseToken'] = $jobLeaseToken;
+        if ($jobLeaseToken === null) {
+            unset($this->openAPIFieldsSet['jobLeaseToken']);
+        } else {
+            $this->openAPIFieldsSet['jobLeaseToken'] = true;
+        }
 
         return $this;
     }
@@ -633,6 +690,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
         }
 
         $this->container['loopIteration'] = $loopIteration;
+        if ($loopIteration === null) {
+            unset($this->openAPIFieldsSet['loopIteration']);
+        } else {
+            $this->openAPIFieldsSet['loopIteration'] = true;
+        }
 
         return $this;
     }
@@ -660,6 +722,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
             throw new InvalidArgumentException('non-nullable role cannot be null');
         }
         $this->container['role'] = $role;
+        if ($role === null) {
+            unset($this->openAPIFieldsSet['role']);
+        } else {
+            $this->openAPIFieldsSet['role'] = true;
+        }
 
         return $this;
     }
@@ -687,6 +754,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
             throw new InvalidArgumentException('non-nullable content cannot be null');
         }
         $this->container['content'] = $content;
+        if ($content === null) {
+            unset($this->openAPIFieldsSet['content']);
+        } else {
+            $this->openAPIFieldsSet['content'] = true;
+        }
 
         return $this;
     }
@@ -714,6 +786,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
             throw new InvalidArgumentException('non-nullable toolCalls cannot be null');
         }
         $this->container['toolCalls'] = $toolCalls;
+        if ($toolCalls === null) {
+            unset($this->openAPIFieldsSet['toolCalls']);
+        } else {
+            $this->openAPIFieldsSet['toolCalls'] = true;
+        }
 
         return $this;
     }
@@ -748,6 +825,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
             }
         }
         $this->container['metrics'] = $metrics;
+        if ($metrics === null) {
+            unset($this->openAPIFieldsSet['metrics']);
+        } else {
+            $this->openAPIFieldsSet['metrics'] = true;
+        }
 
         return $this;
     }
@@ -775,6 +857,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
             throw new InvalidArgumentException('non-nullable commitStatus cannot be null');
         }
         $this->container['commitStatus'] = $commitStatus;
+        if ($commitStatus === null) {
+            unset($this->openAPIFieldsSet['commitStatus']);
+        } else {
+            $this->openAPIFieldsSet['commitStatus'] = true;
+        }
 
         return $this;
     }
@@ -802,6 +889,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
             throw new InvalidArgumentException('non-nullable producedAt cannot be null');
         }
         $this->container['producedAt'] = $producedAt;
+        if ($producedAt === null) {
+            unset($this->openAPIFieldsSet['producedAt']);
+        } else {
+            $this->openAPIFieldsSet['producedAt'] = true;
+        }
 
         return $this;
     }
@@ -829,6 +921,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
             throw new InvalidArgumentException('non-nullable tools cannot be null');
         }
         $this->container['tools'] = $tools;
+        if ($tools === null) {
+            unset($this->openAPIFieldsSet['tools']);
+        } else {
+            $this->openAPIFieldsSet['tools'] = true;
+        }
 
         return $this;
     }
@@ -863,6 +960,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
             }
         }
         $this->container['model'] = $model;
+        if ($model === null) {
+            unset($this->openAPIFieldsSet['model']);
+        } else {
+            $this->openAPIFieldsSet['model'] = true;
+        }
 
         return $this;
     }
@@ -897,6 +999,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
             }
         }
         $this->container['provider'] = $provider;
+        if ($provider === null) {
+            unset($this->openAPIFieldsSet['provider']);
+        } else {
+            $this->openAPIFieldsSet['provider'] = true;
+        }
 
         return $this;
     }
@@ -924,6 +1031,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
             throw new InvalidArgumentException('non-nullable limits cannot be null');
         }
         $this->container['limits'] = $limits;
+        if ($limits === null) {
+            unset($this->openAPIFieldsSet['limits']);
+        } else {
+            $this->openAPIFieldsSet['limits'] = true;
+        }
 
         return $this;
     }
@@ -951,6 +1063,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
             throw new InvalidArgumentException('non-nullable systemPrompt cannot be null');
         }
         $this->container['systemPrompt'] = $systemPrompt;
+        if ($systemPrompt === null) {
+            unset($this->openAPIFieldsSet['systemPrompt']);
+        } else {
+            $this->openAPIFieldsSet['systemPrompt'] = true;
+        }
 
         return $this;
     }
@@ -993,6 +1110,11 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -1006,6 +1128,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

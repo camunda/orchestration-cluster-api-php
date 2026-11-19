@@ -117,6 +117,15 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -176,6 +185,20 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -307,6 +330,10 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -444,6 +471,11 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
             }
         }
         $this->container['username'] = $username;
+        if ($username === null) {
+            unset($this->openAPIFieldsSet['username']);
+        } else {
+            $this->openAPIFieldsSet['username'] = true;
+        }
 
         return $this;
     }
@@ -478,6 +510,11 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
             }
         }
         $this->container['displayName'] = $displayName;
+        if ($displayName === null) {
+            unset($this->openAPIFieldsSet['displayName']);
+        } else {
+            $this->openAPIFieldsSet['displayName'] = true;
+        }
 
         return $this;
     }
@@ -512,6 +549,11 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
             }
         }
         $this->container['email'] = $email;
+        if ($email === null) {
+            unset($this->openAPIFieldsSet['email']);
+        } else {
+            $this->openAPIFieldsSet['email'] = true;
+        }
 
         return $this;
     }
@@ -539,6 +581,11 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable authorizedComponents cannot be null');
         }
         $this->container['authorizedComponents'] = $authorizedComponents;
+        if ($authorizedComponents === null) {
+            unset($this->openAPIFieldsSet['authorizedComponents']);
+        } else {
+            $this->openAPIFieldsSet['authorizedComponents'] = true;
+        }
 
         return $this;
     }
@@ -566,6 +613,11 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable tenants cannot be null');
         }
         $this->container['tenants'] = $tenants;
+        if ($tenants === null) {
+            unset($this->openAPIFieldsSet['tenants']);
+        } else {
+            $this->openAPIFieldsSet['tenants'] = true;
+        }
 
         return $this;
     }
@@ -593,6 +645,11 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable groups cannot be null');
         }
         $this->container['groups'] = $groups;
+        if ($groups === null) {
+            unset($this->openAPIFieldsSet['groups']);
+        } else {
+            $this->openAPIFieldsSet['groups'] = true;
+        }
 
         return $this;
     }
@@ -620,6 +677,11 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable roles cannot be null');
         }
         $this->container['roles'] = $roles;
+        if ($roles === null) {
+            unset($this->openAPIFieldsSet['roles']);
+        } else {
+            $this->openAPIFieldsSet['roles'] = true;
+        }
 
         return $this;
     }
@@ -654,6 +716,11 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
             }
         }
         $this->container['salesPlanType'] = $salesPlanType;
+        if ($salesPlanType === null) {
+            unset($this->openAPIFieldsSet['salesPlanType']);
+        } else {
+            $this->openAPIFieldsSet['salesPlanType'] = true;
+        }
 
         return $this;
     }
@@ -681,6 +748,11 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable c8Links cannot be null');
         }
         $this->container['c8Links'] = $c8Links;
+        if ($c8Links === null) {
+            unset($this->openAPIFieldsSet['c8Links']);
+        } else {
+            $this->openAPIFieldsSet['c8Links'] = true;
+        }
 
         return $this;
     }
@@ -708,6 +780,11 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable canLogout cannot be null');
         }
         $this->container['canLogout'] = $canLogout;
+        if ($canLogout === null) {
+            unset($this->openAPIFieldsSet['canLogout']);
+        } else {
+            $this->openAPIFieldsSet['canLogout'] = true;
+        }
 
         return $this;
     }
@@ -750,6 +827,11 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -763,6 +845,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

@@ -103,6 +103,15 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -162,6 +171,20 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -273,6 +296,10 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -366,6 +393,11 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
     public function setProcessDefinitionId(\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -390,6 +422,11 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
     public function setTenantId(\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -424,6 +461,11 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
             }
         }
         $this->container['latestProcessDefinitionName'] = $latestProcessDefinitionName;
+        if ($latestProcessDefinitionName === null) {
+            unset($this->openAPIFieldsSet['latestProcessDefinitionName']);
+        } else {
+            $this->openAPIFieldsSet['latestProcessDefinitionName'] = true;
+        }
 
         return $this;
     }
@@ -451,6 +493,11 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
             throw new InvalidArgumentException('non-nullable hasMultipleVersions cannot be null');
         }
         $this->container['hasMultipleVersions'] = $hasMultipleVersions;
+        if ($hasMultipleVersions === null) {
+            unset($this->openAPIFieldsSet['hasMultipleVersions']);
+        } else {
+            $this->openAPIFieldsSet['hasMultipleVersions'] = true;
+        }
 
         return $this;
     }
@@ -478,6 +525,11 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
             throw new InvalidArgumentException('non-nullable activeInstancesWithoutIncidentCount cannot be null');
         }
         $this->container['activeInstancesWithoutIncidentCount'] = $activeInstancesWithoutIncidentCount;
+        if ($activeInstancesWithoutIncidentCount === null) {
+            unset($this->openAPIFieldsSet['activeInstancesWithoutIncidentCount']);
+        } else {
+            $this->openAPIFieldsSet['activeInstancesWithoutIncidentCount'] = true;
+        }
 
         return $this;
     }
@@ -505,6 +557,11 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
             throw new InvalidArgumentException('non-nullable activeInstancesWithIncidentCount cannot be null');
         }
         $this->container['activeInstancesWithIncidentCount'] = $activeInstancesWithIncidentCount;
+        if ($activeInstancesWithIncidentCount === null) {
+            unset($this->openAPIFieldsSet['activeInstancesWithIncidentCount']);
+        } else {
+            $this->openAPIFieldsSet['activeInstancesWithIncidentCount'] = true;
+        }
 
         return $this;
     }
@@ -547,6 +604,11 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -560,6 +622,7 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

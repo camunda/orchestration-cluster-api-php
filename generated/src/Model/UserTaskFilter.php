@@ -151,6 +151,15 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -210,6 +219,20 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -385,6 +408,10 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -447,6 +474,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable state cannot be null');
         }
         $this->container['state'] = $state;
+        if ($state === null) {
+            unset($this->openAPIFieldsSet['state']);
+        } else {
+            $this->openAPIFieldsSet['state'] = true;
+        }
 
         return $this;
     }
@@ -474,6 +506,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable assignee cannot be null');
         }
         $this->container['assignee'] = $assignee;
+        if ($assignee === null) {
+            unset($this->openAPIFieldsSet['assignee']);
+        } else {
+            $this->openAPIFieldsSet['assignee'] = true;
+        }
 
         return $this;
     }
@@ -501,6 +538,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable businessId cannot be null');
         }
         $this->container['businessId'] = $businessId;
+        if ($businessId === null) {
+            unset($this->openAPIFieldsSet['businessId']);
+        } else {
+            $this->openAPIFieldsSet['businessId'] = true;
+        }
 
         return $this;
     }
@@ -528,6 +570,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable priority cannot be null');
         }
         $this->container['priority'] = $priority;
+        if ($priority === null) {
+            unset($this->openAPIFieldsSet['priority']);
+        } else {
+            $this->openAPIFieldsSet['priority'] = true;
+        }
 
         return $this;
     }
@@ -552,6 +599,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
     public function setElementId(?\Camunda\Orchestration\Semantic\ElementId $elementId): static
     {
         $this->container['elementId'] = $elementId;
+        if ($elementId === null) {
+            unset($this->openAPIFieldsSet['elementId']);
+        } else {
+            $this->openAPIFieldsSet['elementId'] = true;
+        }
 
         return $this;
     }
@@ -579,6 +631,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable name cannot be null');
         }
         $this->container['name'] = $name;
+        if ($name === null) {
+            unset($this->openAPIFieldsSet['name']);
+        } else {
+            $this->openAPIFieldsSet['name'] = true;
+        }
 
         return $this;
     }
@@ -606,6 +663,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable candidateGroup cannot be null');
         }
         $this->container['candidateGroup'] = $candidateGroup;
+        if ($candidateGroup === null) {
+            unset($this->openAPIFieldsSet['candidateGroup']);
+        } else {
+            $this->openAPIFieldsSet['candidateGroup'] = true;
+        }
 
         return $this;
     }
@@ -633,6 +695,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable candidateUser cannot be null');
         }
         $this->container['candidateUser'] = $candidateUser;
+        if ($candidateUser === null) {
+            unset($this->openAPIFieldsSet['candidateUser']);
+        } else {
+            $this->openAPIFieldsSet['candidateUser'] = true;
+        }
 
         return $this;
     }
@@ -660,6 +727,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable tenantId cannot be null');
         }
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -687,6 +759,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable processDefinitionId cannot be null');
         }
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -714,6 +791,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable creationDate cannot be null');
         }
         $this->container['creationDate'] = $creationDate;
+        if ($creationDate === null) {
+            unset($this->openAPIFieldsSet['creationDate']);
+        } else {
+            $this->openAPIFieldsSet['creationDate'] = true;
+        }
 
         return $this;
     }
@@ -741,6 +823,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable completionDate cannot be null');
         }
         $this->container['completionDate'] = $completionDate;
+        if ($completionDate === null) {
+            unset($this->openAPIFieldsSet['completionDate']);
+        } else {
+            $this->openAPIFieldsSet['completionDate'] = true;
+        }
 
         return $this;
     }
@@ -768,6 +855,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable followUpDate cannot be null');
         }
         $this->container['followUpDate'] = $followUpDate;
+        if ($followUpDate === null) {
+            unset($this->openAPIFieldsSet['followUpDate']);
+        } else {
+            $this->openAPIFieldsSet['followUpDate'] = true;
+        }
 
         return $this;
     }
@@ -795,6 +887,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable dueDate cannot be null');
         }
         $this->container['dueDate'] = $dueDate;
+        if ($dueDate === null) {
+            unset($this->openAPIFieldsSet['dueDate']);
+        } else {
+            $this->openAPIFieldsSet['dueDate'] = true;
+        }
 
         return $this;
     }
@@ -822,6 +919,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable processInstanceVariables cannot be null');
         }
         $this->container['processInstanceVariables'] = $processInstanceVariables;
+        if ($processInstanceVariables === null) {
+            unset($this->openAPIFieldsSet['processInstanceVariables']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceVariables'] = true;
+        }
 
         return $this;
     }
@@ -849,6 +951,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable localVariables cannot be null');
         }
         $this->container['localVariables'] = $localVariables;
+        if ($localVariables === null) {
+            unset($this->openAPIFieldsSet['localVariables']);
+        } else {
+            $this->openAPIFieldsSet['localVariables'] = true;
+        }
 
         return $this;
     }
@@ -873,6 +980,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
     public function setUserTaskKey(?\Camunda\Orchestration\Semantic\UserTaskKey $userTaskKey): static
     {
         $this->container['userTaskKey'] = $userTaskKey;
+        if ($userTaskKey === null) {
+            unset($this->openAPIFieldsSet['userTaskKey']);
+        } else {
+            $this->openAPIFieldsSet['userTaskKey'] = true;
+        }
 
         return $this;
     }
@@ -900,6 +1012,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable processDefinitionKey cannot be null');
         }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
+        if ($processDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['processDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -927,6 +1044,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable processInstanceKey cannot be null');
         }
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -951,6 +1073,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
     public function setElementInstanceKey(?\Camunda\Orchestration\Semantic\ElementInstanceKey $elementInstanceKey): static
     {
         $this->container['elementInstanceKey'] = $elementInstanceKey;
+        if ($elementInstanceKey === null) {
+            unset($this->openAPIFieldsSet['elementInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['elementInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -981,6 +1108,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('invalid value for $tags when calling UserTaskFilter., number of items must be less than or equal to 10.');
         }
         $this->container['tags'] = $tags;
+        if ($tags === null) {
+            unset($this->openAPIFieldsSet['tags']);
+        } else {
+            $this->openAPIFieldsSet['tags'] = true;
+        }
 
         return $this;
     }
@@ -1008,6 +1140,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable or cannot be null');
         }
         $this->container['or'] = $or;
+        if ($or === null) {
+            unset($this->openAPIFieldsSet['or']);
+        } else {
+            $this->openAPIFieldsSet['or'] = true;
+        }
 
         return $this;
     }
@@ -1050,6 +1187,11 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -1063,6 +1205,7 @@ class UserTaskFilter implements ModelInterface, ArrayAccess, JsonSerializable
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

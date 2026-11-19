@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Worker;
 
 use Camunda\Orchestration\Api\Api\JobApi;
+use Camunda\Orchestration\Api\ApiException;
 use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\Api\Model\JobActivationRequest;
-use Camunda\Orchestration\Api\Model\JobActivationResult;
+use Camunda\Orchestration\Api\Model\ProblemDetail;
+use Camunda\Orchestration\Api\Model\TenantFilterEnum;
 use Camunda\Orchestration\CamundaClient;
 
 /**
@@ -109,6 +111,12 @@ final class JobWorker
 
     /**
      * @return list<ActivatedJobResult>
+     *
+     * @throws ApiException When activation fails (e.g. broker backpressure `503`).
+     *         The generated sync API returns error statuses as a `ProblemDetail`
+     *         value; the worker converts that into an exception so callers can
+     *         back off instead of mistaking the failure for an empty batch
+     *         (issue #85).
      */
     private function activate(): array
     {
@@ -123,30 +131,93 @@ final class JobWorker
         }
         if ($this->options->tenantIds !== []) {
             $request->setTenantIds($this->options->tenantIds);
+            // Tenant-scoped activation requires the explicit PROVIDED filter — the spec
+            // default only applies when the field is sent, and unset optional fields are
+            // omitted from the request body (issue #53).
+            $request->setTenantFilter(TenantFilterEnum::PROVIDED);
         }
 
-        $result = $this->jobApi()->activateJobs($request);
-        if (!$result instanceof JobActivationResult) {
-            return [];
+        [$result, $httpStatus, $headers] = $this->jobApi()->activateJobsWithHttpInfo($request);
+        if ($result instanceof ProblemDetail || $httpStatus < 200 || $httpStatus > 299) {
+            // The HTTP status is authoritative: a problem body may omit `status`.
+            $title = $result instanceof ProblemDetail ? $result->offsetGet('title') : null;
+            $detail = $result instanceof ProblemDetail ? $result->offsetGet('detail') : null;
+            $exception = new ApiException(
+                sprintf(
+                    '[%d] Job activation failed (%s: %s)',
+                    $httpStatus,
+                    is_string($title) ? $title : 'unknown',
+                    is_string($detail) ? $detail : 'no detail',
+                ),
+                $httpStatus,
+                $headers,
+            );
+            $exception->setResponseObject($result);
+            throw $exception;
         }
 
         return array_values($result->getJobs());
     }
 
     /**
+     * Dispatch a single job to the handler, turning a throwing handler into a job
+     * failure rather than letting it escape the worker.
+     *
      * @param callable(ActivatedJobResult, JobActionClient): (array<string,mixed>|null|void)|JobHandler $handler
      */
     private function dispatch(callable|JobHandler $handler, ActivatedJobResult $job): void
     {
         $action = new JobActionClient($this->jobApi(), $job);
 
-        $result = $handler instanceof JobHandler
-            ? $handler->handle($job, $action)
-            : $handler($job, $action);
+        try {
+            $result = $handler instanceof JobHandler
+                ? $handler->handle($job, $action)
+                : $handler($job, $action);
 
-        if (!$action->wasHandled() && $this->options->autoComplete) {
-            $action->complete(\is_array($result) ? $result : []);
+            // Auto-completion sits inside the guard so a handler result that cannot be
+            // encoded (a local request-construction error) also becomes a job failure.
+            if (!$action->wasHandled() && $this->options->autoComplete) {
+                $action->complete(\is_array($result) ? $result : []);
+            }
+        } catch (\Throwable $throwable) {
+            if ($action->hasInterruptedAction()) {
+                // The handler asked for a terminal action and the request for it
+                // failed. Substituting our own failure would discard the retries,
+                // back-off and message it asked for and hide the transport error, so
+                // this keeps propagating as it always has. This covers the auto-completion
+                // above too: a transport error there surfaces exactly as before.
+                throw $throwable;
+            }
+
+            // Issue #109: an uncaught handler exception used to propagate out of the
+            // dispatch loop, leaving the job leased until `timeoutMs`, dropping the
+            // rest of the batch and stopping `run()`. Mirror the JS SDK instead: fail
+            // the job unless the handler already took a terminal action, then carry on
+            // with the batch and keep polling. The message carries the exception class
+            // and message only — never the stack trace, which can hold unrelated data.
+            if (!$action->wasHandled()) {
+                $action->fail(
+                    retries: max(0, $job->getRetries() - 1),
+                    errorMessage: self::failureMessage($throwable),
+                );
+            }
+
+            return;
         }
+    }
+
+    /**
+     * The message reported to the broker for a job whose handler threw.
+     *
+     * Carries the exception class and message only — never the stack trace, which can
+     * hold unrelated data. The text is forced to valid UTF-8 first: a handler is free
+     * to throw with a message built from binary data, and the fail request is JSON, so
+     * an unencodable message would throw out of the catch block above and re-create the
+     * very defect this guards against.
+     */
+    private static function failureMessage(\Throwable $throwable): string
+    {
+        return mb_convert_encoding($throwable::class . ': ' . $throwable->getMessage(), 'UTF-8', 'UTF-8');
     }
 
     private function reap(int $count): void

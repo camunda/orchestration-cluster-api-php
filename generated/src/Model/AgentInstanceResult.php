@@ -141,6 +141,15 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -200,6 +209,20 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -363,6 +386,10 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -495,6 +522,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
     public function setAgentInstanceKey(\Camunda\Orchestration\Semantic\AgentInstanceKey $agentInstanceKey): static
     {
         $this->container['agentInstanceKey'] = $agentInstanceKey;
+        if ($agentInstanceKey === null) {
+            unset($this->openAPIFieldsSet['agentInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['agentInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -519,6 +551,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
     public function setAgentDefinitionKey(\Camunda\Orchestration\Semantic\AgentDefinitionKey $agentDefinitionKey): static
     {
         $this->container['agentDefinitionKey'] = $agentDefinitionKey;
+        if ($agentDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['agentDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['agentDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -546,6 +583,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable status cannot be null');
         }
         $this->container['status'] = $status;
+        if ($status === null) {
+            unset($this->openAPIFieldsSet['status']);
+        } else {
+            $this->openAPIFieldsSet['status'] = true;
+        }
 
         return $this;
     }
@@ -573,6 +615,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable definition cannot be null');
         }
         $this->container['definition'] = $definition;
+        if ($definition === null) {
+            unset($this->openAPIFieldsSet['definition']);
+        } else {
+            $this->openAPIFieldsSet['definition'] = true;
+        }
 
         return $this;
     }
@@ -600,6 +647,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable metrics cannot be null');
         }
         $this->container['metrics'] = $metrics;
+        if ($metrics === null) {
+            unset($this->openAPIFieldsSet['metrics']);
+        } else {
+            $this->openAPIFieldsSet['metrics'] = true;
+        }
 
         return $this;
     }
@@ -627,6 +679,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable limits cannot be null');
         }
         $this->container['limits'] = $limits;
+        if ($limits === null) {
+            unset($this->openAPIFieldsSet['limits']);
+        } else {
+            $this->openAPIFieldsSet['limits'] = true;
+        }
 
         return $this;
     }
@@ -654,6 +711,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable tools cannot be null');
         }
         $this->container['tools'] = $tools;
+        if ($tools === null) {
+            unset($this->openAPIFieldsSet['tools']);
+        } else {
+            $this->openAPIFieldsSet['tools'] = true;
+        }
 
         return $this;
     }
@@ -678,6 +740,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
     public function setElementId(\Camunda\Orchestration\Semantic\ElementId $elementId): static
     {
         $this->container['elementId'] = $elementId;
+        if ($elementId === null) {
+            unset($this->openAPIFieldsSet['elementId']);
+        } else {
+            $this->openAPIFieldsSet['elementId'] = true;
+        }
 
         return $this;
     }
@@ -702,6 +769,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
     public function setProcessInstanceKey(\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -726,6 +798,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
     public function setRootProcessInstanceKey(\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
+        if ($rootProcessInstanceKey === null) {
+            unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['rootProcessInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -750,6 +827,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
     public function setProcessDefinitionKey(\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
         $this->container['processDefinitionKey'] = $processDefinitionKey;
+        if ($processDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['processDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -774,6 +856,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
     public function setProcessDefinitionId(\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -801,6 +888,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable processDefinitionVersion cannot be null');
         }
         $this->container['processDefinitionVersion'] = $processDefinitionVersion;
+        if ($processDefinitionVersion === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersion']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
+        }
 
         return $this;
     }
@@ -835,6 +927,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
             }
         }
         $this->container['processDefinitionVersionTag'] = $processDefinitionVersionTag;
+        if ($processDefinitionVersionTag === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersionTag']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersionTag'] = true;
+        }
 
         return $this;
     }
@@ -859,6 +956,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
     public function setTenantId(\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -886,6 +988,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable creationDate cannot be null');
         }
         $this->container['creationDate'] = $creationDate;
+        if ($creationDate === null) {
+            unset($this->openAPIFieldsSet['creationDate']);
+        } else {
+            $this->openAPIFieldsSet['creationDate'] = true;
+        }
 
         return $this;
     }
@@ -913,6 +1020,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable lastUpdatedDate cannot be null');
         }
         $this->container['lastUpdatedDate'] = $lastUpdatedDate;
+        if ($lastUpdatedDate === null) {
+            unset($this->openAPIFieldsSet['lastUpdatedDate']);
+        } else {
+            $this->openAPIFieldsSet['lastUpdatedDate'] = true;
+        }
 
         return $this;
     }
@@ -947,6 +1059,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
             }
         }
         $this->container['completionDate'] = $completionDate;
+        if ($completionDate === null) {
+            unset($this->openAPIFieldsSet['completionDate']);
+        } else {
+            $this->openAPIFieldsSet['completionDate'] = true;
+        }
 
         return $this;
     }
@@ -974,6 +1091,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
             throw new InvalidArgumentException('non-nullable elementInstanceKeys cannot be null');
         }
         $this->container['elementInstanceKeys'] = $elementInstanceKeys;
+        if ($elementInstanceKeys === null) {
+            unset($this->openAPIFieldsSet['elementInstanceKeys']);
+        } else {
+            $this->openAPIFieldsSet['elementInstanceKeys'] = true;
+        }
 
         return $this;
     }
@@ -1016,6 +1138,11 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -1029,6 +1156,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**
