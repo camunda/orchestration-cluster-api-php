@@ -141,6 +141,15 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -200,6 +209,20 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -363,6 +386,10 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -490,7 +517,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**
@@ -513,6 +540,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             }
         }
         $this->container['businessId'] = $businessId;
+        if ($businessId === null) {
+            unset($this->openAPIFieldsSet['businessId']);
+        } else {
+            $this->openAPIFieldsSet['businessId'] = true;
+        }
 
         return $this;
     }
@@ -537,6 +569,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
     public function setMessageSubscriptionKey(\Camunda\Orchestration\Semantic\MessageSubscriptionKey $messageSubscriptionKey): static
     {
         $this->container['messageSubscriptionKey'] = $messageSubscriptionKey;
+        if ($messageSubscriptionKey === null) {
+            unset($this->openAPIFieldsSet['messageSubscriptionKey']);
+        } else {
+            $this->openAPIFieldsSet['messageSubscriptionKey'] = true;
+        }
 
         return $this;
     }
@@ -561,6 +598,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
     public function setProcessDefinitionId(\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -572,7 +614,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -595,6 +637,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             }
         }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
+        if ($processDefinitionKey === null) {
+            unset($this->openAPIFieldsSet['processDefinitionKey']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionKey'] = true;
+        }
 
         return $this;
     }
@@ -606,7 +653,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -629,6 +676,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             }
         }
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -640,7 +692,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -663,6 +715,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             }
         }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
+        if ($rootProcessInstanceKey === null) {
+            unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['rootProcessInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -687,6 +744,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
     public function setElementId(\Camunda\Orchestration\Semantic\ElementId $elementId): static
     {
         $this->container['elementId'] = $elementId;
+        if ($elementId === null) {
+            unset($this->openAPIFieldsSet['elementId']);
+        } else {
+            $this->openAPIFieldsSet['elementId'] = true;
+        }
 
         return $this;
     }
@@ -698,7 +760,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -721,6 +783,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             }
         }
         $this->container['elementInstanceKey'] = $elementInstanceKey;
+        if ($elementInstanceKey === null) {
+            unset($this->openAPIFieldsSet['elementInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['elementInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -748,6 +815,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable messageSubscriptionState cannot be null');
         }
         $this->container['messageSubscriptionState'] = $messageSubscriptionState;
+        if ($messageSubscriptionState === null) {
+            unset($this->openAPIFieldsSet['messageSubscriptionState']);
+        } else {
+            $this->openAPIFieldsSet['messageSubscriptionState'] = true;
+        }
 
         return $this;
     }
@@ -775,6 +847,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable lastUpdatedDate cannot be null');
         }
         $this->container['lastUpdatedDate'] = $lastUpdatedDate;
+        if ($lastUpdatedDate === null) {
+            unset($this->openAPIFieldsSet['lastUpdatedDate']);
+        } else {
+            $this->openAPIFieldsSet['lastUpdatedDate'] = true;
+        }
 
         return $this;
     }
@@ -802,6 +879,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable messageName cannot be null');
         }
         $this->container['messageName'] = $messageName;
+        if ($messageName === null) {
+            unset($this->openAPIFieldsSet['messageName']);
+        } else {
+            $this->openAPIFieldsSet['messageName'] = true;
+        }
 
         return $this;
     }
@@ -813,7 +895,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getCorrelationKey(): ?string
     {
-        return $this->container['correlationKey'];
+        return $this->container['correlationKey'] ?? null;
     }
 
     /**
@@ -836,6 +918,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             }
         }
         $this->container['correlationKey'] = $correlationKey;
+        if ($correlationKey === null) {
+            unset($this->openAPIFieldsSet['correlationKey']);
+        } else {
+            $this->openAPIFieldsSet['correlationKey'] = true;
+        }
 
         return $this;
     }
@@ -863,6 +950,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable messageSubscriptionType cannot be null');
         }
         $this->container['messageSubscriptionType'] = $messageSubscriptionType;
+        if ($messageSubscriptionType === null) {
+            unset($this->openAPIFieldsSet['messageSubscriptionType']);
+        } else {
+            $this->openAPIFieldsSet['messageSubscriptionType'] = true;
+        }
 
         return $this;
     }
@@ -890,6 +982,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             throw new InvalidArgumentException('non-nullable toolProperties cannot be null');
         }
         $this->container['toolProperties'] = $toolProperties;
+        if ($toolProperties === null) {
+            unset($this->openAPIFieldsSet['toolProperties']);
+        } else {
+            $this->openAPIFieldsSet['toolProperties'] = true;
+        }
 
         return $this;
     }
@@ -901,7 +998,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getProcessDefinitionName(): ?string
     {
-        return $this->container['processDefinitionName'];
+        return $this->container['processDefinitionName'] ?? null;
     }
 
     /**
@@ -924,6 +1021,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             }
         }
         $this->container['processDefinitionName'] = $processDefinitionName;
+        if ($processDefinitionName === null) {
+            unset($this->openAPIFieldsSet['processDefinitionName']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionName'] = true;
+        }
 
         return $this;
     }
@@ -935,7 +1037,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getProcessDefinitionVersion(): ?int
     {
-        return $this->container['processDefinitionVersion'];
+        return $this->container['processDefinitionVersion'] ?? null;
     }
 
     /**
@@ -958,6 +1060,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             }
         }
         $this->container['processDefinitionVersion'] = $processDefinitionVersion;
+        if ($processDefinitionVersion === null) {
+            unset($this->openAPIFieldsSet['processDefinitionVersion']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionVersion'] = true;
+        }
 
         return $this;
     }
@@ -969,7 +1076,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getToolName(): ?string
     {
-        return $this->container['toolName'];
+        return $this->container['toolName'] ?? null;
     }
 
     /**
@@ -992,6 +1099,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             }
         }
         $this->container['toolName'] = $toolName;
+        if ($toolName === null) {
+            unset($this->openAPIFieldsSet['toolName']);
+        } else {
+            $this->openAPIFieldsSet['toolName'] = true;
+        }
 
         return $this;
     }
@@ -1003,7 +1115,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getInboundConnectorType(): ?string
     {
-        return $this->container['inboundConnectorType'];
+        return $this->container['inboundConnectorType'] ?? null;
     }
 
     /**
@@ -1026,6 +1138,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             }
         }
         $this->container['inboundConnectorType'] = $inboundConnectorType;
+        if ($inboundConnectorType === null) {
+            unset($this->openAPIFieldsSet['inboundConnectorType']);
+        } else {
+            $this->openAPIFieldsSet['inboundConnectorType'] = true;
+        }
 
         return $this;
     }
@@ -1050,6 +1167,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
     public function setTenantId(\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -1092,6 +1214,11 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -1105,6 +1232,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

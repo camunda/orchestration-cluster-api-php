@@ -103,6 +103,15 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -162,6 +171,20 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -273,6 +296,10 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -314,7 +341,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getAssignee(): ?string
     {
-        return $this->container['assignee'];
+        return $this->container['assignee'] ?? null;
     }
 
     /**
@@ -337,6 +364,11 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
             }
         }
         $this->container['assignee'] = $assignee;
+        if ($assignee === null) {
+            unset($this->openAPIFieldsSet['assignee']);
+        } else {
+            $this->openAPIFieldsSet['assignee'] = true;
+        }
 
         return $this;
     }
@@ -348,7 +380,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getDueDate(): ?\DateTime
     {
-        return $this->container['dueDate'];
+        return $this->container['dueDate'] ?? null;
     }
 
     /**
@@ -371,6 +403,11 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
             }
         }
         $this->container['dueDate'] = $dueDate;
+        if ($dueDate === null) {
+            unset($this->openAPIFieldsSet['dueDate']);
+        } else {
+            $this->openAPIFieldsSet['dueDate'] = true;
+        }
 
         return $this;
     }
@@ -382,7 +419,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getFollowUpDate(): ?\DateTime
     {
-        return $this->container['followUpDate'];
+        return $this->container['followUpDate'] ?? null;
     }
 
     /**
@@ -405,6 +442,11 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
             }
         }
         $this->container['followUpDate'] = $followUpDate;
+        if ($followUpDate === null) {
+            unset($this->openAPIFieldsSet['followUpDate']);
+        } else {
+            $this->openAPIFieldsSet['followUpDate'] = true;
+        }
 
         return $this;
     }
@@ -416,7 +458,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getCandidateUsers(): ?array
     {
-        return $this->container['candidateUsers'];
+        return $this->container['candidateUsers'] ?? null;
     }
 
     /**
@@ -439,6 +481,11 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
             }
         }
         $this->container['candidateUsers'] = $candidateUsers;
+        if ($candidateUsers === null) {
+            unset($this->openAPIFieldsSet['candidateUsers']);
+        } else {
+            $this->openAPIFieldsSet['candidateUsers'] = true;
+        }
 
         return $this;
     }
@@ -450,7 +497,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getCandidateGroups(): ?array
     {
-        return $this->container['candidateGroups'];
+        return $this->container['candidateGroups'] ?? null;
     }
 
     /**
@@ -473,6 +520,11 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
             }
         }
         $this->container['candidateGroups'] = $candidateGroups;
+        if ($candidateGroups === null) {
+            unset($this->openAPIFieldsSet['candidateGroups']);
+        } else {
+            $this->openAPIFieldsSet['candidateGroups'] = true;
+        }
 
         return $this;
     }
@@ -484,7 +536,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getPriority(): ?int
     {
-        return $this->container['priority'];
+        return $this->container['priority'] ?? null;
     }
 
     /**
@@ -514,6 +566,11 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
         }
 
         $this->container['priority'] = $priority;
+        if ($priority === null) {
+            unset($this->openAPIFieldsSet['priority']);
+        } else {
+            $this->openAPIFieldsSet['priority'] = true;
+        }
 
         return $this;
     }
@@ -556,6 +613,11 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -569,6 +631,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

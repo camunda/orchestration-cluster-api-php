@@ -106,6 +106,15 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -165,6 +174,20 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -280,6 +303,10 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -330,7 +357,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getContentType(): ?string
     {
-        return $this->container['contentType'];
+        return $this->container['contentType'] ?? null;
     }
 
     /**
@@ -346,6 +373,11 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable contentType cannot be null');
         }
         $this->container['contentType'] = $contentType;
+        if ($contentType === null) {
+            unset($this->openAPIFieldsSet['contentType']);
+        } else {
+            $this->openAPIFieldsSet['contentType'] = true;
+        }
 
         return $this;
     }
@@ -357,7 +389,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getFileName(): ?string
     {
-        return $this->container['fileName'];
+        return $this->container['fileName'] ?? null;
     }
 
     /**
@@ -373,6 +405,11 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable fileName cannot be null');
         }
         $this->container['fileName'] = $fileName;
+        if ($fileName === null) {
+            unset($this->openAPIFieldsSet['fileName']);
+        } else {
+            $this->openAPIFieldsSet['fileName'] = true;
+        }
 
         return $this;
     }
@@ -384,7 +421,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getExpiresAt(): ?\DateTime
     {
-        return $this->container['expiresAt'];
+        return $this->container['expiresAt'] ?? null;
     }
 
     /**
@@ -400,6 +437,11 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable expiresAt cannot be null');
         }
         $this->container['expiresAt'] = $expiresAt;
+        if ($expiresAt === null) {
+            unset($this->openAPIFieldsSet['expiresAt']);
+        } else {
+            $this->openAPIFieldsSet['expiresAt'] = true;
+        }
 
         return $this;
     }
@@ -411,7 +453,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getSize(): ?int
     {
-        return $this->container['size'];
+        return $this->container['size'] ?? null;
     }
 
     /**
@@ -427,6 +469,11 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable size cannot be null');
         }
         $this->container['size'] = $size;
+        if ($size === null) {
+            unset($this->openAPIFieldsSet['size']);
+        } else {
+            $this->openAPIFieldsSet['size'] = true;
+        }
 
         return $this;
     }
@@ -438,7 +485,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -451,6 +498,11 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
     public function setProcessDefinitionId(?\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
         $this->container['processDefinitionId'] = $processDefinitionId;
+        if ($processDefinitionId === null) {
+            unset($this->openAPIFieldsSet['processDefinitionId']);
+        } else {
+            $this->openAPIFieldsSet['processDefinitionId'] = true;
+        }
 
         return $this;
     }
@@ -462,7 +514,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -475,6 +527,11 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
     public function setProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -486,7 +543,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getCustomProperties(): ?array
     {
-        return $this->container['customProperties'];
+        return $this->container['customProperties'] ?? null;
     }
 
     /**
@@ -502,6 +559,11 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable customProperties cannot be null');
         }
         $this->container['customProperties'] = $customProperties;
+        if ($customProperties === null) {
+            unset($this->openAPIFieldsSet['customProperties']);
+        } else {
+            $this->openAPIFieldsSet['customProperties'] = true;
+        }
 
         return $this;
     }
@@ -544,6 +606,11 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -557,6 +624,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

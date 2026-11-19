@@ -109,6 +109,15 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -168,6 +177,20 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -287,6 +310,10 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -365,7 +392,7 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -388,6 +415,11 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
             }
         }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
+        if ($rootProcessInstanceKey === null) {
+            unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['rootProcessInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -412,6 +444,11 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
     public function setProcessInstanceKey(\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
         $this->container['processInstanceKey'] = $processInstanceKey;
+        if ($processInstanceKey === null) {
+            unset($this->openAPIFieldsSet['processInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['processInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -436,6 +473,11 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
     public function setElementInstanceKey(\Camunda\Orchestration\Semantic\ElementInstanceKey $elementInstanceKey): static
     {
         $this->container['elementInstanceKey'] = $elementInstanceKey;
+        if ($elementInstanceKey === null) {
+            unset($this->openAPIFieldsSet['elementInstanceKey']);
+        } else {
+            $this->openAPIFieldsSet['elementInstanceKey'] = true;
+        }
 
         return $this;
     }
@@ -460,6 +502,11 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
     public function setElementId(\Camunda\Orchestration\Semantic\ElementId $elementId): static
     {
         $this->container['elementId'] = $elementId;
+        if ($elementId === null) {
+            unset($this->openAPIFieldsSet['elementId']);
+        } else {
+            $this->openAPIFieldsSet['elementId'] = true;
+        }
 
         return $this;
     }
@@ -487,6 +534,11 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
             throw new InvalidArgumentException('non-nullable elementType cannot be null');
         }
         $this->container['elementType'] = $elementType;
+        if ($elementType === null) {
+            unset($this->openAPIFieldsSet['elementType']);
+        } else {
+            $this->openAPIFieldsSet['elementType'] = true;
+        }
 
         return $this;
     }
@@ -511,6 +563,11 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
     public function setTenantId(\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
         $this->container['tenantId'] = $tenantId;
+        if ($tenantId === null) {
+            unset($this->openAPIFieldsSet['tenantId']);
+        } else {
+            $this->openAPIFieldsSet['tenantId'] = true;
+        }
 
         return $this;
     }
@@ -538,6 +595,11 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
             throw new InvalidArgumentException('non-nullable bpmnProcessId cannot be null');
         }
         $this->container['bpmnProcessId'] = $bpmnProcessId;
+        if ($bpmnProcessId === null) {
+            unset($this->openAPIFieldsSet['bpmnProcessId']);
+        } else {
+            $this->openAPIFieldsSet['bpmnProcessId'] = true;
+        }
 
         return $this;
     }
@@ -565,6 +627,11 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
             throw new InvalidArgumentException('non-nullable details cannot be null');
         }
         $this->container['details'] = $details;
+        if ($details === null) {
+            unset($this->openAPIFieldsSet['details']);
+        } else {
+            $this->openAPIFieldsSet['details'] = true;
+        }
 
         return $this;
     }
@@ -607,6 +674,11 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -620,6 +692,7 @@ class ElementInstanceWaitStateResult implements ModelInterface, ArrayAccess, Jso
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

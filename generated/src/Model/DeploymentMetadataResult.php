@@ -99,6 +99,15 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -158,6 +167,20 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -265,6 +288,10 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -313,7 +340,7 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getProcessDefinition(): ?\Camunda\Orchestration\Api\Model\DeploymentProcessResult
     {
-        return $this->container['processDefinition'];
+        return $this->container['processDefinition'] ?? null;
     }
 
     /**
@@ -336,6 +363,11 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
             }
         }
         $this->container['processDefinition'] = $processDefinition;
+        if ($processDefinition === null) {
+            unset($this->openAPIFieldsSet['processDefinition']);
+        } else {
+            $this->openAPIFieldsSet['processDefinition'] = true;
+        }
 
         return $this;
     }
@@ -347,7 +379,7 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getDecisionDefinition(): ?\Camunda\Orchestration\Api\Model\DeploymentDecisionResult
     {
-        return $this->container['decisionDefinition'];
+        return $this->container['decisionDefinition'] ?? null;
     }
 
     /**
@@ -370,6 +402,11 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
             }
         }
         $this->container['decisionDefinition'] = $decisionDefinition;
+        if ($decisionDefinition === null) {
+            unset($this->openAPIFieldsSet['decisionDefinition']);
+        } else {
+            $this->openAPIFieldsSet['decisionDefinition'] = true;
+        }
 
         return $this;
     }
@@ -381,7 +418,7 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getDecisionRequirements(): ?\Camunda\Orchestration\Api\Model\DeploymentDecisionRequirementsResult
     {
-        return $this->container['decisionRequirements'];
+        return $this->container['decisionRequirements'] ?? null;
     }
 
     /**
@@ -404,6 +441,11 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
             }
         }
         $this->container['decisionRequirements'] = $decisionRequirements;
+        if ($decisionRequirements === null) {
+            unset($this->openAPIFieldsSet['decisionRequirements']);
+        } else {
+            $this->openAPIFieldsSet['decisionRequirements'] = true;
+        }
 
         return $this;
     }
@@ -415,7 +457,7 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getForm(): ?\Camunda\Orchestration\Api\Model\DeploymentFormResult
     {
-        return $this->container['form'];
+        return $this->container['form'] ?? null;
     }
 
     /**
@@ -438,6 +480,11 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
             }
         }
         $this->container['form'] = $form;
+        if ($form === null) {
+            unset($this->openAPIFieldsSet['form']);
+        } else {
+            $this->openAPIFieldsSet['form'] = true;
+        }
 
         return $this;
     }
@@ -449,7 +496,7 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getResource(): ?\Camunda\Orchestration\Api\Model\DeploymentResourceResult
     {
-        return $this->container['resource'];
+        return $this->container['resource'] ?? null;
     }
 
     /**
@@ -472,6 +519,11 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
             }
         }
         $this->container['resource'] = $resource;
+        if ($resource === null) {
+            unset($this->openAPIFieldsSet['resource']);
+        } else {
+            $this->openAPIFieldsSet['resource'] = true;
+        }
 
         return $this;
     }
@@ -514,6 +566,11 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -527,6 +584,7 @@ class DeploymentMetadataResult implements ModelInterface, ArrayAccess, JsonSeria
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**

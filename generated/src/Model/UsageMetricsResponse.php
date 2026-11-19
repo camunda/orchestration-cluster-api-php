@@ -99,6 +99,15 @@ class UsageMetricsResponse implements ModelInterface, ArrayAccess, JsonSerializa
     protected array $openAPINullablesSetToNull = [];
 
     /**
+     * Names of fields explicitly provided by the caller (constructor data, setter, or
+     * ArrayAccess). Unset optional fields are omitted from serialized request bodies —
+     * an absent field is not the same as its spec default.
+     *
+     * @var array<string, bool>
+     */
+    protected array $openAPIFieldsSet = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function openAPITypes(): array
@@ -158,6 +167,20 @@ class UsageMetricsResponse implements ModelInterface, ArrayAccess, JsonSerializa
     public function isNullableSetToNull(string $property): bool
     {
         return in_array($property, $this->getOpenAPINullablesSetToNull(), true);
+    }
+
+    /**
+     * Whether the caller explicitly provided a value for the property (via the
+     * constructor data array, a setter, or ArrayAccess). Unset optional properties are
+     * omitted from serialized request bodies.
+     *
+     * @param string $property
+     *
+     * @return bool
+     */
+    public function isFieldSet(string $property): bool
+    {
+        return isset($this->openAPIFieldsSet[$property]);
     }
 
     /**
@@ -265,6 +288,10 @@ class UsageMetricsResponse implements ModelInterface, ArrayAccess, JsonSerializa
      */
     private function setIfExists(string $variableName, array $fields, mixed $defaultValue): void
     {
+        if (array_key_exists($variableName, $fields)) {
+            $this->openAPIFieldsSet[$variableName] = true;
+        }
+
         if (self::isNullable($variableName) && array_key_exists($variableName, $fields) && is_null($fields[$variableName])) {
             $this->openAPINullablesSetToNull[] = $variableName;
         }
@@ -329,6 +356,11 @@ class UsageMetricsResponse implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable processInstances cannot be null');
         }
         $this->container['processInstances'] = $processInstances;
+        if ($processInstances === null) {
+            unset($this->openAPIFieldsSet['processInstances']);
+        } else {
+            $this->openAPIFieldsSet['processInstances'] = true;
+        }
 
         return $this;
     }
@@ -356,6 +388,11 @@ class UsageMetricsResponse implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable decisionInstances cannot be null');
         }
         $this->container['decisionInstances'] = $decisionInstances;
+        if ($decisionInstances === null) {
+            unset($this->openAPIFieldsSet['decisionInstances']);
+        } else {
+            $this->openAPIFieldsSet['decisionInstances'] = true;
+        }
 
         return $this;
     }
@@ -383,6 +420,11 @@ class UsageMetricsResponse implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable assignees cannot be null');
         }
         $this->container['assignees'] = $assignees;
+        if ($assignees === null) {
+            unset($this->openAPIFieldsSet['assignees']);
+        } else {
+            $this->openAPIFieldsSet['assignees'] = true;
+        }
 
         return $this;
     }
@@ -410,6 +452,11 @@ class UsageMetricsResponse implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable activeTenants cannot be null');
         }
         $this->container['activeTenants'] = $activeTenants;
+        if ($activeTenants === null) {
+            unset($this->openAPIFieldsSet['activeTenants']);
+        } else {
+            $this->openAPIFieldsSet['activeTenants'] = true;
+        }
 
         return $this;
     }
@@ -437,6 +484,11 @@ class UsageMetricsResponse implements ModelInterface, ArrayAccess, JsonSerializa
             throw new InvalidArgumentException('non-nullable tenants cannot be null');
         }
         $this->container['tenants'] = $tenants;
+        if ($tenants === null) {
+            unset($this->openAPIFieldsSet['tenants']);
+        } else {
+            $this->openAPIFieldsSet['tenants'] = true;
+        }
 
         return $this;
     }
@@ -479,6 +531,11 @@ class UsageMetricsResponse implements ModelInterface, ArrayAccess, JsonSerializa
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
+            if ($value === null) {
+                unset($this->openAPIFieldsSet[$offset]);
+            } else {
+                $this->openAPIFieldsSet[$offset] = true;
+            }
         }
     }
 
@@ -492,6 +549,7 @@ class UsageMetricsResponse implements ModelInterface, ArrayAccess, JsonSerializa
     public function offsetUnset(mixed $offset): void
     {
         unset($this->container[$offset]);
+        unset($this->openAPIFieldsSet[$offset]);
     }
 
     /**
