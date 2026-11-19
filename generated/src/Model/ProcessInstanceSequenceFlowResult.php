@@ -451,7 +451,7 @@ class ProcessInstanceSequenceFlowResult implements ModelInterface, ArrayAccess, 
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -490,7 +490,7 @@ class ProcessInstanceSequenceFlowResult implements ModelInterface, ArrayAccess, 
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -529,7 +529,7 @@ class ProcessInstanceSequenceFlowResult implements ModelInterface, ArrayAccess, 
      */
     public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**

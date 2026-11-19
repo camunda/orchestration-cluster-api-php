@@ -363,7 +363,7 @@ class HistoryBackupSnapshotInfo implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getState(): ?string
     {
-        return $this->container['state'];
+        return $this->container['state'] ?? null;
     }
 
     /**
@@ -402,7 +402,7 @@ class HistoryBackupSnapshotInfo implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getStartTime(): ?\DateTime
     {
-        return $this->container['startTime'];
+        return $this->container['startTime'] ?? null;
     }
 
     /**

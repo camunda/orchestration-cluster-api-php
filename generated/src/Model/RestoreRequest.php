@@ -312,7 +312,7 @@ class RestoreRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getFrom(): ?\DateTime
     {
-        return $this->container['from'];
+        return $this->container['from'] ?? null;
     }
 
     /**
@@ -351,7 +351,7 @@ class RestoreRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getTo(): ?\DateTime
     {
-        return $this->container['to'];
+        return $this->container['to'] ?? null;
     }
 
     /**
@@ -390,7 +390,7 @@ class RestoreRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getBackupIds(): ?array
     {
-        return $this->container['backupIds'];
+        return $this->container['backupIds'] ?? null;
     }
 
     /**

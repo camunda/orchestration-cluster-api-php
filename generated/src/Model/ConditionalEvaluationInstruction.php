@@ -335,7 +335,7 @@ class ConditionalEvaluationInstruction implements ModelInterface, ArrayAccess, J
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -364,7 +364,7 @@ class ConditionalEvaluationInstruction implements ModelInterface, ArrayAccess, J
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**

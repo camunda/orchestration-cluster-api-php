@@ -427,7 +427,7 @@ class LicenseResponse implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getExpiresAt(): ?\DateTime
     {
-        return $this->container['expiresAt'];
+        return $this->container['expiresAt'] ?? null;
     }
 
     /**

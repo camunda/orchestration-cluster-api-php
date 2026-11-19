@@ -802,7 +802,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getMetrics(): ?\Camunda\Orchestration\Api\Model\AgentInstanceHistoryItemMetrics
     {
-        return $this->container['metrics'];
+        return $this->container['metrics'] ?? null;
     }
 
     /**
@@ -937,7 +937,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getModel(): ?string
     {
-        return $this->container['model'];
+        return $this->container['model'] ?? null;
     }
 
     /**
@@ -976,7 +976,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getProvider(): ?string
     {
-        return $this->container['provider'];
+        return $this->container['provider'] ?? null;
     }
 
     /**

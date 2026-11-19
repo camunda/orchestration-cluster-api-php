@@ -683,7 +683,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getHasFailedWithRetriesLeft(): ?bool
     {
-        return $this->container['hasFailedWithRetriesLeft'];
+        return $this->container['hasFailedWithRetriesLeft'] ?? null;
     }
 
     /**
@@ -715,7 +715,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getIsDenied(): ?bool
     {
-        return $this->container['isDenied'];
+        return $this->container['isDenied'] ?? null;
     }
 
     /**

@@ -362,7 +362,7 @@ class AgentTool implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDescription(): ?string
     {
-        return $this->container['description'];
+        return $this->container['description'] ?? null;
     }
 
     /**
@@ -401,7 +401,7 @@ class AgentTool implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getElementId(): ?\Camunda\Orchestration\Semantic\ElementId
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**

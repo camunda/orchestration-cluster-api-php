@@ -311,7 +311,7 @@ class UserTaskAssignmentRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getAssignee(): ?string
     {
-        return $this->container['assignee'];
+        return $this->container['assignee'] ?? null;
     }
 
     /**
@@ -343,7 +343,7 @@ class UserTaskAssignmentRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getAllowOverride(): ?bool
     {
-        return $this->container['allowOverride'];
+        return $this->container['allowOverride'] ?? null;
     }
 
     /**
@@ -382,7 +382,7 @@ class UserTaskAssignmentRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getAction(): ?string
     {
-        return $this->container['action'];
+        return $this->container['action'] ?? null;
     }
 
     /**

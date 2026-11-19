@@ -377,7 +377,7 @@ class AgentInstanceUpdateRequest implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getStatus(): ?\Camunda\Orchestration\Api\Model\AgentInstanceUpdateStatusEnum
     {
-        return $this->container['status'];
+        return $this->container['status'] ?? null;
     }
 
     /**
@@ -467,7 +467,7 @@ class AgentInstanceUpdateRequest implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getHistory(): ?array
     {
-        return $this->container['history'];
+        return $this->container['history'] ?? null;
     }
 
     /**

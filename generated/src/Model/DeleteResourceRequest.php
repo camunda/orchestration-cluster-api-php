@@ -308,7 +308,7 @@ class DeleteResourceRequest implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getOperationReference(): ?int
     {
-        return $this->container['operationReference'];
+        return $this->container['operationReference'] ?? null;
     }
 
     /**
@@ -344,7 +344,7 @@ class DeleteResourceRequest implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getDeleteHistory(): ?bool
     {
-        return $this->container['deleteHistory'];
+        return $this->container['deleteHistory'] ?? null;
     }
 
     /**

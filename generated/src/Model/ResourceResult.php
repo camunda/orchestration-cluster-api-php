@@ -446,7 +446,7 @@ class ResourceResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getVersionTag(): ?string
     {
-        return $this->container['versionTag'];
+        return $this->container['versionTag'] ?? null;
     }
 
     /**

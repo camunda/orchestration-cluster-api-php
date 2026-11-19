@@ -297,7 +297,7 @@ class DocumentLinkRequest implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getTimeToLive(): ?int
     {
-        return $this->container['timeToLive'];
+        return $this->container['timeToLive'] ?? null;
     }
 
     /**

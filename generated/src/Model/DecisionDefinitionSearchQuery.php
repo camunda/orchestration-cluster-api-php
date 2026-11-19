@@ -343,7 +343,7 @@ class DecisionDefinitionSearchQuery implements ModelInterface, ArrayAccess, Json
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class DecisionDefinitionSearchQuery implements ModelInterface, ArrayAccess, Json
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\DecisionDefinitionFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

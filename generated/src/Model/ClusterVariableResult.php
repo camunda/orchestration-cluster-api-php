@@ -436,7 +436,7 @@ class ClusterVariableResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getTenantId(): ?string
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**

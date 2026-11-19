@@ -463,7 +463,7 @@ class RestorePartitionStatus implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getCompletedAt(): ?\DateTime
     {
-        return $this->container['completedAt'];
+        return $this->container['completedAt'] ?? null;
     }
 
     /**

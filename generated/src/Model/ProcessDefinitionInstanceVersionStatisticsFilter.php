@@ -366,7 +366,7 @@ class ProcessDefinitionInstanceVersionStatisticsFilter implements ModelInterface
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**

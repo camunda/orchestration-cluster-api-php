@@ -298,7 +298,7 @@ class ProcessDefinitionElementStatisticsQuery implements ModelInterface, ArrayAc
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\ProcessDefinitionStatisticsFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

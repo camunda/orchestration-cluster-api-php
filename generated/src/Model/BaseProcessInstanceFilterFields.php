@@ -531,7 +531,7 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
      */
     public function getHasIncident(): ?bool
     {
-        return $this->container['hasIncident'];
+        return $this->container['hasIncident'] ?? null;
     }
 
     /**
@@ -627,7 +627,7 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**
@@ -853,7 +853,7 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
      */
     public function getHasRetriesLeft(): ?bool
     {
-        return $this->container['hasRetriesLeft'];
+        return $this->container['hasRetriesLeft'] ?? null;
     }
 
     /**
@@ -949,7 +949,7 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
      */
     public function getHasElementInstanceIncident(): ?bool
     {
-        return $this->container['hasElementInstanceIncident'];
+        return $this->container['hasElementInstanceIncident'] ?? null;
     }
 
     /**
@@ -1013,7 +1013,7 @@ class BaseProcessInstanceFilterFields implements ModelInterface, ArrayAccess, Js
      */
     public function getTags(): ?array
     {
-        return $this->container['tags'];
+        return $this->container['tags'] ?? null;
     }
 
     /**

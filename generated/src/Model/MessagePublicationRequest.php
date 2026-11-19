@@ -403,7 +403,7 @@ class MessagePublicationRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getCorrelationKey(): ?string
     {
-        return $this->container['correlationKey'];
+        return $this->container['correlationKey'] ?? null;
     }
 
     /**
@@ -435,7 +435,7 @@ class MessagePublicationRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getTimeToLive(): ?int
     {
-        return $this->container['timeToLive'];
+        return $this->container['timeToLive'] ?? null;
     }
 
     /**
@@ -467,7 +467,7 @@ class MessagePublicationRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getMessageId(): ?string
     {
-        return $this->container['messageId'];
+        return $this->container['messageId'] ?? null;
     }
 
     /**
@@ -499,7 +499,7 @@ class MessagePublicationRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**
@@ -531,7 +531,7 @@ class MessagePublicationRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -560,7 +560,7 @@ class MessagePublicationRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**

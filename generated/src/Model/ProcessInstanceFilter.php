@@ -573,7 +573,7 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getHasIncident(): ?bool
     {
-        return $this->container['hasIncident'];
+        return $this->container['hasIncident'] ?? null;
     }
 
     /**
@@ -669,7 +669,7 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**
@@ -895,7 +895,7 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getHasRetriesLeft(): ?bool
     {
-        return $this->container['hasRetriesLeft'];
+        return $this->container['hasRetriesLeft'] ?? null;
     }
 
     /**
@@ -991,7 +991,7 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getHasElementInstanceIncident(): ?bool
     {
-        return $this->container['hasElementInstanceIncident'];
+        return $this->container['hasElementInstanceIncident'] ?? null;
     }
 
     /**
@@ -1055,7 +1055,7 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getTags(): ?array
     {
-        return $this->container['tags'];
+        return $this->container['tags'] ?? null;
     }
 
     /**
@@ -1282,7 +1282,7 @@ class ProcessInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getOr(): ?array
     {
-        return $this->container['or'];
+        return $this->container['or'] ?? null;
     }
 
     /**

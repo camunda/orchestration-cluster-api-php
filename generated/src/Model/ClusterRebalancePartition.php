@@ -431,7 +431,7 @@ class ClusterRebalancePartition implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getCurrentLeader(): ?string
     {
-        return $this->container['currentLeader'];
+        return $this->container['currentLeader'] ?? null;
     }
 
     /**

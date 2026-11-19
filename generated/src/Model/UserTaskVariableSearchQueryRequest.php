@@ -343,7 +343,7 @@ class UserTaskVariableSearchQueryRequest implements ModelInterface, ArrayAccess,
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class UserTaskVariableSearchQueryRequest implements ModelInterface, ArrayAccess,
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\UserTaskVariableFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

@@ -301,7 +301,7 @@ class IncidentResolutionRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getOperationReference(): ?int
     {
-        return $this->container['operationReference'];
+        return $this->container['operationReference'] ?? null;
     }
 
     /**

@@ -202,6 +202,18 @@ PHP,
             'offsetUnset tracking'
         );
 
+        // 6. Nullable getters read the container null-safely. The serializer (below) now
+        //    reads every property through its getter — including unset ones — so a getter
+        //    must not emit "Undefined array key" when offsetUnset() removed the key. Only
+        //    nullable getters (`?T`) are touched: a removed key is indistinguishable from
+        //    "never set", which already yields null for these. Non-nullable getters always
+        //    have their key set by the constructor, so they are left untouched.
+        $src = preg_replace(
+            '/(function get\w+\(\): \?[^\n]+\n    \{\n        return \$this->container\[\'\w+\'\]);/',
+            '$1 ?? null;',
+            $src
+        ) ?? $src;
+
         if ($src !== $orig) {
             file_put_contents($file, $src);
             $patchedModels++;
@@ -276,6 +288,17 @@ PHP;
 
     $replacement = <<<'PHP'
                 foreach ($data::openAPITypes() as $property => $openAPIType) {
+                    $getter = $data::getters()[$property];
+                    // Read the value through the getter for every property — including
+                    // unset ones. A model subclass may override a getter to compute (or
+                    // lazily resolve) the value, and that override may throw while the
+                    // request is being encoded (e.g. a lazy value backed by a generator
+                    // that fails mid-encode). Reading only set properties would skip such
+                    // a getter entirely, swallowing the Throwable and silently sending a
+                    // completion the handler never finished (issue #168). For a normal
+                    // generated model the getter just returns the container value, so an
+                    // unset property yields its spec default here and is omitted below.
+                    $value = $data->$getter();
                     if (
                         method_exists($data, 'isFieldSet') && !$data->isFieldSet($property)
                         && !(method_exists($data, 'isNullableSetToNull') && $data->isNullableSetToNull($property))
@@ -287,8 +310,6 @@ PHP;
                         // it, and it must still serialize as `null`.
                         continue;
                     }
-                    $getter = $data::getters()[$property];
-                    $value = $data->$getter();
 PHP;
 
     $src = str_replace_once_0285($src, $anchor, $replacement, 'serializer unset-skip');

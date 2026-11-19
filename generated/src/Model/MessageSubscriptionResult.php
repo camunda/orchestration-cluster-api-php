@@ -517,7 +517,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**
@@ -614,7 +614,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -653,7 +653,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -692,7 +692,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -760,7 +760,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -895,7 +895,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getCorrelationKey(): ?string
     {
-        return $this->container['correlationKey'];
+        return $this->container['correlationKey'] ?? null;
     }
 
     /**
@@ -998,7 +998,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getProcessDefinitionName(): ?string
     {
-        return $this->container['processDefinitionName'];
+        return $this->container['processDefinitionName'] ?? null;
     }
 
     /**
@@ -1037,7 +1037,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getProcessDefinitionVersion(): ?int
     {
-        return $this->container['processDefinitionVersion'];
+        return $this->container['processDefinitionVersion'] ?? null;
     }
 
     /**
@@ -1076,7 +1076,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getToolName(): ?string
     {
-        return $this->container['toolName'];
+        return $this->container['toolName'] ?? null;
     }
 
     /**
@@ -1115,7 +1115,7 @@ class MessageSubscriptionResult implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getInboundConnectorType(): ?string
     {
-        return $this->container['inboundConnectorType'];
+        return $this->container['inboundConnectorType'] ?? null;
     }
 
     /**

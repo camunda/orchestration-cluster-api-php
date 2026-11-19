@@ -622,7 +622,7 @@ class AgentDefinitionResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getProcessDefinitionVersionTag(): ?string
     {
-        return $this->container['processDefinitionVersionTag'];
+        return $this->container['processDefinitionVersionTag'] ?? null;
     }
 
     /**

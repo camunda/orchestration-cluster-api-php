@@ -343,7 +343,7 @@ class UpdateClusterVariableRequest implements ModelInterface, ArrayAccess, JsonS
      */
     public function getMetadata(): ?array
     {
-        return $this->container['metadata'];
+        return $this->container['metadata'] ?? null;
     }
 
     /**

@@ -438,7 +438,7 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
      */
     public function getLatestProcessDefinitionName(): ?string
     {
-        return $this->container['latestProcessDefinitionName'];
+        return $this->container['latestProcessDefinitionName'] ?? null;
     }
 
     /**

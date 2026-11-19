@@ -346,7 +346,7 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getEq(): ?\Camunda\Orchestration\Semantic\ResourceKey
     {
-        return $this->container['eq'];
+        return $this->container['eq'] ?? null;
     }
 
     /**
@@ -378,7 +378,7 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getNeq(): ?\Camunda\Orchestration\Semantic\ResourceKey
     {
-        return $this->container['neq'];
+        return $this->container['neq'] ?? null;
     }
 
     /**
@@ -410,7 +410,7 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getExists(): ?bool
     {
-        return $this->container['exists'];
+        return $this->container['exists'] ?? null;
     }
 
     /**
@@ -442,7 +442,7 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getIn(): ?array
     {
-        return $this->container['in'];
+        return $this->container['in'] ?? null;
     }
 
     /**
@@ -474,7 +474,7 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getNotIn(): ?array
     {
-        return $this->container['notIn'];
+        return $this->container['notIn'] ?? null;
     }
 
     /**

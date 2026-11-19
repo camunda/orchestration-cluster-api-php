@@ -363,7 +363,7 @@ class UpdateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
      */
     public function getRetries(): ?int
     {
-        return $this->container['retries'];
+        return $this->container['retries'] ?? null;
     }
 
     /**
@@ -395,7 +395,7 @@ class UpdateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
      */
     public function getAfterNonGlobal(): ?bool
     {
-        return $this->container['afterNonGlobal'];
+        return $this->container['afterNonGlobal'] ?? null;
     }
 
     /**
@@ -427,7 +427,7 @@ class UpdateGlobalTaskListenerRequest implements ModelInterface, ArrayAccess, Js
      */
     public function getPriority(): ?int
     {
-        return $this->container['priority'];
+        return $this->container['priority'] ?? null;
     }
 
     /**

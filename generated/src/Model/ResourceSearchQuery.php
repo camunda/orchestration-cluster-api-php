@@ -343,7 +343,7 @@ class ResourceSearchQuery implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class ResourceSearchQuery implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\ResourceFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

@@ -350,7 +350,7 @@ class SetVariableRequest implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getLocal(): ?bool
     {
-        return $this->container['local'];
+        return $this->container['local'] ?? null;
     }
 
     /**
@@ -382,7 +382,7 @@ class SetVariableRequest implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getOperationReference(): ?int
     {
-        return $this->container['operationReference'];
+        return $this->container['operationReference'] ?? null;
     }
 
     /**

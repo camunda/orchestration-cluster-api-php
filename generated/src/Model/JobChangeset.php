@@ -312,7 +312,7 @@ class JobChangeset implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRetries(): ?int
     {
-        return $this->container['retries'];
+        return $this->container['retries'] ?? null;
     }
 
     /**
@@ -351,7 +351,7 @@ class JobChangeset implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getTimeout(): ?int
     {
-        return $this->container['timeout'];
+        return $this->container['timeout'] ?? null;
     }
 
     /**
@@ -390,7 +390,7 @@ class JobChangeset implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getPriority(): ?int
     {
-        return $this->container['priority'];
+        return $this->container['priority'] ?? null;
     }
 
     /**

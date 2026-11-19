@@ -619,7 +619,7 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDeadline(): ?\DateTime
     {
-        return $this->container['deadline'];
+        return $this->container['deadline'] ?? null;
     }
 
     /**
@@ -658,7 +658,7 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDeniedReason(): ?string
     {
-        return $this->container['deniedReason'];
+        return $this->container['deniedReason'] ?? null;
     }
 
     /**
@@ -697,7 +697,7 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getElementId(): ?\Camunda\Orchestration\Semantic\ElementId
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**
@@ -765,7 +765,7 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getEndTime(): ?\DateTime
     {
-        return $this->container['endTime'];
+        return $this->container['endTime'] ?? null;
     }
 
     /**
@@ -804,7 +804,7 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getErrorCode(): ?string
     {
-        return $this->container['errorCode'];
+        return $this->container['errorCode'] ?? null;
     }
 
     /**
@@ -843,7 +843,7 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getErrorMessage(): ?string
     {
-        return $this->container['errorMessage'];
+        return $this->container['errorMessage'] ?? null;
     }
 
     /**
@@ -914,7 +914,7 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getIsDenied(): ?bool
     {
-        return $this->container['isDenied'];
+        return $this->container['isDenied'] ?? null;
     }
 
     /**
@@ -1046,7 +1046,7 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -1085,7 +1085,7 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -1153,7 +1153,7 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -1192,7 +1192,7 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**
@@ -1388,7 +1388,7 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getCreationTime(): ?\DateTime
     {
-        return $this->container['creationTime'];
+        return $this->container['creationTime'] ?? null;
     }
 
     /**
@@ -1427,7 +1427,7 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getLastUpdateTime(): ?\DateTime
     {
-        return $this->container['lastUpdateTime'];
+        return $this->container['lastUpdateTime'] ?? null;
     }
 
     /**

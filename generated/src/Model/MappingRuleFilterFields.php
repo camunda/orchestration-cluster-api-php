@@ -319,7 +319,7 @@ class MappingRuleFilterFields implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getClaimName(): ?string
     {
-        return $this->container['claimName'];
+        return $this->container['claimName'] ?? null;
     }
 
     /**
@@ -351,7 +351,7 @@ class MappingRuleFilterFields implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getClaimValue(): ?string
     {
-        return $this->container['claimValue'];
+        return $this->container['claimValue'] ?? null;
     }
 
     /**

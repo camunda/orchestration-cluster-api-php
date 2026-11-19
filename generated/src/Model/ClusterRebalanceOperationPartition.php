@@ -501,7 +501,7 @@ class ClusterRebalanceOperationPartition implements ModelInterface, ArrayAccess,
      */
     public function getCurrentLeader(): ?string
     {
-        return $this->container['currentLeader'];
+        return $this->container['currentLeader'] ?? null;
     }
 
     /**
@@ -614,7 +614,7 @@ class ClusterRebalanceOperationPartition implements ModelInterface, ArrayAccess,
      */
     public function getResult(): ?string
     {
-        return $this->container['result'];
+        return $this->container['result'] ?? null;
     }
 
     /**

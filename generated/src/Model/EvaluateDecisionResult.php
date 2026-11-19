@@ -732,7 +732,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getFailedDecisionDefinitionId(): ?\Camunda\Orchestration\Semantic\DecisionDefinitionId
     {
-        return $this->container['failedDecisionDefinitionId'];
+        return $this->container['failedDecisionDefinitionId'] ?? null;
     }
 
     /**
@@ -771,7 +771,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getFailureMessage(): ?string
     {
-        return $this->container['failureMessage'];
+        return $this->container['failureMessage'] ?? null;
     }
 
     /**

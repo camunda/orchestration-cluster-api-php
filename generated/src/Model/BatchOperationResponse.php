@@ -470,7 +470,7 @@ class BatchOperationResponse implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getBatchOperationType(): ?\Camunda\Orchestration\Api\Model\BatchOperationTypeEnum
     {
-        return $this->container['batchOperationType'];
+        return $this->container['batchOperationType'] ?? null;
     }
 
     /**
@@ -509,7 +509,7 @@ class BatchOperationResponse implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getStartDate(): ?\DateTime
     {
-        return $this->container['startDate'];
+        return $this->container['startDate'] ?? null;
     }
 
     /**
@@ -548,7 +548,7 @@ class BatchOperationResponse implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getEndDate(): ?\DateTime
     {
-        return $this->container['endDate'];
+        return $this->container['endDate'] ?? null;
     }
 
     /**
@@ -587,7 +587,7 @@ class BatchOperationResponse implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getActorType(): ?\Camunda\Orchestration\Api\Model\AuditLogActorTypeEnum
     {
-        return $this->container['actorType'];
+        return $this->container['actorType'] ?? null;
     }
 
     /**
@@ -626,7 +626,7 @@ class BatchOperationResponse implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getActorId(): ?string
     {
-        return $this->container['actorId'];
+        return $this->container['actorId'] ?? null;
     }
 
     /**

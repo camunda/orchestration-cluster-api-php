@@ -440,7 +440,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDisplayName(): ?string
     {
-        return $this->container['displayName'];
+        return $this->container['displayName'] ?? null;
     }
 
     /**
@@ -479,7 +479,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getEmail(): ?string
     {
-        return $this->container['email'];
+        return $this->container['email'] ?? null;
     }
 
     /**
@@ -646,7 +646,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getSalesPlanType(): ?string
     {
-        return $this->container['salesPlanType'];
+        return $this->container['salesPlanType'] ?? null;
     }
 
     /**

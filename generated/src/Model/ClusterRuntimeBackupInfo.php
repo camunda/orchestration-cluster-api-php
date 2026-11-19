@@ -403,7 +403,7 @@ class ClusterRuntimeBackupInfo implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getFailureReason(): ?string
     {
-        return $this->container['failureReason'];
+        return $this->container['failureReason'] ?? null;
     }
 
     /**

@@ -314,7 +314,7 @@ class ProcessDefinitionInstanceVersionStatisticsQuery implements ModelInterface,
      */
     public function getPage(): ?\Camunda\Orchestration\Api\Model\OffsetPagination
     {
-        return $this->container['page'];
+        return $this->container['page'] ?? null;
     }
 
     /**
@@ -346,7 +346,7 @@ class ProcessDefinitionInstanceVersionStatisticsQuery implements ModelInterface,
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**

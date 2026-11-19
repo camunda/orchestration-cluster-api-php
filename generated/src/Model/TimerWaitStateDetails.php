@@ -352,7 +352,7 @@ class TimerWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getDueDate(): ?int
     {
-        return $this->container['dueDate'];
+        return $this->container['dueDate'] ?? null;
     }
 
     /**
@@ -391,7 +391,7 @@ class TimerWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getRepetitions(): ?int
     {
-        return $this->container['repetitions'];
+        return $this->container['repetitions'] ?? null;
     }
 
     /**

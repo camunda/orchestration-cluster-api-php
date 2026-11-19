@@ -343,7 +343,7 @@ class GroupSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class GroupSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\GroupFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

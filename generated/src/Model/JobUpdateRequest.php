@@ -363,7 +363,7 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getOperationReference(): ?int
     {
-        return $this->container['operationReference'];
+        return $this->container['operationReference'] ?? null;
     }
 
     /**
@@ -399,7 +399,7 @@ class JobUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getJobLeaseToken(): ?\Camunda\Orchestration\Semantic\JobLeaseToken
     {
-        return $this->container['jobLeaseToken'];
+        return $this->container['jobLeaseToken'] ?? null;
     }
 
     /**

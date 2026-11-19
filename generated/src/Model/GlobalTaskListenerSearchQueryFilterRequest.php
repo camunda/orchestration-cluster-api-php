@@ -436,7 +436,7 @@ class GlobalTaskListenerSearchQueryFilterRequest implements ModelInterface, Arra
      */
     public function getEventTypes(): ?array
     {
-        return $this->container['eventTypes'];
+        return $this->container['eventTypes'] ?? null;
     }
 
     /**
@@ -468,7 +468,7 @@ class GlobalTaskListenerSearchQueryFilterRequest implements ModelInterface, Arra
      */
     public function getAfterNonGlobal(): ?bool
     {
-        return $this->container['afterNonGlobal'];
+        return $this->container['afterNonGlobal'] ?? null;
     }
 
     /**

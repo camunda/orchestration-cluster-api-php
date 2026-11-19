@@ -304,7 +304,7 @@ class UserTaskCompletionRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**
@@ -343,7 +343,7 @@ class UserTaskCompletionRequest implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getAction(): ?string
     {
-        return $this->container['action'];
+        return $this->container['action'] ?? null;
     }
 
     /**

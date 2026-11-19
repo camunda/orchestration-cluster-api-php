@@ -305,7 +305,7 @@ class LimitPagination implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getLimit(): ?int
     {
-        return $this->container['limit'];
+        return $this->container['limit'] ?? null;
     }
 
     /**

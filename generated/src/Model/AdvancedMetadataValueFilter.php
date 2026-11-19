@@ -418,7 +418,7 @@ class AdvancedMetadataValueFilter implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getExists(): ?bool
     {
-        return $this->container['exists'];
+        return $this->container['exists'] ?? null;
     }
 
     /**
@@ -450,7 +450,7 @@ class AdvancedMetadataValueFilter implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getGt(): ?float
     {
-        return $this->container['gt'];
+        return $this->container['gt'] ?? null;
     }
 
     /**
@@ -482,7 +482,7 @@ class AdvancedMetadataValueFilter implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getGte(): ?float
     {
-        return $this->container['gte'];
+        return $this->container['gte'] ?? null;
     }
 
     /**
@@ -514,7 +514,7 @@ class AdvancedMetadataValueFilter implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getLt(): ?float
     {
-        return $this->container['lt'];
+        return $this->container['lt'] ?? null;
     }
 
     /**
@@ -546,7 +546,7 @@ class AdvancedMetadataValueFilter implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getLte(): ?float
     {
-        return $this->container['lte'];
+        return $this->container['lte'] ?? null;
     }
 
     /**
@@ -578,7 +578,7 @@ class AdvancedMetadataValueFilter implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getIn(): ?array
     {
-        return $this->container['in'];
+        return $this->container['in'] ?? null;
     }
 
     /**
@@ -610,7 +610,7 @@ class AdvancedMetadataValueFilter implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getLike(): ?string
     {
-        return $this->container['like'];
+        return $this->container['like'] ?? null;
     }
 
     /**

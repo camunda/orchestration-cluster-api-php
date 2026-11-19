@@ -338,7 +338,7 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRetries(): ?int
     {
-        return $this->container['retries'];
+        return $this->container['retries'] ?? null;
     }
 
     /**
@@ -370,7 +370,7 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getErrorMessage(): ?string
     {
-        return $this->container['errorMessage'];
+        return $this->container['errorMessage'] ?? null;
     }
 
     /**
@@ -402,7 +402,7 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRetryBackOff(): ?int
     {
-        return $this->container['retryBackOff'];
+        return $this->container['retryBackOff'] ?? null;
     }
 
     /**
@@ -434,7 +434,7 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**
@@ -466,7 +466,7 @@ class JobFailRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getJobLeaseToken(): ?\Camunda\Orchestration\Semantic\JobLeaseToken
     {
-        return $this->container['jobLeaseToken'];
+        return $this->container['jobLeaseToken'] ?? null;
     }
 
     /**

@@ -304,7 +304,7 @@ class ProcessDefinitionMessageSubscriptionStatisticsQuery implements ModelInterf
      */
     public function getPage(): ?\Camunda\Orchestration\Api\Model\CursorForwardPagination
     {
-        return $this->container['page'];
+        return $this->container['page'] ?? null;
     }
 
     /**
@@ -336,7 +336,7 @@ class ProcessDefinitionMessageSubscriptionStatisticsQuery implements ModelInterf
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\MessageSubscriptionFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

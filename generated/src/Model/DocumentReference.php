@@ -474,7 +474,7 @@ class DocumentReference implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getContentHash(): ?string
     {
-        return $this->container['contentHash'];
+        return $this->container['contentHash'] ?? null;
     }
 
     /**

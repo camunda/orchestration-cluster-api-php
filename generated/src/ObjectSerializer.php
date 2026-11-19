@@ -101,6 +101,17 @@ class ObjectSerializer
             if ($data instanceof ModelInterface) {
                 $formats = $data::openAPIFormats();
                 foreach ($data::openAPITypes() as $property => $openAPIType) {
+                    $getter = $data::getters()[$property];
+                    // Read the value through the getter for every property — including
+                    // unset ones. A model subclass may override a getter to compute (or
+                    // lazily resolve) the value, and that override may throw while the
+                    // request is being encoded (e.g. a lazy value backed by a generator
+                    // that fails mid-encode). Reading only set properties would skip such
+                    // a getter entirely, swallowing the Throwable and silently sending a
+                    // completion the handler never finished (issue #168). For a normal
+                    // generated model the getter just returns the container value, so an
+                    // unset property yields its spec default here and is omitted below.
+                    $value = $data->$getter();
                     if (
                         method_exists($data, 'isFieldSet') && !$data->isFieldSet($property)
                         && !(method_exists($data, 'isNullableSetToNull') && $data->isNullableSetToNull($property))
@@ -112,8 +123,6 @@ class ObjectSerializer
                         // it, and it must still serialize as `null`.
                         continue;
                     }
-                    $getter = $data::getters()[$property];
-                    $value = $data->$getter();
                     if ($value !== null && !in_array($openAPIType, ['\DateTime', '\SplFileObject', 'array', 'bool', 'boolean', 'byte', 'float', 'int', 'integer', 'mixed', 'number', 'object', 'string', 'void'], true)) {
                         if (is_subclass_of($openAPIType, '\BackedEnum')) {
                             if (is_scalar($value)) {

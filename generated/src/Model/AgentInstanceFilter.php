@@ -748,7 +748,7 @@ class AgentInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getElementInstanceKeys(): ?array
     {
-        return $this->container['elementInstanceKeys'];
+        return $this->container['elementInstanceKeys'] ?? null;
     }
 
     /**

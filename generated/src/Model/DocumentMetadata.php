@@ -357,7 +357,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getContentType(): ?string
     {
-        return $this->container['contentType'];
+        return $this->container['contentType'] ?? null;
     }
 
     /**
@@ -389,7 +389,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getFileName(): ?string
     {
-        return $this->container['fileName'];
+        return $this->container['fileName'] ?? null;
     }
 
     /**
@@ -421,7 +421,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getExpiresAt(): ?\DateTime
     {
-        return $this->container['expiresAt'];
+        return $this->container['expiresAt'] ?? null;
     }
 
     /**
@@ -453,7 +453,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getSize(): ?int
     {
-        return $this->container['size'];
+        return $this->container['size'] ?? null;
     }
 
     /**
@@ -485,7 +485,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -514,7 +514,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -543,7 +543,7 @@ class DocumentMetadata implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getCustomProperties(): ?array
     {
-        return $this->container['customProperties'];
+        return $this->container['customProperties'] ?? null;
     }
 
     /**
