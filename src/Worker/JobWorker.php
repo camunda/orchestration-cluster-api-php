@@ -129,13 +129,16 @@ final class JobWorker
         if ($this->options->fetchVariables !== []) {
             $request->setFetchVariable($this->options->fetchVariables);
         }
-        if ($this->options->tenantIds !== []) {
-            $request->setTenantIds($this->options->tenantIds);
-            // Tenant-scoped activation requires the explicit PROVIDED filter — the spec
-            // default only applies when the field is sent, and unset optional fields are
-            // omitted from the request body (issue #53).
-            $request->setTenantFilter(TenantFilterEnum::PROVIDED);
-        }
+        // An explicit worker tenant list wins; otherwise activate for the client's
+        // default tenant(s) — `<default>` when none is configured (issue #138).
+        $tenantIds = $this->options->tenantIds !== []
+            ? $this->options->tenantIds
+            : $this->client->configuration()->defaultJobTenantIds();
+        $request->setTenantIds($tenantIds);
+        // Tenant-scoped activation requires the explicit PROVIDED filter — the spec
+        // default only applies when the field is sent, and unset optional fields are
+        // omitted from the request body (issue #53).
+        $request->setTenantFilter(TenantFilterEnum::PROVIDED);
 
         [$result, $httpStatus, $headers] = $this->jobApi()->activateJobsWithHttpInfo($request);
         if ($result instanceof ProblemDetail || $httpStatus < 200 || $httpStatus > 299) {

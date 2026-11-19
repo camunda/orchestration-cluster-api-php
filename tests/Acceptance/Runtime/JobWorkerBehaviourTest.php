@@ -191,7 +191,9 @@ final class JobWorkerBehaviourTest extends TestCase
             'timeout' => 60_000,
             'maxJobsToActivate' => 32,
             'requestTimeout' => 10_000,
-        ], $this->http->jsonBody(0), 'fetchVariable, tenantIds and tenantFilter must be omitted when not configured');
+            'tenantIds' => ['<default>'],
+            'tenantFilter' => 'PROVIDED',
+        ], $this->http->jsonBody(0), 'fetchVariable must be omitted and the default tenant sent when not configured');
     }
 
     public function testOptionsHaveDocumentedDefaults(): void
