@@ -5,11 +5,17 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Tests\Acceptance;
 
 use Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter;
+use Camunda\Orchestration\Api\Model\AuditLogFilter;
 use Camunda\Orchestration\Api\Model\IntegerFilterProperty;
 use Camunda\Orchestration\Api\Model\ProcessInstanceFilter;
 use Camunda\Orchestration\Api\Model\ProcessInstanceStateEnum;
+use Camunda\Orchestration\Api\Model\ResourceFilter;
 use Camunda\Orchestration\Api\Model\StringFilterProperty;
+use Camunda\Orchestration\Api\Model\VariableFilter;
 use Camunda\Orchestration\Api\ObjectSerializer;
+use Camunda\Orchestration\Semantic\ResourceKey;
+use Camunda\Orchestration\Semantic\ScopeKey;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -87,6 +93,44 @@ final class ExactMatchFilterSerializationTest extends TestCase
 
         $list = ObjectSerializer::deserialize('["2251799813686749"]', StringFilterProperty::class . '[]');
         self::assertSame(['2251799813686749'], $list);
+    }
+
+    /**
+     * Constructor data for oneOf filter wrappers whose exact-match member is a semantic key
+     * union (ResourceKey, ScopeKey) must be hydrated into that key, not left as a raw string.
+     *
+     * @return iterable<string, array{0: object, 1: string, 2: class-string, 3: string}>
+     */
+    public static function semanticUnionWrapperProvider(): iterable
+    {
+        yield 'ResourceFilter.resourceKey' => [
+            new ResourceFilter(['resourceKey' => '2251799813685249']),
+            'getResourceKey', ResourceKey::class, '"resourceKey":"2251799813685249"',
+        ];
+        yield 'AuditLogFilter.resourceKey' => [
+            new AuditLogFilter(['resourceKey' => '2251799813685249']),
+            'getResourceKey', ResourceKey::class, '"resourceKey":"2251799813685249"',
+        ];
+        yield 'VariableFilter.scopeKey' => [
+            new VariableFilter(['scopeKey' => '2251799813685249']),
+            'getScopeKey', ScopeKey::class, '"scopeKey":"2251799813685249"',
+        ];
+    }
+
+    /**
+     * @param class-string $keyClass
+     */
+    #[DataProvider('semanticUnionWrapperProvider')]
+    public function testConstructorHydratesSemanticUnionWrapperMembers(
+        object $filter,
+        string $getter,
+        string $keyClass,
+        string $expectedJson,
+    ): void {
+        $callable = [$filter, $getter];
+        self::assertIsCallable($callable);
+        self::assertInstanceOf($keyClass, $callable());
+        self::assertStringContainsString($expectedJson, $this->toJson($filter));
     }
 
     private function toJson(object $model): string

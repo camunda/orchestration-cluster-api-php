@@ -302,6 +302,20 @@ class AdvancedResourceKeyFilter implements ModelInterface, ArrayAccess, JsonSeri
         if (is_string($semanticType)) {
             $isArray = str_ends_with($semanticType, '[]');
             $elementType = $isArray ? substr($semanticType, 0, -2) : $semanticType;
+            // oneOf wrappers (e.g. ResourceKeyFilterProperty) carry the semantic key as a
+            // member type: hydrate raw strings into that member rather than leave them raw.
+            if (
+                is_string($elementType)
+                && is_subclass_of($elementType, \Camunda\Orchestration\Api\Model\OneOfInterface::class)
+            ) {
+                foreach ($elementType::getOneOfTypes() as $memberType) {
+                    $memberType = ltrim($memberType, '\\');
+                    if (is_subclass_of($memberType, \Camunda\Orchestration\Semantic\SemanticKey::class)) {
+                        $elementType = $memberType;
+                        break;
+                    }
+                }
+            }
             if (
                 is_string($elementType)
                 && is_subclass_of($elementType, \Camunda\Orchestration\Semantic\SemanticKey::class)
