@@ -55,7 +55,8 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           extensions: json, pcntl, mbstring
-          coverage: none
+          # pcov only where coverage is measured (PHP 8.3 leg), to keep the other legs fast.
+          coverage: ${{ matrix.php-version == '8.3' && 'pcov' || 'none' }}
           tools: composer:v2
 
       - name: Set up Java (openapi-generator)
@@ -98,6 +99,22 @@ jobs:
 
       - name: Run acceptance tests
         run: make test
+
+      # Line coverage of the hand-written runtime (src/, generated code excluded). Report only:
+      # it makes the gap visible in the job summary and the uploaded HTML report, it does not
+      # gate the build.
+      - name: Measure runtime coverage
+        if: matrix.php-version == '8.3'
+        run: make coverage
+
+      - name: Upload coverage report
+        if: always() && matrix.php-version == '8.3'
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-php${{ matrix.php-version }}
+          path: build/coverage
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Start integration stack
         if: matrix.php-version == '8.3'
