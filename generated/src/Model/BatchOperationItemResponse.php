@@ -502,7 +502,7 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -541,7 +541,7 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -622,7 +622,7 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getProcessedDate(): ?\DateTime
     {
-        return $this->container['processedDate'];
+        return $this->container['processedDate'] ?? null;
     }
 
     /**
@@ -661,7 +661,7 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getErrorMessage(): ?string
     {
-        return $this->container['errorMessage'];
+        return $this->container['errorMessage'] ?? null;
     }
 
     /**

@@ -343,7 +343,7 @@ class CorrelatedMessageSubscriptionSearchQuery implements ModelInterface, ArrayA
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class CorrelatedMessageSubscriptionSearchQuery implements ModelInterface, ArrayA
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\CorrelatedMessageSubscriptionFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

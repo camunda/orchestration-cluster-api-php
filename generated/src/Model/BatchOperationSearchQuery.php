@@ -343,7 +343,7 @@ class BatchOperationSearchQuery implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class BatchOperationSearchQuery implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\BatchOperationFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

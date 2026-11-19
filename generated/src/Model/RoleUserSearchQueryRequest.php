@@ -336,7 +336,7 @@ class RoleUserSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**

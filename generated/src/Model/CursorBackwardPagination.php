@@ -325,7 +325,7 @@ class CursorBackwardPagination implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getBefore(): ?\Camunda\Orchestration\Semantic\StartCursor
     {
-        return $this->container['before'];
+        return $this->container['before'] ?? null;
     }
 
     /**
@@ -354,7 +354,7 @@ class CursorBackwardPagination implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getLimit(): ?int
     {
-        return $this->container['limit'];
+        return $this->container['limit'] ?? null;
     }
 
     /**

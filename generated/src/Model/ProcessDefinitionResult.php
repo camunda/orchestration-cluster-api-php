@@ -435,7 +435,7 @@ class ProcessDefinitionResult implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getName(): ?string
     {
-        return $this->container['name'];
+        return $this->container['name'] ?? null;
     }
 
     /**
@@ -538,7 +538,7 @@ class ProcessDefinitionResult implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getVersionTag(): ?string
     {
-        return $this->container['versionTag'];
+        return $this->container['versionTag'] ?? null;
     }
 
     /**

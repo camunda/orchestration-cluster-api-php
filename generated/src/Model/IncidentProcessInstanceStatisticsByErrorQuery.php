@@ -304,7 +304,7 @@ class IncidentProcessInstanceStatisticsByErrorQuery implements ModelInterface, A
      */
     public function getPage(): ?\Camunda\Orchestration\Api\Model\OffsetPagination
     {
-        return $this->container['page'];
+        return $this->container['page'] ?? null;
     }
 
     /**
@@ -336,7 +336,7 @@ class IncidentProcessInstanceStatisticsByErrorQuery implements ModelInterface, A
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**

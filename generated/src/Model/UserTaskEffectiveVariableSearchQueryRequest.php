@@ -312,7 +312,7 @@ class UserTaskEffectiveVariableSearchQueryRequest implements ModelInterface, Arr
      */
     public function getPage(): ?\Camunda\Orchestration\Api\Model\OffsetPagination
     {
-        return $this->container['page'];
+        return $this->container['page'] ?? null;
     }
 
     /**
@@ -344,7 +344,7 @@ class UserTaskEffectiveVariableSearchQueryRequest implements ModelInterface, Arr
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -376,7 +376,7 @@ class UserTaskEffectiveVariableSearchQueryRequest implements ModelInterface, Arr
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\UserTaskVariableFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

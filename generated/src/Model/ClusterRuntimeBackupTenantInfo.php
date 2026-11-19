@@ -395,7 +395,7 @@ class ClusterRuntimeBackupTenantInfo implements ModelInterface, ArrayAccess, Jso
      */
     public function getFailureReason(): ?string
     {
-        return $this->container['failureReason'];
+        return $this->container['failureReason'] ?? null;
     }
 
     /**

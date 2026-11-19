@@ -311,7 +311,7 @@ class ClusterRestorePlannedChange implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getPhysicalTenantId(): ?string
     {
-        return $this->container['physicalTenantId'];
+        return $this->container['physicalTenantId'] ?? null;
     }
 
     /**

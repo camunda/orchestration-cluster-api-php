@@ -327,7 +327,7 @@ class ClusterRebalanceRequest implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getReplicationLagThreshold(): ?int
     {
-        return $this->container['replicationLagThreshold'];
+        return $this->container['replicationLagThreshold'] ?? null;
     }
 
     /**
@@ -363,7 +363,7 @@ class ClusterRebalanceRequest implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getReplicationTimeout(): ?string
     {
-        return $this->container['replicationTimeout'];
+        return $this->container['replicationTimeout'] ?? null;
     }
 
     /**
@@ -395,7 +395,7 @@ class ClusterRebalanceRequest implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getMaxTransferAttempts(): ?int
     {
-        return $this->container['maxTransferAttempts'];
+        return $this->container['maxTransferAttempts'] ?? null;
     }
 
     /**
@@ -431,7 +431,7 @@ class ClusterRebalanceRequest implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getLeaderWaitTimeout(): ?string
     {
-        return $this->container['leaderWaitTimeout'];
+        return $this->container['leaderWaitTimeout'] ?? null;
     }
 
     /**

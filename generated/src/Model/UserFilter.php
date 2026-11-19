@@ -415,7 +415,7 @@ class UserFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getOr(): ?array
     {
-        return $this->container['or'];
+        return $this->container['or'] ?? null;
     }
 
     /**

@@ -390,7 +390,7 @@ class UserTaskWaitStateDetails implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getDueDate(): ?\DateTime
     {
-        return $this->container['dueDate'];
+        return $this->container['dueDate'] ?? null;
     }
 
     /**

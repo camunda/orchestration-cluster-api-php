@@ -412,7 +412,7 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getStartCursor(): ?\Camunda\Orchestration\Semantic\StartCursor
     {
-        return $this->container['startCursor'];
+        return $this->container['startCursor'] ?? null;
     }
 
     /**
@@ -451,7 +451,7 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getEndCursor(): ?\Camunda\Orchestration\Semantic\EndCursor
     {
-        return $this->container['endCursor'];
+        return $this->container['endCursor'] ?? null;
     }
 
     /**

@@ -311,7 +311,7 @@ class ClusterModeChangePlannedChange implements ModelInterface, ArrayAccess, Jso
      */
     public function getPhysicalTenantId(): ?string
     {
-        return $this->container['physicalTenantId'];
+        return $this->container['physicalTenantId'] ?? null;
     }
 
     /**

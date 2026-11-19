@@ -343,7 +343,7 @@ class MessageSubscriptionSearchQuery implements ModelInterface, ArrayAccess, Jso
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class MessageSubscriptionSearchQuery implements ModelInterface, ArrayAccess, Jso
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\MessageSubscriptionFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

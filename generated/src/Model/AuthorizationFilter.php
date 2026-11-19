@@ -326,7 +326,7 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getOwnerId(): ?string
     {
-        return $this->container['ownerId'];
+        return $this->container['ownerId'] ?? null;
     }
 
     /**
@@ -358,7 +358,7 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getOwnerType(): ?\Camunda\Orchestration\Api\Model\OwnerTypeEnum
     {
-        return $this->container['ownerType'];
+        return $this->container['ownerType'] ?? null;
     }
 
     /**
@@ -390,7 +390,7 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getResourceIds(): ?array
     {
-        return $this->container['resourceIds'];
+        return $this->container['resourceIds'] ?? null;
     }
 
     /**
@@ -422,7 +422,7 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getResourcePropertyNames(): ?array
     {
-        return $this->container['resourcePropertyNames'];
+        return $this->container['resourcePropertyNames'] ?? null;
     }
 
     /**
@@ -454,7 +454,7 @@ class AuthorizationFilter implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getResourceType(): ?\Camunda\Orchestration\Api\Model\ResourceTypeEnum
     {
-        return $this->container['resourceType'];
+        return $this->container['resourceType'] ?? null;
     }
 
     /**

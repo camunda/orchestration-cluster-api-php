@@ -344,7 +344,7 @@ class ProcessInstanceIncidentResolutionBatchOperationRequest implements ModelInt
      */
     public function getOperationReference(): ?int
     {
-        return $this->container['operationReference'];
+        return $this->container['operationReference'] ?? null;
     }
 
     /**

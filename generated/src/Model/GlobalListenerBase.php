@@ -318,7 +318,7 @@ class GlobalListenerBase implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getType(): ?string
     {
-        return $this->container['type'];
+        return $this->container['type'] ?? null;
     }
 
     /**
@@ -350,7 +350,7 @@ class GlobalListenerBase implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getRetries(): ?int
     {
-        return $this->container['retries'];
+        return $this->container['retries'] ?? null;
     }
 
     /**
@@ -382,7 +382,7 @@ class GlobalListenerBase implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getAfterNonGlobal(): ?bool
     {
-        return $this->container['afterNonGlobal'];
+        return $this->container['afterNonGlobal'] ?? null;
     }
 
     /**
@@ -414,7 +414,7 @@ class GlobalListenerBase implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getPriority(): ?int
     {
-        return $this->container['priority'];
+        return $this->container['priority'] ?? null;
     }
 
     /**

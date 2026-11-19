@@ -531,7 +531,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getProcessDefinitionName(): ?string
     {
-        return $this->container['processDefinitionName'];
+        return $this->container['processDefinitionName'] ?? null;
     }
 
     /**
@@ -602,7 +602,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getProcessDefinitionVersionTag(): ?string
     {
-        return $this->container['processDefinitionVersionTag'];
+        return $this->container['processDefinitionVersionTag'] ?? null;
     }
 
     /**
@@ -673,7 +673,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getEndDate(): ?\DateTime
     {
-        return $this->container['endDate'];
+        return $this->container['endDate'] ?? null;
     }
 
     /**
@@ -744,7 +744,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getSuspendedDate(): ?\DateTime
     {
-        return $this->container['suspendedDate'];
+        return $this->container['suspendedDate'] ?? null;
     }
 
     /**
@@ -902,7 +902,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getParentProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['parentProcessInstanceKey'];
+        return $this->container['parentProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -941,7 +941,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getParentElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['parentElementInstanceKey'];
+        return $this->container['parentElementInstanceKey'] ?? null;
     }
 
     /**
@@ -980,7 +980,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -1054,7 +1054,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**

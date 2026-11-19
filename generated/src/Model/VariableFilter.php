@@ -425,7 +425,7 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -454,7 +454,7 @@ class VariableFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getIsTruncated(): ?bool
     {
-        return $this->container['isTruncated'];
+        return $this->container['isTruncated'] ?? null;
     }
 
     /**

@@ -340,7 +340,7 @@ class ModifyProcessInstanceVariableInstruction implements ModelInterface, ArrayA
      */
     public function getScopeId(): ?string
     {
-        return $this->container['scopeId'];
+        return $this->container['scopeId'] ?? null;
     }
 
     /**

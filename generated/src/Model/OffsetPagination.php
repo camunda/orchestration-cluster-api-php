@@ -312,7 +312,7 @@ class OffsetPagination implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getFrom(): ?int
     {
-        return $this->container['from'];
+        return $this->container['from'] ?? null;
     }
 
     /**
@@ -348,7 +348,7 @@ class OffsetPagination implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getLimit(): ?int
     {
-        return $this->container['limit'];
+        return $this->container['limit'] ?? null;
     }
 
     /**

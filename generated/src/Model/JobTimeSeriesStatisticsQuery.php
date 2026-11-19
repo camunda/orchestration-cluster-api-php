@@ -340,7 +340,7 @@ class JobTimeSeriesStatisticsQuery implements ModelInterface, ArrayAccess, JsonS
      */
     public function getPage(): ?\Camunda\Orchestration\Api\Model\CursorForwardPagination
     {
-        return $this->container['page'];
+        return $this->container['page'] ?? null;
     }
 
     /**

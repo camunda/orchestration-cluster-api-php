@@ -319,7 +319,7 @@ class AdvancedAgentInstanceHistoryRoleFilter implements ModelInterface, ArrayAcc
      */
     public function getEq(): ?\Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleEnum
     {
-        return $this->container['eq'];
+        return $this->container['eq'] ?? null;
     }
 
     /**
@@ -351,7 +351,7 @@ class AdvancedAgentInstanceHistoryRoleFilter implements ModelInterface, ArrayAcc
      */
     public function getNeq(): ?\Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleEnum
     {
-        return $this->container['neq'];
+        return $this->container['neq'] ?? null;
     }
 
     /**
@@ -383,7 +383,7 @@ class AdvancedAgentInstanceHistoryRoleFilter implements ModelInterface, ArrayAcc
      */
     public function getExists(): ?bool
     {
-        return $this->container['exists'];
+        return $this->container['exists'] ?? null;
     }
 
     /**
@@ -415,7 +415,7 @@ class AdvancedAgentInstanceHistoryRoleFilter implements ModelInterface, ArrayAcc
      */
     public function getIn(): ?array
     {
-        return $this->container['in'];
+        return $this->container['in'] ?? null;
     }
 
     /**

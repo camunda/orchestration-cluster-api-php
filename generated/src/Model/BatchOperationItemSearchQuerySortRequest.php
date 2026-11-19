@@ -379,7 +379,7 @@ class BatchOperationItemSearchQuerySortRequest implements ModelInterface, ArrayA
      */
     public function getOrder(): ?\Camunda\Orchestration\Api\Model\SortOrderEnum
     {
-        return $this->container['order'];
+        return $this->container['order'] ?? null;
     }
 
     /**

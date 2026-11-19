@@ -343,7 +343,7 @@ class AgentDefinitionSearchQuery implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class AgentDefinitionSearchQuery implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\AgentDefinitionFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

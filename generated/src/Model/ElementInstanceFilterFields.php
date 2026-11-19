@@ -492,7 +492,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -553,7 +553,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getType(): ?string
     {
-        return $this->container['type'];
+        return $this->container['type'] ?? null;
     }
 
     /**
@@ -659,7 +659,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getHasIncident(): ?bool
     {
-        return $this->container['hasIncident'];
+        return $this->container['hasIncident'] ?? null;
     }
 
     /**
@@ -691,7 +691,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -720,7 +720,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -749,7 +749,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -778,7 +778,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -807,7 +807,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getIncidentKey(): ?\Camunda\Orchestration\Semantic\IncidentKey
     {
-        return $this->container['incidentKey'];
+        return $this->container['incidentKey'] ?? null;
     }
 
     /**
@@ -900,7 +900,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getElementInstanceScopeKey(): ?string
     {
-        return $this->container['elementInstanceScopeKey'];
+        return $this->container['elementInstanceScopeKey'] ?? null;
     }
 
     /**

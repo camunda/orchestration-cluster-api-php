@@ -367,7 +367,7 @@ class ClusterRuntimeBackupTakeResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getBackupId(): ?int
     {
-        return $this->container['backupId'];
+        return $this->container['backupId'] ?? null;
     }
 
     /**
@@ -442,7 +442,7 @@ class ClusterRuntimeBackupTakeResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getReason(): ?string
     {
-        return $this->container['reason'];
+        return $this->container['reason'] ?? null;
     }
 
     /**

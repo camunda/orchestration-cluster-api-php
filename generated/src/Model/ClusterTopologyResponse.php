@@ -373,7 +373,7 @@ class ClusterTopologyResponse implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getClusterId(): ?string
     {
-        return $this->container['clusterId'];
+        return $this->container['clusterId'] ?? null;
     }
 
     /**
@@ -444,7 +444,7 @@ class ClusterTopologyResponse implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getGatewayVersion(): ?string
     {
-        return $this->container['gatewayVersion'];
+        return $this->container['gatewayVersion'] ?? null;
     }
 
     /**

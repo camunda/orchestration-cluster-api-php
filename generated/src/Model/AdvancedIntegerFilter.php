@@ -347,7 +347,7 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getEq(): ?int
     {
-        return $this->container['eq'];
+        return $this->container['eq'] ?? null;
     }
 
     /**
@@ -379,7 +379,7 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getNeq(): ?int
     {
-        return $this->container['neq'];
+        return $this->container['neq'] ?? null;
     }
 
     /**
@@ -411,7 +411,7 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getExists(): ?bool
     {
-        return $this->container['exists'];
+        return $this->container['exists'] ?? null;
     }
 
     /**
@@ -443,7 +443,7 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getGt(): ?int
     {
-        return $this->container['gt'];
+        return $this->container['gt'] ?? null;
     }
 
     /**
@@ -475,7 +475,7 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getGte(): ?int
     {
-        return $this->container['gte'];
+        return $this->container['gte'] ?? null;
     }
 
     /**
@@ -507,7 +507,7 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getLt(): ?int
     {
-        return $this->container['lt'];
+        return $this->container['lt'] ?? null;
     }
 
     /**
@@ -539,7 +539,7 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getLte(): ?int
     {
-        return $this->container['lte'];
+        return $this->container['lte'] ?? null;
     }
 
     /**
@@ -571,7 +571,7 @@ class AdvancedIntegerFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getIn(): ?array
     {
-        return $this->container['in'];
+        return $this->container['in'] ?? null;
     }
 
     /**

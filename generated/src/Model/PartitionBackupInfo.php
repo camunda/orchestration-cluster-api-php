@@ -467,7 +467,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getFailureReason(): ?string
     {
-        return $this->container['failureReason'];
+        return $this->container['failureReason'] ?? null;
     }
 
     /**
@@ -506,7 +506,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getCreatedAt(): ?\DateTime
     {
-        return $this->container['createdAt'];
+        return $this->container['createdAt'] ?? null;
     }
 
     /**
@@ -545,7 +545,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getLastUpdatedAt(): ?\DateTime
     {
-        return $this->container['lastUpdatedAt'];
+        return $this->container['lastUpdatedAt'] ?? null;
     }
 
     /**
@@ -584,7 +584,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getSnapshotId(): ?string
     {
-        return $this->container['snapshotId'];
+        return $this->container['snapshotId'] ?? null;
     }
 
     /**
@@ -623,7 +623,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getFirstLogPosition(): ?int
     {
-        return $this->container['firstLogPosition'];
+        return $this->container['firstLogPosition'] ?? null;
     }
 
     /**
@@ -662,7 +662,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getCheckpointPosition(): ?int
     {
-        return $this->container['checkpointPosition'];
+        return $this->container['checkpointPosition'] ?? null;
     }
 
     /**
@@ -701,7 +701,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getBrokerId(): ?int
     {
-        return $this->container['brokerId'];
+        return $this->container['brokerId'] ?? null;
     }
 
     /**
@@ -744,7 +744,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getBrokerVersion(): ?string
     {
-        return $this->container['brokerVersion'];
+        return $this->container['brokerVersion'] ?? null;
     }
 
     /**

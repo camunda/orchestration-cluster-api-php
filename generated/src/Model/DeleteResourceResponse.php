@@ -362,7 +362,7 @@ class DeleteResourceResponse implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getBatchOperation(): ?\Camunda\Orchestration\Api\Model\BatchOperationCreatedResult
     {
-        return $this->container['batchOperation'];
+        return $this->container['batchOperation'] ?? null;
     }
 
     /**

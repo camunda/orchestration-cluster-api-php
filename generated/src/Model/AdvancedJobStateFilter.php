@@ -326,7 +326,7 @@ class AdvancedJobStateFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getEq(): ?\Camunda\Orchestration\Api\Model\JobStateEnum
     {
-        return $this->container['eq'];
+        return $this->container['eq'] ?? null;
     }
 
     /**
@@ -358,7 +358,7 @@ class AdvancedJobStateFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getNeq(): ?\Camunda\Orchestration\Api\Model\JobStateEnum
     {
-        return $this->container['neq'];
+        return $this->container['neq'] ?? null;
     }
 
     /**
@@ -390,7 +390,7 @@ class AdvancedJobStateFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getExists(): ?bool
     {
-        return $this->container['exists'];
+        return $this->container['exists'] ?? null;
     }
 
     /**
@@ -422,7 +422,7 @@ class AdvancedJobStateFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getIn(): ?array
     {
-        return $this->container['in'];
+        return $this->container['in'] ?? null;
     }
 
     /**
@@ -454,7 +454,7 @@ class AdvancedJobStateFilter implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getLike(): ?string
     {
-        return $this->container['like'];
+        return $this->container['like'] ?? null;
     }
 
     /**

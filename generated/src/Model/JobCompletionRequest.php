@@ -339,7 +339,7 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**
@@ -410,7 +410,7 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getJobLeaseToken(): ?\Camunda\Orchestration\Semantic\JobLeaseToken
     {
-        return $this->container['jobLeaseToken'];
+        return $this->container['jobLeaseToken'] ?? null;
     }
 
     /**
@@ -449,7 +449,7 @@ class JobCompletionRequest implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**

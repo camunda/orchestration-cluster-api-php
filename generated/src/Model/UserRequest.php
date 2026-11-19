@@ -406,7 +406,7 @@ class UserRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getName(): ?string
     {
-        return $this->container['name'];
+        return $this->container['name'] ?? null;
     }
 
     /**
@@ -438,7 +438,7 @@ class UserRequest implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getEmail(): ?string
     {
-        return $this->container['email'];
+        return $this->container['email'] ?? null;
     }
 
     /**

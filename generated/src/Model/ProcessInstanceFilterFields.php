@@ -565,7 +565,7 @@ class ProcessInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getHasIncident(): ?bool
     {
-        return $this->container['hasIncident'];
+        return $this->container['hasIncident'] ?? null;
     }
 
     /**
@@ -661,7 +661,7 @@ class ProcessInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**
@@ -887,7 +887,7 @@ class ProcessInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getHasRetriesLeft(): ?bool
     {
-        return $this->container['hasRetriesLeft'];
+        return $this->container['hasRetriesLeft'] ?? null;
     }
 
     /**
@@ -983,7 +983,7 @@ class ProcessInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getHasElementInstanceIncident(): ?bool
     {
-        return $this->container['hasElementInstanceIncident'];
+        return $this->container['hasElementInstanceIncident'] ?? null;
     }
 
     /**
@@ -1047,7 +1047,7 @@ class ProcessInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getTags(): ?array
     {
-        return $this->container['tags'];
+        return $this->container['tags'] ?? null;
     }
 
     /**

@@ -318,7 +318,7 @@ class ClusterRestoreRequest implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getFrom(): ?\DateTime
     {
-        return $this->container['from'];
+        return $this->container['from'] ?? null;
     }
 
     /**
@@ -357,7 +357,7 @@ class ClusterRestoreRequest implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getTo(): ?\DateTime
     {
-        return $this->container['to'];
+        return $this->container['to'] ?? null;
     }
 
     /**
@@ -396,7 +396,7 @@ class ClusterRestoreRequest implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getBackupIds(): ?array
     {
-        return $this->container['backupIds'];
+        return $this->container['backupIds'] ?? null;
     }
 
     /**
@@ -435,7 +435,7 @@ class ClusterRestoreRequest implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getOverrides(): ?array
     {
-        return $this->container['overrides'];
+        return $this->container['overrides'] ?? null;
     }
 
     /**

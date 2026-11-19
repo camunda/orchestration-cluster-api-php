@@ -353,7 +353,7 @@ class ProcessInstanceModificationActivateInstruction implements ModelInterface, 
      */
     public function getVariableInstructions(): ?array
     {
-        return $this->container['variableInstructions'];
+        return $this->container['variableInstructions'] ?? null;
     }
 
     /**
@@ -385,7 +385,7 @@ class ProcessInstanceModificationActivateInstruction implements ModelInterface, 
      */
     public function getAncestorElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['ancestorElementInstanceKey'];
+        return $this->container['ancestorElementInstanceKey'] ?? null;
     }
 
     /**

@@ -333,7 +333,7 @@ class AdvancedAgentDefinitionTypeFilter implements ModelInterface, ArrayAccess, 
      */
     public function getEq(): ?\Camunda\Orchestration\Api\Model\AgentDefinitionTypeEnum
     {
-        return $this->container['eq'];
+        return $this->container['eq'] ?? null;
     }
 
     /**
@@ -365,7 +365,7 @@ class AdvancedAgentDefinitionTypeFilter implements ModelInterface, ArrayAccess, 
      */
     public function getNeq(): ?\Camunda\Orchestration\Api\Model\AgentDefinitionTypeEnum
     {
-        return $this->container['neq'];
+        return $this->container['neq'] ?? null;
     }
 
     /**
@@ -397,7 +397,7 @@ class AdvancedAgentDefinitionTypeFilter implements ModelInterface, ArrayAccess, 
      */
     public function getExists(): ?bool
     {
-        return $this->container['exists'];
+        return $this->container['exists'] ?? null;
     }
 
     /**
@@ -429,7 +429,7 @@ class AdvancedAgentDefinitionTypeFilter implements ModelInterface, ArrayAccess, 
      */
     public function getIn(): ?array
     {
-        return $this->container['in'];
+        return $this->container['in'] ?? null;
     }
 
     /**
@@ -461,7 +461,7 @@ class AdvancedAgentDefinitionTypeFilter implements ModelInterface, ArrayAccess, 
      */
     public function getNotIn(): ?array
     {
-        return $this->container['notIn'];
+        return $this->container['notIn'] ?? null;
     }
 
     /**
@@ -493,7 +493,7 @@ class AdvancedAgentDefinitionTypeFilter implements ModelInterface, ArrayAccess, 
      */
     public function getLike(): ?string
     {
-        return $this->container['like'];
+        return $this->container['like'] ?? null;
     }
 
     /**

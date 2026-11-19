@@ -398,7 +398,7 @@ class ProcessInstanceCreationInstructionBase implements ModelInterface, ArrayAcc
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**
@@ -430,7 +430,7 @@ class ProcessInstanceCreationInstructionBase implements ModelInterface, ArrayAcc
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -459,7 +459,7 @@ class ProcessInstanceCreationInstructionBase implements ModelInterface, ArrayAcc
      */
     public function getOperationReference(): ?int
     {
-        return $this->container['operationReference'];
+        return $this->container['operationReference'] ?? null;
     }
 
     /**
@@ -495,7 +495,7 @@ class ProcessInstanceCreationInstructionBase implements ModelInterface, ArrayAcc
      */
     public function getStartInstructions(): ?array
     {
-        return $this->container['startInstructions'];
+        return $this->container['startInstructions'] ?? null;
     }
 
     /**
@@ -527,7 +527,7 @@ class ProcessInstanceCreationInstructionBase implements ModelInterface, ArrayAcc
      */
     public function getRuntimeInstructions(): ?array
     {
-        return $this->container['runtimeInstructions'];
+        return $this->container['runtimeInstructions'] ?? null;
     }
 
     /**
@@ -559,7 +559,7 @@ class ProcessInstanceCreationInstructionBase implements ModelInterface, ArrayAcc
      */
     public function getAwaitCompletion(): ?bool
     {
-        return $this->container['awaitCompletion'];
+        return $this->container['awaitCompletion'] ?? null;
     }
 
     /**
@@ -591,7 +591,7 @@ class ProcessInstanceCreationInstructionBase implements ModelInterface, ArrayAcc
      */
     public function getFetchVariables(): ?array
     {
-        return $this->container['fetchVariables'];
+        return $this->container['fetchVariables'] ?? null;
     }
 
     /**
@@ -623,7 +623,7 @@ class ProcessInstanceCreationInstructionBase implements ModelInterface, ArrayAcc
      */
     public function getRequestTimeout(): ?int
     {
-        return $this->container['requestTimeout'];
+        return $this->container['requestTimeout'] ?? null;
     }
 
     /**
@@ -655,7 +655,7 @@ class ProcessInstanceCreationInstructionBase implements ModelInterface, ArrayAcc
      */
     public function getTags(): ?array
     {
-        return $this->container['tags'];
+        return $this->container['tags'] ?? null;
     }
 
     /**
@@ -690,7 +690,7 @@ class ProcessInstanceCreationInstructionBase implements ModelInterface, ArrayAcc
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**

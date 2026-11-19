@@ -1088,7 +1088,7 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getUserTask(): ?\Camunda\Orchestration\Api\Model\UserTaskProperties
     {
-        return $this->container['userTask'];
+        return $this->container['userTask'] ?? null;
     }
 
     /**
@@ -1162,7 +1162,7 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -1201,7 +1201,7 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**
@@ -1272,7 +1272,7 @@ class ActivatedJobResult implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getJobLeaseToken(): ?\Camunda\Orchestration\Semantic\JobLeaseToken
     {
-        return $this->container['jobLeaseToken'];
+        return $this->container['jobLeaseToken'] ?? null;
     }
 
     /**

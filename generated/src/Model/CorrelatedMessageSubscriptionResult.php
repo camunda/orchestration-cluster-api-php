@@ -467,7 +467,7 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**
@@ -506,7 +506,7 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
      */
     public function getCorrelationKey(): ?string
     {
-        return $this->container['correlationKey'];
+        return $this->container['correlationKey'] ?? null;
     }
 
     /**
@@ -606,7 +606,7 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
      */
     public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -767,7 +767,7 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -835,7 +835,7 @@ class CorrelatedMessageSubscriptionResult implements ModelInterface, ArrayAccess
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**

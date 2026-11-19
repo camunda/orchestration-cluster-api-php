@@ -319,7 +319,7 @@ class JobResultUserTask implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDenied(): ?bool
     {
-        return $this->container['denied'];
+        return $this->container['denied'] ?? null;
     }
 
     /**
@@ -358,7 +358,7 @@ class JobResultUserTask implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDeniedReason(): ?string
     {
-        return $this->container['deniedReason'];
+        return $this->container['deniedReason'] ?? null;
     }
 
     /**
@@ -397,7 +397,7 @@ class JobResultUserTask implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getCorrections(): ?\Camunda\Orchestration\Api\Model\JobResultCorrections
     {
-        return $this->container['corrections'];
+        return $this->container['corrections'] ?? null;
     }
 
     /**
@@ -436,7 +436,7 @@ class JobResultUserTask implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getType(): ?string
     {
-        return $this->container['type'];
+        return $this->container['type'] ?? null;
     }
 
     /**

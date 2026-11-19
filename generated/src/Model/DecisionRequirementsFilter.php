@@ -354,7 +354,7 @@ class DecisionRequirementsFilter implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getDecisionRequirementsName(): ?string
     {
-        return $this->container['decisionRequirementsName'];
+        return $this->container['decisionRequirementsName'] ?? null;
     }
 
     /**
@@ -386,7 +386,7 @@ class DecisionRequirementsFilter implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getDecisionRequirementsId(): ?string
     {
-        return $this->container['decisionRequirementsId'];
+        return $this->container['decisionRequirementsId'] ?? null;
     }
 
     /**
@@ -418,7 +418,7 @@ class DecisionRequirementsFilter implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getDecisionRequirementsKey(): ?\Camunda\Orchestration\Semantic\DecisionRequirementsKey
     {
-        return $this->container['decisionRequirementsKey'];
+        return $this->container['decisionRequirementsKey'] ?? null;
     }
 
     /**
@@ -447,7 +447,7 @@ class DecisionRequirementsFilter implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getVersion(): ?int
     {
-        return $this->container['version'];
+        return $this->container['version'] ?? null;
     }
 
     /**
@@ -479,7 +479,7 @@ class DecisionRequirementsFilter implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -508,7 +508,7 @@ class DecisionRequirementsFilter implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getResourceName(): ?string
     {
-        return $this->container['resourceName'];
+        return $this->container['resourceName'] ?? null;
     }
 
     /**

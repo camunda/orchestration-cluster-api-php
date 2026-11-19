@@ -427,7 +427,7 @@ class ProcessInstanceModificationMoveInstruction implements ModelInterface, Arra
      */
     public function getVariableInstructions(): ?array
     {
-        return $this->container['variableInstructions'];
+        return $this->container['variableInstructions'] ?? null;
     }
 
     /**

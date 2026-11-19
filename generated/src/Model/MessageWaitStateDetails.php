@@ -384,7 +384,7 @@ class MessageWaitStateDetails implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getCorrelationKey(): ?string
     {
-        return $this->container['correlationKey'];
+        return $this->container['correlationKey'] ?? null;
     }
 
     /**

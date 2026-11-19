@@ -343,7 +343,7 @@ class ElementInstanceSearchQuery implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class ElementInstanceSearchQuery implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\ElementInstanceFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

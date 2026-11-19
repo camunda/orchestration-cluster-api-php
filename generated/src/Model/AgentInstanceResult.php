@@ -904,7 +904,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getProcessDefinitionVersionTag(): ?string
     {
-        return $this->container['processDefinitionVersionTag'];
+        return $this->container['processDefinitionVersionTag'] ?? null;
     }
 
     /**
@@ -1036,7 +1036,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getCompletionDate(): ?\DateTime
     {
-        return $this->container['completionDate'];
+        return $this->container['completionDate'] ?? null;
     }
 
     /**

@@ -343,7 +343,7 @@ class RoleSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class RoleSearchQueryRequest implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\RoleFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

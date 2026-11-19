@@ -437,7 +437,7 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getRuleId(): ?string
     {
-        return $this->container['ruleId'];
+        return $this->container['ruleId'] ?? null;
     }
 
     /**
@@ -476,7 +476,7 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getRuleIndex(): ?int
     {
-        return $this->container['ruleIndex'];
+        return $this->container['ruleIndex'] ?? null;
     }
 
     /**

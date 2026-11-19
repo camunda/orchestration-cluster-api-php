@@ -301,7 +301,7 @@ class CloudConfigurationResponse implements ModelInterface, ArrayAccess, JsonSer
      */
     public function getStage(): ?\Camunda\Orchestration\Api\Model\CloudStage
     {
-        return $this->container['stage'];
+        return $this->container['stage'] ?? null;
     }
 
     /**

@@ -393,7 +393,7 @@ class TopologyResponse implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getClusterId(): ?string
     {
-        return $this->container['clusterId'];
+        return $this->container['clusterId'] ?? null;
     }
 
     /**

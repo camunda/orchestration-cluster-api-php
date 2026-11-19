@@ -427,7 +427,7 @@ class ClusterVariableResultBase implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getTenantId(): ?string
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**

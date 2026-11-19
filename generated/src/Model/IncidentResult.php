@@ -751,7 +751,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -819,7 +819,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getJobKey(): ?\Camunda\Orchestration\Semantic\JobKey
     {
-        return $this->container['jobKey'];
+        return $this->container['jobKey'] ?? null;
     }
 
     /**

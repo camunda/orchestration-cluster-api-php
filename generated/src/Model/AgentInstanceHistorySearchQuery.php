@@ -343,7 +343,7 @@ class AgentInstanceHistorySearchQuery implements ModelInterface, ArrayAccess, Js
      */
     public function getSort(): ?array
     {
-        return $this->container['sort'];
+        return $this->container['sort'] ?? null;
     }
 
     /**
@@ -375,7 +375,7 @@ class AgentInstanceHistorySearchQuery implements ModelInterface, ArrayAccess, Js
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\AgentInstanceHistoryFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

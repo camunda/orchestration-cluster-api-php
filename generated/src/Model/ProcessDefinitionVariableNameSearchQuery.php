@@ -336,7 +336,7 @@ class ProcessDefinitionVariableNameSearchQuery implements ModelInterface, ArrayA
      */
     public function getFilter(): ?\Camunda\Orchestration\Api\Model\ProcessDefinitionVariableNameFilter
     {
-        return $this->container['filter'];
+        return $this->container['filter'] ?? null;
     }
 
     /**

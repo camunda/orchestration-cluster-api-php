@@ -404,7 +404,7 @@ class AgentInstanceToolCall implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getElementId(): ?\Camunda\Orchestration\Semantic\ElementId
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**
@@ -443,7 +443,7 @@ class AgentInstanceToolCall implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getArguments(): ?array
     {
-        return $this->container['arguments'];
+        return $this->container['arguments'] ?? null;
     }
 
     /**

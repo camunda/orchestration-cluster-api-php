@@ -385,7 +385,7 @@ class ProcessInstanceMigrationBatchOperationRequest implements ModelInterface, A
      */
     public function getOperationReference(): ?int
     {
-        return $this->container['operationReference'];
+        return $this->container['operationReference'] ?? null;
     }
 
     /**

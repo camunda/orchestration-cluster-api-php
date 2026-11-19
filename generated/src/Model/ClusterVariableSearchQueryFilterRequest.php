@@ -468,7 +468,7 @@ class ClusterVariableSearchQueryFilterRequest implements ModelInterface, ArrayAc
      */
     public function getIsTruncated(): ?bool
     {
-        return $this->container['isTruncated'];
+        return $this->container['isTruncated'] ?? null;
     }
 
     /**
@@ -500,7 +500,7 @@ class ClusterVariableSearchQueryFilterRequest implements ModelInterface, ArrayAc
      */
     public function getMetadata(): ?array
     {
-        return $this->container['metadata'];
+        return $this->container['metadata'] ?? null;
     }
 
     /**

@@ -394,7 +394,7 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getWorker(): ?string
     {
-        return $this->container['worker'];
+        return $this->container['worker'] ?? null;
     }
 
     /**
@@ -490,7 +490,7 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getFetchVariable(): ?array
     {
-        return $this->container['fetchVariable'];
+        return $this->container['fetchVariable'] ?? null;
     }
 
     /**
@@ -522,7 +522,7 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getRequestTimeout(): ?int
     {
-        return $this->container['requestTimeout'];
+        return $this->container['requestTimeout'] ?? null;
     }
 
     /**
@@ -554,7 +554,7 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getTenantIds(): ?array
     {
-        return $this->container['tenantIds'];
+        return $this->container['tenantIds'] ?? null;
     }
 
     /**
@@ -586,7 +586,7 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getTenantFilter(): ?\Camunda\Orchestration\Api\Model\TenantFilterEnum
     {
-        return $this->container['tenantFilter'];
+        return $this->container['tenantFilter'] ?? null;
     }
 
     /**
@@ -618,7 +618,7 @@ class JobActivationRequest implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getWithLease(): ?bool
     {
-        return $this->container['withLease'];
+        return $this->container['withLease'] ?? null;
     }
 
     /**

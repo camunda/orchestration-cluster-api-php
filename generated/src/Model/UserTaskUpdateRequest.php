@@ -304,7 +304,7 @@ class UserTaskUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getChangeset(): ?\Camunda\Orchestration\Api\Model\Changeset
     {
-        return $this->container['changeset'];
+        return $this->container['changeset'] ?? null;
     }
 
     /**
@@ -343,7 +343,7 @@ class UserTaskUpdateRequest implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getAction(): ?string
     {
-        return $this->container['action'];
+        return $this->container['action'] ?? null;
     }
 
     /**

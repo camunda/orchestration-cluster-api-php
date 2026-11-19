@@ -431,7 +431,7 @@ class ClusterBalanceResponse implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getRunningRebalance(): ?\Camunda\Orchestration\Api\Model\ClusterRunningRebalance
     {
-        return $this->container['runningRebalance'];
+        return $this->container['runningRebalance'] ?? null;
     }
 
     /**
@@ -470,7 +470,7 @@ class ClusterBalanceResponse implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getLastCompletedRebalance(): ?\Camunda\Orchestration\Api\Model\ClusterCompletedRebalance
     {
-        return $this->container['lastCompletedRebalance'];
+        return $this->container['lastCompletedRebalance'] ?? null;
     }
 
     /**

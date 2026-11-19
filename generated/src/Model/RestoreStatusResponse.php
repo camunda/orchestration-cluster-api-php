@@ -433,7 +433,7 @@ class RestoreStatusResponse implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getStartedAt(): ?\DateTime
     {
-        return $this->container['startedAt'];
+        return $this->container['startedAt'] ?? null;
     }
 
     /**

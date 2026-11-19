@@ -410,7 +410,7 @@ class CreateClusterVariableRequest implements ModelInterface, ArrayAccess, JsonS
      */
     public function getMetadata(): ?array
     {
-        return $this->container['metadata'];
+        return $this->container['metadata'] ?? null;
     }
 
     /**
@@ -445,7 +445,7 @@ class CreateClusterVariableRequest implements ModelInterface, ArrayAccess, JsonS
      */
     public function getKind(): ?\Camunda\Orchestration\Api\Model\ClusterVariableKindEnum
     {
-        return $this->container['kind'];
+        return $this->container['kind'] ?? null;
     }
 
     /**

@@ -424,7 +424,7 @@ class JobTimeSeriesStatisticsFilter implements ModelInterface, ArrayAccess, Json
      */
     public function getResolution(): ?string
     {
-        return $this->container['resolution'];
+        return $this->container['resolution'] ?? null;
     }
 
     /**
