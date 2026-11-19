@@ -32,7 +32,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * ProcessInstanceCreationInstructionTest Class Doc Comment
  *
- * @description Instructions for creating a process instance. The process definition can be specified either by id or by key.
+ * @description Instructions for creating a process instance. The process definition can be specified either by id, by id and version tag, or by key.
  * @package     Camunda\Orchestration\Api
  * @author      OpenAPI Generator team
  * @link        https://openapi-generator.tech

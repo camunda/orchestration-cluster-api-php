@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 **messageName** | **string** | The name of the message. |
 **partitionId** | **int** | The partition ID that correlated the message. |
 **processDefinitionId** | **string** | The process definition ID associated with this correlated message subscription. |
-**processDefinitionKey** | **string** | The process definition key associated with this correlated message subscription. |
+**processDefinitionKey** | **string** | The process definition key associated with this correlated message subscription. This field is not present for correlations to message subscriptions of a running process instance (catch, boundary and receive task events) written by version 8.8. |
 **processInstanceKey** | **string** | The process instance key associated with this correlated message subscription. |
 **rootProcessInstanceKey** | **string** | The key of the root process instance. The root process instance is the top-level ancestor in the process instance hierarchy. This field is only present for data belonging to process instance hierarchies created in version 8.9 or later. |
 **subscriptionKey** | **string** | The subscription key that received the message. |

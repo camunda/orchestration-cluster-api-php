@@ -339,7 +339,7 @@ class TenantSearchQuerySortRequest implements ModelInterface, ArrayAccess, JsonS
     /**
      * Sets field
      *
-     * @param string $field The field to sort by.
+     * @param string $field The field to sort by. `key` is deprecated and should not be used anymore.
      *
      * @return $this
      */

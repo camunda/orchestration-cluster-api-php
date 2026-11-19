@@ -93,10 +93,16 @@ class ProcessDefinitionApi
         'getStartProcessForm' => [
             'application/json',
         ],
+        'resumeProcessDefinitions' => [
+            'application/json',
+        ],
         'searchProcessDefinitionVariableNames' => [
             'application/json',
         ],
         'searchProcessDefinitions' => [
+            'application/json',
+        ],
+        'suspendProcessDefinitions' => [
             'application/json',
         ],
     ];
@@ -2930,6 +2936,460 @@ class ProcessDefinitionApi
     }
 
     /**
+     * Operation resumeProcessDefinitions
+     *
+     * Resume process definitions
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById $processDefinitionResumptionInstruction processDefinitionResumptionInstruction (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resumeProcessDefinitions'] to see the possible values for this operation
+     *
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws InvalidArgumentException
+     * @return \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionResult|\Camunda\Orchestration\Api\Model\ProblemDetail
+     */
+    public function resumeProcessDefinitions(
+        \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById $processDefinitionResumptionInstruction,
+        string $contentType = self::contentTypes['resumeProcessDefinitions'][0]
+    ): \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionResult|\Camunda\Orchestration\Api\Model\ProblemDetail
+    {
+        list($response) = $this->resumeProcessDefinitionsWithHttpInfo($processDefinitionResumptionInstruction, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation resumeProcessDefinitionsWithHttpInfo
+     *
+     * Resume process definitions
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById $processDefinitionResumptionInstruction (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resumeProcessDefinitions'] to see the possible values for this operation
+     *
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws InvalidArgumentException
+     * @return array{0: \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionResult|\Camunda\Orchestration\Api\Model\ProblemDetail, 1: int, 2: array<string, string[]>} [response data, HTTP status code, HTTP response headers]
+     */
+    public function resumeProcessDefinitionsWithHttpInfo(
+        \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById $processDefinitionResumptionInstruction,
+        string $contentType = self::contentTypes['resumeProcessDefinitions'][0]
+    ): array
+    {
+        $request = $this->resumeProcessDefinitionsRequest($processDefinitionResumptionInstruction, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            switch($statusCode) {
+                case 200:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionResult',
+                        $request,
+                        $response,
+                    );
+                case 400:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 401:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 403:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 404:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 409:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 500:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 503:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+            }
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            return $this->handleResponseWithDataType(
+                '\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionResult',
+                $request,
+                $response,
+            );
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionResult',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 400:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 401:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 403:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 404:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 409:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 500:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 503:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+            }
+        
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation resumeProcessDefinitionsAsync
+     *
+     * Resume process definitions
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById $processDefinitionResumptionInstruction (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resumeProcessDefinitions'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return PromiseInterface
+     */
+    public function resumeProcessDefinitionsAsync(
+        \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById $processDefinitionResumptionInstruction,
+        string $contentType = self::contentTypes['resumeProcessDefinitions'][0]
+    ): PromiseInterface
+    {
+        return $this->resumeProcessDefinitionsAsyncWithHttpInfo($processDefinitionResumptionInstruction, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation resumeProcessDefinitionsAsyncWithHttpInfo
+     *
+     * Resume process definitions
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById $processDefinitionResumptionInstruction (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resumeProcessDefinitions'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return PromiseInterface
+     */
+    public function resumeProcessDefinitionsAsyncWithHttpInfo(
+        \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById $processDefinitionResumptionInstruction,
+        string $contentType = self::contentTypes['resumeProcessDefinitions'][0]
+    ): PromiseInterface
+    {
+        $returnType = '\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionResult';
+        $request = $this->resumeProcessDefinitionsRequest($processDefinitionResumptionInstruction, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
+                    if (in_array($returnType, ['\SplFileObject', '\Psr\Http\Message\StreamInterface'])) {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    if (!$exception instanceof \GuzzleHttp\Exception\RequestException || $exception->getResponse() === null) {
+                        // Not a response-bearing HTTP failure (transport error, or an
+                        // ApiException raised by SDK middleware): propagate unchanged.
+                        throw $exception;
+                    }
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'resumeProcessDefinitions'
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById $processDefinitionResumptionInstruction (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['resumeProcessDefinitions'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function resumeProcessDefinitionsRequest(
+        \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById $processDefinitionResumptionInstruction,
+        string $contentType = self::contentTypes['resumeProcessDefinitions'][0]
+    ): Request
+    {
+        // verify the required parameter 'processDefinitionResumptionInstruction' is set
+        if ($processDefinitionResumptionInstruction === null || (is_array($processDefinitionResumptionInstruction) && count($processDefinitionResumptionInstruction) === 0)) {
+            throw new InvalidArgumentException(
+                'Missing the required parameter $processDefinitionResumptionInstruction when calling resumeProcessDefinitions'
+            );
+        }
+
+        $resourcePath = '/process-definitions/resumption';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/problem+json', ],
+            $contentType,
+            $multipart
+        );
+
+        // for model (json/xml)
+        if (isset($processDefinitionResumptionInstruction)) {
+            if (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the body
+                try {
+                    $httpBody = json_encode(ObjectSerializer::sanitizeForSerialization($processDefinitionResumptionInstruction), JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    throw new \InvalidArgumentException('json_encode error: ' . $e->getMessage(), 0, $e);
+                }
+            } else {
+                $httpBody = $processDefinitionResumptionInstruction;
+            }
+        } elseif (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
+                    foreach ($formParamValueItems as $formParamValueItem) {
+                        $multipartContents[] = [
+                            'name' => $formParamName,
+                            'contents' => $formParamValueItem
+                        ];
+                    }
+                }
+                // for HTTP post (form)
+                $httpBody = new \GuzzleHttp\Psr7\MultipartStream($multipartContents);
+
+            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the form parameters
+                try {
+                    $httpBody = json_encode($formParams, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    throw new \InvalidArgumentException('json_encode error: ' . $e->getMessage(), 0, $e);
+                }
+            } else {
+                // for HTTP post (form)
+                $httpBody = ObjectSerializer::buildQuery($formParams);
+            }
+        }
+
+        // this endpoint requires HTTP basic authentication
+        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
+        }
+
+        // this endpoint requires Bearer (JWT) authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'POST',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
      * Operation searchProcessDefinitionVariableNames
      *
      * Search process definition variable names
@@ -3681,6 +4141,460 @@ class ProcessDefinitionApi
                 }
             } else {
                 $httpBody = $processDefinitionSearchQuery;
+            }
+        } elseif (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
+                    foreach ($formParamValueItems as $formParamValueItem) {
+                        $multipartContents[] = [
+                            'name' => $formParamName,
+                            'contents' => $formParamValueItem
+                        ];
+                    }
+                }
+                // for HTTP post (form)
+                $httpBody = new \GuzzleHttp\Psr7\MultipartStream($multipartContents);
+
+            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the form parameters
+                try {
+                    $httpBody = json_encode($formParams, JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    throw new \InvalidArgumentException('json_encode error: ' . $e->getMessage(), 0, $e);
+                }
+            } else {
+                // for HTTP post (form)
+                $httpBody = ObjectSerializer::buildQuery($formParams);
+            }
+        }
+
+        // this endpoint requires HTTP basic authentication
+        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
+        }
+
+        // this endpoint requires Bearer (JWT) authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'POST',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation suspendProcessDefinitions
+     *
+     * Suspend process definitions
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById $processDefinitionSuspensionInstruction processDefinitionSuspensionInstruction (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['suspendProcessDefinitions'] to see the possible values for this operation
+     *
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws InvalidArgumentException
+     * @return \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionResult|\Camunda\Orchestration\Api\Model\ProblemDetail
+     */
+    public function suspendProcessDefinitions(
+        \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById $processDefinitionSuspensionInstruction,
+        string $contentType = self::contentTypes['suspendProcessDefinitions'][0]
+    ): \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionResult|\Camunda\Orchestration\Api\Model\ProblemDetail
+    {
+        list($response) = $this->suspendProcessDefinitionsWithHttpInfo($processDefinitionSuspensionInstruction, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation suspendProcessDefinitionsWithHttpInfo
+     *
+     * Suspend process definitions
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById $processDefinitionSuspensionInstruction (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['suspendProcessDefinitions'] to see the possible values for this operation
+     *
+     * @throws ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws InvalidArgumentException
+     * @return array{0: \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionResult|\Camunda\Orchestration\Api\Model\ProblemDetail, 1: int, 2: array<string, string[]>} [response data, HTTP status code, HTTP response headers]
+     */
+    public function suspendProcessDefinitionsWithHttpInfo(
+        \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById $processDefinitionSuspensionInstruction,
+        string $contentType = self::contentTypes['suspendProcessDefinitions'][0]
+    ): array
+    {
+        $request = $this->suspendProcessDefinitionsRequest($processDefinitionSuspensionInstruction, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            switch($statusCode) {
+                case 200:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionResult',
+                        $request,
+                        $response,
+                    );
+                case 400:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 401:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 403:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 404:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 409:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 500:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+                case 503:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
+            }
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            return $this->handleResponseWithDataType(
+                '\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionResult',
+                $request,
+                $response,
+            );
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionResult',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 400:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 401:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 403:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 404:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 409:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 500:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 503:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+            }
+        
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation suspendProcessDefinitionsAsync
+     *
+     * Suspend process definitions
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById $processDefinitionSuspensionInstruction (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['suspendProcessDefinitions'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return PromiseInterface
+     */
+    public function suspendProcessDefinitionsAsync(
+        \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById $processDefinitionSuspensionInstruction,
+        string $contentType = self::contentTypes['suspendProcessDefinitions'][0]
+    ): PromiseInterface
+    {
+        return $this->suspendProcessDefinitionsAsyncWithHttpInfo($processDefinitionSuspensionInstruction, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation suspendProcessDefinitionsAsyncWithHttpInfo
+     *
+     * Suspend process definitions
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById $processDefinitionSuspensionInstruction (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['suspendProcessDefinitions'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return PromiseInterface
+     */
+    public function suspendProcessDefinitionsAsyncWithHttpInfo(
+        \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById $processDefinitionSuspensionInstruction,
+        string $contentType = self::contentTypes['suspendProcessDefinitions'][0]
+    ): PromiseInterface
+    {
+        $returnType = '\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionResult';
+        $request = $this->suspendProcessDefinitionsRequest($processDefinitionSuspensionInstruction, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    $statusCode = $response->getStatusCode();
+                    if ($statusCode < 200 || $statusCode > 299) {
+                        $responseBody = (string) $response->getBody();
+                        $apiException = new ApiException(
+                            sprintf(
+                                '[%d] Error connecting to the API',
+                                $statusCode
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $responseBody
+                        );
+                        try {
+                            $apiException->setResponseObject(
+                                ObjectSerializer::deserialize(
+                                    json_decode($responseBody),
+                                    '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                                    []
+                                )
+                            );
+                        } catch (\Throwable) {
+                            // Non-problem error bodies stay available via getResponseBody().
+                        }
+                        throw $apiException;
+                    }
+
+                    if (in_array($returnType, ['\SplFileObject', '\Psr\Http\Message\StreamInterface'])) {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    if (!$exception instanceof \GuzzleHttp\Exception\RequestException || $exception->getResponse() === null) {
+                        // Not a response-bearing HTTP failure (transport error, or an
+                        // ApiException raised by SDK middleware): propagate unchanged.
+                        throw $exception;
+                    }
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'suspendProcessDefinitions'
+     *
+     * @param  \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById $processDefinitionSuspensionInstruction (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['suspendProcessDefinitions'] to see the possible values for this operation
+     *
+     * @throws InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function suspendProcessDefinitionsRequest(
+        \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById $processDefinitionSuspensionInstruction,
+        string $contentType = self::contentTypes['suspendProcessDefinitions'][0]
+    ): Request
+    {
+        // verify the required parameter 'processDefinitionSuspensionInstruction' is set
+        if ($processDefinitionSuspensionInstruction === null || (is_array($processDefinitionSuspensionInstruction) && count($processDefinitionSuspensionInstruction) === 0)) {
+            throw new InvalidArgumentException(
+                'Missing the required parameter $processDefinitionSuspensionInstruction when calling suspendProcessDefinitions'
+            );
+        }
+
+        $resourcePath = '/process-definitions/suspension';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/problem+json', ],
+            $contentType,
+            $multipart
+        );
+
+        // for model (json/xml)
+        if (isset($processDefinitionSuspensionInstruction)) {
+            if (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the body
+                try {
+                    $httpBody = json_encode(ObjectSerializer::sanitizeForSerialization($processDefinitionSuspensionInstruction), JSON_THROW_ON_ERROR);
+                } catch (\JsonException $e) {
+                    throw new \InvalidArgumentException('json_encode error: ' . $e->getMessage(), 0, $e);
+                }
+            } else {
+                $httpBody = $processDefinitionSuspensionInstruction;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {

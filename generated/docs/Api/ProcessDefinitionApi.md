@@ -11,8 +11,10 @@ All URIs are relative to http://localhost:8080/v2, except if the operation defin
 | [**getProcessDefinitionStatistics()**](ProcessDefinitionApi.md#getProcessDefinitionStatistics) | **POST** /process-definitions/{processDefinitionKey}/statistics/element-instances | Get process definition statistics |
 | [**getProcessDefinitionXML()**](ProcessDefinitionApi.md#getProcessDefinitionXML) | **GET** /process-definitions/{processDefinitionKey}/xml | Get process definition XML |
 | [**getStartProcessForm()**](ProcessDefinitionApi.md#getStartProcessForm) | **GET** /process-definitions/{processDefinitionKey}/form | Get process start form |
+| [**resumeProcessDefinitions()**](ProcessDefinitionApi.md#resumeProcessDefinitions) | **POST** /process-definitions/resumption | Resume process definitions |
 | [**searchProcessDefinitionVariableNames()**](ProcessDefinitionApi.md#searchProcessDefinitionVariableNames) | **POST** /process-definitions/{processDefinitionKey}/variable-names/search | Search process definition variable names |
 | [**searchProcessDefinitions()**](ProcessDefinitionApi.md#searchProcessDefinitions) | **POST** /process-definitions/search | Search process definitions |
+| [**suspendProcessDefinitions()**](ProcessDefinitionApi.md#suspendProcessDefinitions) | **POST** /process-definitions/suspension | Suspend process definitions |
 
 
 ## `getProcessDefinition()`
@@ -472,6 +474,71 @@ try {
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `resumeProcessDefinitions()`
+
+```php
+resumeProcessDefinitions($processDefinitionResumptionInstruction): \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionResult
+```
+
+Resume process definitions
+
+Resumes suspended process definitions so that process instances can be created from them again. The definition is selected either by `processDefinitionKey`, which identifies exactly one version, or by `processDefinitionId` with an optional `processDefinitionVersion` and `tenantId`. Without a version, all versions of the process definition ID are resumed. Set `includeProcessInstances` to also resume the suspended process instances of the affected versions; the instances are changed by a batch operation, returned as `batchOperationKey`.
+
+### Example
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+// Configure HTTP basic authorization: basicAuth
+$config = Camunda\Orchestration\Api\Configuration::getDefaultConfiguration()
+              ->setUsername('YOUR_USERNAME')
+              ->setPassword('YOUR_PASSWORD');
+
+// Configure Bearer (JWT) authorization: bearerAuth
+$config = Camunda\Orchestration\Api\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+
+$apiInstance = new Camunda\Orchestration\Api\Api\ProcessDefinitionApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client(),
+    $config
+);
+$processDefinitionResumptionInstruction = new \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey(); // \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstruction
+
+try {
+    $result = $apiInstance->resumeProcessDefinitions($processDefinitionResumptionInstruction);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ProcessDefinitionApi->resumeProcessDefinitions: ', $e->getMessage(), PHP_EOL;
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **processDefinitionResumptionInstruction** | [**\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstruction**](../Model/ProcessDefinitionResumptionInstruction.md)|  | |
+
+### Return type
+
+[**\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionResult**](../Model/ProcessDefinitionResumptionResult.md)
+
+### Authorization
+
+[basicAuth](../../README.md#basicAuth), [bearerAuth](../../README.md#bearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`, `application/problem+json`
+
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
+[[Back to README]](../../README.md)
+
 ## `searchProcessDefinitionVariableNames()`
 
 ```php
@@ -590,6 +657,71 @@ try {
 ### Return type
 
 [**\Camunda\Orchestration\Api\Model\ProcessDefinitionSearchQueryResult**](../Model/ProcessDefinitionSearchQueryResult.md)
+
+### Authorization
+
+[basicAuth](../../README.md#basicAuth), [bearerAuth](../../README.md#bearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`, `application/problem+json`
+
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
+[[Back to README]](../../README.md)
+
+## `suspendProcessDefinitions()`
+
+```php
+suspendProcessDefinitions($processDefinitionSuspensionInstruction): \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionResult
+```
+
+Suspend process definitions
+
+Suspends process definitions so that no new process instances can be created from them. The definition is selected either by `processDefinitionKey`, which identifies exactly one version, or by `processDefinitionId` with an optional `processDefinitionVersion` and `tenantId`. Without a version, all versions of the process definition ID are suspended. Set `includeProcessInstances` to also suspend the running process instances of the affected versions; the instances are changed by a batch operation, returned as `batchOperationKey`.
+
+### Example
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+// Configure HTTP basic authorization: basicAuth
+$config = Camunda\Orchestration\Api\Configuration::getDefaultConfiguration()
+              ->setUsername('YOUR_USERNAME')
+              ->setPassword('YOUR_PASSWORD');
+
+// Configure Bearer (JWT) authorization: bearerAuth
+$config = Camunda\Orchestration\Api\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+
+$apiInstance = new Camunda\Orchestration\Api\Api\ProcessDefinitionApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client(),
+    $config
+);
+$processDefinitionSuspensionInstruction = new \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey(); // \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstruction
+
+try {
+    $result = $apiInstance->suspendProcessDefinitions($processDefinitionSuspensionInstruction);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ProcessDefinitionApi->suspendProcessDefinitions: ', $e->getMessage(), PHP_EOL;
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **processDefinitionSuspensionInstruction** | [**\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstruction**](../Model/ProcessDefinitionSuspensionInstruction.md)|  | |
+
+### Return type
+
+[**\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionResult**](../Model/ProcessDefinitionSuspensionResult.md)
 
 ### Authorization
 

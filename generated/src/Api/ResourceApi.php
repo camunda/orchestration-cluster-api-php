@@ -605,6 +605,12 @@ class ResourceApi
                         $request,
                         $response,
                     );
+                case 409:
+                    return $this->handleResponseWithDataType(
+                        '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                        $request,
+                        $response,
+                    );
                 case 500:
                     return $this->handleResponseWithDataType(
                         '\Camunda\Orchestration\Api\Model\ProblemDetail',
@@ -664,6 +670,18 @@ class ResourceApi
                     }
                     throw $e;
                 case 404:
+                    try {
+                        $data = ObjectSerializer::deserialize(
+                            $e->getResponseBody(),
+                            '\Camunda\Orchestration\Api\Model\ProblemDetail',
+                            $e->getResponseHeaders()
+                        );
+                        $e->setResponseObject($data);
+                    } catch (\Throwable) {
+                        // Body does not match the declared model: keep the original ApiException.
+                    }
+                    throw $e;
+                case 409:
                     try {
                         $data = ObjectSerializer::deserialize(
                             $e->getResponseBody(),

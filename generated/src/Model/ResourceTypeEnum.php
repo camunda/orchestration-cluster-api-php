@@ -67,6 +67,8 @@ enum ResourceTypeEnum: string
 
     case MESSAGE = 'MESSAGE';
 
+    case PROBE = 'PROBE';
+
     case PROCESS_DEFINITION = 'PROCESS_DEFINITION';
 
     case RESOURCE = 'RESOURCE';

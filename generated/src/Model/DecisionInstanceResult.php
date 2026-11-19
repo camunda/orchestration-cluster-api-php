@@ -75,6 +75,7 @@ class DecisionInstanceResult implements ModelInterface, ArrayAccess, JsonSeriali
         'rootDecisionDefinitionKey' => '\Camunda\Orchestration\Semantic\DecisionDefinitionKey',
         'rootProcessInstanceKey' => '\Camunda\Orchestration\Semantic\ProcessInstanceKey',
         'state' => '\Camunda\Orchestration\Api\Model\DecisionInstanceStateEnum',
+        'storageOrdinal' => 'int',
         'tenantId' => '\Camunda\Orchestration\Semantic\TenantId'
     ];
 
@@ -101,6 +102,7 @@ class DecisionInstanceResult implements ModelInterface, ArrayAccess, JsonSeriali
         'rootDecisionDefinitionKey' => null,
         'rootProcessInstanceKey' => null,
         'state' => null,
+        'storageOrdinal' => 'int32',
         'tenantId' => 'TenantId'
     ];
 
@@ -127,6 +129,7 @@ class DecisionInstanceResult implements ModelInterface, ArrayAccess, JsonSeriali
         'rootDecisionDefinitionKey' => false,
         'rootProcessInstanceKey' => true,
         'state' => false,
+        'storageOrdinal' => true,
         'tenantId' => false
     ];
 
@@ -246,6 +249,7 @@ class DecisionInstanceResult implements ModelInterface, ArrayAccess, JsonSeriali
         'rootDecisionDefinitionKey' => 'rootDecisionDefinitionKey',
         'rootProcessInstanceKey' => 'rootProcessInstanceKey',
         'state' => 'state',
+        'storageOrdinal' => 'storageOrdinal',
         'tenantId' => 'tenantId'
     ];
 
@@ -272,6 +276,7 @@ class DecisionInstanceResult implements ModelInterface, ArrayAccess, JsonSeriali
         'rootDecisionDefinitionKey' => 'setRootDecisionDefinitionKey',
         'rootProcessInstanceKey' => 'setRootProcessInstanceKey',
         'state' => 'setState',
+        'storageOrdinal' => 'setStorageOrdinal',
         'tenantId' => 'setTenantId'
     ];
 
@@ -298,6 +303,7 @@ class DecisionInstanceResult implements ModelInterface, ArrayAccess, JsonSeriali
         'rootDecisionDefinitionKey' => 'getRootDecisionDefinitionKey',
         'rootProcessInstanceKey' => 'getRootProcessInstanceKey',
         'state' => 'getState',
+        'storageOrdinal' => 'getStorageOrdinal',
         'tenantId' => 'getTenantId'
     ];
 
@@ -365,6 +371,7 @@ class DecisionInstanceResult implements ModelInterface, ArrayAccess, JsonSeriali
         $this->setIfExists('rootDecisionDefinitionKey', $data ?? [], null);
         $this->setIfExists('rootProcessInstanceKey', $data ?? [], null);
         $this->setIfExists('state', $data ?? [], null);
+        $this->setIfExists('storageOrdinal', $data ?? [], null);
         $this->setIfExists('tenantId', $data ?? [], null);
     }
 
@@ -484,6 +491,9 @@ class DecisionInstanceResult implements ModelInterface, ArrayAccess, JsonSeriali
         }
         if ($this->container['state'] === null) {
             $invalidProperties[] = "'state' can't be null";
+        }
+        if ($this->container['storageOrdinal'] === null && !$this->isNullableSetToNull('storageOrdinal')) {
+            $invalidProperties[] = "'storageOrdinal' is required";
         }
         if ($this->container['tenantId'] === null) {
             $invalidProperties[] = "'tenantId' can't be null";
@@ -1028,6 +1038,45 @@ class DecisionInstanceResult implements ModelInterface, ArrayAccess, JsonSeriali
             unset($this->openAPIFieldsSet['state']);
         } else {
             $this->openAPIFieldsSet['state'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets storageOrdinal
+     *
+     * @return int|null
+     */
+    public function getStorageOrdinal(): ?int
+    {
+        return $this->container['storageOrdinal'];
+    }
+
+    /**
+     * Sets storageOrdinal
+     *
+     * @param int|null $storageOrdinal The storage ordinal this decision instance's data belongs to. This is `null` for data exported before storage ordinals were introduced in version 8.11.
+     *
+     * @return $this
+     */
+    public function setStorageOrdinal(?int $storageOrdinal): static
+    {
+        if (is_null($storageOrdinal)) {
+            array_push($this->openAPINullablesSetToNull, 'storageOrdinal');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('storageOrdinal', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
+        $this->container['storageOrdinal'] = $storageOrdinal;
+        if ($storageOrdinal === null) {
+            unset($this->openAPIFieldsSet['storageOrdinal']);
+        } else {
+            $this->openAPIFieldsSet['storageOrdinal'] = true;
         }
 
         return $this;

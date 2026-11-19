@@ -222,6 +222,15 @@ class UserTaskResultTest extends TestCase
     }
 
     /**
+     * Test attribute "isSuspended"
+     */
+    public function testPropertyIsSuspended()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
      * Test attribute "userTaskKey"
      */
     public function testPropertyUserTaskKey()
