@@ -453,7 +453,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getUsername(): ?\Camunda\Orchestration\Semantic\Username
     {
-        return $this->container['username'];
+        return $this->container['username'] ?? null;
     }
 
     /**
