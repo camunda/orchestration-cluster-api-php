@@ -437,6 +437,11 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
             throw new InvalidArgumentException('non-nullable isAnonymous cannot be null');
         }
         $this->container['isAnonymous'] = $isAnonymous;
+        if ($isAnonymous === null) {
+            unset($this->openAPIFieldsSet['isAnonymous']);
+        } else {
+            $this->openAPIFieldsSet['isAnonymous'] = true;
+        }
 
         return $this;
     }
