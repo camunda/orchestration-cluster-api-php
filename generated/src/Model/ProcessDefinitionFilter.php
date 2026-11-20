@@ -408,7 +408,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getName(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['name'];
+        return $this->container['name'] ?? null;
     }
 
     /**
@@ -440,7 +440,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getIsLatestVersion(): ?bool
     {
-        return $this->container['isLatestVersion'];
+        return $this->container['isLatestVersion'] ?? null;
     }
 
     /**
@@ -472,7 +472,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getResourceName(): ?string
     {
-        return $this->container['resourceName'];
+        return $this->container['resourceName'] ?? null;
     }
 
     /**
@@ -504,7 +504,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getVersion(): ?int
     {
-        return $this->container['version'];
+        return $this->container['version'] ?? null;
     }
 
     /**
@@ -536,7 +536,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getVersionTag(): ?string
     {
-        return $this->container['versionTag'];
+        return $this->container['versionTag'] ?? null;
     }
 
     /**
@@ -568,7 +568,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getProcessDefinitionId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -600,7 +600,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -629,7 +629,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -658,7 +658,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getHasStartForm(): ?bool
     {
-        return $this->container['hasStartForm'];
+        return $this->container['hasStartForm'] ?? null;
     }
 
     /**
@@ -690,7 +690,7 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getState(): ?string
     {
-        return $this->container['state'];
+        return $this->container['state'] ?? null;
     }
 
     /**
@@ -768,6 +768,24 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -782,6 +800,15 @@ class ProcessDefinitionFilter implements ModelInterface, ArrayAccess, JsonSerial
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

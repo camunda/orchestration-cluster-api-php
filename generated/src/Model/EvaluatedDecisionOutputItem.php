@@ -341,7 +341,7 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getOutputId(): string
     {
-        return $this->container['outputId'];
+        return $this->container['outputId'] ?? null;
     }
 
     /**
@@ -373,7 +373,7 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getOutputName(): string
     {
-        return $this->container['outputName'];
+        return $this->container['outputName'] ?? null;
     }
 
     /**
@@ -405,7 +405,7 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getOutputValue(): string
     {
-        return $this->container['outputValue'];
+        return $this->container['outputValue'] ?? null;
     }
 
     /**
@@ -437,7 +437,7 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getRuleId(): ?string
     {
-        return $this->container['ruleId'];
+        return $this->container['ruleId'] ?? null;
     }
 
     /**
@@ -476,7 +476,7 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getRuleIndex(): ?int
     {
-        return $this->container['ruleIndex'];
+        return $this->container['ruleIndex'] ?? null;
     }
 
     /**
@@ -551,6 +551,24 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -565,6 +583,15 @@ class EvaluatedDecisionOutputItem implements ModelInterface, ArrayAccess, JsonSe
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

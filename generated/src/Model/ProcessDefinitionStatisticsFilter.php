@@ -442,7 +442,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getStartDate(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['startDate'];
+        return $this->container['startDate'] ?? null;
     }
 
     /**
@@ -474,7 +474,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getEndDate(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['endDate'];
+        return $this->container['endDate'] ?? null;
     }
 
     /**
@@ -506,7 +506,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getState(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceStateFilter|null
     {
-        return $this->container['state'];
+        return $this->container['state'] ?? null;
     }
 
     /**
@@ -538,7 +538,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getHasIncident(): ?bool
     {
-        return $this->container['hasIncident'];
+        return $this->container['hasIncident'] ?? null;
     }
 
     /**
@@ -570,7 +570,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getSuspendedDate(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['suspendedDate'];
+        return $this->container['suspendedDate'] ?? null;
     }
 
     /**
@@ -602,7 +602,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getTenantId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -634,7 +634,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**
@@ -666,7 +666,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -698,7 +698,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getParentProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
-        return $this->container['parentProcessInstanceKey'];
+        return $this->container['parentProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -730,7 +730,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getParentElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
-        return $this->container['parentElementInstanceKey'];
+        return $this->container['parentElementInstanceKey'] ?? null;
     }
 
     /**
@@ -763,7 +763,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getBatchOperationId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['batchOperationId'];
+        return $this->container['batchOperationId'] ?? null;
     }
 
     /**
@@ -796,7 +796,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getBatchOperationKey(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['batchOperationKey'];
+        return $this->container['batchOperationKey'] ?? null;
     }
 
     /**
@@ -828,7 +828,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getErrorMessage(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['errorMessage'];
+        return $this->container['errorMessage'] ?? null;
     }
 
     /**
@@ -860,7 +860,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getHasRetriesLeft(): ?bool
     {
-        return $this->container['hasRetriesLeft'];
+        return $this->container['hasRetriesLeft'] ?? null;
     }
 
     /**
@@ -892,7 +892,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getElementInstanceState(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null
     {
-        return $this->container['elementInstanceState'];
+        return $this->container['elementInstanceState'] ?? null;
     }
 
     /**
@@ -924,7 +924,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getElementId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**
@@ -956,7 +956,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getHasElementInstanceIncident(): ?bool
     {
-        return $this->container['hasElementInstanceIncident'];
+        return $this->container['hasElementInstanceIncident'] ?? null;
     }
 
     /**
@@ -988,7 +988,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getIncidentErrorHashCode(): int|\Camunda\Orchestration\Api\Model\AdvancedIntegerFilter|null
     {
-        return $this->container['incidentErrorHashCode'];
+        return $this->container['incidentErrorHashCode'] ?? null;
     }
 
     /**
@@ -1020,7 +1020,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getTags(): ?array
     {
-        return $this->container['tags'];
+        return $this->container['tags'] ?? null;
     }
 
     /**
@@ -1055,7 +1055,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getBusinessId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**
@@ -1087,7 +1087,7 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
      */
     public function getOr(): ?array
     {
-        return $this->container['or'];
+        return $this->container['or'] ?? null;
     }
 
     /**
@@ -1155,6 +1155,24 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -1169,6 +1187,15 @@ class ProcessDefinitionStatisticsFilter implements ModelInterface, ArrayAccess, 
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

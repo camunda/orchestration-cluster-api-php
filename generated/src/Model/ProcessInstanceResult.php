@@ -512,7 +512,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getProcessDefinitionId(): \Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -541,7 +541,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getProcessDefinitionName(): ?string
     {
-        return $this->container['processDefinitionName'];
+        return $this->container['processDefinitionName'] ?? null;
     }
 
     /**
@@ -580,7 +580,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getProcessDefinitionVersion(): int
     {
-        return $this->container['processDefinitionVersion'];
+        return $this->container['processDefinitionVersion'] ?? null;
     }
 
     /**
@@ -612,7 +612,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getProcessDefinitionVersionTag(): ?string
     {
-        return $this->container['processDefinitionVersionTag'];
+        return $this->container['processDefinitionVersionTag'] ?? null;
     }
 
     /**
@@ -651,7 +651,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getStartDate(): \DateTime
     {
-        return $this->container['startDate'];
+        return $this->container['startDate'] ?? null;
     }
 
     /**
@@ -683,7 +683,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getEndDate(): ?\DateTime
     {
-        return $this->container['endDate'];
+        return $this->container['endDate'] ?? null;
     }
 
     /**
@@ -722,7 +722,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getState(): \Camunda\Orchestration\Api\Model\ProcessInstanceStateEnum
     {
-        return $this->container['state'];
+        return $this->container['state'] ?? null;
     }
 
     /**
@@ -754,7 +754,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getSuspendedDate(): ?\DateTime
     {
-        return $this->container['suspendedDate'];
+        return $this->container['suspendedDate'] ?? null;
     }
 
     /**
@@ -793,7 +793,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getHasIncident(): bool
     {
-        return $this->container['hasIncident'];
+        return $this->container['hasIncident'] ?? null;
     }
 
     /**
@@ -825,7 +825,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getTenantId(): \Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -854,7 +854,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getProcessInstanceKey(): \Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -883,7 +883,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getProcessDefinitionKey(): \Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -912,7 +912,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getParentProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['parentProcessInstanceKey'];
+        return $this->container['parentProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -951,7 +951,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getParentElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['parentElementInstanceKey'];
+        return $this->container['parentElementInstanceKey'] ?? null;
     }
 
     /**
@@ -990,7 +990,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -1029,7 +1029,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getTags(): array
     {
-        return $this->container['tags'];
+        return $this->container['tags'] ?? null;
     }
 
     /**
@@ -1064,7 +1064,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**
@@ -1103,7 +1103,7 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getStorageOrdinal(): ?int
     {
-        return $this->container['storageOrdinal'];
+        return $this->container['storageOrdinal'] ?? null;
     }
 
     /**
@@ -1178,6 +1178,24 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -1192,6 +1210,15 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

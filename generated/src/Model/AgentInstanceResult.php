@@ -509,7 +509,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getAgentInstanceKey(): \Camunda\Orchestration\Semantic\AgentInstanceKey
     {
-        return $this->container['agentInstanceKey'];
+        return $this->container['agentInstanceKey'] ?? null;
     }
 
     /**
@@ -538,7 +538,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getAgentDefinitionKey(): \Camunda\Orchestration\Semantic\AgentDefinitionKey
     {
-        return $this->container['agentDefinitionKey'];
+        return $this->container['agentDefinitionKey'] ?? null;
     }
 
     /**
@@ -567,7 +567,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getStatus(): \Camunda\Orchestration\Api\Model\AgentInstanceStatusEnum
     {
-        return $this->container['status'];
+        return $this->container['status'] ?? null;
     }
 
     /**
@@ -599,7 +599,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getDefinition(): \Camunda\Orchestration\Api\Model\AgentInstanceDefinitionResult
     {
-        return $this->container['definition'];
+        return $this->container['definition'] ?? null;
     }
 
     /**
@@ -631,7 +631,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getMetrics(): \Camunda\Orchestration\Api\Model\AgentInstanceMetrics
     {
-        return $this->container['metrics'];
+        return $this->container['metrics'] ?? null;
     }
 
     /**
@@ -663,7 +663,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getLimits(): \Camunda\Orchestration\Api\Model\AgentInstanceLimits
     {
-        return $this->container['limits'];
+        return $this->container['limits'] ?? null;
     }
 
     /**
@@ -695,7 +695,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getTools(): array
     {
-        return $this->container['tools'];
+        return $this->container['tools'] ?? null;
     }
 
     /**
@@ -727,7 +727,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getElementId(): \Camunda\Orchestration\Semantic\ElementId
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**
@@ -756,7 +756,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getProcessInstanceKey(): \Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -785,7 +785,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getRootProcessInstanceKey(): \Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -814,7 +814,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getProcessDefinitionKey(): \Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -843,7 +843,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getProcessDefinitionId(): \Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -872,7 +872,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getProcessDefinitionVersion(): int
     {
-        return $this->container['processDefinitionVersion'];
+        return $this->container['processDefinitionVersion'] ?? null;
     }
 
     /**
@@ -904,7 +904,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getProcessDefinitionVersionTag(): ?string
     {
-        return $this->container['processDefinitionVersionTag'];
+        return $this->container['processDefinitionVersionTag'] ?? null;
     }
 
     /**
@@ -943,7 +943,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getTenantId(): \Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -972,7 +972,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getCreationDate(): \DateTime
     {
-        return $this->container['creationDate'];
+        return $this->container['creationDate'] ?? null;
     }
 
     /**
@@ -1004,7 +1004,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getLastUpdatedDate(): \DateTime
     {
-        return $this->container['lastUpdatedDate'];
+        return $this->container['lastUpdatedDate'] ?? null;
     }
 
     /**
@@ -1036,7 +1036,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getCompletionDate(): ?\DateTime
     {
-        return $this->container['completionDate'];
+        return $this->container['completionDate'] ?? null;
     }
 
     /**
@@ -1075,7 +1075,7 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getElementInstanceKeys(): array
     {
-        return $this->container['elementInstanceKeys'];
+        return $this->container['elementInstanceKeys'] ?? null;
     }
 
     /**
@@ -1143,6 +1143,24 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -1157,6 +1175,15 @@ class AgentInstanceResult implements ModelInterface, ArrayAccess, JsonSerializab
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

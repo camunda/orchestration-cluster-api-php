@@ -331,7 +331,7 @@ class ClusterRestorePartitionRestoreOperation implements ModelInterface, ArrayAc
      */
     public function getOperation(): string
     {
-        return $this->container['operation'];
+        return $this->container['operation'] ?? null;
     }
 
     /**
@@ -363,7 +363,7 @@ class ClusterRestorePartitionRestoreOperation implements ModelInterface, ArrayAc
      */
     public function getBrokerId(): string
     {
-        return $this->container['brokerId'];
+        return $this->container['brokerId'] ?? null;
     }
 
     /**
@@ -395,7 +395,7 @@ class ClusterRestorePartitionRestoreOperation implements ModelInterface, ArrayAc
      */
     public function getPartitionId(): int
     {
-        return $this->container['partitionId'];
+        return $this->container['partitionId'] ?? null;
     }
 
     /**
@@ -427,7 +427,7 @@ class ClusterRestorePartitionRestoreOperation implements ModelInterface, ArrayAc
      */
     public function getBackupIds(): array
     {
-        return $this->container['backupIds'];
+        return $this->container['backupIds'] ?? null;
     }
 
     /**
@@ -495,6 +495,24 @@ class ClusterRestorePartitionRestoreOperation implements ModelInterface, ArrayAc
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -509,6 +527,15 @@ class ClusterRestorePartitionRestoreOperation implements ModelInterface, ArrayAc
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

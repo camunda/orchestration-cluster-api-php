@@ -378,7 +378,7 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getContentType(): string
     {
-        return $this->container['contentType'];
+        return $this->container['contentType'] ?? null;
     }
 
     /**
@@ -410,7 +410,7 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getFileName(): string
     {
-        return $this->container['fileName'];
+        return $this->container['fileName'] ?? null;
     }
 
     /**
@@ -442,7 +442,7 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getExpiresAt(): ?\DateTime
     {
-        return $this->container['expiresAt'];
+        return $this->container['expiresAt'] ?? null;
     }
 
     /**
@@ -481,7 +481,7 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getSize(): int
     {
-        return $this->container['size'];
+        return $this->container['size'] ?? null;
     }
 
     /**
@@ -513,7 +513,7 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -552,7 +552,7 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -591,7 +591,7 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
      */
     public function getCustomProperties(): array
     {
-        return $this->container['customProperties'];
+        return $this->container['customProperties'] ?? null;
     }
 
     /**
@@ -659,6 +659,24 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -673,6 +691,15 @@ class DocumentMetadataResponse implements ModelInterface, ArrayAccess, JsonSeria
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

@@ -369,7 +369,7 @@ class AuthorizationResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getOwnerId(): string
     {
-        return $this->container['ownerId'];
+        return $this->container['ownerId'] ?? null;
     }
 
     /**
@@ -401,7 +401,7 @@ class AuthorizationResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getOwnerType(): \Camunda\Orchestration\Api\Model\OwnerTypeEnum
     {
-        return $this->container['ownerType'];
+        return $this->container['ownerType'] ?? null;
     }
 
     /**
@@ -433,7 +433,7 @@ class AuthorizationResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getResourceType(): \Camunda\Orchestration\Api\Model\ResourceTypeEnum
     {
-        return $this->container['resourceType'];
+        return $this->container['resourceType'] ?? null;
     }
 
     /**
@@ -465,7 +465,7 @@ class AuthorizationResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getResourceId(): ?string
     {
-        return $this->container['resourceId'];
+        return $this->container['resourceId'] ?? null;
     }
 
     /**
@@ -504,7 +504,7 @@ class AuthorizationResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getResourcePropertyName(): ?string
     {
-        return $this->container['resourcePropertyName'];
+        return $this->container['resourcePropertyName'] ?? null;
     }
 
     /**
@@ -543,7 +543,7 @@ class AuthorizationResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getPermissionTypes(): array
     {
-        return $this->container['permissionTypes'];
+        return $this->container['permissionTypes'] ?? null;
     }
 
     /**
@@ -575,7 +575,7 @@ class AuthorizationResult implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getAuthorizationKey(): \Camunda\Orchestration\Semantic\AuthorizationKey
     {
-        return $this->container['authorizationKey'];
+        return $this->container['authorizationKey'] ?? null;
     }
 
     /**
@@ -640,6 +640,24 @@ class AuthorizationResult implements ModelInterface, ArrayAccess, JsonSerializab
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -654,6 +672,15 @@ class AuthorizationResult implements ModelInterface, ArrayAccess, JsonSerializab
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

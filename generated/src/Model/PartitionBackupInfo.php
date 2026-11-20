@@ -399,7 +399,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getPartitionId(): int
     {
-        return $this->container['partitionId'];
+        return $this->container['partitionId'] ?? null;
     }
 
     /**
@@ -435,7 +435,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getState(): \Camunda\Orchestration\Api\Model\StateCode
     {
-        return $this->container['state'];
+        return $this->container['state'] ?? null;
     }
 
     /**
@@ -467,7 +467,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getFailureReason(): ?string
     {
-        return $this->container['failureReason'];
+        return $this->container['failureReason'] ?? null;
     }
 
     /**
@@ -506,7 +506,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getCreatedAt(): ?\DateTime
     {
-        return $this->container['createdAt'];
+        return $this->container['createdAt'] ?? null;
     }
 
     /**
@@ -545,7 +545,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getLastUpdatedAt(): ?\DateTime
     {
-        return $this->container['lastUpdatedAt'];
+        return $this->container['lastUpdatedAt'] ?? null;
     }
 
     /**
@@ -584,7 +584,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getSnapshotId(): ?string
     {
-        return $this->container['snapshotId'];
+        return $this->container['snapshotId'] ?? null;
     }
 
     /**
@@ -623,7 +623,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getFirstLogPosition(): ?int
     {
-        return $this->container['firstLogPosition'];
+        return $this->container['firstLogPosition'] ?? null;
     }
 
     /**
@@ -662,7 +662,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getCheckpointPosition(): ?int
     {
-        return $this->container['checkpointPosition'];
+        return $this->container['checkpointPosition'] ?? null;
     }
 
     /**
@@ -701,7 +701,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getBrokerId(): ?int
     {
-        return $this->container['brokerId'];
+        return $this->container['brokerId'] ?? null;
     }
 
     /**
@@ -744,7 +744,7 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
      */
     public function getBrokerVersion(): ?string
     {
-        return $this->container['brokerVersion'];
+        return $this->container['brokerVersion'] ?? null;
     }
 
     /**
@@ -819,6 +819,24 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -833,6 +851,15 @@ class PartitionBackupInfo implements ModelInterface, ArrayAccess, JsonSerializab
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

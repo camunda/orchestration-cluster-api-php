@@ -457,7 +457,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getDecisionDefinitionId(): \Camunda\Orchestration\Semantic\DecisionDefinitionId
     {
-        return $this->container['decisionDefinitionId'];
+        return $this->container['decisionDefinitionId'] ?? null;
     }
 
     /**
@@ -486,7 +486,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getDecisionDefinitionKey(): \Camunda\Orchestration\Semantic\DecisionDefinitionKey
     {
-        return $this->container['decisionDefinitionKey'];
+        return $this->container['decisionDefinitionKey'] ?? null;
     }
 
     /**
@@ -515,7 +515,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getDecisionDefinitionName(): string
     {
-        return $this->container['decisionDefinitionName'];
+        return $this->container['decisionDefinitionName'] ?? null;
     }
 
     /**
@@ -547,7 +547,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getDecisionDefinitionVersion(): int
     {
-        return $this->container['decisionDefinitionVersion'];
+        return $this->container['decisionDefinitionVersion'] ?? null;
     }
 
     /**
@@ -579,7 +579,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getDecisionEvaluationKey(): \Camunda\Orchestration\Semantic\DecisionEvaluationKey
     {
-        return $this->container['decisionEvaluationKey'];
+        return $this->container['decisionEvaluationKey'] ?? null;
     }
 
     /**
@@ -609,7 +609,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getDecisionInstanceKey(): \Camunda\Orchestration\Semantic\DecisionInstanceKey
     {
-        return $this->container['decisionInstanceKey'];
+        return $this->container['decisionInstanceKey'] ?? null;
     }
 
     /**
@@ -639,7 +639,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getDecisionRequirementsId(): string
     {
-        return $this->container['decisionRequirementsId'];
+        return $this->container['decisionRequirementsId'] ?? null;
     }
 
     /**
@@ -671,7 +671,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getDecisionRequirementsKey(): \Camunda\Orchestration\Semantic\DecisionRequirementsKey
     {
-        return $this->container['decisionRequirementsKey'];
+        return $this->container['decisionRequirementsKey'] ?? null;
     }
 
     /**
@@ -700,7 +700,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getEvaluatedDecisions(): array
     {
-        return $this->container['evaluatedDecisions'];
+        return $this->container['evaluatedDecisions'] ?? null;
     }
 
     /**
@@ -732,7 +732,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getFailedDecisionDefinitionId(): ?\Camunda\Orchestration\Semantic\DecisionDefinitionId
     {
-        return $this->container['failedDecisionDefinitionId'];
+        return $this->container['failedDecisionDefinitionId'] ?? null;
     }
 
     /**
@@ -771,7 +771,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getFailureMessage(): ?string
     {
-        return $this->container['failureMessage'];
+        return $this->container['failureMessage'] ?? null;
     }
 
     /**
@@ -810,7 +810,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getOutput(): string
     {
-        return $this->container['output'];
+        return $this->container['output'] ?? null;
     }
 
     /**
@@ -842,7 +842,7 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
      */
     public function getTenantId(): \Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -907,6 +907,24 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -921,6 +939,15 @@ class EvaluateDecisionResult implements ModelInterface, ArrayAccess, JsonSeriali
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

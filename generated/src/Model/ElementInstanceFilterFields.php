@@ -492,7 +492,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -521,7 +521,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getState(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null
     {
-        return $this->container['state'];
+        return $this->container['state'] ?? null;
     }
 
     /**
@@ -553,7 +553,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getType(): ?string
     {
-        return $this->container['type'];
+        return $this->container['type'] ?? null;
     }
 
     /**
@@ -595,7 +595,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getElementId(): string|\Camunda\Orchestration\Api\Model\AdvancedElementIdFilter|null
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**
@@ -627,7 +627,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getElementName(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['elementName'];
+        return $this->container['elementName'] ?? null;
     }
 
     /**
@@ -659,7 +659,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getHasIncident(): ?bool
     {
-        return $this->container['hasIncident'];
+        return $this->container['hasIncident'] ?? null;
     }
 
     /**
@@ -691,7 +691,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -720,7 +720,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -749,7 +749,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -778,7 +778,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -807,7 +807,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getIncidentKey(): ?\Camunda\Orchestration\Semantic\IncidentKey
     {
-        return $this->container['incidentKey'];
+        return $this->container['incidentKey'] ?? null;
     }
 
     /**
@@ -836,7 +836,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getStartDate(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['startDate'];
+        return $this->container['startDate'] ?? null;
     }
 
     /**
@@ -868,7 +868,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getEndDate(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['endDate'];
+        return $this->container['endDate'] ?? null;
     }
 
     /**
@@ -900,7 +900,7 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
      */
     public function getElementInstanceScopeKey(): ?string
     {
-        return $this->container['elementInstanceScopeKey'];
+        return $this->container['elementInstanceScopeKey'] ?? null;
     }
 
     /**
@@ -968,6 +968,24 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -982,6 +1000,15 @@ class ElementInstanceFilterFields implements ModelInterface, ArrayAccess, JsonSe
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

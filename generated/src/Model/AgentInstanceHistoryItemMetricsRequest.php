@@ -333,7 +333,7 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
      */
     public function getInputTokens(): ?int
     {
-        return $this->container['inputTokens'];
+        return $this->container['inputTokens'] ?? null;
     }
 
     /**
@@ -372,7 +372,7 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
      */
     public function getOutputTokens(): ?int
     {
-        return $this->container['outputTokens'];
+        return $this->container['outputTokens'] ?? null;
     }
 
     /**
@@ -411,7 +411,7 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
      */
     public function getReasoningTokenCount(): ?int
     {
-        return $this->container['reasoningTokenCount'];
+        return $this->container['reasoningTokenCount'] ?? null;
     }
 
     /**
@@ -450,7 +450,7 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
      */
     public function getCacheCreationTokenCount(): ?int
     {
-        return $this->container['cacheCreationTokenCount'];
+        return $this->container['cacheCreationTokenCount'] ?? null;
     }
 
     /**
@@ -489,7 +489,7 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
      */
     public function getCacheReadTokenCount(): ?int
     {
-        return $this->container['cacheReadTokenCount'];
+        return $this->container['cacheReadTokenCount'] ?? null;
     }
 
     /**
@@ -528,7 +528,7 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
      */
     public function getDurationMs(): ?int
     {
-        return $this->container['durationMs'];
+        return $this->container['durationMs'] ?? null;
     }
 
     /**
@@ -603,6 +603,24 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -617,6 +635,15 @@ class AgentInstanceHistoryItemMetricsRequest implements ModelInterface, ArrayAcc
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

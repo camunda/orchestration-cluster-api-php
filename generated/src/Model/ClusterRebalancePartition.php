@@ -367,7 +367,7 @@ class ClusterRebalancePartition implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getPartitionId(): int
     {
-        return $this->container['partitionId'];
+        return $this->container['partitionId'] ?? null;
     }
 
     /**
@@ -399,7 +399,7 @@ class ClusterRebalancePartition implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getPhysicalTenantId(): string
     {
-        return $this->container['physicalTenantId'];
+        return $this->container['physicalTenantId'] ?? null;
     }
 
     /**
@@ -431,7 +431,7 @@ class ClusterRebalancePartition implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getCurrentLeader(): ?string
     {
-        return $this->container['currentLeader'];
+        return $this->container['currentLeader'] ?? null;
     }
 
     /**
@@ -470,7 +470,7 @@ class ClusterRebalancePartition implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getDesiredLeader(): string
     {
-        return $this->container['desiredLeader'];
+        return $this->container['desiredLeader'] ?? null;
     }
 
     /**
@@ -502,7 +502,7 @@ class ClusterRebalancePartition implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getState(): string
     {
-        return $this->container['state'];
+        return $this->container['state'] ?? null;
     }
 
     /**
@@ -580,6 +580,24 @@ class ClusterRebalancePartition implements ModelInterface, ArrayAccess, JsonSeri
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -594,6 +612,15 @@ class ClusterRebalancePartition implements ModelInterface, ArrayAccess, JsonSeri
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**
