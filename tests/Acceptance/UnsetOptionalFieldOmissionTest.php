@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Tests\Acceptance;
 
 use Camunda\Orchestration\Api\Model\ClusterRestoreRequest;
+use Camunda\Orchestration\Api\Model\JobCompletionRequest;
 use Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey;
 use Camunda\Orchestration\Api\Model\RestoreRequest;
 use Camunda\Orchestration\Api\ObjectSerializer;
+use Camunda\Orchestration\Semantic\JobLeaseToken;
 use Camunda\Orchestration\Semantic\ProcessDefinitionKey;
 use DateTime;
 use PHPUnit\Framework\TestCase;
@@ -27,9 +29,9 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'overrides' => ['tenant-a' => new RestoreRequest(['backupIds' => [55]])],
         ]);
 
-        self::assertJsonStringEqualsJsonString(
-            '{"overrides":{"tenant-a":{"backupIds":[55]}}}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            ['overrides' => ['tenant-a' => ['backupIds' => [55]]]],
+            $request,
         );
     }
 
@@ -39,9 +41,9 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'processDefinitionKey' => '2251799813685249',
         ]);
 
-        self::assertJsonStringEqualsJsonString(
-            '{"processDefinitionKey":"2251799813685249"}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            ['processDefinitionKey' => '2251799813685249'],
+            $request,
         );
     }
 
@@ -55,10 +57,14 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'requestTimeout' => 0,
         ]);
 
-        self::assertJsonStringEqualsJsonString(
-            '{"processDefinitionKey":"2251799813685249","processDefinitionVersion":-1,'
-                . '"awaitCompletion":false,"requestTimeout":0}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            [
+                'processDefinitionKey' => '2251799813685249',
+                'processDefinitionVersion' => -1,
+                'awaitCompletion' => false,
+                'requestTimeout' => 0,
+            ],
+            $request,
         );
     }
 
@@ -69,9 +75,9 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'overrides' => ['tenant-a' => new RestoreRequest(['backupIds' => [55]])],
         ]);
 
-        self::assertJsonStringEqualsJsonString(
-            '{"from":null,"overrides":{"tenant-a":{"backupIds":[55]}}}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            ['from' => null, 'overrides' => ['tenant-a' => ['backupIds' => [55]]]],
+            $request,
         );
     }
 
@@ -82,9 +88,13 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             ->setAwaitCompletion(true)
             ->setRequestTimeout(5_000);
 
-        self::assertJsonStringEqualsJsonString(
-            '{"processDefinitionKey":"2251799813685249","awaitCompletion":true,"requestTimeout":5000}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            [
+                'processDefinitionKey' => '2251799813685249',
+                'awaitCompletion' => true,
+                'requestTimeout' => 5000,
+            ],
+            $request,
         );
     }
 
@@ -96,13 +106,14 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
         $request->setFrom(new DateTime('2024-01-01T00:00:00Z'));
         self::assertStringContainsString('"from":"2024-01-01T00:00:00', $this->toJson($request));
 
-        // stable/10 contract (released 10.x behaviour, guarded by ModelSemanticTypingTest):
-        // set<Prop>(null) on a nullable field is an explicit null on the wire, not "unset".
+        // set<Prop>(null) on a nullable field is an explicit null on the wire, not
+        // "unset": the setter drops it from openAPIFieldsSet but records it in
+        // openAPINullablesSetToNull, and the serializer still emits it as `null`.
         // Only fields the caller never provided are omitted.
         $request->setFrom(null);
-        self::assertJsonStringEqualsJsonString(
-            '{"from":null,"overrides":{"tenant-a":{"backupIds":[55]}}}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            ['from' => null, 'overrides' => ['tenant-a' => ['backupIds' => [55]]]],
+            $request,
         );
     }
 
@@ -112,9 +123,12 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
         $request['processDefinitionKey'] = new ProcessDefinitionKey('2251799813685249');
         $request['requestTimeout'] = 5_000;
 
-        self::assertJsonStringEqualsJsonString(
-            '{"processDefinitionKey":"2251799813685249","requestTimeout":5000}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            [
+                'processDefinitionKey' => '2251799813685249',
+                'requestTimeout' => 5000,
+            ],
+            $request,
         );
 
         unset($request['requestTimeout']);
@@ -134,10 +148,71 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             'overrides' => ['tenant-a' => new RestoreRequest(['backupIds' => [56]])],
         ]);
 
-        self::assertJsonStringEqualsJsonString(
-            '{"backupIds":[55],"overrides":{"tenant-a":{"backupIds":[56]}}}',
-            $this->toJson($request),
+        $this->assertSerializesTo(
+            ['backupIds' => [55], 'overrides' => ['tenant-a' => ['backupIds' => [56]]]],
+            $request,
         );
+    }
+
+    public function testArrayAccessNullOnNullableFieldIsExplicitNull(): void
+    {
+        // Null assigned through ArrayAccess on a nullable field is an explicit null on
+        // the wire, mirroring set<Prop>(null) — including after a previous setter null
+        // (the two paths are indistinguishable, so both keep the explicit-null state).
+        $request = new JobCompletionRequest(['jobKey' => '2251799813685251']);
+        $request['jobLeaseToken'] = null;
+        self::assertStringContainsString('"jobLeaseToken":null', $this->toJson($request));
+
+        $request->setJobLeaseToken(new JobLeaseToken('lease-token-abc'));
+        $request->setJobLeaseToken(null);
+        $request['jobLeaseToken'] = null;
+        self::assertStringContainsString('"jobLeaseToken":null', $this->toJson($request));
+
+        // unset() is the removal path: it must drop the stale nullable-state flag, or
+        // the serializer keeps emitting the removed field as `null` and the getter
+        // trips an undefined-array-key warning on the removed container entry.
+        unset($request['jobLeaseToken']);
+        self::assertNull($request->getJobLeaseToken());
+        self::assertStringNotContainsString('jobLeaseToken', $this->toJson($request));
+    }
+
+    public function testArrayAccessUnsetAfterSetterNullOmitsTheField(): void
+    {
+        // unset() after setJobLeaseToken(null) must drop the stale nullable-state flag:
+        // left behind, the serializer still emits the removed field as `null` and the
+        // getter trips an undefined-array-key warning on the removed container entry.
+        $request = new JobCompletionRequest(['jobKey' => '2251799813685251']);
+        $request->setJobLeaseToken(null);
+        unset($request['jobLeaseToken']);
+
+        self::assertNull($request->getJobLeaseToken());
+        self::assertStringNotContainsString('jobLeaseToken', $this->toJson($request));
+    }
+
+    public function testArrayAccessUnsetAfterConstructorNullOmitsTheField(): void
+    {
+        // Same removal path, with the explicit null provided through the constructor.
+        $request = new JobCompletionRequest([
+            'jobKey' => '2251799813685251',
+            'jobLeaseToken' => null,
+        ]);
+        self::assertStringContainsString('"jobLeaseToken":null', $this->toJson($request));
+
+        unset($request['jobLeaseToken']);
+        self::assertStringNotContainsString('jobLeaseToken', $this->toJson($request));
+    }
+
+    public function testArrayAccessValueAfterSetterNullClearsExplicitNull(): void
+    {
+        // Assigning a real value after setJobLeaseToken(null) must clear the
+        // nullable-state flag — the field is set, not explicitly null.
+        $request = new JobCompletionRequest(['jobKey' => '2251799813685251']);
+        $request->setJobLeaseToken(null);
+        $request['jobLeaseToken'] = new JobLeaseToken('lease-token-xyz');
+
+        $json = $this->toJson($request);
+        self::assertStringContainsString('"jobLeaseToken":"lease-token-xyz"', $json);
+        self::assertStringNotContainsString('"jobLeaseToken":null', $json);
     }
 
     private function toJson(object $model): string
@@ -145,5 +220,22 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
         $json = json_encode(ObjectSerializer::sanitizeForSerialization($model));
         self::assertIsString($json);
         return $json;
+    }
+
+    /**
+     * Assert the model serializes to exactly the given body. JSON object key order is
+     * not part of the API contract (it tracks the generated property order, which the
+     * upstream spec may reshuffle — e.g. when shared fields move onto an allOf parent),
+     * so compare the decoded structure order-independently while still enforcing that
+     * no field is added or omitted.
+     *
+     * @param array<string, mixed> $expected
+     */
+    private function assertSerializesTo(array $expected, object $model): void
+    {
+        $decoded = json_decode($this->toJson($model), true);
+        self::assertIsArray($decoded);
+        self::assertEqualsCanonicalizing(array_keys($expected), array_keys($decoded));
+        self::assertEquals($expected, $decoded);
     }
 }
