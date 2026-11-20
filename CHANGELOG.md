@@ -1,3 +1,10 @@
+# [11.0.0-alpha.3](https://github.com/camunda/orchestration-cluster-api-php/compare/v11.0.0-alpha.2...v11.0.0-alpha.3) (2026-11-20)
+
+
+### Bug Fixes
+
+* **api-compat:** evaluate enum backing values; fix gate input description ([#177](https://github.com/camunda/orchestration-cluster-api-php/issues/177)) ([d8a7e89](https://github.com/camunda/orchestration-cluster-api-php/commit/d8a7e8914835ea446a4de5964e692222c71ba068)), closes [#176](https://github.com/camunda/orchestration-cluster-api-php/issues/176) [#153](https://github.com/camunda/orchestration-cluster-api-php/issues/153)
+
 # [11.0.0-alpha.2](https://github.com/camunda/orchestration-cluster-api-php/compare/v11.0.0-alpha.1...v11.0.0-alpha.2) (2026-11-20)
 
 
