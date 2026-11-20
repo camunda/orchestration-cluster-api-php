@@ -2541,6 +2541,10 @@ trait GeneratedOperations
      */
     public function resumeProcessDefinitions(\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById $processDefinitionResumptionInstruction, string $contentType = \Camunda\Orchestration\Api\Api\ProcessDefinitionApi::contentTypes['resumeProcessDefinitions'][0]): \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
+        if ($processDefinitionResumptionInstruction instanceof \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById && $processDefinitionResumptionInstruction->getTenantId() === null) {
+            $processDefinitionResumptionInstruction = clone $processDefinitionResumptionInstruction;
+            $processDefinitionResumptionInstruction->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));
+        }
         return $this->api(\Camunda\Orchestration\Api\Api\ProcessDefinitionApi::class)->resumeProcessDefinitions($processDefinitionResumptionInstruction, $contentType);
     }
 
@@ -2587,6 +2591,10 @@ trait GeneratedOperations
      */
     public function suspendProcessDefinitions(\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById $processDefinitionSuspensionInstruction, string $contentType = \Camunda\Orchestration\Api\Api\ProcessDefinitionApi::contentTypes['suspendProcessDefinitions'][0]): \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionResult|\Camunda\Orchestration\Api\Model\ProblemDetail
     {
+        if ($processDefinitionSuspensionInstruction instanceof \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById && $processDefinitionSuspensionInstruction->getTenantId() === null) {
+            $processDefinitionSuspensionInstruction = clone $processDefinitionSuspensionInstruction;
+            $processDefinitionSuspensionInstruction->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));
+        }
         return $this->api(\Camunda\Orchestration\Api\Api\ProcessDefinitionApi::class)->suspendProcessDefinitions($processDefinitionSuspensionInstruction, $contentType);
     }
 

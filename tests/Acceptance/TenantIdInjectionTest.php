@@ -10,6 +10,10 @@ use Camunda\Orchestration\Api\Model\DecisionEvaluationByKey;
 use Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest;
 use Camunda\Orchestration\Api\Model\MessageCorrelationRequest;
 use Camunda\Orchestration\Api\Model\MessagePublicationRequest;
+use Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById;
+use Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey;
+use Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById;
+use Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey;
 use Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionById;
 use Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey;
 use Camunda\Orchestration\Api\Model\SignalBroadcastRequest;
@@ -446,6 +450,89 @@ final class TenantIdInjectionTest extends TestCase
         self::assertCount(2, $this->requests);
         self::assertSame('acme', $this->decodeBody($this->requests[0])['tenantId']);
         self::assertSame('globex', $this->decodeBody($this->requests[1])['tenantId']);
+    }
+
+    public function testSuspendProcessDefinitionsByIdInjectsDefaultTenantId(): void
+    {
+        $client = $this->clientWith($this->suspensionResponse());
+
+        $client->suspendProcessDefinitions(new ProcessDefinitionSuspensionInstructionById([
+            'processDefinitionId' => 'order-process',
+        ]));
+
+        self::assertSame('acme', $this->decodeBody($this->requests[0])['tenantId']);
+    }
+
+    public function testResumeProcessDefinitionsByIdInjectsDefaultTenantId(): void
+    {
+        $client = $this->clientWith($this->suspensionResponse());
+
+        $client->resumeProcessDefinitions(new ProcessDefinitionResumptionInstructionById([
+            'processDefinitionId' => 'order-process',
+        ]));
+
+        self::assertSame('acme', $this->decodeBody($this->requests[0])['tenantId']);
+    }
+
+    public function testAsyncSuspendProcessDefinitionsByIdInjectsDefaultTenantId(): void
+    {
+        $client = $this->asyncClientWith($this->suspensionResponse());
+
+        $client->suspendProcessDefinitions(new ProcessDefinitionSuspensionInstructionById([
+            'processDefinitionId' => 'order-process',
+        ]))->wait();
+
+        self::assertSame('acme', $this->decodeBody($this->requests[0])['tenantId']);
+    }
+
+    public function testSuspendProcessDefinitionsByIdInjectsBuiltInDefaultWhenNoneConfigured(): void
+    {
+        $client = CamundaClient::fromConfiguration(
+            ConfigResolver::resolve(overrides: ['CAMUNDA_AUTH_STRATEGY' => 'NONE'], environment: []),
+            $this->mockHttpClient($this->suspensionResponse()),
+        );
+
+        $client->suspendProcessDefinitions(new ProcessDefinitionSuspensionInstructionById([
+            'processDefinitionId' => 'order-process',
+        ]));
+
+        self::assertSame('<default>', $this->decodeBody($this->requests[0])['tenantId']);
+    }
+
+    public function testSuspendProcessDefinitionsByIdPreservesExplicitTenantId(): void
+    {
+        $client = $this->clientWith($this->suspensionResponse());
+
+        $client->suspendProcessDefinitions(new ProcessDefinitionSuspensionInstructionById([
+            'processDefinitionId' => 'order-process',
+            'tenantId' => new TenantId('other'),
+        ]));
+
+        self::assertSame('other', $this->decodeBody($this->requests[0])['tenantId']);
+    }
+
+    public function testSuspendAndResumeProcessDefinitionsByKeySendNoTenantId(): void
+    {
+        $client = $this->clientWith($this->suspensionResponse());
+        $client->suspendProcessDefinitions(new ProcessDefinitionSuspensionInstructionByKey([
+            'processDefinitionKey' => '2251799813685249',
+        ]));
+        self::assertArrayNotHasKey('tenantId', $this->decodeBody($this->requests[0]));
+
+        $client = $this->clientWith($this->suspensionResponse());
+        $client->resumeProcessDefinitions(new ProcessDefinitionResumptionInstructionByKey([
+            'processDefinitionKey' => '2251799813685249',
+        ]));
+        self::assertArrayNotHasKey('tenantId', $this->decodeBody($this->requests[1]));
+    }
+
+    private function suspensionResponse(): Response
+    {
+        return new Response(
+            200,
+            ['Content-Type' => 'application/json'],
+            (string) json_encode(['processDefinitions' => [], 'batchOperationKey' => null]),
+        );
     }
 
     private function clientWith(Response $response): CamundaClient

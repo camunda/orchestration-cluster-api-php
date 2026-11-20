@@ -17,7 +17,7 @@ final class FlatFacadeTenantHookTest extends TestCase
     private const STRING_INJECTION = '$expressionEvaluationRequest->setTenantId($this->config->defaultTenantId());';
     private const SEMANTIC_INJECTION = '$expressionEvaluationRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));';
 
-    /** @var (Closure(array{out_dir: string, root: string}): void)|null */
+    /** @var (Closure(array{out_dir: string, root: string, spec_path: string}): void)|null */
     private static ?Closure $hook = null;
 
     public function testStringSetterInjectsPlainStringInBothTraits(): void
@@ -87,9 +87,21 @@ PHP));
                 . "}\n";
             self::assertNotFalse(file_put_contents($dir . '/out/src/Model/ExpressionEvaluationRequest.php', $model));
 
+            $spec = [
+                'paths' => ['/expression/evaluation' => ['post' => [
+                    'operationId' => 'evaluateExpression',
+                    'requestBody' => ['content' => ['application/json' => ['schema' => ['$ref' => '#/components/schemas/ExpressionEvaluationRequest']]]],
+                ]]],
+                'components' => ['schemas' => ['ExpressionEvaluationRequest' => [
+                    'type' => 'object',
+                    'properties' => ['tenantId' => ['type' => 'string']],
+                ]]],
+            ];
+            self::assertNotFalse(file_put_contents($dir . '/spec.json', (string) json_encode($spec)));
+
             ob_start();
             try {
-                self::hook()(['out_dir' => $dir . '/out', 'root' => $dir . '/root']);
+                self::hook()(['out_dir' => $dir . '/out', 'root' => $dir . '/root', 'spec_path' => $dir . '/spec.json']);
             } finally {
                 ob_end_clean();
             }
@@ -106,13 +118,13 @@ PHP));
     }
 
     /**
-     * @return Closure(array{out_dir: string, root: string}): void
+     * @return Closure(array{out_dir: string, root: string, spec_path: string}): void
      */
     private static function hook(): Closure
     {
         if (self::$hook === null) {
             // The hook file declares global helper functions, so it can only be loaded once.
-            /** @var Closure(array{out_dir: string, root: string}): void $hook */
+            /** @var Closure(array{out_dir: string, root: string, spec_path: string}): void $hook */
             $hook = require dirname(__DIR__, 2) . '/hooks/post_gen/0500_flat_facade.php';
             self::$hook = $hook;
         }

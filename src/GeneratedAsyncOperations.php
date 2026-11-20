@@ -2390,6 +2390,10 @@ trait GeneratedAsyncOperations
      */
     public function resumeProcessDefinitions(\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById $processDefinitionResumptionInstruction, string $contentType = \Camunda\Orchestration\Api\Api\ProcessDefinitionApi::contentTypes['resumeProcessDefinitions'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
+        if ($processDefinitionResumptionInstruction instanceof \Camunda\Orchestration\Api\Model\ProcessDefinitionResumptionInstructionById && $processDefinitionResumptionInstruction->getTenantId() === null) {
+            $processDefinitionResumptionInstruction = clone $processDefinitionResumptionInstruction;
+            $processDefinitionResumptionInstruction->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));
+        }
         return $this->api(\Camunda\Orchestration\Api\Api\ProcessDefinitionApi::class)->resumeProcessDefinitionsAsync($processDefinitionResumptionInstruction, $contentType);
     }
 
@@ -2433,6 +2437,10 @@ trait GeneratedAsyncOperations
      */
     public function suspendProcessDefinitions(\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionByKey|\Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById $processDefinitionSuspensionInstruction, string $contentType = \Camunda\Orchestration\Api\Api\ProcessDefinitionApi::contentTypes['suspendProcessDefinitions'][0]): \GuzzleHttp\Promise\PromiseInterface
     {
+        if ($processDefinitionSuspensionInstruction instanceof \Camunda\Orchestration\Api\Model\ProcessDefinitionSuspensionInstructionById && $processDefinitionSuspensionInstruction->getTenantId() === null) {
+            $processDefinitionSuspensionInstruction = clone $processDefinitionSuspensionInstruction;
+            $processDefinitionSuspensionInstruction->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));
+        }
         return $this->api(\Camunda\Orchestration\Api\Api\ProcessDefinitionApi::class)->suspendProcessDefinitionsAsync($processDefinitionSuspensionInstruction, $contentType);
     }
 
