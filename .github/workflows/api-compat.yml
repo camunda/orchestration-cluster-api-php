@@ -1,15 +1,13 @@
 name: API compatibility
 
 # Blocks PRs to stable branches that change the public PHP API in a way that breaks customer
-# code (see scripts/api-compat.sh and AGENTS.md "API compatibility"). The candidate API is
-# regenerated from the PR's bundled spec before the comparison, so a hook change that would
-# remove or retype a public member at the next regeneration is caught here, not at release
-# time. The regenerated candidate is compared with the PR's base commit, so it answers only
-# for its own changes: an approved break already merged does not fail every later PR. When
-# a break is intended (e.g. a bug fix that must change the API), apply the
-# `api-break-approved` label: the check still runs and lists the breaks, but passes.
-# Upstream spec drift that no PR introduces is caught by the gate in publish.yml, which
-# compares what it is about to release with the last release.
+# code (see scripts/api-compat.sh and AGENTS.md "API compatibility"). A PR is compared with
+# its base commit, so it answers only for its own changes: an approved break already merged
+# does not fail every later PR. When a break is intended (e.g. a bug fix that must change
+# the API), apply the `api-break-approved` label: the check still runs and lists the breaks,
+# but passes. Spec drift reaches a stable branch only through a commit that regenerates
+# (a backport, a spec sync), so it is checked here like any other change. The gate in
+# publish.yml compares the commit about to be tagged with the last release.
 
 on:
   pull_request:
@@ -29,23 +27,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Bundle the PR's spec once so the compatibility job regenerates the candidate API from
-  # exactly the spec the PR carries, not from whatever ref a live re-fetch would resolve to.
-  bundle-spec:
-    uses: camunda/sdk-infra/.github/workflows/sdk-bundle-spec.yml@v1
-    with:
-      spec-ref: ${{ github.sha }}
-
   api-compat:
     name: API compatibility
-    needs: bundle-spec
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v6
         with:
-          # The checker compares two revisions of this repository: the regenerated
-          # candidate API and the PR's base commit.
+          # The checker compares two revisions of this repository: the PR merge commit
+          # and its base commit.
           fetch-depth: 0
           persist-credentials: false
 
@@ -57,41 +47,8 @@ jobs:
           coverage: none
           tools: composer:v2
 
-      - name: Set up Java (openapi-generator)
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install dependencies
-        run: |
-          composer install --no-interaction --no-progress
-          composer install --working-dir=tools/api-compat --no-interaction --no-progress
-          npm ci || npm install
-
-      - name: Fetch openapi-generator jar (retried)
-        run: bash scripts/fetch-openapi-generator.sh
-
-      - name: Clear checked-in spec (prevent stale fallback)
-        run: rm -rf external-spec/bundled/*
-
-      - name: Download bundled spec
-        uses: actions/download-artifact@v8
-        with:
-          name: bundled-spec
-          path: external-spec/bundled/
-
-      # Compare the API this PR would actually generate, not the committed one: a hook
-      # change can pass a committed-tree comparison while the next regeneration removes
-      # or retypes public members. Untouched files regenerate byte-identically, so this
-      # is a no-op for PRs that do not affect generation.
-      - name: Generate SDK
-        run: make generate-only
+      - name: Install checker
+        run: composer install --working-dir=tools/api-compat --no-interaction --no-progress
 
       - name: Check API compatibility
         env:
@@ -109,7 +66,7 @@ jobs:
             exit 0
           fi
           pipeline_status=(0 0)
-          bash scripts/api-compat.sh check "$BASE_SHA" --worktree | tee "$RUNNER_TEMP/api-compat.txt" || pipeline_status=("${PIPESTATUS[@]}")
+          bash scripts/api-compat.sh check "$BASE_SHA" HEAD | tee "$RUNNER_TEMP/api-compat.txt" || pipeline_status=("${PIPESTATUS[@]}")
           [ "${pipeline_status[1]}" -eq 0 ] || exit 2
           rc="${pipeline_status[0]}"
           {

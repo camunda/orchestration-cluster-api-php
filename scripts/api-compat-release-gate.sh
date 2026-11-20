@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 # Release gate for public API compatibility (issue #153), run by publish.yml on stable/**
-# after `make generate-only` and before semantic-release.
+# before semantic-release.
 #
-# The release job regenerates from the upstream spec, so what gets released is the working
-# tree, not HEAD: upstream drift lands here with no PR to review it. This compares the
-# working tree with the newest published release of the branch's major and blocks the
-# release on a break unless it is approved by either:
+# A release tags the committed tree (semantic-release commits only CHANGELOG.md and
+# src/Version.php; the release job's regeneration is a validity check and never ships), so
+# HEAD is what customers get. Spec drift reaches HEAD only through a commit, e.g. a
+# backport's or spec sync's regeneration. This compares HEAD with the newest published
+# release of the branch's major and blocks the release on a break unless it is approved by
+# either:
 #   - the `api-break-approved` label on a PR merged into this branch since that release.
-#     An approval covers the API as of that PR's merge: the working tree is then compared
-#     with the newest approved merge, and any break added since (a later PR, or spec drift
-#     picked up by this regeneration) needs its own approval; or
-#   - DISPATCH_APPROVED=true (the api_break_approved input of a manual run), for drift no
-#     PR introduced.
+#     An approval covers the API as of that PR's merge: HEAD is then compared with the
+#     newest approved merge, and any break added since needs its own approval; or
+#   - DISPATCH_APPROVED=true (the api_break_approved input of a manual run), for a break
+#     no labelled PR covers (e.g. one pushed directly).
 # A no-op on main, whose prereleases make no compatibility promise.
 #
 # Env: BRANCH (e.g. stable/10), GITHUB_REPOSITORY, GH_TOKEN, DISPATCH_APPROVED,
@@ -70,7 +71,7 @@ fi
 
 echo "Baseline: ${tag}"
 pipeline_status=(0 0)
-bash "$CHECK" check "$tag" --worktree | tee "${RUNNER_TEMP:-/tmp}/api-compat.txt" || pipeline_status=("${PIPESTATUS[@]}")
+bash "$CHECK" check "$tag" HEAD | tee "${RUNNER_TEMP:-/tmp}/api-compat.txt" || pipeline_status=("${PIPESTATUS[@]}")
 [ "${pipeline_status[1]}" -eq 0 ] || exit 2
 rc="${pipeline_status[0]}"
 {
@@ -111,7 +112,7 @@ while read -r sha; do
 done <<< "$commits"
 approved=$(echo "$approved" | xargs -n1 2>/dev/null | sort -u | xargs)
 if [ -z "$approved" ]; then
-  echo "::error::Release blocked: the public API breaks compatibility with ${tag}. If intended, label the PR that made the change ${LABEL} (or re-run this workflow manually with api_break_approved, e.g. for upstream spec drift), then re-run."
+  echo "::error::Release blocked: the public API breaks compatibility with ${tag}. If intended, label the PR that made the change ${LABEL} (or re-run this workflow manually with api_break_approved), then re-run."
   exit 1
 fi
 
@@ -126,14 +127,14 @@ while read -r sha; do
     break
   fi
 done <<< "$commits"
-# Compare even when the newest approved merge is HEAD: the working tree was regenerated
-# from the current upstream spec and can differ from the committed code.
-since=0
-bash "$CHECK" check "$latest" --worktree || since=$?
-if [ "$since" -eq 1 ]; then
-  echo "::error::Release blocked: breaking API changes were added after ${latest_pr} (${latest}), the newest approved PR. Label the PR that made them ${LABEL} (or re-run this workflow manually with api_break_approved, e.g. for upstream spec drift), then re-run."
-  exit 1
+if [ "$latest" != "$(git rev-parse HEAD)" ]; then
+  since=0
+  bash "$CHECK" check "$latest" HEAD || since=$?
+  if [ "$since" -eq 1 ]; then
+    echo "::error::Release blocked: breaking API changes were added after ${latest_pr} (${latest}), the newest approved PR. Label the PR that made them ${LABEL} (or re-run this workflow manually with api_break_approved), then re-run."
+    exit 1
+  fi
+  [ "$since" -eq 0 ] || exit "$since"
 fi
-[ "$since" -eq 0 ] || exit "$since"
 echo "::warning::Breaking API changes approved with the ${LABEL} label on: ${approved}"
 exit 0

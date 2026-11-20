@@ -43,16 +43,15 @@ jobs:
   # Blocks a stable/** release whose public API breaks compatibility with the newest N.x
   # release on Packagist, unless approved: the api-break-approved label on a PR merged into
   # the branch since that release, or the api_break_approved input of a manual run. It
-  # regenerates from the same bundled-spec artifact as the release job, so upstream spec
-  # drift is caught, and the release job commits that regenerated output before
-  # semantic-release, so the tag it pushes holds the exact tree checked here. A separate
-  # job because the checker needs PHP 8.4+. A no-op on main, whose prereleases make no
-  # compatibility promise. See scripts/api-compat-release-gate.sh.
+  # checks the committed HEAD, which is what the release tags (semantic-release commits only
+  # CHANGELOG.md and src/Version.php; the release job's regeneration never ships). A
+  # separate job because the checker needs PHP 8.4+. A no-op on main, whose prereleases
+  # make no compatibility promise. See scripts/api-compat-release-gate.sh.
   api-compat:
     name: API compatibility gate
-    needs: bundle-spec
+    needs: spec-ref-guard
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     permissions:
       contents: read
       pull-requests: read # find the PRs merged since the baseline and their labels
@@ -68,49 +67,14 @@ jobs:
         if: startsWith(github.ref_name, 'stable/')
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
-          extensions: json, pcntl, mbstring
+          php-version: '8.4' # roave/backward-compatibility-check needs 8.4+
+          extensions: json, mbstring
           coverage: none
           tools: composer:v2
 
-      - name: Set up Java (openapi-generator)
+      - name: Install checker
         if: startsWith(github.ref_name, 'stable/')
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-
-      - name: Set up Node
-        if: startsWith(github.ref_name, 'stable/')
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install dependencies
-        if: startsWith(github.ref_name, 'stable/')
-        run: |
-          composer install --no-interaction --no-progress
-          composer install --working-dir=tools/api-compat --no-interaction --no-progress
-          npm ci || npm install
-
-      - name: Fetch openapi-generator jar (retried)
-        if: startsWith(github.ref_name, 'stable/')
-        run: bash scripts/fetch-openapi-generator.sh
-
-      - name: Clear checked-in spec (prevent stale fallback)
-        if: startsWith(github.ref_name, 'stable/')
-        run: rm -rf external-spec/bundled/*
-
-      - name: Download bundled spec
-        if: startsWith(github.ref_name, 'stable/')
-        uses: actions/download-artifact@v8
-        with:
-          name: bundled-spec
-          path: external-spec/bundled/
-
-      - name: Generate SDK
-        if: startsWith(github.ref_name, 'stable/')
-        run: make generate-only
+        run: composer install --working-dir=tools/api-compat --no-interaction --no-progress
 
       - name: Check API compatibility
         if: startsWith(github.ref_name, 'stable/')
@@ -214,21 +178,6 @@ jobs:
 
       - name: Generate SDK
         run: make generate-only
-
-      # Commit the regenerated output so the release tag contains the exact API the
-      # api-compat gate checked: the gate regenerates from the same bundled-spec artifact
-      # and compares that working tree with the last release, and generation is
-      # deterministic, so committing the same output here makes the tagged tree identical
-      # to the checked one. Without this commit the tag would hold HEAD's generated tree
-      # (semantic-release only adds CHANGELOG.md and src/Version.php) and Packagist could
-      # ship an API the gate never saw. On main this is almost always a no-op: the
-      # committed generated/ already matches the bundled spec.
-      - name: Commit regenerated SDK
-        run: |
-          git add -A -- generated/ external-spec/bundled/ src/
-          if ! git diff --cached --quiet; then
-            git commit -m "chore(gen): regenerate from the release spec"
-          fi
 
       - name: Run acceptance tests
         run: make test
