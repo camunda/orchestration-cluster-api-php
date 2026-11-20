@@ -43,9 +43,11 @@ jobs:
   # Blocks a stable/** release whose public API breaks compatibility with the newest N.x
   # release on Packagist, unless approved: the api-break-approved label on a PR merged into
   # the branch since that release, or the api_break_approved input of a manual run. It
-  # regenerates from the same bundled spec as the release job, so upstream spec drift is
-  # caught. A separate job because the checker needs PHP 8.4+. A no-op on main, whose
-  # prereleases make no compatibility promise. See scripts/api-compat-release-gate.sh.
+  # regenerates from the same bundled-spec artifact as the release job, so upstream spec
+  # drift is caught, and the release job commits that regenerated output before
+  # semantic-release, so the tag it pushes holds the exact tree checked here. A separate
+  # job because the checker needs PHP 8.4+. A no-op on main, whose prereleases make no
+  # compatibility promise. See scripts/api-compat-release-gate.sh.
   api-compat:
     name: API compatibility gate
     needs: bundle-spec
@@ -212,6 +214,21 @@ jobs:
 
       - name: Generate SDK
         run: make generate-only
+
+      # Commit the regenerated output so the release tag contains the exact API the
+      # api-compat gate checked: the gate regenerates from the same bundled-spec artifact
+      # and compares that working tree with the last release, and generation is
+      # deterministic, so committing the same output here makes the tagged tree identical
+      # to the checked one. Without this commit the tag would hold HEAD's generated tree
+      # (semantic-release only adds CHANGELOG.md and src/Version.php) and Packagist could
+      # ship an API the gate never saw. On main this is almost always a no-op: the
+      # committed generated/ already matches the bundled spec.
+      - name: Commit regenerated SDK
+        run: |
+          git add -A -- generated/ external-spec/bundled/ src/
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(gen): regenerate from the release spec"
+          fi
 
       - name: Run acceptance tests
         run: make test

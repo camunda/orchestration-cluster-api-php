@@ -20,7 +20,8 @@
 #       Compare the working tree with the newest release of the major in src/Version.php
 #       (`make api-compat`). Passes with a notice when that major has no release yet.
 #
-# Exit codes: 0 compatible, 1 breaking (each break listed), 2 setup error.
+# Exit codes: 0 compatible, 1 breaking (each break listed), 2 setup error (including any
+# checker exit other than 0 "completed, no breaks" or 3 "completed, breaks found").
 #
 # The checker lives in tools/api-compat (its own Composer project), so its dependencies
 # never reach SDK consumers or constrain the SDK's dev dependencies. roave clones the
@@ -102,13 +103,23 @@ check() {
   [ -z "$SNAPSHOT_REF" ] || to_label="working tree (${to_label})"
   echo "Compared ${to_label} with ${from_label}."
 
+  # roave's contract: exit 0 = completed, no breaks; exit 3 = completed, breaks found
+  # (AssertBackwardsCompatible). Any other exit means the run did not complete
+  # (crashed, OOM'd, was killed) — possibly after printing some [BC] lines, so a
+  # partial result must never be filtered into a pass or an overridable break.
+  local breaks roave_status
+  if [ "$rc" -ne 0 ] && [ "$rc" -ne 3 ]; then
+    echo "api-compat: the checker did not complete (exit ${rc}):" >&2
+    grep -v -E '^\s*$' "$log" | tail -n 40 >&2
+    rm -f "$log"
+    return 2
+  fi
   # roave prints its results among composer install logs and a banner from one of its
   # dependencies: keep the result lines only.
-  local breaks roave_status
   breaks=$(grep -E '^\[BC\] ' "$log" || true)
-  if [ "$rc" -eq 0 ] && grep -q 'No backwards-incompatible changes detected' "$log"; then
+  if [ "$rc" -eq 0 ]; then
     roave_status=0
-  elif [ -n "$breaks" ]; then
+  else
     roave_status=1
     # roave counts a new enum case as a break (an exhaustive `match` without a default
     # arm stops being exhaustive). Upstream adds enum values routinely, and the server can
@@ -123,11 +134,6 @@ check() {
       sed -E 's/^\[BC\] ADDED: /  /' <<<"$added_cases"
     fi
     [ -n "$breaks" ] || roave_status=0
-  else
-    echo "api-compat: the checker failed (exit ${rc}):" >&2
-    grep -v -E '^\s*$' "$log" | tail -n 40 >&2
-    rm -f "$log"
-    return 2
   fi
   rm -f "$log"
 

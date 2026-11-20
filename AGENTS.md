@@ -105,23 +105,28 @@ A new enum case passes: roave counts it as a break (an exhaustive `match` withou
 than the SDK, so customer code needs a `default` arm anyway.
 Symbols marked `@internal` are not covered. A field that becomes required in a request
 model is not a signature change (models take an array), so it is not caught. Exit codes:
-0 compatible, 1 breaking (each break listed), 2 setup error.
+0 compatible, 1 breaking (each break listed), 2 setup error — including any checker exit
+other than 0 (completed, no breaks) or 3 (completed, breaks found), so a crashed run that
+printed partial findings can never be filtered into a pass or an overridable break.
 
 - `make api-compat` checks the working tree against the newest Packagist release of the
   major in `src/Version.php`, and passes with a notice when that major has no release yet
   (`main` during alphas). `scripts/api-compat.sh check <from> [<to> | --worktree]`
   compares any two revisions. Run it from a regular clone: roave cannot read a
   `git worktree`.
-- The `API compatibility` check (`api-compat.yml`) runs on PRs to `stable/**` and
-  compares each PR with its base commit, so it answers only for its own changes. If a
-  break is intended, label the PR `api-break-approved`: the check still lists the breaks
-  but passes.
+- The `API compatibility` check (`api-compat.yml`) runs on PRs to `stable/**`, regenerates
+  the candidate API from the PR's bundled spec, and compares that working tree with the
+  PR's base commit — so a hook change whose regeneration would remove or retype public
+  members fails the PR, not just the next release. If a break is intended, label the PR
+  `api-break-approved`: the check still lists the breaks but passes.
 - The `API compatibility gate` job in `publish.yml` regenerates `stable/**` from the
   release's bundled spec and compares the result with the newest release. It passes on
   the `api-break-approved` label of a PR merged into the branch since that release, but
   only for the API as of that PR's merge: a break added afterwards, by a later PR or by
   spec drift picked up at release time, needs its own approval. A manual run with the
   `api_break_approved` input covers drift no PR introduced. On `main` it is a no-op.
+  The release job commits the regenerated output before semantic-release, so the tag it
+  pushes (and Packagist serves) holds the exact tree the gate checked.
 
 ### Backporting to stable branches
 
