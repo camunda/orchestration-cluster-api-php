@@ -11,6 +11,12 @@ on:
         description: 'Git ref (branch/tag/SHA) in camunda/camunda to fetch spec from'
         required: false
         default: 'stable/8.10'
+      api_break_approved:
+        description: >-
+          Release even though the public API breaks compatibility with the last release on
+          this stable branch (for a break no labelled PR covers, e.g. a direct push).
+        type: boolean
+        default: false
 
 concurrency:
   group: orchestration-cluster-api-php-release-${{ github.ref_name }}
@@ -34,8 +40,52 @@ jobs:
     with:
       spec-ref: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.spec_ref) || vars.SPEC_REF_OVERRIDE || 'stable/8.10' }}
 
+  # Blocks a stable/** release whose public API breaks compatibility with the newest N.x
+  # release on Packagist, unless approved: the api-break-approved label on a PR merged into
+  # the branch since that release, or the api_break_approved input of a manual run. It
+  # checks the committed HEAD, which is what the release tags (semantic-release commits only
+  # CHANGELOG.md and src/Version.php; the release job's regeneration never ships). A
+  # separate job because the checker needs PHP 8.4+. A no-op on main, whose prereleases
+  # make no compatibility promise. See scripts/api-compat-release-gate.sh.
+  api-compat:
+    name: API compatibility gate
+    needs: spec-ref-guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: read # find the PRs merged since the baseline and their labels
+    steps:
+      - uses: actions/checkout@v6
+        if: startsWith(github.ref_name, 'stable/')
+        with:
+          # Tags and history: the baseline release and the PRs merged since it.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up PHP
+        if: startsWith(github.ref_name, 'stable/')
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4' # roave/backward-compatibility-check needs 8.4+
+          extensions: json, mbstring
+          coverage: none
+          tools: composer:v2
+
+      - name: Install checker
+        if: startsWith(github.ref_name, 'stable/')
+        run: composer install --working-dir=tools/api-compat --no-interaction --no-progress
+
+      - name: Check API compatibility
+        if: startsWith(github.ref_name, 'stable/')
+        env:
+          BRANCH: ${{ github.ref_name }}
+          GH_TOKEN: ${{ github.token }}
+          DISPATCH_APPROVED: ${{ github.event_name == 'workflow_dispatch' && inputs.api_break_approved }}
+        run: bash scripts/api-compat-release-gate.sh
+
   release:
-    needs: bundle-spec
+    needs: [bundle-spec, api-compat]
     runs-on: ubuntu-latest
     timeout-minutes: 25
     permissions:
