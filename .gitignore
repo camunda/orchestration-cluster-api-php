@@ -10,3 +10,6 @@
 .DS_Store
 *.log
 /build/
+
+# API compatibility checker (scripts/api-compat.sh)
+/tools/api-compat/vendor/

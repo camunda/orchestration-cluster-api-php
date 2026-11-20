@@ -56,6 +56,8 @@ Upstream dependencies — when they misbehave, fix them at the source rather tha
 | `tests/Integration/` | Integration tests against a real Camunda instance. Skipped unless `CAMUNDA_INTEGRATION=1`. |
 | `docker/` | Local Camunda compose stack for integration tests. |
 | `scripts/` | Bundle, README-sync, docs, config-reference, example-coverage, and release helpers. |
+| `scripts/api-compat.sh`, `scripts/api-compat-release-gate.sh` | Public API compatibility checker and its release gate (see "API compatibility on stable branches"). |
+| `tools/api-compat/` | The checker's own Composer project (`roave/backward-compatibility-check` + an enum-value check), kept apart so its dependencies never reach SDK consumers. Needs PHP 8.4+. |
 
 ### Non-negotiable invariants
 
@@ -87,6 +89,42 @@ Upstream dependencies — when they misbehave, fix them at the source rather tha
 | `make docs-docusaurus` | Regenerate `docs-md/php-sdk/` Docusaurus pages consumed by camunda-docs. |
 | `make config-reference` / `make config-reference-check` | Regenerate / verify the README configuration reference. |
 | `make example-coverage` | Verify `examples/operation-map.json` integrity and report example coverage. |
+| `make api-compat` | Compare the working tree's public API with the newest release of its major (PHP 8.4+). |
+
+### API compatibility on stable branches
+
+`stable/N` regenerates from upstream `stable/8.N`, which keeps moving, so spec drift can
+change the public API with no one reviewing it (e.g. a getter's return type becoming
+nullable). `scripts/api-compat.sh` compares two revisions with
+`roave/backward-compatibility-check`: removed or renamed classes, methods, properties,
+constants and enum cases, changed signatures, parameter and return types (including
+nullability) and new abstract or interface methods fail it; additions pass.
+`tools/api-compat/enum-values.php` adds what roave misses: a changed enum backing value.
+A new enum case passes: roave counts it as a break (an exhaustive `match` without a
+`default` arm), but upstream adds values routinely and the server can return values newer
+than the SDK, so customer code needs a `default` arm anyway.
+Symbols marked `@internal` are not covered. A field that becomes required in a request
+model is not a signature change (models take an array), so it is not caught. Exit codes:
+0 compatible, 1 breaking (each break listed), 2 setup error.
+
+- `make api-compat` checks the working tree against the newest Packagist release of the
+  major in `src/Version.php`, and passes with a notice when that major has no release yet
+  (`main` during alphas). `scripts/api-compat.sh check <from> [<to> | --worktree]`
+  compares any two revisions. Run it from a regular clone: roave cannot read a
+  `git worktree`.
+- The `API compatibility` check (`api-compat.yml`) runs on PRs to `stable/**` and
+  compares each PR with its base commit, so it answers only for its own changes. If a
+  break is intended, label the PR `api-break-approved`: the check still lists the breaks
+  but passes.
+- The `API compatibility gate` job in `publish.yml` compares the committed `HEAD` of
+  `stable/**` with the newest release. That is what gets tagged: semantic-release commits
+  only `CHANGELOG.md` and `src/Version.php`, and the release job's regeneration is a
+  validity check that never ships, so spec drift reaches customers only through a commit
+  (e.g. a backport's or spec sync's regeneration), which the PR check sees. The gate
+  passes on the `api-break-approved` label of a PR merged into the branch since that
+  release, but only for the API as of that PR's merge: a break added afterwards needs its
+  own approval. A manual run with the `api_break_approved` input covers a break no
+  labelled PR introduced (e.g. a direct push). On `main` it is a no-op.
 
 ### Backporting to stable branches
 
