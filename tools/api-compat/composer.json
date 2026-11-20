@@ -1,0 +1,17 @@
+{
+    "name": "camunda/orchestration-cluster-api-php-api-compat",
+    "description": "API compatibility checker for the PHP SDK (scripts/api-compat.sh). A separate project so its dependencies never reach SDK consumers or constrain the SDK's dev dependencies. roave/backward-compatibility-check needs PHP 8.4+; the SDK itself supports 8.2+.",
+    "type": "project",
+    "license": "Apache-2.0",
+    "require": {
+        "php": "~8.4.1 || ~8.5.0",
+        "roave/backward-compatibility-check": "^8.27",
+        "nikic/php-parser": "^5.0"
+    },
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "8.4.1"
+        }
+    }
+}

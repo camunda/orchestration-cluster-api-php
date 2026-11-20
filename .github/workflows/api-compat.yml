@@ -1,0 +1,85 @@
+name: API compatibility
+
+# Blocks PRs to stable branches that change the public PHP API in a way that breaks customer
+# code (see scripts/api-compat.sh and AGENTS.md "API compatibility"). A PR is compared with
+# its base commit, so it answers only for its own changes: an approved break already merged
+# does not fail every later PR. When a break is intended (e.g. a bug fix that must change
+# the API), apply the `api-break-approved` label: the check still runs and lists the breaks,
+# but passes. Upstream spec drift that no PR introduces is caught by the gate in
+# publish.yml, which compares what it is about to release with the last release.
+
+on:
+  pull_request:
+    branches:
+      - 'stable/**'
+    # labeled/unlabeled: re-evaluate when api-break-approved is added or removed. edited:
+    # re-evaluate when the PR is retargeted to another stable branch. The job must run for
+    # every such event: a skipped run would replace a failed one and the required check
+    # would count as passing.
+    types: [opened, synchronize, reopened, labeled, unlabeled, edited]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: api-compat-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  api-compat:
+    name: API compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # The checker compares two revisions of this repository: the PR merge commit
+          # and its base commit.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4' # roave/backward-compatibility-check needs 8.4+
+          extensions: json, mbstring
+          coverage: none
+          tools: composer:v2
+
+      - name: Install checker
+        run: composer install --working-dir=tools/api-compat --no-interaction --no-progress
+
+      - name: Check API compatibility
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          APPROVED: ${{ contains(github.event.pull_request.labels.*.name, 'api-break-approved') }}
+        run: |
+          set -uo pipefail
+          # stable/<N> with no N.x release yet (just cut from main) has no published API to
+          # protect and passes.
+          major="${BASE_REF#stable/}"
+          released=$(bash scripts/api-compat.sh baseline "$major") || exit 2
+          if [ -z "$released" ]; then
+            echo "::notice::No ${major}.x release published yet; nothing to protect."
+            exit 0
+          fi
+          pipeline_status=(0 0)
+          bash scripts/api-compat.sh check "$BASE_SHA" HEAD | tee "$RUNNER_TEMP/api-compat.txt" || pipeline_status=("${PIPESTATUS[@]}")
+          [ "${pipeline_status[1]}" -eq 0 ] || exit 2
+          rc="${pipeline_status[0]}"
+          {
+            echo '## API compatibility'
+            echo '```'
+            cat "$RUNNER_TEMP/api-compat.txt" || exit 2
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY" || exit 2
+          if [ "$rc" -eq 1 ] && [ "$APPROVED" = "true" ]; then
+            echo "::warning::Breaking API changes approved with the api-break-approved label."
+            echo "Approved with the \`api-break-approved\` label." >> "$GITHUB_STEP_SUMMARY" || exit 2
+            exit 0
+          fi
+          if [ "$rc" -eq 1 ]; then
+            echo "::error::If this break is intended (e.g. a bug fix that must change the API), apply the api-break-approved label. Otherwise make the change backward compatible."
+          fi
+          exit "$rc"
