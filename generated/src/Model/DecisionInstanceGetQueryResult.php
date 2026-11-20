@@ -430,11 +430,11 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
         if ($this->container['businessId'] === null && !$this->isNullableSetToNull('businessId')) {
             $invalidProperties[] = "'businessId' is required";
         }
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be smaller than or equal to 256.";
         }
 
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be bigger than or equal to 1.";
         }
 
@@ -561,6 +561,16 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
+        if (is_null($businessId)) {
+            array_push($this->openAPINullablesSetToNull, 'businessId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('businessId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['businessId'] = $businessId;
         if ($businessId === null) {
             unset($this->openAPIFieldsSet['businessId']);
@@ -802,6 +812,16 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function setElementInstanceKey(?\Camunda\Orchestration\Semantic\ElementInstanceKey $elementInstanceKey): static
     {
+        if (is_null($elementInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'elementInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('elementInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['elementInstanceKey'] = $elementInstanceKey;
         if ($elementInstanceKey === null) {
             unset($this->openAPIFieldsSet['elementInstanceKey']);
@@ -902,6 +922,16 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function setProcessDefinitionKey(?\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
+        if (is_null($processDefinitionKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
         if ($processDefinitionKey === null) {
             unset($this->openAPIFieldsSet['processDefinitionKey']);
@@ -931,6 +961,16 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function setProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
+        if (is_null($processInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processInstanceKey'] = $processInstanceKey;
         if ($processInstanceKey === null) {
             unset($this->openAPIFieldsSet['processInstanceKey']);
@@ -1021,6 +1061,16 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
         if ($rootProcessInstanceKey === null) {
             unset($this->openAPIFieldsSet['rootProcessInstanceKey']);

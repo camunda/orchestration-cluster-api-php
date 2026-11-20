@@ -101,9 +101,15 @@ class ObjectSerializer
             if ($data instanceof ModelInterface) {
                 $formats = $data::openAPIFormats();
                 foreach ($data::openAPITypes() as $property => $openAPIType) {
-                    if (method_exists($data, 'isFieldSet') && !$data->isFieldSet($property)) {
+                    if (
+                        method_exists($data, 'isFieldSet') && !$data->isFieldSet($property)
+                        && !(method_exists($data, 'isNullableSetToNull') && $data->isNullableSetToNull($property))
+                    ) {
                         // The caller never provided this optional field — omit it from
-                        // the request body instead of emitting its spec default.
+                        // the request body instead of emitting its spec default. An
+                        // explicit null on a nullable field is not "unset": setters drop
+                        // it from openAPIFieldsSet, but openAPINullablesSetToNull records
+                        // it, and it must still serialize as `null`.
                         continue;
                     }
                     $getter = $data::getters()[$property];

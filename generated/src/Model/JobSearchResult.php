@@ -511,11 +511,11 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
         if ($this->container['processDefinitionId'] === null && !$this->isNullableSetToNull('processDefinitionId')) {
             $invalidProperties[] = "'processDefinitionId' is required";
         }
-        if (!is_null((string) $this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
+        if (!is_null($this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
+        if (!is_null($this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
         }
 
@@ -531,11 +531,11 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
         if ($this->container['businessId'] === null && !$this->isNullableSetToNull('businessId')) {
             $invalidProperties[] = "'businessId' is required";
         }
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be smaller than or equal to 256.";
         }
 
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be bigger than or equal to 1.";
         }
 
@@ -719,6 +719,16 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setElementId(?\Camunda\Orchestration\Semantic\ElementId $elementId): static
     {
+        if (is_null($elementId)) {
+            array_push($this->openAPINullablesSetToNull, 'elementId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('elementId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['elementId'] = $elementId;
         if ($elementId === null) {
             unset($this->openAPIFieldsSet['elementId']);
@@ -1058,6 +1068,16 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setProcessDefinitionId(?\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
+        if (is_null($processDefinitionId)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionId'] = $processDefinitionId;
         if ($processDefinitionId === null) {
             unset($this->openAPIFieldsSet['processDefinitionId']);
@@ -1087,6 +1107,16 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setProcessDefinitionKey(?\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
+        if (is_null($processDefinitionKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
         if ($processDefinitionKey === null) {
             unset($this->openAPIFieldsSet['processDefinitionKey']);
@@ -1145,6 +1175,16 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
         if ($rootProcessInstanceKey === null) {
             unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
@@ -1174,6 +1214,16 @@ class JobSearchResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
+        if (is_null($businessId)) {
+            array_push($this->openAPINullablesSetToNull, 'businessId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('businessId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['businessId'] = $businessId;
         if ($businessId === null) {
             unset($this->openAPIFieldsSet['businessId']);

@@ -665,6 +665,16 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function setFormKey(?\Camunda\Orchestration\Semantic\FormKey $formKey): static
     {
+        if (is_null($formKey)) {
+            array_push($this->openAPINullablesSetToNull, 'formKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('formKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['formKey'] = $formKey;
         if ($formKey === null) {
             unset($this->openAPIFieldsSet['formKey']);
@@ -740,6 +750,16 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function setUserTaskKey(?\Camunda\Orchestration\Semantic\UserTaskKey $userTaskKey): static
     {
+        if (is_null($userTaskKey)) {
+            array_push($this->openAPINullablesSetToNull, 'userTaskKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('userTaskKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['userTaskKey'] = $userTaskKey;
         if ($userTaskKey === null) {
             unset($this->openAPIFieldsSet['userTaskKey']);

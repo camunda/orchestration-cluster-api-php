@@ -514,6 +514,16 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
      */
     public function setProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
+        if (is_null($processInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processInstanceKey'] = $processInstanceKey;
         if ($processInstanceKey === null) {
             unset($this->openAPIFieldsSet['processInstanceKey']);
@@ -543,6 +553,16 @@ class BatchOperationItemResponse implements ModelInterface, ArrayAccess, JsonSer
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
         if ($rootProcessInstanceKey === null) {
             unset($this->openAPIFieldsSet['rootProcessInstanceKey']);

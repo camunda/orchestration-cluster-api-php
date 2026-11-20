@@ -363,6 +363,16 @@ class ProcessDefinitionResumptionResult implements ModelInterface, ArrayAccess, 
      */
     public function setBatchOperationKey(?\Camunda\Orchestration\Semantic\BatchOperationKey $batchOperationKey): static
     {
+        if (is_null($batchOperationKey)) {
+            array_push($this->openAPINullablesSetToNull, 'batchOperationKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('batchOperationKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['batchOperationKey'] = $batchOperationKey;
         if ($batchOperationKey === null) {
             unset($this->openAPIFieldsSet['batchOperationKey']);

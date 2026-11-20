@@ -482,11 +482,11 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
         if ($this->container['businessId'] === null && !$this->isNullableSetToNull('businessId')) {
             $invalidProperties[] = "'businessId' is required";
         }
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be smaller than or equal to 256.";
         }
 
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be bigger than or equal to 1.";
         }
 
@@ -924,6 +924,16 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setParentProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $parentProcessInstanceKey): static
     {
+        if (is_null($parentProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'parentProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('parentProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['parentProcessInstanceKey'] = $parentProcessInstanceKey;
         if ($parentProcessInstanceKey === null) {
             unset($this->openAPIFieldsSet['parentProcessInstanceKey']);
@@ -953,6 +963,16 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setParentElementInstanceKey(?\Camunda\Orchestration\Semantic\ElementInstanceKey $parentElementInstanceKey): static
     {
+        if (is_null($parentElementInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'parentElementInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('parentElementInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['parentElementInstanceKey'] = $parentElementInstanceKey;
         if ($parentElementInstanceKey === null) {
             unset($this->openAPIFieldsSet['parentElementInstanceKey']);
@@ -982,6 +1002,16 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
         if ($rootProcessInstanceKey === null) {
             unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
@@ -1046,6 +1076,16 @@ class ProcessInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
+        if (is_null($businessId)) {
+            array_push($this->openAPINullablesSetToNull, 'businessId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('businessId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['businessId'] = $businessId;
         if ($businessId === null) {
             unset($this->openAPIFieldsSet['businessId']);

@@ -96,7 +96,7 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
         );
     }
 
-    public function testSetterNullOnNullableFieldUnsetsIt(): void
+    public function testSetterNullOnNullableFieldIsExplicitNull(): void
     {
         $request = new ClusterRestoreRequest([
             'overrides' => ['tenant-a' => new RestoreRequest(['backupIds' => [55]])],
@@ -104,11 +104,13 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
         $request->setFrom(new DateTime('2024-01-01T00:00:00Z'));
         self::assertStringContainsString('"from":"2024-01-01T00:00:00', $this->toJson($request));
 
-        // Assigning null through a setter mirrors ArrayAccess semantics: the field
-        // becomes unset again and is omitted (explicit constructor null stays explicit).
+        // set<Prop>(null) on a nullable field is an explicit null on the wire, not
+        // "unset": the setter drops it from openAPIFieldsSet but records it in
+        // openAPINullablesSetToNull, and the serializer still emits it as `null`.
+        // Only fields the caller never provided are omitted.
         $request->setFrom(null);
         $this->assertSerializesTo(
-            ['overrides' => ['tenant-a' => ['backupIds' => [55]]]],
+            ['from' => null, 'overrides' => ['tenant-a' => ['backupIds' => [55]]]],
             $request,
         );
     }

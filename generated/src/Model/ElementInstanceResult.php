@@ -446,11 +446,11 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
         if ($this->container['processDefinitionId'] === null && !$this->isNullableSetToNull('processDefinitionId')) {
             $invalidProperties[] = "'processDefinitionId' is required";
         }
-        if (!is_null((string) $this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
+        if (!is_null($this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
+        if (!is_null($this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
         }
 
@@ -545,6 +545,16 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setProcessDefinitionId(?\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
+        if (is_null($processDefinitionId)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionId'] = $processDefinitionId;
         if ($processDefinitionId === null) {
             unset($this->openAPIFieldsSet['processDefinitionId']);
@@ -899,6 +909,16 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
         if ($rootProcessInstanceKey === null) {
             unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
@@ -928,6 +948,16 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setProcessDefinitionKey(?\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
+        if (is_null($processDefinitionKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
         if ($processDefinitionKey === null) {
             unset($this->openAPIFieldsSet['processDefinitionKey']);
@@ -957,6 +987,16 @@ class ElementInstanceResult implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function setIncidentKey(?\Camunda\Orchestration\Semantic\IncidentKey $incidentKey): static
     {
+        if (is_null($incidentKey)) {
+            array_push($this->openAPINullablesSetToNull, 'incidentKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('incidentKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['incidentKey'] = $incidentKey;
         if ($incidentKey === null) {
             unset($this->openAPIFieldsSet['incidentKey']);

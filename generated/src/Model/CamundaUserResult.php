@@ -363,15 +363,15 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
         if ($this->container['username'] === null && !$this->isNullableSetToNull('username')) {
             $invalidProperties[] = "'username' is required";
         }
-        if (!is_null((string) $this->container['username']) && (mb_strlen((string) $this->container['username']) > 256)) {
+        if (!is_null($this->container['username']) && (mb_strlen((string) $this->container['username']) > 256)) {
             $invalidProperties[] = "invalid value for 'username', the character length must be smaller than or equal to 256.";
         }
 
-        if (!is_null((string) $this->container['username']) && (mb_strlen((string) $this->container['username']) < 1)) {
+        if (!is_null($this->container['username']) && (mb_strlen((string) $this->container['username']) < 1)) {
             $invalidProperties[] = "invalid value for 'username', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['username']) && !preg_match("/^[a-zA-Z0-9_~@.+-]+$/", (string) $this->container['username'])) {
+        if (!is_null($this->container['username']) && !preg_match("/^[a-zA-Z0-9_~@.+-]+$/", (string) $this->container['username'])) {
             $invalidProperties[] = "invalid value for 'username', must be conform to the pattern /^[a-zA-Z0-9_~@.+-]+$/.";
         }
 
@@ -465,6 +465,16 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setUsername(?\Camunda\Orchestration\Semantic\Username $username): static
     {
+        if (is_null($username)) {
+            array_push($this->openAPINullablesSetToNull, 'username');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('username', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['username'] = $username;
         if ($username === null) {
             unset($this->openAPIFieldsSet['username']);
