@@ -452,7 +452,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDeadline(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['deadline'];
+        return $this->container['deadline'] ?? null;
     }
 
     /**
@@ -491,7 +491,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDeniedReason(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['deniedReason'];
+        return $this->container['deniedReason'] ?? null;
     }
 
     /**
@@ -523,7 +523,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getElementId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**
@@ -555,7 +555,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -587,7 +587,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getEndTime(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['endTime'];
+        return $this->container['endTime'] ?? null;
     }
 
     /**
@@ -619,7 +619,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getErrorCode(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['errorCode'];
+        return $this->container['errorCode'] ?? null;
     }
 
     /**
@@ -651,7 +651,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getErrorMessage(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['errorMessage'];
+        return $this->container['errorMessage'] ?? null;
     }
 
     /**
@@ -683,7 +683,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getHasFailedWithRetriesLeft(): ?bool
     {
-        return $this->container['hasFailedWithRetriesLeft'];
+        return $this->container['hasFailedWithRetriesLeft'] ?? null;
     }
 
     /**
@@ -715,7 +715,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getIsDenied(): ?bool
     {
-        return $this->container['isDenied'];
+        return $this->container['isDenied'] ?? null;
     }
 
     /**
@@ -754,7 +754,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getJobKey(): string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
     {
-        return $this->container['jobKey'];
+        return $this->container['jobKey'] ?? null;
     }
 
     /**
@@ -786,7 +786,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getKind(): string|\Camunda\Orchestration\Api\Model\AdvancedJobKindFilter|null
     {
-        return $this->container['kind'];
+        return $this->container['kind'] ?? null;
     }
 
     /**
@@ -818,7 +818,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getListenerEventType(): string|\Camunda\Orchestration\Api\Model\AdvancedJobListenerEventTypeFilter|null
     {
-        return $this->container['listenerEventType'];
+        return $this->container['listenerEventType'] ?? null;
     }
 
     /**
@@ -850,7 +850,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getPriority(): int|\Camunda\Orchestration\Api\Model\AdvancedIntegerFilter|null
     {
-        return $this->container['priority'];
+        return $this->container['priority'] ?? null;
     }
 
     /**
@@ -882,7 +882,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -914,7 +914,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -946,7 +946,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -978,7 +978,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRetries(): int|\Camunda\Orchestration\Api\Model\AdvancedIntegerFilter|null
     {
-        return $this->container['retries'];
+        return $this->container['retries'] ?? null;
     }
 
     /**
@@ -1010,7 +1010,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getState(): string|\Camunda\Orchestration\Api\Model\AdvancedJobStateFilter|null
     {
-        return $this->container['state'];
+        return $this->container['state'] ?? null;
     }
 
     /**
@@ -1042,7 +1042,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getTenantId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -1074,7 +1074,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getType(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['type'];
+        return $this->container['type'] ?? null;
     }
 
     /**
@@ -1106,7 +1106,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getWorker(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['worker'];
+        return $this->container['worker'] ?? null;
     }
 
     /**
@@ -1138,7 +1138,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getCreationTime(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['creationTime'];
+        return $this->container['creationTime'] ?? null;
     }
 
     /**
@@ -1170,7 +1170,7 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getLastUpdateTime(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['lastUpdateTime'];
+        return $this->container['lastUpdateTime'] ?? null;
     }
 
     /**
@@ -1238,6 +1238,24 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -1252,6 +1270,15 @@ class JobFilter implements ModelInterface, ArrayAccess, JsonSerializable
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

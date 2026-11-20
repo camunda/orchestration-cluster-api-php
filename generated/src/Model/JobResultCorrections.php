@@ -341,7 +341,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getAssignee(): ?string
     {
-        return $this->container['assignee'];
+        return $this->container['assignee'] ?? null;
     }
 
     /**
@@ -380,7 +380,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getDueDate(): \DateTime|string|null
     {
-        return $this->container['dueDate'];
+        return $this->container['dueDate'] ?? null;
     }
 
     /**
@@ -419,7 +419,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getFollowUpDate(): \DateTime|string|null
     {
-        return $this->container['followUpDate'];
+        return $this->container['followUpDate'] ?? null;
     }
 
     /**
@@ -458,7 +458,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getCandidateUsers(): ?array
     {
-        return $this->container['candidateUsers'];
+        return $this->container['candidateUsers'] ?? null;
     }
 
     /**
@@ -497,7 +497,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getCandidateGroups(): ?array
     {
-        return $this->container['candidateGroups'];
+        return $this->container['candidateGroups'] ?? null;
     }
 
     /**
@@ -536,7 +536,7 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getPriority(): ?int
     {
-        return $this->container['priority'];
+        return $this->container['priority'] ?? null;
     }
 
     /**
@@ -618,6 +618,24 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -632,6 +650,15 @@ class JobResultCorrections implements ModelInterface, ArrayAccess, JsonSerializa
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

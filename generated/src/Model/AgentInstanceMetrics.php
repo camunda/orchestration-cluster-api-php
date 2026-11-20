@@ -361,7 +361,7 @@ class AgentInstanceMetrics implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getInputTokens(): int
     {
-        return $this->container['inputTokens'];
+        return $this->container['inputTokens'] ?? null;
     }
 
     /**
@@ -393,7 +393,7 @@ class AgentInstanceMetrics implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getOutputTokens(): int
     {
-        return $this->container['outputTokens'];
+        return $this->container['outputTokens'] ?? null;
     }
 
     /**
@@ -425,7 +425,7 @@ class AgentInstanceMetrics implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getReasoningTokenCount(): int
     {
-        return $this->container['reasoningTokenCount'];
+        return $this->container['reasoningTokenCount'] ?? null;
     }
 
     /**
@@ -457,7 +457,7 @@ class AgentInstanceMetrics implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getCacheCreationTokenCount(): int
     {
-        return $this->container['cacheCreationTokenCount'];
+        return $this->container['cacheCreationTokenCount'] ?? null;
     }
 
     /**
@@ -489,7 +489,7 @@ class AgentInstanceMetrics implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getCacheReadTokenCount(): int
     {
-        return $this->container['cacheReadTokenCount'];
+        return $this->container['cacheReadTokenCount'] ?? null;
     }
 
     /**
@@ -521,7 +521,7 @@ class AgentInstanceMetrics implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getModelCalls(): int
     {
-        return $this->container['modelCalls'];
+        return $this->container['modelCalls'] ?? null;
     }
 
     /**
@@ -553,7 +553,7 @@ class AgentInstanceMetrics implements ModelInterface, ArrayAccess, JsonSerializa
      */
     public function getToolCalls(): int
     {
-        return $this->container['toolCalls'];
+        return $this->container['toolCalls'] ?? null;
     }
 
     /**
@@ -621,6 +621,24 @@ class AgentInstanceMetrics implements ModelInterface, ArrayAccess, JsonSerializa
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -635,6 +653,15 @@ class AgentInstanceMetrics implements ModelInterface, ArrayAccess, JsonSerializa
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

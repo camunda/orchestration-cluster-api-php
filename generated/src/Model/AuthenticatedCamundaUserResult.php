@@ -421,7 +421,7 @@ class AuthenticatedCamundaUserResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getIsAnonymous(): bool
     {
-        return $this->container['isAnonymous'];
+        return $this->container['isAnonymous'] ?? null;
     }
 
     /**
@@ -453,7 +453,7 @@ class AuthenticatedCamundaUserResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getUsername(): \Camunda\Orchestration\Semantic\Username
     {
-        return $this->container['username'];
+        return $this->container['username'] ?? null;
     }
 
     /**
@@ -482,7 +482,7 @@ class AuthenticatedCamundaUserResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getDisplayName(): ?string
     {
-        return $this->container['displayName'];
+        return $this->container['displayName'] ?? null;
     }
 
     /**
@@ -521,7 +521,7 @@ class AuthenticatedCamundaUserResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getEmail(): ?string
     {
-        return $this->container['email'];
+        return $this->container['email'] ?? null;
     }
 
     /**
@@ -560,7 +560,7 @@ class AuthenticatedCamundaUserResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getAuthorizedComponents(): array
     {
-        return $this->container['authorizedComponents'];
+        return $this->container['authorizedComponents'] ?? null;
     }
 
     /**
@@ -592,7 +592,7 @@ class AuthenticatedCamundaUserResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getTenants(): array
     {
-        return $this->container['tenants'];
+        return $this->container['tenants'] ?? null;
     }
 
     /**
@@ -624,7 +624,7 @@ class AuthenticatedCamundaUserResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getGroups(): array
     {
-        return $this->container['groups'];
+        return $this->container['groups'] ?? null;
     }
 
     /**
@@ -656,7 +656,7 @@ class AuthenticatedCamundaUserResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getRoles(): array
     {
-        return $this->container['roles'];
+        return $this->container['roles'] ?? null;
     }
 
     /**
@@ -688,7 +688,7 @@ class AuthenticatedCamundaUserResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getSalesPlanType(): ?string
     {
-        return $this->container['salesPlanType'];
+        return $this->container['salesPlanType'] ?? null;
     }
 
     /**
@@ -727,7 +727,7 @@ class AuthenticatedCamundaUserResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getC8Links(): array
     {
-        return $this->container['c8Links'];
+        return $this->container['c8Links'] ?? null;
     }
 
     /**
@@ -759,7 +759,7 @@ class AuthenticatedCamundaUserResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getCanLogout(): bool
     {
-        return $this->container['canLogout'];
+        return $this->container['canLogout'] ?? null;
     }
 
     /**
@@ -827,6 +827,24 @@ class AuthenticatedCamundaUserResult implements ModelInterface, ArrayAccess, Jso
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -841,6 +859,15 @@ class AuthenticatedCamundaUserResult implements ModelInterface, ArrayAccess, Jso
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

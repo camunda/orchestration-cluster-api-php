@@ -294,7 +294,7 @@ class CursorForwardPagination implements ModelInterface, ArrayAccess, JsonSerial
     {
         $invalidProperties = [];
 
-        if (!is_null((string) $this->container['after']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['after'])) {
+        if (!is_null($this->container['after']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['after'])) {
             $invalidProperties[] = "invalid value for 'after', must be conform to the pattern /^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/.";
         }
 
@@ -325,7 +325,7 @@ class CursorForwardPagination implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getAfter(): ?\Camunda\Orchestration\Semantic\EndCursor
     {
-        return $this->container['after'];
+        return $this->container['after'] ?? null;
     }
 
     /**
@@ -354,7 +354,7 @@ class CursorForwardPagination implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getLimit(): ?int
     {
-        return $this->container['limit'];
+        return $this->container['limit'] ?? null;
     }
 
     /**
@@ -429,6 +429,24 @@ class CursorForwardPagination implements ModelInterface, ArrayAccess, JsonSerial
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -443,6 +461,15 @@ class CursorForwardPagination implements ModelInterface, ArrayAccess, JsonSerial
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

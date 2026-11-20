@@ -430,11 +430,11 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
         if ($this->container['businessId'] === null && !$this->isNullableSetToNull('businessId')) {
             $invalidProperties[] = "'businessId' is required";
         }
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be smaller than or equal to 256.";
         }
 
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be bigger than or equal to 1.";
         }
 
@@ -549,7 +549,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**
@@ -561,6 +561,16 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function setBusinessId(?\Camunda\Orchestration\Semantic\BusinessId $businessId): static
     {
+        if (is_null($businessId)) {
+            array_push($this->openAPINullablesSetToNull, 'businessId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('businessId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['businessId'] = $businessId;
         if ($businessId === null) {
             unset($this->openAPIFieldsSet['businessId']);
@@ -578,7 +588,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getDecisionDefinitionId(): \Camunda\Orchestration\Semantic\DecisionDefinitionId
     {
-        return $this->container['decisionDefinitionId'];
+        return $this->container['decisionDefinitionId'] ?? null;
     }
 
     /**
@@ -607,7 +617,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getDecisionDefinitionKey(): \Camunda\Orchestration\Semantic\DecisionDefinitionKey
     {
-        return $this->container['decisionDefinitionKey'];
+        return $this->container['decisionDefinitionKey'] ?? null;
     }
 
     /**
@@ -636,7 +646,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getDecisionDefinitionName(): string
     {
-        return $this->container['decisionDefinitionName'];
+        return $this->container['decisionDefinitionName'] ?? null;
     }
 
     /**
@@ -668,7 +678,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getDecisionDefinitionType(): \Camunda\Orchestration\Api\Model\DecisionDefinitionTypeEnum
     {
-        return $this->container['decisionDefinitionType'];
+        return $this->container['decisionDefinitionType'] ?? null;
     }
 
     /**
@@ -700,7 +710,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getDecisionDefinitionVersion(): int
     {
-        return $this->container['decisionDefinitionVersion'];
+        return $this->container['decisionDefinitionVersion'] ?? null;
     }
 
     /**
@@ -732,7 +742,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getDecisionEvaluationInstanceKey(): \Camunda\Orchestration\Semantic\DecisionEvaluationInstanceKey
     {
-        return $this->container['decisionEvaluationInstanceKey'];
+        return $this->container['decisionEvaluationInstanceKey'] ?? null;
     }
 
     /**
@@ -761,7 +771,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getDecisionEvaluationKey(): \Camunda\Orchestration\Semantic\DecisionEvaluationKey
     {
-        return $this->container['decisionEvaluationKey'];
+        return $this->container['decisionEvaluationKey'] ?? null;
     }
 
     /**
@@ -790,7 +800,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -802,6 +812,16 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function setElementInstanceKey(?\Camunda\Orchestration\Semantic\ElementInstanceKey $elementInstanceKey): static
     {
+        if (is_null($elementInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'elementInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('elementInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['elementInstanceKey'] = $elementInstanceKey;
         if ($elementInstanceKey === null) {
             unset($this->openAPIFieldsSet['elementInstanceKey']);
@@ -819,7 +839,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getEvaluationDate(): \DateTime
     {
-        return $this->container['evaluationDate'];
+        return $this->container['evaluationDate'] ?? null;
     }
 
     /**
@@ -851,7 +871,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getEvaluationFailure(): ?string
     {
-        return $this->container['evaluationFailure'];
+        return $this->container['evaluationFailure'] ?? null;
     }
 
     /**
@@ -890,7 +910,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -902,6 +922,16 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function setProcessDefinitionKey(?\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
+        if (is_null($processDefinitionKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
         if ($processDefinitionKey === null) {
             unset($this->openAPIFieldsSet['processDefinitionKey']);
@@ -919,7 +949,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -931,6 +961,16 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function setProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
+        if (is_null($processInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processInstanceKey'] = $processInstanceKey;
         if ($processInstanceKey === null) {
             unset($this->openAPIFieldsSet['processInstanceKey']);
@@ -948,7 +988,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getResult(): string
     {
-        return $this->container['result'];
+        return $this->container['result'] ?? null;
     }
 
     /**
@@ -980,7 +1020,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getRootDecisionDefinitionKey(): \Camunda\Orchestration\Semantic\DecisionDefinitionKey
     {
-        return $this->container['rootDecisionDefinitionKey'];
+        return $this->container['rootDecisionDefinitionKey'] ?? null;
     }
 
     /**
@@ -1009,7 +1049,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -1021,6 +1061,16 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
         if ($rootProcessInstanceKey === null) {
             unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
@@ -1038,7 +1088,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getState(): \Camunda\Orchestration\Api\Model\DecisionInstanceStateEnum
     {
-        return $this->container['state'];
+        return $this->container['state'] ?? null;
     }
 
     /**
@@ -1070,7 +1120,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getStorageOrdinal(): ?int
     {
-        return $this->container['storageOrdinal'];
+        return $this->container['storageOrdinal'] ?? null;
     }
 
     /**
@@ -1109,7 +1159,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getTenantId(): \Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -1138,7 +1188,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getEvaluatedInputs(): array
     {
-        return $this->container['evaluatedInputs'];
+        return $this->container['evaluatedInputs'] ?? null;
     }
 
     /**
@@ -1170,7 +1220,7 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getMatchedRules(): array
     {
-        return $this->container['matchedRules'];
+        return $this->container['matchedRules'] ?? null;
     }
 
     /**
@@ -1238,6 +1288,24 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -1252,6 +1320,15 @@ class DecisionInstanceGetQueryResult implements ModelInterface, ArrayAccess, Jso
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

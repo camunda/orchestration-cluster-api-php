@@ -375,7 +375,7 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -407,7 +407,7 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getErrorType(): string|\Camunda\Orchestration\Api\Model\AdvancedIncidentErrorTypeFilter|null
     {
-        return $this->container['errorType'];
+        return $this->container['errorType'] ?? null;
     }
 
     /**
@@ -439,7 +439,7 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getErrorMessage(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['errorMessage'];
+        return $this->container['errorMessage'] ?? null;
     }
 
     /**
@@ -471,7 +471,7 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getElementId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**
@@ -503,7 +503,7 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getCreationTime(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['creationTime'];
+        return $this->container['creationTime'] ?? null;
     }
 
     /**
@@ -535,7 +535,7 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getState(): string|\Camunda\Orchestration\Api\Model\AdvancedIncidentStateFilter|null
     {
-        return $this->container['state'];
+        return $this->container['state'] ?? null;
     }
 
     /**
@@ -567,7 +567,7 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getTenantId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -599,7 +599,7 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getIncidentKey(): string|\Camunda\Orchestration\Api\Model\BasicStringFilter|null
     {
-        return $this->container['incidentKey'];
+        return $this->container['incidentKey'] ?? null;
     }
 
     /**
@@ -631,7 +631,7 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -663,7 +663,7 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -695,7 +695,7 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -727,7 +727,7 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getJobKey(): string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
     {
-        return $this->container['jobKey'];
+        return $this->container['jobKey'] ?? null;
     }
 
     /**
@@ -795,6 +795,24 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -809,6 +827,15 @@ class IncidentFilter implements ModelInterface, ArrayAccess, JsonSerializable
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

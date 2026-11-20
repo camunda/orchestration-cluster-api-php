@@ -96,16 +96,39 @@ return static function (array $ctx): void {
                 1
             ) ?? $src;
 
-            // 3. setter — canonicalise (value object owns validation)
+            // 3. setter — canonicalise (value object owns validation). For a
+            //    nullable property the generator's setter also maintains the
+            //    `openAPINullablesSetToNull` tracking that lets an explicit null
+            //    survive serialization (ObjectSerializer only emits a null value
+            //    when `isNullableSetToNull()` is true). Dropping that block would
+            //    silently omit `set<Prop>(null)` from the wire, so preserve it.
             $src = preg_replace_callback(
                 '/    public function set' . preg_quote($studly, '/')
                     . '\((\??)string \$(\w+)\): static\n    \{.*?\n    \}\n/s',
                 static function (array $m) use ($prop, $fqcn): string {
                     $nullable = $m[1];
                     $var = $m[2];
+                    // Preserve the generator's nullable-state tracking verbatim when
+                    // the original setter tracked it (i.e. the property is declared
+                    // `nullable: true`); keyed off the original body, not the `?`
+                    // marker, since an optional-but-non-nullable property is also `?`.
+                    $tracksNull = str_contains($m[0], 'openAPINullablesSetToNull');
+                    $body = '';
+                    if ($tracksNull) {
+                        $body .= "        if (is_null(\$" . $var . ")) {\n"
+                            . "            array_push(\$this->openAPINullablesSetToNull, '" . $prop . "');\n"
+                            . "        } else {\n"
+                            . "            \$nullablesSetToNull = \$this->getOpenAPINullablesSetToNull();\n"
+                            . "            \$index = array_search('" . $prop . "', \$nullablesSetToNull);\n"
+                            . "            if (\$index !== FALSE) {\n"
+                            . "                unset(\$nullablesSetToNull[\$index]);\n"
+                            . "                \$this->setOpenAPINullablesSetToNull(\$nullablesSetToNull);\n"
+                            . "            }\n"
+                            . "        }\n";
+                    }
                     // Preserve the explicit-field tracking that hook 0285 relies on, so
                     // a setter-assigned value marks the field as set (and null unsets it).
-                    $body = "        \$this->container['" . $prop . "'] = \$" . $var . ";\n"
+                    $body .= "        \$this->container['" . $prop . "'] = \$" . $var . ";\n"
                         . "        if (\$" . $var . " === null) {\n"
                         . "            unset(\$this->openAPIFieldsSet['" . $prop . "']);\n"
                         . "        } else {\n"
@@ -130,6 +153,19 @@ return static function (array $ctx): void {
         }
 
         if ($src !== $orig) {
+            // The blunt cast above also rewrites the `is_null(...)` guard that the
+            // generator emits ahead of every length/pattern check on a nullable
+            // property. That is wrong: `(string) null` is `''` (never null), so
+            // `is_null((string) $this->container['prop'])` is always false, the
+            // `!is_null(...) &&` guard always passes, and a permitted null is fed
+            // into mb_strlen/preg_match — failing validation for omitted or
+            // explicitly-null identifiers. Keep the null check on the raw container
+            // value; only the length/pattern-check arguments need the string cast.
+            $src = str_replace(
+                'is_null((string) $this->container[',
+                'is_null($this->container[',
+                $src
+            );
             $src = patch_set_if_exists($src);
             file_put_contents($file, $src);
             $modelsTouched++;

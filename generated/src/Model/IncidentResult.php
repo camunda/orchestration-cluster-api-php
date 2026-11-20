@@ -459,7 +459,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionId(): \Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -488,7 +488,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getErrorType(): \Camunda\Orchestration\Api\Model\IncidentErrorTypeEnum
     {
-        return $this->container['errorType'];
+        return $this->container['errorType'] ?? null;
     }
 
     /**
@@ -520,7 +520,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getErrorMessage(): string
     {
-        return $this->container['errorMessage'];
+        return $this->container['errorMessage'] ?? null;
     }
 
     /**
@@ -552,7 +552,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getElementId(): \Camunda\Orchestration\Semantic\ElementId
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**
@@ -581,7 +581,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getCreationTime(): \DateTime
     {
-        return $this->container['creationTime'];
+        return $this->container['creationTime'] ?? null;
     }
 
     /**
@@ -613,7 +613,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getState(): \Camunda\Orchestration\Api\Model\IncidentStateEnum
     {
-        return $this->container['state'];
+        return $this->container['state'] ?? null;
     }
 
     /**
@@ -645,7 +645,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getTenantId(): \Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -674,7 +674,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getIncidentKey(): \Camunda\Orchestration\Semantic\IncidentKey
     {
-        return $this->container['incidentKey'];
+        return $this->container['incidentKey'] ?? null;
     }
 
     /**
@@ -703,7 +703,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionKey(): \Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -732,7 +732,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessInstanceKey(): \Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -761,7 +761,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -773,6 +773,16 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
         if ($rootProcessInstanceKey === null) {
             unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
@@ -790,7 +800,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getElementInstanceKey(): \Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -819,7 +829,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getJobKey(): ?\Camunda\Orchestration\Semantic\JobKey
     {
-        return $this->container['jobKey'];
+        return $this->container['jobKey'] ?? null;
     }
 
     /**
@@ -831,6 +841,16 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setJobKey(?\Camunda\Orchestration\Semantic\JobKey $jobKey): static
     {
+        if (is_null($jobKey)) {
+            array_push($this->openAPINullablesSetToNull, 'jobKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('jobKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['jobKey'] = $jobKey;
         if ($jobKey === null) {
             unset($this->openAPIFieldsSet['jobKey']);
@@ -848,7 +868,7 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getStorageOrdinal(): ?int
     {
-        return $this->container['storageOrdinal'];
+        return $this->container['storageOrdinal'] ?? null;
     }
 
     /**
@@ -923,6 +943,24 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -937,6 +975,15 @@ class IncidentResult implements ModelInterface, ArrayAccess, JsonSerializable
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

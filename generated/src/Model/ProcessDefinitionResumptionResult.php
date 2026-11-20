@@ -319,7 +319,7 @@ class ProcessDefinitionResumptionResult implements ModelInterface, ArrayAccess, 
      */
     public function getProcessDefinitions(): array
     {
-        return $this->container['processDefinitions'];
+        return $this->container['processDefinitions'] ?? null;
     }
 
     /**
@@ -351,7 +351,7 @@ class ProcessDefinitionResumptionResult implements ModelInterface, ArrayAccess, 
      */
     public function getBatchOperationKey(): ?\Camunda\Orchestration\Semantic\BatchOperationKey
     {
-        return $this->container['batchOperationKey'];
+        return $this->container['batchOperationKey'] ?? null;
     }
 
     /**
@@ -363,6 +363,16 @@ class ProcessDefinitionResumptionResult implements ModelInterface, ArrayAccess, 
      */
     public function setBatchOperationKey(?\Camunda\Orchestration\Semantic\BatchOperationKey $batchOperationKey): static
     {
+        if (is_null($batchOperationKey)) {
+            array_push($this->openAPINullablesSetToNull, 'batchOperationKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('batchOperationKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['batchOperationKey'] = $batchOperationKey;
         if ($batchOperationKey === null) {
             unset($this->openAPIFieldsSet['batchOperationKey']);
@@ -416,6 +426,24 @@ class ProcessDefinitionResumptionResult implements ModelInterface, ArrayAccess, 
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -430,6 +458,15 @@ class ProcessDefinitionResumptionResult implements ModelInterface, ArrayAccess, 
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

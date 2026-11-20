@@ -451,11 +451,11 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
     {
         $invalidProperties = [];
 
-        if (!is_null((string) $this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
+        if (!is_null($this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
+        if (!is_null($this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
         }
 
@@ -468,15 +468,15 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             );
         }
 
-        if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
+        if (!is_null($this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be smaller than or equal to 31.";
         }
 
-        if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) < 1)) {
+        if (!is_null($this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) < 1)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['tenantId']) && !preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
+        if (!is_null($this->container['tenantId']) && !preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
             $invalidProperties[] = "invalid value for 'tenantId', must be conform to the pattern /^(<default>|[\\w\\.\\-]{1,31})$/.";
         }
 
@@ -499,7 +499,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -528,7 +528,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getState(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceStateFilter|null
     {
-        return $this->container['state'];
+        return $this->container['state'] ?? null;
     }
 
     /**
@@ -560,7 +560,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getType(): ?string
     {
-        return $this->container['type'];
+        return $this->container['type'] ?? null;
     }
 
     /**
@@ -602,7 +602,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getElementId(): string|\Camunda\Orchestration\Api\Model\AdvancedElementIdFilter|null
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**
@@ -634,7 +634,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getElementName(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['elementName'];
+        return $this->container['elementName'] ?? null;
     }
 
     /**
@@ -666,7 +666,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getHasIncident(): ?bool
     {
-        return $this->container['hasIncident'];
+        return $this->container['hasIncident'] ?? null;
     }
 
     /**
@@ -698,7 +698,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -727,7 +727,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -756,7 +756,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -785,7 +785,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -814,7 +814,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getIncidentKey(): ?\Camunda\Orchestration\Semantic\IncidentKey
     {
-        return $this->container['incidentKey'];
+        return $this->container['incidentKey'] ?? null;
     }
 
     /**
@@ -843,7 +843,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getStartDate(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['startDate'];
+        return $this->container['startDate'] ?? null;
     }
 
     /**
@@ -875,7 +875,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getEndDate(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['endDate'];
+        return $this->container['endDate'] ?? null;
     }
 
     /**
@@ -907,7 +907,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getElementInstanceScopeKey(): ?string
     {
-        return $this->container['elementInstanceScopeKey'];
+        return $this->container['elementInstanceScopeKey'] ?? null;
     }
 
     /**
@@ -939,7 +939,7 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
      */
     public function getOr(): ?array
     {
-        return $this->container['or'];
+        return $this->container['or'] ?? null;
     }
 
     /**
@@ -1007,6 +1007,24 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -1021,6 +1039,15 @@ class ElementInstanceFilter implements ModelInterface, ArrayAccess, JsonSerializ
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

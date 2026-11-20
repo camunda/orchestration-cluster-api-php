@@ -361,7 +361,7 @@ class TopologyResponse implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getBrokers(): array
     {
-        return $this->container['brokers'];
+        return $this->container['brokers'] ?? null;
     }
 
     /**
@@ -393,7 +393,7 @@ class TopologyResponse implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getClusterId(): ?string
     {
-        return $this->container['clusterId'];
+        return $this->container['clusterId'] ?? null;
     }
 
     /**
@@ -432,7 +432,7 @@ class TopologyResponse implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getClusterSize(): int
     {
-        return $this->container['clusterSize'];
+        return $this->container['clusterSize'] ?? null;
     }
 
     /**
@@ -464,7 +464,7 @@ class TopologyResponse implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getPartitionsCount(): int
     {
-        return $this->container['partitionsCount'];
+        return $this->container['partitionsCount'] ?? null;
     }
 
     /**
@@ -496,7 +496,7 @@ class TopologyResponse implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getReplicationFactor(): int
     {
-        return $this->container['replicationFactor'];
+        return $this->container['replicationFactor'] ?? null;
     }
 
     /**
@@ -528,7 +528,7 @@ class TopologyResponse implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getGatewayVersion(): string
     {
-        return $this->container['gatewayVersion'];
+        return $this->container['gatewayVersion'] ?? null;
     }
 
     /**
@@ -560,7 +560,7 @@ class TopologyResponse implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getLastCompletedChangeId(): string
     {
-        return $this->container['lastCompletedChangeId'];
+        return $this->container['lastCompletedChangeId'] ?? null;
     }
 
     /**
@@ -628,6 +628,24 @@ class TopologyResponse implements ModelInterface, ArrayAccess, JsonSerializable
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -642,6 +660,15 @@ class TopologyResponse implements ModelInterface, ArrayAccess, JsonSerializable
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

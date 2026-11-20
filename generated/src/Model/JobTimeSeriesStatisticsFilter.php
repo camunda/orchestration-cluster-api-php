@@ -328,7 +328,7 @@ class JobTimeSeriesStatisticsFilter implements ModelInterface, ArrayAccess, Json
      */
     public function getFrom(): \DateTime
     {
-        return $this->container['from'];
+        return $this->container['from'] ?? null;
     }
 
     /**
@@ -360,7 +360,7 @@ class JobTimeSeriesStatisticsFilter implements ModelInterface, ArrayAccess, Json
      */
     public function getTo(): \DateTime
     {
-        return $this->container['to'];
+        return $this->container['to'] ?? null;
     }
 
     /**
@@ -392,7 +392,7 @@ class JobTimeSeriesStatisticsFilter implements ModelInterface, ArrayAccess, Json
      */
     public function getJobType(): string
     {
-        return $this->container['jobType'];
+        return $this->container['jobType'] ?? null;
     }
 
     /**
@@ -424,7 +424,7 @@ class JobTimeSeriesStatisticsFilter implements ModelInterface, ArrayAccess, Json
      */
     public function getResolution(): ?string
     {
-        return $this->container['resolution'];
+        return $this->container['resolution'] ?? null;
     }
 
     /**
@@ -492,6 +492,24 @@ class JobTimeSeriesStatisticsFilter implements ModelInterface, ArrayAccess, Json
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -506,6 +524,15 @@ class JobTimeSeriesStatisticsFilter implements ModelInterface, ArrayAccess, Json
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

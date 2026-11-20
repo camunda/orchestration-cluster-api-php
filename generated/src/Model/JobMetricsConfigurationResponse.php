@@ -351,7 +351,7 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
      */
     public function getEnabled(): bool
     {
-        return $this->container['enabled'];
+        return $this->container['enabled'] ?? null;
     }
 
     /**
@@ -383,7 +383,7 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
      */
     public function getExportInterval(): string
     {
-        return $this->container['exportInterval'];
+        return $this->container['exportInterval'] ?? null;
     }
 
     /**
@@ -415,7 +415,7 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
      */
     public function getMaxWorkerNameLength(): int
     {
-        return $this->container['maxWorkerNameLength'];
+        return $this->container['maxWorkerNameLength'] ?? null;
     }
 
     /**
@@ -447,7 +447,7 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
      */
     public function getMaxJobTypeLength(): int
     {
-        return $this->container['maxJobTypeLength'];
+        return $this->container['maxJobTypeLength'] ?? null;
     }
 
     /**
@@ -479,7 +479,7 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
      */
     public function getMaxTenantIdLength(): int
     {
-        return $this->container['maxTenantIdLength'];
+        return $this->container['maxTenantIdLength'] ?? null;
     }
 
     /**
@@ -511,7 +511,7 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
      */
     public function getMaxUniqueKeys(): int
     {
-        return $this->container['maxUniqueKeys'];
+        return $this->container['maxUniqueKeys'] ?? null;
     }
 
     /**
@@ -579,6 +579,24 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -593,6 +611,15 @@ class JobMetricsConfigurationResponse implements ModelInterface, ArrayAccess, Js
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

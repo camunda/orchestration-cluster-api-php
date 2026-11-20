@@ -410,7 +410,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getBusinessId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**
@@ -442,7 +442,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getMessageSubscriptionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null
     {
-        return $this->container['messageSubscriptionKey'];
+        return $this->container['messageSubscriptionKey'] ?? null;
     }
 
     /**
@@ -474,7 +474,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getProcessDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -506,7 +506,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getProcessDefinitionId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -538,7 +538,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -570,7 +570,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getElementId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**
@@ -602,7 +602,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -634,7 +634,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getMessageSubscriptionState(): string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionStateFilter|null
     {
-        return $this->container['messageSubscriptionState'];
+        return $this->container['messageSubscriptionState'] ?? null;
     }
 
     /**
@@ -666,7 +666,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getLastUpdatedDate(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['lastUpdatedDate'];
+        return $this->container['lastUpdatedDate'] ?? null;
     }
 
     /**
@@ -698,7 +698,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getMessageName(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['messageName'];
+        return $this->container['messageName'] ?? null;
     }
 
     /**
@@ -730,7 +730,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getCorrelationKey(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['correlationKey'];
+        return $this->container['correlationKey'] ?? null;
     }
 
     /**
@@ -762,7 +762,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getTenantId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -794,7 +794,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getMessageSubscriptionType(): string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionTypeFilter|null
     {
-        return $this->container['messageSubscriptionType'];
+        return $this->container['messageSubscriptionType'] ?? null;
     }
 
     /**
@@ -826,7 +826,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getProcessDefinitionName(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['processDefinitionName'];
+        return $this->container['processDefinitionName'] ?? null;
     }
 
     /**
@@ -858,7 +858,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getProcessDefinitionVersion(): int|\Camunda\Orchestration\Api\Model\AdvancedIntegerFilter|null
     {
-        return $this->container['processDefinitionVersion'];
+        return $this->container['processDefinitionVersion'] ?? null;
     }
 
     /**
@@ -890,7 +890,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getToolName(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['toolName'];
+        return $this->container['toolName'] ?? null;
     }
 
     /**
@@ -922,7 +922,7 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
      */
     public function getInboundConnectorType(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['inboundConnectorType'];
+        return $this->container['inboundConnectorType'] ?? null;
     }
 
     /**
@@ -990,6 +990,24 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -1004,6 +1022,15 @@ class MessageSubscriptionFilter implements ModelInterface, ArrayAccess, JsonSeri
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

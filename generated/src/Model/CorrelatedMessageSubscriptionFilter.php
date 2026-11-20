@@ -382,7 +382,7 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
      */
     public function getBusinessId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**
@@ -414,7 +414,7 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
      */
     public function getCorrelationKey(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['correlationKey'];
+        return $this->container['correlationKey'] ?? null;
     }
 
     /**
@@ -446,7 +446,7 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
      */
     public function getCorrelationTime(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['correlationTime'];
+        return $this->container['correlationTime'] ?? null;
     }
 
     /**
@@ -478,7 +478,7 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
      */
     public function getElementId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['elementId'];
+        return $this->container['elementId'] ?? null;
     }
 
     /**
@@ -510,7 +510,7 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
      */
     public function getElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -542,7 +542,7 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
      */
     public function getMessageKey(): string|\Camunda\Orchestration\Api\Model\BasicStringFilter|null
     {
-        return $this->container['messageKey'];
+        return $this->container['messageKey'] ?? null;
     }
 
     /**
@@ -574,7 +574,7 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
      */
     public function getMessageName(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['messageName'];
+        return $this->container['messageName'] ?? null;
     }
 
     /**
@@ -606,7 +606,7 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
      */
     public function getPartitionId(): int|\Camunda\Orchestration\Api\Model\AdvancedIntegerFilter|null
     {
-        return $this->container['partitionId'];
+        return $this->container['partitionId'] ?? null;
     }
 
     /**
@@ -638,7 +638,7 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
      */
     public function getProcessDefinitionId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -670,7 +670,7 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
      */
     public function getProcessDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -702,7 +702,7 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
      */
     public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -734,7 +734,7 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
      */
     public function getSubscriptionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedMessageSubscriptionKeyFilter|null
     {
-        return $this->container['subscriptionKey'];
+        return $this->container['subscriptionKey'] ?? null;
     }
 
     /**
@@ -766,7 +766,7 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
      */
     public function getTenantId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -834,6 +834,24 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -848,6 +866,15 @@ class CorrelatedMessageSubscriptionFilter implements ModelInterface, ArrayAccess
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

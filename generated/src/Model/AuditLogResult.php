@@ -556,15 +556,15 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
         if ($this->container['tenantId'] === null && !$this->isNullableSetToNull('tenantId')) {
             $invalidProperties[] = "'tenantId' is required";
         }
-        if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
+        if (!is_null($this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be smaller than or equal to 31.";
         }
 
-        if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) < 1)) {
+        if (!is_null($this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) < 1)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['tenantId']) && !preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
+        if (!is_null($this->container['tenantId']) && !preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
             $invalidProperties[] = "invalid value for 'tenantId', must be conform to the pattern /^(<default>|[\\w\\.\\-]{1,31})$/.";
         }
 
@@ -577,11 +577,11 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
         if ($this->container['processDefinitionId'] === null && !$this->isNullableSetToNull('processDefinitionId')) {
             $invalidProperties[] = "'processDefinitionId' is required";
         }
-        if (!is_null((string) $this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
+        if (!is_null($this->container['processDefinitionId']) && (mb_strlen((string) $this->container['processDefinitionId']) < 1)) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
+        if (!is_null($this->container['processDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['processDefinitionId'])) {
             $invalidProperties[] = "invalid value for 'processDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
         }
 
@@ -612,11 +612,11 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
         if ($this->container['decisionDefinitionId'] === null && !$this->isNullableSetToNull('decisionDefinitionId')) {
             $invalidProperties[] = "'decisionDefinitionId' is required";
         }
-        if (!is_null((string) $this->container['decisionDefinitionId']) && (mb_strlen((string) $this->container['decisionDefinitionId']) < 1)) {
+        if (!is_null($this->container['decisionDefinitionId']) && (mb_strlen((string) $this->container['decisionDefinitionId']) < 1)) {
             $invalidProperties[] = "invalid value for 'decisionDefinitionId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['decisionDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['decisionDefinitionId'])) {
+        if (!is_null($this->container['decisionDefinitionId']) && !preg_match("/^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/", (string) $this->container['decisionDefinitionId'])) {
             $invalidProperties[] = "invalid value for 'decisionDefinitionId', must be conform to the pattern /^[\\p{L}_][\\p{L}\\p{N}_\\-\\.]*$/.";
         }
 
@@ -669,7 +669,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getAuditLogKey(): \Camunda\Orchestration\Semantic\AuditLogKey
     {
-        return $this->container['auditLogKey'];
+        return $this->container['auditLogKey'] ?? null;
     }
 
     /**
@@ -698,7 +698,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getEntityKey(): \Camunda\Orchestration\Semantic\AuditLogEntityKey
     {
-        return $this->container['entityKey'];
+        return $this->container['entityKey'] ?? null;
     }
 
     /**
@@ -727,7 +727,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getEntityType(): \Camunda\Orchestration\Api\Model\AuditLogEntityTypeEnum
     {
-        return $this->container['entityType'];
+        return $this->container['entityType'] ?? null;
     }
 
     /**
@@ -759,7 +759,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getOperationType(): \Camunda\Orchestration\Api\Model\AuditLogOperationTypeEnum
     {
-        return $this->container['operationType'];
+        return $this->container['operationType'] ?? null;
     }
 
     /**
@@ -791,7 +791,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getBatchOperationKey(): ?\Camunda\Orchestration\Semantic\BatchOperationKey
     {
-        return $this->container['batchOperationKey'];
+        return $this->container['batchOperationKey'] ?? null;
     }
 
     /**
@@ -803,6 +803,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setBatchOperationKey(?\Camunda\Orchestration\Semantic\BatchOperationKey $batchOperationKey): static
     {
+        if (is_null($batchOperationKey)) {
+            array_push($this->openAPINullablesSetToNull, 'batchOperationKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('batchOperationKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['batchOperationKey'] = $batchOperationKey;
         if ($batchOperationKey === null) {
             unset($this->openAPIFieldsSet['batchOperationKey']);
@@ -820,7 +830,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getBatchOperationType(): ?\Camunda\Orchestration\Api\Model\BatchOperationTypeEnum
     {
-        return $this->container['batchOperationType'];
+        return $this->container['batchOperationType'] ?? null;
     }
 
     /**
@@ -859,7 +869,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getTimestamp(): \DateTime
     {
-        return $this->container['timestamp'];
+        return $this->container['timestamp'] ?? null;
     }
 
     /**
@@ -891,7 +901,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getActorId(): ?string
     {
-        return $this->container['actorId'];
+        return $this->container['actorId'] ?? null;
     }
 
     /**
@@ -930,7 +940,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getActorType(): ?\Camunda\Orchestration\Api\Model\AuditLogActorTypeEnum
     {
-        return $this->container['actorType'];
+        return $this->container['actorType'] ?? null;
     }
 
     /**
@@ -969,7 +979,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getAgentElementId(): ?string
     {
-        return $this->container['agentElementId'];
+        return $this->container['agentElementId'] ?? null;
     }
 
     /**
@@ -1008,7 +1018,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -1020,6 +1030,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setTenantId(?\Camunda\Orchestration\Semantic\TenantId $tenantId): static
     {
+        if (is_null($tenantId)) {
+            array_push($this->openAPINullablesSetToNull, 'tenantId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('tenantId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['tenantId'] = $tenantId;
         if ($tenantId === null) {
             unset($this->openAPIFieldsSet['tenantId']);
@@ -1037,7 +1057,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getResult(): \Camunda\Orchestration\Api\Model\AuditLogResultEnum
     {
-        return $this->container['result'];
+        return $this->container['result'] ?? null;
     }
 
     /**
@@ -1069,7 +1089,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getCategory(): \Camunda\Orchestration\Api\Model\AuditLogCategoryEnum
     {
-        return $this->container['category'];
+        return $this->container['category'] ?? null;
     }
 
     /**
@@ -1101,7 +1121,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionId(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -1113,6 +1133,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setProcessDefinitionId(?\Camunda\Orchestration\Semantic\ProcessDefinitionId $processDefinitionId): static
     {
+        if (is_null($processDefinitionId)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionId'] = $processDefinitionId;
         if ($processDefinitionId === null) {
             unset($this->openAPIFieldsSet['processDefinitionId']);
@@ -1130,7 +1160,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionKey(): ?\Camunda\Orchestration\Semantic\ProcessDefinitionKey
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -1142,6 +1172,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setProcessDefinitionKey(?\Camunda\Orchestration\Semantic\ProcessDefinitionKey $processDefinitionKey): static
     {
+        if (is_null($processDefinitionKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processDefinitionKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processDefinitionKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processDefinitionKey'] = $processDefinitionKey;
         if ($processDefinitionKey === null) {
             unset($this->openAPIFieldsSet['processDefinitionKey']);
@@ -1159,7 +1199,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -1171,6 +1211,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $processInstanceKey): static
     {
+        if (is_null($processInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'processInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('processInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['processInstanceKey'] = $processInstanceKey;
         if ($processInstanceKey === null) {
             unset($this->openAPIFieldsSet['processInstanceKey']);
@@ -1188,7 +1238,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRootProcessInstanceKey(): ?\Camunda\Orchestration\Semantic\ProcessInstanceKey
     {
-        return $this->container['rootProcessInstanceKey'];
+        return $this->container['rootProcessInstanceKey'] ?? null;
     }
 
     /**
@@ -1200,6 +1250,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setRootProcessInstanceKey(?\Camunda\Orchestration\Semantic\ProcessInstanceKey $rootProcessInstanceKey): static
     {
+        if (is_null($rootProcessInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'rootProcessInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('rootProcessInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['rootProcessInstanceKey'] = $rootProcessInstanceKey;
         if ($rootProcessInstanceKey === null) {
             unset($this->openAPIFieldsSet['rootProcessInstanceKey']);
@@ -1217,7 +1277,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getElementInstanceKey(): ?\Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -1229,6 +1289,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setElementInstanceKey(?\Camunda\Orchestration\Semantic\ElementInstanceKey $elementInstanceKey): static
     {
+        if (is_null($elementInstanceKey)) {
+            array_push($this->openAPINullablesSetToNull, 'elementInstanceKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('elementInstanceKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['elementInstanceKey'] = $elementInstanceKey;
         if ($elementInstanceKey === null) {
             unset($this->openAPIFieldsSet['elementInstanceKey']);
@@ -1246,7 +1316,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getJobKey(): ?\Camunda\Orchestration\Semantic\JobKey
     {
-        return $this->container['jobKey'];
+        return $this->container['jobKey'] ?? null;
     }
 
     /**
@@ -1258,6 +1328,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setJobKey(?\Camunda\Orchestration\Semantic\JobKey $jobKey): static
     {
+        if (is_null($jobKey)) {
+            array_push($this->openAPINullablesSetToNull, 'jobKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('jobKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['jobKey'] = $jobKey;
         if ($jobKey === null) {
             unset($this->openAPIFieldsSet['jobKey']);
@@ -1275,7 +1355,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getUserTaskKey(): ?\Camunda\Orchestration\Semantic\UserTaskKey
     {
-        return $this->container['userTaskKey'];
+        return $this->container['userTaskKey'] ?? null;
     }
 
     /**
@@ -1287,6 +1367,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setUserTaskKey(?\Camunda\Orchestration\Semantic\UserTaskKey $userTaskKey): static
     {
+        if (is_null($userTaskKey)) {
+            array_push($this->openAPINullablesSetToNull, 'userTaskKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('userTaskKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['userTaskKey'] = $userTaskKey;
         if ($userTaskKey === null) {
             unset($this->openAPIFieldsSet['userTaskKey']);
@@ -1304,7 +1394,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionRequirementsId(): ?string
     {
-        return $this->container['decisionRequirementsId'];
+        return $this->container['decisionRequirementsId'] ?? null;
     }
 
     /**
@@ -1343,7 +1433,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionRequirementsKey(): ?\Camunda\Orchestration\Semantic\DecisionRequirementsKey
     {
-        return $this->container['decisionRequirementsKey'];
+        return $this->container['decisionRequirementsKey'] ?? null;
     }
 
     /**
@@ -1355,6 +1445,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setDecisionRequirementsKey(?\Camunda\Orchestration\Semantic\DecisionRequirementsKey $decisionRequirementsKey): static
     {
+        if (is_null($decisionRequirementsKey)) {
+            array_push($this->openAPINullablesSetToNull, 'decisionRequirementsKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('decisionRequirementsKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['decisionRequirementsKey'] = $decisionRequirementsKey;
         if ($decisionRequirementsKey === null) {
             unset($this->openAPIFieldsSet['decisionRequirementsKey']);
@@ -1372,7 +1472,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionDefinitionId(): ?\Camunda\Orchestration\Semantic\DecisionDefinitionId
     {
-        return $this->container['decisionDefinitionId'];
+        return $this->container['decisionDefinitionId'] ?? null;
     }
 
     /**
@@ -1384,6 +1484,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setDecisionDefinitionId(?\Camunda\Orchestration\Semantic\DecisionDefinitionId $decisionDefinitionId): static
     {
+        if (is_null($decisionDefinitionId)) {
+            array_push($this->openAPINullablesSetToNull, 'decisionDefinitionId');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('decisionDefinitionId', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['decisionDefinitionId'] = $decisionDefinitionId;
         if ($decisionDefinitionId === null) {
             unset($this->openAPIFieldsSet['decisionDefinitionId']);
@@ -1401,7 +1511,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionDefinitionKey(): ?\Camunda\Orchestration\Semantic\DecisionDefinitionKey
     {
-        return $this->container['decisionDefinitionKey'];
+        return $this->container['decisionDefinitionKey'] ?? null;
     }
 
     /**
@@ -1413,6 +1523,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setDecisionDefinitionKey(?\Camunda\Orchestration\Semantic\DecisionDefinitionKey $decisionDefinitionKey): static
     {
+        if (is_null($decisionDefinitionKey)) {
+            array_push($this->openAPINullablesSetToNull, 'decisionDefinitionKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('decisionDefinitionKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['decisionDefinitionKey'] = $decisionDefinitionKey;
         if ($decisionDefinitionKey === null) {
             unset($this->openAPIFieldsSet['decisionDefinitionKey']);
@@ -1430,7 +1550,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionEvaluationKey(): ?\Camunda\Orchestration\Semantic\DecisionEvaluationKey
     {
-        return $this->container['decisionEvaluationKey'];
+        return $this->container['decisionEvaluationKey'] ?? null;
     }
 
     /**
@@ -1442,6 +1562,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setDecisionEvaluationKey(?\Camunda\Orchestration\Semantic\DecisionEvaluationKey $decisionEvaluationKey): static
     {
+        if (is_null($decisionEvaluationKey)) {
+            array_push($this->openAPINullablesSetToNull, 'decisionEvaluationKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('decisionEvaluationKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['decisionEvaluationKey'] = $decisionEvaluationKey;
         if ($decisionEvaluationKey === null) {
             unset($this->openAPIFieldsSet['decisionEvaluationKey']);
@@ -1459,7 +1589,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDeploymentKey(): ?\Camunda\Orchestration\Semantic\DeploymentKey
     {
-        return $this->container['deploymentKey'];
+        return $this->container['deploymentKey'] ?? null;
     }
 
     /**
@@ -1471,6 +1601,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setDeploymentKey(?\Camunda\Orchestration\Semantic\DeploymentKey $deploymentKey): static
     {
+        if (is_null($deploymentKey)) {
+            array_push($this->openAPINullablesSetToNull, 'deploymentKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('deploymentKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['deploymentKey'] = $deploymentKey;
         if ($deploymentKey === null) {
             unset($this->openAPIFieldsSet['deploymentKey']);
@@ -1488,7 +1628,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getFormKey(): ?\Camunda\Orchestration\Semantic\FormKey
     {
-        return $this->container['formKey'];
+        return $this->container['formKey'] ?? null;
     }
 
     /**
@@ -1500,6 +1640,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setFormKey(?\Camunda\Orchestration\Semantic\FormKey $formKey): static
     {
+        if (is_null($formKey)) {
+            array_push($this->openAPINullablesSetToNull, 'formKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('formKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['formKey'] = $formKey;
         if ($formKey === null) {
             unset($this->openAPIFieldsSet['formKey']);
@@ -1517,7 +1667,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getResourceKey(): ?\Camunda\Orchestration\Semantic\ResourceKey
     {
-        return $this->container['resourceKey'];
+        return $this->container['resourceKey'] ?? null;
     }
 
     /**
@@ -1556,7 +1706,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRelatedEntityKey(): ?\Camunda\Orchestration\Semantic\AuditLogEntityKey
     {
-        return $this->container['relatedEntityKey'];
+        return $this->container['relatedEntityKey'] ?? null;
     }
 
     /**
@@ -1568,6 +1718,16 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setRelatedEntityKey(?\Camunda\Orchestration\Semantic\AuditLogEntityKey $relatedEntityKey): static
     {
+        if (is_null($relatedEntityKey)) {
+            array_push($this->openAPINullablesSetToNull, 'relatedEntityKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('relatedEntityKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['relatedEntityKey'] = $relatedEntityKey;
         if ($relatedEntityKey === null) {
             unset($this->openAPIFieldsSet['relatedEntityKey']);
@@ -1585,7 +1745,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRelatedEntityType(): ?\Camunda\Orchestration\Api\Model\AuditLogEntityTypeEnum
     {
-        return $this->container['relatedEntityType'];
+        return $this->container['relatedEntityType'] ?? null;
     }
 
     /**
@@ -1624,7 +1784,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getEntityDescription(): ?string
     {
-        return $this->container['entityDescription'];
+        return $this->container['entityDescription'] ?? null;
     }
 
     /**
@@ -1663,7 +1823,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getInboundChannelType(): ?string
     {
-        return $this->container['inboundChannelType'];
+        return $this->container['inboundChannelType'] ?? null;
     }
 
     /**
@@ -1702,7 +1862,7 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getInboundChannelToolName(): ?string
     {
-        return $this->container['inboundChannelToolName'];
+        return $this->container['inboundChannelToolName'] ?? null;
     }
 
     /**
@@ -1777,6 +1937,24 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -1791,6 +1969,15 @@ class AuditLogResult implements ModelInterface, ArrayAccess, JsonSerializable
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

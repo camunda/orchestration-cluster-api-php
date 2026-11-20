@@ -496,7 +496,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getHistoryItemKey(): \Camunda\Orchestration\Semantic\AgentHistoryItemKey
     {
-        return $this->container['historyItemKey'];
+        return $this->container['historyItemKey'] ?? null;
     }
 
     /**
@@ -525,7 +525,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getHistoryItemId(): \Camunda\Orchestration\Semantic\HistoryItemId
     {
-        return $this->container['historyItemId'];
+        return $this->container['historyItemId'] ?? null;
     }
 
     /**
@@ -554,7 +554,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getAgentInstanceKey(): \Camunda\Orchestration\Semantic\AgentInstanceKey
     {
-        return $this->container['agentInstanceKey'];
+        return $this->container['agentInstanceKey'] ?? null;
     }
 
     /**
@@ -583,7 +583,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getElementInstanceKey(): \Camunda\Orchestration\Semantic\ElementInstanceKey
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -612,7 +612,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getJobKey(): \Camunda\Orchestration\Semantic\JobKey
     {
-        return $this->container['jobKey'];
+        return $this->container['jobKey'] ?? null;
     }
 
     /**
@@ -641,7 +641,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getJobLeaseToken(): \Camunda\Orchestration\Semantic\JobLeaseToken
     {
-        return $this->container['jobLeaseToken'];
+        return $this->container['jobLeaseToken'] ?? null;
     }
 
     /**
@@ -670,7 +670,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getLoopIteration(): int
     {
-        return $this->container['loopIteration'];
+        return $this->container['loopIteration'] ?? null;
     }
 
     /**
@@ -706,7 +706,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getRole(): \Camunda\Orchestration\Api\Model\AgentInstanceHistoryRoleEnum
     {
-        return $this->container['role'];
+        return $this->container['role'] ?? null;
     }
 
     /**
@@ -738,7 +738,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getContent(): array
     {
-        return $this->container['content'];
+        return $this->container['content'] ?? null;
     }
 
     /**
@@ -770,7 +770,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getToolCalls(): array
     {
-        return $this->container['toolCalls'];
+        return $this->container['toolCalls'] ?? null;
     }
 
     /**
@@ -802,7 +802,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getMetrics(): ?\Camunda\Orchestration\Api\Model\AgentInstanceHistoryItemMetrics
     {
-        return $this->container['metrics'];
+        return $this->container['metrics'] ?? null;
     }
 
     /**
@@ -841,7 +841,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getCommitStatus(): \Camunda\Orchestration\Api\Model\AgentInstanceHistoryCommitStatusEnum
     {
-        return $this->container['commitStatus'];
+        return $this->container['commitStatus'] ?? null;
     }
 
     /**
@@ -873,7 +873,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getProducedAt(): \DateTime
     {
-        return $this->container['producedAt'];
+        return $this->container['producedAt'] ?? null;
     }
 
     /**
@@ -905,7 +905,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getTools(): array
     {
-        return $this->container['tools'];
+        return $this->container['tools'] ?? null;
     }
 
     /**
@@ -937,7 +937,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getModel(): ?string
     {
-        return $this->container['model'];
+        return $this->container['model'] ?? null;
     }
 
     /**
@@ -976,7 +976,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getProvider(): ?string
     {
-        return $this->container['provider'];
+        return $this->container['provider'] ?? null;
     }
 
     /**
@@ -1015,7 +1015,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getLimits(): \Camunda\Orchestration\Api\Model\AgentInstanceLimits
     {
-        return $this->container['limits'];
+        return $this->container['limits'] ?? null;
     }
 
     /**
@@ -1047,7 +1047,7 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
      */
     public function getSystemPrompt(): array
     {
-        return $this->container['systemPrompt'];
+        return $this->container['systemPrompt'] ?? null;
     }
 
     /**
@@ -1115,6 +1115,24 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -1129,6 +1147,15 @@ class AgentInstanceHistoryItemResult implements ModelInterface, ArrayAccess, Jso
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

@@ -363,15 +363,15 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
         if ($this->container['username'] === null && !$this->isNullableSetToNull('username')) {
             $invalidProperties[] = "'username' is required";
         }
-        if (!is_null((string) $this->container['username']) && (mb_strlen((string) $this->container['username']) > 256)) {
+        if (!is_null($this->container['username']) && (mb_strlen((string) $this->container['username']) > 256)) {
             $invalidProperties[] = "invalid value for 'username', the character length must be smaller than or equal to 256.";
         }
 
-        if (!is_null((string) $this->container['username']) && (mb_strlen((string) $this->container['username']) < 1)) {
+        if (!is_null($this->container['username']) && (mb_strlen((string) $this->container['username']) < 1)) {
             $invalidProperties[] = "invalid value for 'username', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['username']) && !preg_match("/^[a-zA-Z0-9_~@.+-]+$/", (string) $this->container['username'])) {
+        if (!is_null($this->container['username']) && !preg_match("/^[a-zA-Z0-9_~@.+-]+$/", (string) $this->container['username'])) {
             $invalidProperties[] = "invalid value for 'username', must be conform to the pattern /^[a-zA-Z0-9_~@.+-]+$/.";
         }
 
@@ -421,7 +421,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getIsAnonymous(): bool
     {
-        return $this->container['isAnonymous'];
+        return $this->container['isAnonymous'] ?? null;
     }
 
     /**
@@ -453,7 +453,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getUsername(): ?\Camunda\Orchestration\Semantic\Username
     {
-        return $this->container['username'];
+        return $this->container['username'] ?? null;
     }
 
     /**
@@ -465,6 +465,16 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function setUsername(?\Camunda\Orchestration\Semantic\Username $username): static
     {
+        if (is_null($username)) {
+            array_push($this->openAPINullablesSetToNull, 'username');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('username', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['username'] = $username;
         if ($username === null) {
             unset($this->openAPIFieldsSet['username']);
@@ -482,7 +492,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDisplayName(): ?string
     {
-        return $this->container['displayName'];
+        return $this->container['displayName'] ?? null;
     }
 
     /**
@@ -521,7 +531,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getEmail(): ?string
     {
-        return $this->container['email'];
+        return $this->container['email'] ?? null;
     }
 
     /**
@@ -560,7 +570,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getAuthorizedComponents(): array
     {
-        return $this->container['authorizedComponents'];
+        return $this->container['authorizedComponents'] ?? null;
     }
 
     /**
@@ -592,7 +602,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getTenants(): array
     {
-        return $this->container['tenants'];
+        return $this->container['tenants'] ?? null;
     }
 
     /**
@@ -624,7 +634,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getGroups(): array
     {
-        return $this->container['groups'];
+        return $this->container['groups'] ?? null;
     }
 
     /**
@@ -656,7 +666,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRoles(): array
     {
-        return $this->container['roles'];
+        return $this->container['roles'] ?? null;
     }
 
     /**
@@ -688,7 +698,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getSalesPlanType(): ?string
     {
-        return $this->container['salesPlanType'];
+        return $this->container['salesPlanType'] ?? null;
     }
 
     /**
@@ -727,7 +737,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getC8Links(): array
     {
-        return $this->container['c8Links'];
+        return $this->container['c8Links'] ?? null;
     }
 
     /**
@@ -759,7 +769,7 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getCanLogout(): bool
     {
-        return $this->container['canLogout'];
+        return $this->container['canLogout'] ?? null;
     }
 
     /**
@@ -827,6 +837,24 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -841,6 +869,15 @@ class CamundaUserResult implements ModelInterface, ArrayAccess, JsonSerializable
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

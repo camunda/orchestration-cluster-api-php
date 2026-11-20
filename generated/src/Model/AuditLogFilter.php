@@ -508,7 +508,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getAuditLogKey(): string|\Camunda\Orchestration\Api\Model\AdvancedAuditLogKeyFilter|null
     {
-        return $this->container['auditLogKey'];
+        return $this->container['auditLogKey'] ?? null;
     }
 
     /**
@@ -540,7 +540,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessDefinitionKeyFilter|null
     {
-        return $this->container['processDefinitionKey'];
+        return $this->container['processDefinitionKey'] ?? null;
     }
 
     /**
@@ -572,7 +572,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedProcessInstanceKeyFilter|null
     {
-        return $this->container['processInstanceKey'];
+        return $this->container['processInstanceKey'] ?? null;
     }
 
     /**
@@ -604,7 +604,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getElementInstanceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedElementInstanceKeyFilter|null
     {
-        return $this->container['elementInstanceKey'];
+        return $this->container['elementInstanceKey'] ?? null;
     }
 
     /**
@@ -636,7 +636,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getOperationType(): string|\Camunda\Orchestration\Api\Model\AdvancedOperationTypeFilter|null
     {
-        return $this->container['operationType'];
+        return $this->container['operationType'] ?? null;
     }
 
     /**
@@ -668,7 +668,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getResult(): string|\Camunda\Orchestration\Api\Model\AdvancedResultFilter|null
     {
-        return $this->container['result'];
+        return $this->container['result'] ?? null;
     }
 
     /**
@@ -700,7 +700,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getTimestamp(): \DateTime|\Camunda\Orchestration\Api\Model\AdvancedDateTimeFilter|null
     {
-        return $this->container['timestamp'];
+        return $this->container['timestamp'] ?? null;
     }
 
     /**
@@ -732,7 +732,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getActorId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['actorId'];
+        return $this->container['actorId'] ?? null;
     }
 
     /**
@@ -764,7 +764,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getActorType(): string|\Camunda\Orchestration\Api\Model\AdvancedActorTypeFilter|null
     {
-        return $this->container['actorType'];
+        return $this->container['actorType'] ?? null;
     }
 
     /**
@@ -796,7 +796,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getAgentElementId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['agentElementId'];
+        return $this->container['agentElementId'] ?? null;
     }
 
     /**
@@ -828,7 +828,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getEntityKey(): string|\Camunda\Orchestration\Api\Model\AdvancedAuditLogEntityKeyFilter|null
     {
-        return $this->container['entityKey'];
+        return $this->container['entityKey'] ?? null;
     }
 
     /**
@@ -860,7 +860,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getEntityType(): string|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null
     {
-        return $this->container['entityType'];
+        return $this->container['entityType'] ?? null;
     }
 
     /**
@@ -892,7 +892,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getTenantId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -924,7 +924,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getCategory(): string|\Camunda\Orchestration\Api\Model\AdvancedCategoryFilter|null
     {
-        return $this->container['category'];
+        return $this->container['category'] ?? null;
     }
 
     /**
@@ -956,7 +956,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDeploymentKey(): string|\Camunda\Orchestration\Api\Model\AdvancedDeploymentKeyFilter|null
     {
-        return $this->container['deploymentKey'];
+        return $this->container['deploymentKey'] ?? null;
     }
 
     /**
@@ -988,7 +988,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getFormKey(): string|\Camunda\Orchestration\Api\Model\AdvancedFormKeyFilter|null
     {
-        return $this->container['formKey'];
+        return $this->container['formKey'] ?? null;
     }
 
     /**
@@ -1020,7 +1020,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getResourceKey(): string|\Camunda\Orchestration\Api\Model\AdvancedResourceKeyFilter|null
     {
-        return $this->container['resourceKey'];
+        return $this->container['resourceKey'] ?? null;
     }
 
     /**
@@ -1052,7 +1052,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getBatchOperationType(): string|\Camunda\Orchestration\Api\Model\AdvancedBatchOperationTypeFilter|null
     {
-        return $this->container['batchOperationType'];
+        return $this->container['batchOperationType'] ?? null;
     }
 
     /**
@@ -1084,7 +1084,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getProcessDefinitionId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -1116,7 +1116,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getJobKey(): string|\Camunda\Orchestration\Api\Model\AdvancedJobKeyFilter|null
     {
-        return $this->container['jobKey'];
+        return $this->container['jobKey'] ?? null;
     }
 
     /**
@@ -1148,7 +1148,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getUserTaskKey(): string|\Camunda\Orchestration\Api\Model\BasicStringFilter|null
     {
-        return $this->container['userTaskKey'];
+        return $this->container['userTaskKey'] ?? null;
     }
 
     /**
@@ -1180,7 +1180,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionRequirementsId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['decisionRequirementsId'];
+        return $this->container['decisionRequirementsId'] ?? null;
     }
 
     /**
@@ -1212,7 +1212,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionRequirementsKey(): string|\Camunda\Orchestration\Api\Model\AdvancedDecisionRequirementsKeyFilter|null
     {
-        return $this->container['decisionRequirementsKey'];
+        return $this->container['decisionRequirementsKey'] ?? null;
     }
 
     /**
@@ -1244,7 +1244,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionDefinitionId(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['decisionDefinitionId'];
+        return $this->container['decisionDefinitionId'] ?? null;
     }
 
     /**
@@ -1276,7 +1276,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionDefinitionKey(): string|\Camunda\Orchestration\Api\Model\AdvancedDecisionDefinitionKeyFilter|null
     {
-        return $this->container['decisionDefinitionKey'];
+        return $this->container['decisionDefinitionKey'] ?? null;
     }
 
     /**
@@ -1308,7 +1308,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getDecisionEvaluationKey(): string|\Camunda\Orchestration\Api\Model\AdvancedDecisionEvaluationKeyFilter|null
     {
-        return $this->container['decisionEvaluationKey'];
+        return $this->container['decisionEvaluationKey'] ?? null;
     }
 
     /**
@@ -1340,7 +1340,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRelatedEntityKey(): string|\Camunda\Orchestration\Api\Model\AdvancedAuditLogEntityKeyFilter|null
     {
-        return $this->container['relatedEntityKey'];
+        return $this->container['relatedEntityKey'] ?? null;
     }
 
     /**
@@ -1372,7 +1372,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getRelatedEntityType(): string|\Camunda\Orchestration\Api\Model\AdvancedEntityTypeFilter|null
     {
-        return $this->container['relatedEntityType'];
+        return $this->container['relatedEntityType'] ?? null;
     }
 
     /**
@@ -1404,7 +1404,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getEntityDescription(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['entityDescription'];
+        return $this->container['entityDescription'] ?? null;
     }
 
     /**
@@ -1436,7 +1436,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getInboundChannelType(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['inboundChannelType'];
+        return $this->container['inboundChannelType'] ?? null;
     }
 
     /**
@@ -1468,7 +1468,7 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
      */
     public function getInboundChannelToolName(): string|\Camunda\Orchestration\Api\Model\AdvancedStringFilter|null
     {
-        return $this->container['inboundChannelToolName'];
+        return $this->container['inboundChannelToolName'] ?? null;
     }
 
     /**
@@ -1536,6 +1536,24 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -1550,6 +1568,15 @@ class AuditLogFilter implements ModelInterface, ArrayAccess, JsonSerializable
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

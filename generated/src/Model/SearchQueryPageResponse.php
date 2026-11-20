@@ -318,14 +318,14 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
         if ($this->container['startCursor'] === null && !$this->isNullableSetToNull('startCursor')) {
             $invalidProperties[] = "'startCursor' is required";
         }
-        if (!is_null((string) $this->container['startCursor']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['startCursor'])) {
+        if (!is_null($this->container['startCursor']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['startCursor'])) {
             $invalidProperties[] = "invalid value for 'startCursor', must be conform to the pattern /^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/.";
         }
 
         if ($this->container['endCursor'] === null && !$this->isNullableSetToNull('endCursor')) {
             $invalidProperties[] = "'endCursor' is required";
         }
-        if (!is_null((string) $this->container['endCursor']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['endCursor'])) {
+        if (!is_null($this->container['endCursor']) && !preg_match("/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/", (string) $this->container['endCursor'])) {
             $invalidProperties[] = "invalid value for 'endCursor', must be conform to the pattern /^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}(?:==)?|[A-Za-z0-9+\/]{3}=)?$/.";
         }
 
@@ -348,7 +348,7 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getTotalItems(): int
     {
-        return $this->container['totalItems'];
+        return $this->container['totalItems'] ?? null;
     }
 
     /**
@@ -380,7 +380,7 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getHasMoreTotalItems(): bool
     {
-        return $this->container['hasMoreTotalItems'];
+        return $this->container['hasMoreTotalItems'] ?? null;
     }
 
     /**
@@ -412,7 +412,7 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getStartCursor(): ?\Camunda\Orchestration\Semantic\StartCursor
     {
-        return $this->container['startCursor'];
+        return $this->container['startCursor'] ?? null;
     }
 
     /**
@@ -424,6 +424,16 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function setStartCursor(?\Camunda\Orchestration\Semantic\StartCursor $startCursor): static
     {
+        if (is_null($startCursor)) {
+            array_push($this->openAPINullablesSetToNull, 'startCursor');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('startCursor', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['startCursor'] = $startCursor;
         if ($startCursor === null) {
             unset($this->openAPIFieldsSet['startCursor']);
@@ -441,7 +451,7 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function getEndCursor(): ?\Camunda\Orchestration\Semantic\EndCursor
     {
-        return $this->container['endCursor'];
+        return $this->container['endCursor'] ?? null;
     }
 
     /**
@@ -453,6 +463,16 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
      */
     public function setEndCursor(?\Camunda\Orchestration\Semantic\EndCursor $endCursor): static
     {
+        if (is_null($endCursor)) {
+            array_push($this->openAPINullablesSetToNull, 'endCursor');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('endCursor', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['endCursor'] = $endCursor;
         if ($endCursor === null) {
             unset($this->openAPIFieldsSet['endCursor']);
@@ -506,6 +526,24 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -520,6 +558,15 @@ class SearchQueryPageResponse implements ModelInterface, ArrayAccess, JsonSerial
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

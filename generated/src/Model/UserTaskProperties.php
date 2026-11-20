@@ -408,7 +408,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getAction(): string
     {
-        return $this->container['action'];
+        return $this->container['action'] ?? null;
     }
 
     /**
@@ -440,7 +440,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getAssignee(): ?string
     {
-        return $this->container['assignee'];
+        return $this->container['assignee'] ?? null;
     }
 
     /**
@@ -479,7 +479,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getCandidateGroups(): array
     {
-        return $this->container['candidateGroups'];
+        return $this->container['candidateGroups'] ?? null;
     }
 
     /**
@@ -511,7 +511,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getCandidateUsers(): array
     {
-        return $this->container['candidateUsers'];
+        return $this->container['candidateUsers'] ?? null;
     }
 
     /**
@@ -543,7 +543,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getChangedAttributes(): array
     {
-        return $this->container['changedAttributes'];
+        return $this->container['changedAttributes'] ?? null;
     }
 
     /**
@@ -575,7 +575,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getDueDate(): ?string
     {
-        return $this->container['dueDate'];
+        return $this->container['dueDate'] ?? null;
     }
 
     /**
@@ -614,7 +614,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getFollowUpDate(): ?string
     {
-        return $this->container['followUpDate'];
+        return $this->container['followUpDate'] ?? null;
     }
 
     /**
@@ -653,7 +653,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getFormKey(): ?\Camunda\Orchestration\Semantic\FormKey
     {
-        return $this->container['formKey'];
+        return $this->container['formKey'] ?? null;
     }
 
     /**
@@ -665,6 +665,16 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function setFormKey(?\Camunda\Orchestration\Semantic\FormKey $formKey): static
     {
+        if (is_null($formKey)) {
+            array_push($this->openAPINullablesSetToNull, 'formKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('formKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['formKey'] = $formKey;
         if ($formKey === null) {
             unset($this->openAPIFieldsSet['formKey']);
@@ -682,7 +692,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getPriority(): ?int
     {
-        return $this->container['priority'];
+        return $this->container['priority'] ?? null;
     }
 
     /**
@@ -728,7 +738,7 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function getUserTaskKey(): ?\Camunda\Orchestration\Semantic\UserTaskKey
     {
-        return $this->container['userTaskKey'];
+        return $this->container['userTaskKey'] ?? null;
     }
 
     /**
@@ -740,6 +750,16 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
      */
     public function setUserTaskKey(?\Camunda\Orchestration\Semantic\UserTaskKey $userTaskKey): static
     {
+        if (is_null($userTaskKey)) {
+            array_push($this->openAPINullablesSetToNull, 'userTaskKey');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('userTaskKey', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
         $this->container['userTaskKey'] = $userTaskKey;
         if ($userTaskKey === null) {
             unset($this->openAPIFieldsSet['userTaskKey']);
@@ -793,6 +813,24 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -807,6 +845,15 @@ class UserTaskProperties implements ModelInterface, ArrayAccess, JsonSerializabl
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Camunda\Orchestration\Tests\Acceptance;
 
 use Camunda\Orchestration\Api\Model\ClusterRestoreRequest;
+use Camunda\Orchestration\Api\Model\JobCompletionRequest;
 use Camunda\Orchestration\Api\Model\ProcessInstanceCreationInstructionByKey;
 use Camunda\Orchestration\Api\Model\RestoreRequest;
 use Camunda\Orchestration\Api\ObjectSerializer;
+use Camunda\Orchestration\Semantic\JobLeaseToken;
 use Camunda\Orchestration\Semantic\ProcessDefinitionKey;
 use DateTime;
 use PHPUnit\Framework\TestCase;
@@ -96,7 +98,7 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
         );
     }
 
-    public function testSetterNullOnNullableFieldUnsetsIt(): void
+    public function testSetterNullOnNullableFieldIsExplicitNull(): void
     {
         $request = new ClusterRestoreRequest([
             'overrides' => ['tenant-a' => new RestoreRequest(['backupIds' => [55]])],
@@ -104,11 +106,13 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
         $request->setFrom(new DateTime('2024-01-01T00:00:00Z'));
         self::assertStringContainsString('"from":"2024-01-01T00:00:00', $this->toJson($request));
 
-        // Assigning null through a setter mirrors ArrayAccess semantics: the field
-        // becomes unset again and is omitted (explicit constructor null stays explicit).
+        // set<Prop>(null) on a nullable field is an explicit null on the wire, not
+        // "unset": the setter drops it from openAPIFieldsSet but records it in
+        // openAPINullablesSetToNull, and the serializer still emits it as `null`.
+        // Only fields the caller never provided are omitted.
         $request->setFrom(null);
         $this->assertSerializesTo(
-            ['overrides' => ['tenant-a' => ['backupIds' => [55]]]],
+            ['from' => null, 'overrides' => ['tenant-a' => ['backupIds' => [55]]]],
             $request,
         );
     }
@@ -148,6 +152,67 @@ final class UnsetOptionalFieldOmissionTest extends TestCase
             ['backupIds' => [55], 'overrides' => ['tenant-a' => ['backupIds' => [56]]]],
             $request,
         );
+    }
+
+    public function testArrayAccessNullOnNullableFieldIsExplicitNull(): void
+    {
+        // Null assigned through ArrayAccess on a nullable field is an explicit null on
+        // the wire, mirroring set<Prop>(null) — including after a previous setter null
+        // (the two paths are indistinguishable, so both keep the explicit-null state).
+        $request = new JobCompletionRequest(['jobKey' => '2251799813685251']);
+        $request['jobLeaseToken'] = null;
+        self::assertStringContainsString('"jobLeaseToken":null', $this->toJson($request));
+
+        $request->setJobLeaseToken(new JobLeaseToken('lease-token-abc'));
+        $request->setJobLeaseToken(null);
+        $request['jobLeaseToken'] = null;
+        self::assertStringContainsString('"jobLeaseToken":null', $this->toJson($request));
+
+        // unset() is the removal path: it must drop the stale nullable-state flag, or
+        // the serializer keeps emitting the removed field as `null` and the getter
+        // trips an undefined-array-key warning on the removed container entry.
+        unset($request['jobLeaseToken']);
+        self::assertNull($request->getJobLeaseToken());
+        self::assertStringNotContainsString('jobLeaseToken', $this->toJson($request));
+    }
+
+    public function testArrayAccessUnsetAfterSetterNullOmitsTheField(): void
+    {
+        // unset() after setJobLeaseToken(null) must drop the stale nullable-state flag:
+        // left behind, the serializer still emits the removed field as `null` and the
+        // getter trips an undefined-array-key warning on the removed container entry.
+        $request = new JobCompletionRequest(['jobKey' => '2251799813685251']);
+        $request->setJobLeaseToken(null);
+        unset($request['jobLeaseToken']);
+
+        self::assertNull($request->getJobLeaseToken());
+        self::assertStringNotContainsString('jobLeaseToken', $this->toJson($request));
+    }
+
+    public function testArrayAccessUnsetAfterConstructorNullOmitsTheField(): void
+    {
+        // Same removal path, with the explicit null provided through the constructor.
+        $request = new JobCompletionRequest([
+            'jobKey' => '2251799813685251',
+            'jobLeaseToken' => null,
+        ]);
+        self::assertStringContainsString('"jobLeaseToken":null', $this->toJson($request));
+
+        unset($request['jobLeaseToken']);
+        self::assertStringNotContainsString('jobLeaseToken', $this->toJson($request));
+    }
+
+    public function testArrayAccessValueAfterSetterNullClearsExplicitNull(): void
+    {
+        // Assigning a real value after setJobLeaseToken(null) must clear the
+        // nullable-state flag — the field is set, not explicitly null.
+        $request = new JobCompletionRequest(['jobKey' => '2251799813685251']);
+        $request->setJobLeaseToken(null);
+        $request['jobLeaseToken'] = new JobLeaseToken('lease-token-xyz');
+
+        $json = $this->toJson($request);
+        self::assertStringContainsString('"jobLeaseToken":"lease-token-xyz"', $json);
+        self::assertStringNotContainsString('"jobLeaseToken":null', $json);
     }
 
     private function toJson(object $model): string

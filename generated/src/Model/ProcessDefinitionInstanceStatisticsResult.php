@@ -380,7 +380,7 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
      */
     public function getProcessDefinitionId(): \Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -409,7 +409,7 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
      */
     public function getTenantId(): \Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -438,7 +438,7 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
      */
     public function getLatestProcessDefinitionName(): ?string
     {
-        return $this->container['latestProcessDefinitionName'];
+        return $this->container['latestProcessDefinitionName'] ?? null;
     }
 
     /**
@@ -477,7 +477,7 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
      */
     public function getHasMultipleVersions(): bool
     {
-        return $this->container['hasMultipleVersions'];
+        return $this->container['hasMultipleVersions'] ?? null;
     }
 
     /**
@@ -509,7 +509,7 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
      */
     public function getActiveInstancesWithoutIncidentCount(): int
     {
-        return $this->container['activeInstancesWithoutIncidentCount'];
+        return $this->container['activeInstancesWithoutIncidentCount'] ?? null;
     }
 
     /**
@@ -541,7 +541,7 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
      */
     public function getActiveInstancesWithIncidentCount(): int
     {
-        return $this->container['activeInstancesWithIncidentCount'];
+        return $this->container['activeInstancesWithIncidentCount'] ?? null;
     }
 
     /**
@@ -609,6 +609,24 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -623,6 +641,15 @@ class ProcessDefinitionInstanceStatisticsResult implements ModelInterface, Array
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**

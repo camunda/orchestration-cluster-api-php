@@ -364,15 +364,15 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
     {
         $invalidProperties = [];
 
-        if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
+        if (!is_null($this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) > 31)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be smaller than or equal to 31.";
         }
 
-        if (!is_null((string) $this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) < 1)) {
+        if (!is_null($this->container['tenantId']) && (mb_strlen((string) $this->container['tenantId']) < 1)) {
             $invalidProperties[] = "invalid value for 'tenantId', the character length must be bigger than or equal to 1.";
         }
 
-        if (!is_null((string) $this->container['tenantId']) && !preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
+        if (!is_null($this->container['tenantId']) && !preg_match("/^(<default>|[\\w\\.\\-]{1,31})$/", (string) $this->container['tenantId'])) {
             $invalidProperties[] = "invalid value for 'tenantId', must be conform to the pattern /^(<default>|[\\w\\.\\-]{1,31})$/.";
         }
 
@@ -384,11 +384,11 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
             $invalidProperties[] = "invalid value for 'tags', number of items must be less than or equal to 10.";
         }
 
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) > 256)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be smaller than or equal to 256.";
         }
 
-        if (!is_null((string) $this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
+        if (!is_null($this->container['businessId']) && (mb_strlen((string) $this->container['businessId']) < 1)) {
             $invalidProperties[] = "invalid value for 'businessId', the character length must be bigger than or equal to 1.";
         }
 
@@ -429,7 +429,7 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
      */
     public function getVariables(): ?array
     {
-        return $this->container['variables'];
+        return $this->container['variables'] ?? null;
     }
 
     /**
@@ -461,7 +461,7 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
      */
     public function getTenantId(): ?\Camunda\Orchestration\Semantic\TenantId
     {
-        return $this->container['tenantId'];
+        return $this->container['tenantId'] ?? null;
     }
 
     /**
@@ -490,7 +490,7 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
      */
     public function getOperationReference(): ?int
     {
-        return $this->container['operationReference'];
+        return $this->container['operationReference'] ?? null;
     }
 
     /**
@@ -526,7 +526,7 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
      */
     public function getStartInstructions(): ?array
     {
-        return $this->container['startInstructions'];
+        return $this->container['startInstructions'] ?? null;
     }
 
     /**
@@ -558,7 +558,7 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
      */
     public function getRuntimeInstructions(): ?array
     {
-        return $this->container['runtimeInstructions'];
+        return $this->container['runtimeInstructions'] ?? null;
     }
 
     /**
@@ -590,7 +590,7 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
      */
     public function getAwaitCompletion(): ?bool
     {
-        return $this->container['awaitCompletion'];
+        return $this->container['awaitCompletion'] ?? null;
     }
 
     /**
@@ -622,7 +622,7 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
      */
     public function getFetchVariables(): ?array
     {
-        return $this->container['fetchVariables'];
+        return $this->container['fetchVariables'] ?? null;
     }
 
     /**
@@ -654,7 +654,7 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
      */
     public function getRequestTimeout(): ?int
     {
-        return $this->container['requestTimeout'];
+        return $this->container['requestTimeout'] ?? null;
     }
 
     /**
@@ -686,7 +686,7 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
      */
     public function getTags(): ?array
     {
-        return $this->container['tags'];
+        return $this->container['tags'] ?? null;
     }
 
     /**
@@ -721,7 +721,7 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
      */
     public function getBusinessId(): ?\Camunda\Orchestration\Semantic\BusinessId
     {
-        return $this->container['businessId'];
+        return $this->container['businessId'] ?? null;
     }
 
     /**
@@ -750,7 +750,7 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
      */
     public function getProcessDefinitionId(): \Camunda\Orchestration\Semantic\ProcessDefinitionId
     {
-        return $this->container['processDefinitionId'];
+        return $this->container['processDefinitionId'] ?? null;
     }
 
     /**
@@ -779,7 +779,7 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
      */
     public function getProcessDefinitionVersionTag(): string
     {
-        return $this->container['processDefinitionVersionTag'];
+        return $this->container['processDefinitionVersionTag'] ?? null;
     }
 
     /**
@@ -852,6 +852,24 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
             } else {
                 $this->openAPIFieldsSet[$offset] = true;
             }
+            // Keep the nullable-state flags in sync with the setters: null through
+            // ArrayAccess records an explicit null, a non-null value clears it.
+            // Without this, a stale flag left by set<Prop>(null) survives an
+            // ArrayAccess removal and the serializer keeps emitting `"prop":null`.
+            if (self::isNullable($offset)) {
+                if ($value === null) {
+                    if (!in_array($offset, $this->openAPINullablesSetToNull, true)) {
+                        $this->openAPINullablesSetToNull[] = $offset;
+                    }
+                } else {
+                    $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+                    $index = array_search($offset, $nullablesSetToNull, true);
+                    if ($index !== false) {
+                        unset($nullablesSetToNull[$index]);
+                        $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+                    }
+                }
+            }
         }
     }
 
@@ -866,6 +884,15 @@ class ProcessInstanceCreationInstructionByVersionTag implements ModelInterface, 
     {
         unset($this->container[$offset]);
         unset($this->openAPIFieldsSet[$offset]);
+        // Drop any stale nullable-state flag too: after unset($m['prop']) the field is
+        // fully absent, and a leftover flag would both serialize it as `null` and make
+        // the getter trip an undefined-array-key warning.
+        $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+        $index = array_search($offset, $nullablesSetToNull, true);
+        if ($index !== false) {
+            unset($nullablesSetToNull[$index]);
+            $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+        }
     }
 
     /**
