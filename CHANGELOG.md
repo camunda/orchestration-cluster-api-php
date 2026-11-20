@@ -1,3 +1,10 @@
+## [10.0.3](https://github.com/camunda/orchestration-cluster-api-php/compare/v10.0.2...v10.0.3) (2026-11-20)
+
+
+### Bug Fixes
+
+* serialize explicit null on nullable fields instead of dropping it ([#172](https://github.com/camunda/orchestration-cluster-api-php/issues/172)) ([#173](https://github.com/camunda/orchestration-cluster-api-php/issues/173)) ([f7708c3](https://github.com/camunda/orchestration-cluster-api-php/commit/f7708c3670cf0f4f0e1e59292fa58cc82329a7a9)), closes [#62](https://github.com/camunda/orchestration-cluster-api-php/issues/62) [#62](https://github.com/camunda/orchestration-cluster-api-php/issues/62) [#158](https://github.com/camunda/orchestration-cluster-api-php/issues/158) [#161](https://github.com/camunda/orchestration-cluster-api-php/issues/161)
+
 ## [10.0.2](https://github.com/camunda/orchestration-cluster-api-php/compare/v10.0.1...v10.0.2) (2026-11-19)
 
 
