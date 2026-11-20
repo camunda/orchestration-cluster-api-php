@@ -60,7 +60,10 @@ function enumValues(string $repo, string $rev): array
             $cases = [];
             foreach ($enum->stmts as $stmt) {
                 if ($stmt instanceof Node\Stmt\EnumCase && $stmt->expr !== null) {
-                    $cases[$stmt->name->toString()] = valueOf($stmt->expr);
+                    $cases[$stmt->name->toString()] = valueOf(
+                        $stmt->expr,
+                        "{$rev}:{$path} {$enum->name->toString()}::{$stmt->name->toString()}",
+                    );
                 }
             }
             $enums[ltrim($namespace . '\\' . $enum->name->toString(), '\\')] = $cases;
@@ -69,15 +72,22 @@ function enumValues(string $repo, string $rev): array
     return $enums;
 }
 
-function valueOf(Node\Expr $expr): string
+/**
+ * Evaluates a case's backing expression to its value. Only self-contained constant
+ * expressions (literals, concatenation, arithmetic) are evaluated; anything that
+ * references a constant fails closed, because identical source text can still yield
+ * a different value when the referenced constant changes.
+ */
+function valueOf(Node\Expr $expr, string $where): string
 {
-    return match (true) {
-        $expr instanceof Node\Scalar\String_ => var_export($expr->value, true),
-        $expr instanceof Node\Scalar\Int_ => (string) $expr->value,
-        $expr instanceof Node\Expr\UnaryMinus && $expr->expr instanceof Node\Scalar\Int_ => '-' . $expr->expr->value,
-        // A constant expression: compare its source form.
-        default => (new PhpParser\PrettyPrinter\Standard())->prettyPrintExpr($expr),
-    };
+    $evaluator = new PhpParser\ConstExprEvaluator(static function (Node\Expr $e) use ($where): never {
+        throw new PhpParser\ConstExprEvaluationException(
+            "cannot evaluate backing value of {$where} (unsupported expression "
+            . (new PhpParser\PrettyPrinter\Standard())->prettyPrintExpr($e)
+            . '); use a literal backing value',
+        );
+    });
+    return var_export($evaluator->evaluateDirectly($expr), true);
 }
 
 /**
@@ -107,6 +117,9 @@ try {
     $after = enumValues($repo, $to);
 } catch (PhpParser\Error $e) {
     fwrite(STDERR, 'enum-values: parse error: ' . $e->getMessage() . "\n");
+    exit(2);
+} catch (PhpParser\ConstExprEvaluationException $e) {
+    fwrite(STDERR, 'enum-values: ' . $e->getMessage() . "\n");
     exit(2);
 }
 
