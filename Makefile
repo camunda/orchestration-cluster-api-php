@@ -1,4 +1,4 @@
-.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan examples advanced-examples example-showcase example-report check sync-readme sync-readme-check docs-md docs-docusaurus config-reference config-reference-check example-coverage
+.PHONY: install generate generate-only bundle-spec clean test itest lint lint-fix phpstan examples advanced-examples example-showcase example-report check sync-readme sync-readme-check docs-md docs-docusaurus config-reference config-reference-check example-coverage api-compat
 
 # Git ref/branch/tag/SHA in https://github.com/camunda/camunda.git to fetch the OpenAPI
 # spec from. Override like: `make generate SPEC_REF=stable/8.9`
@@ -42,6 +42,11 @@ lint-fix:
 
 phpstan:
 	vendor/bin/phpstan analyse --memory-limit=1G
+
+# Public API compatibility: compare the working tree with the newest release of the major in
+# src/Version.php (see scripts/api-compat.sh; AGENTS.md "API compatibility").
+api-compat:
+	bash scripts/api-compat.sh latest
 
 examples:
 	find examples -type f -name '*.php' -exec php -l {} \;
