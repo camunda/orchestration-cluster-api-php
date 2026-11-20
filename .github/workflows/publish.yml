@@ -14,7 +14,7 @@ on:
       api_break_approved:
         description: >-
           Release even though the public API breaks compatibility with the last release on
-          this stable branch (for breaks with no PR to label, e.g. from upstream spec drift).
+          this stable branch (for a break no labelled PR covers, e.g. a direct push).
         type: boolean
         default: false
 
