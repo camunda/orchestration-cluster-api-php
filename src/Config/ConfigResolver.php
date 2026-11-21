@@ -74,7 +74,7 @@ final class ConfigResolver
             ['variable' => 'CAMUNDA_TOKEN_AUDIENCE', 'default' => self::DEFAULT_AUDIENCE, 'description' => 'OAuth token audience.'],
             ['variable' => 'CAMUNDA_BASIC_AUTH_USERNAME', 'default' => '', 'description' => 'Basic-auth username.'],
             ['variable' => 'CAMUNDA_BASIC_AUTH_PASSWORD', 'default' => '', 'description' => 'Basic-auth password.'],
-            ['variable' => 'CAMUNDA_TENANT_ID', 'default' => '', 'description' => 'Default tenant id applied to tenant-aware operations.'],
+            ['variable' => 'CAMUNDA_TENANT_ID', 'default' => '', 'description' => 'Default tenant id applied to tenant-scoped commands when the caller passes none (`<default>` when unset).'],
             ['variable' => 'CAMUNDA_TENANT_IDS', 'default' => '', 'description' => 'Comma-separated default tenant ids (e.g. for job activation).'],
             ['variable' => 'CAMUNDA_SDK_LOG_LEVEL', 'default' => 'warn', 'description' => 'SDK log level (`error`, `warn`, `info`, `debug`).'],
             ['variable' => 'CAMUNDA_WORKER_MAX_CONCURRENT_JOBS', 'default' => '32', 'description' => 'Default maximum number of jobs a worker activates at once.'],

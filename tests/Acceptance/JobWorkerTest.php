@@ -146,6 +146,22 @@ final class JobWorkerTest extends TestCase
         }
     }
 
+    public function testActivationSendsBuiltInDefaultTenantWhenNoneConfigured(): void
+    {
+        // Issue #138 (backported as #180): with no worker tenantIds and no configured
+        // default, the worker activates for `<default>` under the PROVIDED filter.
+        $worker = $this->worker([
+            new Response(200, ['Content-Type' => 'application/json'], '{"jobs":[]}'),
+        ], new JobWorkerOptions(type: 'greet'));
+
+        $worker->pollOnce(static fn (ActivatedJobResult $job, JobActionClient $action): null => null);
+
+        self::assertCount(1, $this->requests);
+        $body = $this->jsonBody($this->requests[0]);
+        self::assertSame(['<default>'], $body['tenantIds'] ?? null);
+        self::assertSame('PROVIDED', $body['tenantFilter'] ?? null);
+    }
+
     /**
      * @param list<Response> $responses
      */
