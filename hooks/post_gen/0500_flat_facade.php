@@ -278,6 +278,7 @@ function tenant_aware_body_schemas(array $spec): array
                 $fail('union combined with allOf/properties/required');
             }
             $variants = [];
+            $skippedVariants = 0;
             if (is_array($union)) {
                 foreach ($union as $v) {
                     if (!is_array($v)) {
@@ -290,6 +291,10 @@ function tenant_aware_body_schemas(array $spec): array
                         if (schema_may_carry_tenant_id($v, $schemas)) {
                             $fail('inline union variant with a tenantId');
                         }
+                        // It still counts against "every variant is eligible":
+                        // an unguarded injection would call getTenantId() on
+                        // this tenantless inline shape and fail at runtime.
+                        $skippedVariants++;
                         continue;
                     }
                     $variants[$vn] = $v;
@@ -313,7 +318,11 @@ function tenant_aware_body_schemas(array $spec): array
                 }
             }
             if ($tenantVariants !== []) {
-                $result[(string) $op['operationId']] = [$tenantVariants, count($tenantVariants) === count($variants)];
+                // all-eligible only when every variant of the full union —
+                // including skipped tenantless inline ones — carries an
+                // optional tenantId. Otherwise the injection must be guarded
+                // per variant.
+                $result[(string) $op['operationId']] = [$tenantVariants, count($tenantVariants) === count($variants) + $skippedVariants];
             }
         }
     }

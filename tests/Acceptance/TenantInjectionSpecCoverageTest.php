@@ -53,16 +53,24 @@ final class TenantInjectionSpecCoverageTest extends TestCase
                     self::assertFalse(isset($rv['oneOf']) || isset($rv['anyOf']), "{$op['operationId']} has a nested union variant; cannot verify it");
                 }
                 $eligible = [];
+                $skipped = 0;
                 foreach ($variants as $variant) {
                     if (is_array($variant) && $this->hasOptionalTenantId($variant, $schemas)) {
                         $eligible[] = $this->refName($variant);
+                        continue;
+                    }
+                    // A tenantless inline variant is skipped by the hook but
+                    // still counts against all-eligible: an unguarded
+                    // injection would call getTenantId() on it and fail.
+                    if (is_array($variant) && $this->refName($variant) === null) {
+                        $skipped++;
                     }
                 }
                 if ($eligible === []) {
                     continue;
                 }
                 $operationId = $op['operationId'];
-                $allEligible = count($eligible) === count($variants);
+                $allEligible = count($eligible) === count($variants) && $skipped === 0;
                 foreach (['sync' => $sync, 'async' => $async] as $flavour => $trait) {
                     $body = $this->methodBody($trait, $operationId);
                     self::assertNotNull($body, "{$operationId} missing from {$flavour} facade");

@@ -122,6 +122,32 @@ final class FlatFacadeTenantHookTest extends TestCase
         $this->runHook(null, null, ['oneOf' => [['$ref' => '#/components/schemas/Nested']]]);
     }
 
+    public function testMixedUnionWithTenantlessInlineVariantEmitsGuardedInjection(): void
+    {
+        // A oneOf of a tenant-aware referenced model and a tenantless inline
+        // model must not be marked all-eligible: an unguarded injection would
+        // call getTenantId() on the inline shape and fail at runtime.
+        [$sync, $async] = $this->runHook(null, null, null, [
+            'content' => ['application/json' => ['schema' => [
+                'oneOf' => [
+                    ['$ref' => '#/components/schemas/ExpressionEvaluationRequest'],
+                    ['type' => 'object', 'properties' => ['expression' => ['type' => 'string']]],
+                ],
+            ]]],
+        ]);
+
+        foreach ([$sync, $async] as $trait) {
+            self::assertStringContainsString(
+                'if ($expressionEvaluationRequest instanceof \Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest && $expressionEvaluationRequest->getTenantId() === null) {',
+                $trait,
+            );
+            self::assertStringNotContainsString(
+                'if ($expressionEvaluationRequest->getTenantId() === null) {',
+                $trait,
+            );
+        }
+    }
+
     /**
      * @param array<string, mixed>|null $bodySchema
      * @param array<string, mixed>|null $requestBody
