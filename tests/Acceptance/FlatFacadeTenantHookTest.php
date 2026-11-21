@@ -57,10 +57,44 @@ final class FlatFacadeTenantHookTest extends TestCase
         $this->runHook('public function setTenantId($tenant_id)');
     }
 
+    public function testOptionalBodyIsNullGuardedBeforeInjection(): void
+    {
+        $param = '?\Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest $expressionEvaluationRequest = null';
+        [$sync, $async] = $this->runHook('public function setTenantId(?string $tenant_id)', $param);
+
+        foreach ([$sync, $async] as $trait) {
+            self::assertStringContainsString('if ($expressionEvaluationRequest !== null && $expressionEvaluationRequest->getTenantId() === null) {', $trait);
+        }
+    }
+
+    public function testRequiredBodyIsNotNullGuarded(): void
+    {
+        [$sync] = $this->runHook('public function setTenantId(?string $tenant_id)');
+
+        self::assertStringContainsString('if ($expressionEvaluationRequest->getTenantId() === null) {', $sync);
+    }
+
+    public function testUnionNestedUnderAllOfFailsClosed(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported composed request body for evaluateExpression');
+
+        $this->runHook(null, null, ['allOf' => [['oneOf' => [['$ref' => '#/components/schemas/Other']]]]]);
+    }
+
+    public function testUnionWithEnclosingConstraintsFailsClosed(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported composed request body for evaluateExpression');
+
+        $this->runHook(null, null, ['required' => ['tenantId'], 'oneOf' => [['$ref' => '#/components/schemas/Other']]]);
+    }
+
     /**
+     * @param array<string, mixed>|null $bodySchema
      * @return array{0: string, 1: string}
      */
-    private function runHook(?string $setterSignature): array
+    private function runHook(?string $setterSignature, ?string $param = null, ?array $bodySchema = null): array
     {
         $dir = dirname(__DIR__, 2) . '/.flat-facade-hook-' . bin2hex(random_bytes(8));
         self::assertTrue(mkdir($dir . '/out/src/Api', 0777, true));
@@ -68,20 +102,20 @@ final class FlatFacadeTenantHookTest extends TestCase
         self::assertTrue(mkdir($dir . '/root/src', 0777, true));
 
         try {
-            self::assertNotFalse(file_put_contents($dir . '/out/src/Api/ExpressionApi.php', <<<'PHP'
+            self::assertNotFalse(file_put_contents($dir . '/out/src/Api/ExpressionApi.php', str_replace('__PARAM__', $param ?? '\Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest $expressionEvaluationRequest', <<<'PHP'
 <?php
 
 final class ExpressionApi
 {
-    public function evaluateExpression(\Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest $expressionEvaluationRequest): object
+    public function evaluateExpression(__PARAM__): object
     {
     }
 
-    public function evaluateExpressionAsync(\Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest $expressionEvaluationRequest): object
+    public function evaluateExpressionAsync(__PARAM__): object
     {
     }
 }
-PHP));
+PHP)));
             $model = "<?php\n\nfinal class ExpressionEvaluationRequest\n{\n"
                 . ($setterSignature !== null ? "    {$setterSignature}\n    {\n    }\n" : '')
                 . "}\n";
@@ -92,10 +126,13 @@ PHP));
                     'operationId' => 'evaluateExpression',
                     'requestBody' => ['content' => ['application/json' => ['schema' => ['$ref' => '#/components/schemas/ExpressionEvaluationRequest']]]],
                 ]]],
-                'components' => ['schemas' => ['ExpressionEvaluationRequest' => [
-                    'type' => 'object',
-                    'properties' => ['tenantId' => ['type' => 'string']],
-                ]]],
+                'components' => ['schemas' => [
+                    'ExpressionEvaluationRequest' => $bodySchema ?? [
+                        'type' => 'object',
+                        'properties' => ['tenantId' => ['type' => 'string']],
+                    ],
+                    'Other' => ['type' => 'object', 'properties' => ['tenantId' => ['type' => 'string']]],
+                ]],
             ];
             self::assertNotFalse(file_put_contents($dir . '/spec.json', (string) json_encode($spec)));
 

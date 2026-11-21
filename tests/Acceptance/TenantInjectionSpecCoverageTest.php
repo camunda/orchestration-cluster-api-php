@@ -55,6 +55,8 @@ final class TenantInjectionSpecCoverageTest extends TestCase
                 foreach (['sync' => $sync, 'async' => $async] as $flavour => $trait) {
                     $body = $this->methodBody($trait, $operationId);
                     self::assertNotNull($body, "{$operationId} missing from {$flavour} facade");
+                    // An optional body is guarded by `$x !== null && ` ahead of the injection guard.
+                    $body = (string) preg_replace('/if \((\$\w+) !== null && (?=\1[ -])/', 'if (', $body);
                     $unguarded = $this->injectionBlock(null);
                     if ($allEligible && preg_match($unguarded, $body) === 1) {
                         continue;

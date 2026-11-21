@@ -256,6 +256,13 @@ function tenant_aware_body_schemas(array $spec): array
             $name = schema_ref_name($schema);
             $resolved = resolve_schema($schema, $schemas);
             $union = $resolved['oneOf'] ?? $resolved['anyOf'] ?? null;
+            // Fail closed on shapes this walk cannot model faithfully: a union
+            // nested under allOf, or a union with enclosing properties/required
+            // that would constrain every variant.
+            if (schema_has_nested_union($resolved, $schemas)
+                || (is_array($union) && (isset($resolved['properties']) || isset($resolved['required']) || isset($resolved['allOf'])))) {
+                throw new \RuntimeException('Unsupported composed request body for ' . $op['operationId'] . ': extend tenant_aware_body_schemas()');
+            }
             $variants = [];
             if (is_array($union)) {
                 foreach ($union as $v) {
@@ -282,6 +289,30 @@ function tenant_aware_body_schemas(array $spec): array
     }
 
     return $result;
+}
+
+/**
+ * True when any allOf part (recursively) of the schema is itself a union.
+ *
+ * @param array<mixed> $schema
+ * @param array<mixed> $schemas
+ */
+function schema_has_nested_union(array $schema, array $schemas, int $depth = 0): bool
+{
+    if ($depth > 50) {
+        return false;
+    }
+    foreach ($schema['allOf'] ?? [] as $part) {
+        if (!is_array($part)) {
+            continue;
+        }
+        $part = resolve_schema($part, $schemas);
+        if (isset($part['oneOf']) || isset($part['anyOf']) || schema_has_nested_union($part, $schemas, $depth + 1)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /** @param mixed $schema */
@@ -357,6 +388,9 @@ function tenant_injection(string $operationName, string $rawParams, array $tenan
         throw new \RuntimeException("Cannot locate the {$first} body parameter of {$operationName}");
     }
     $param = $pm[1];
+    // An optional body parameter (`?Model $x = null`) may be omitted: guard it.
+    $nullable = preg_match('/\?\s*\\\\?Camunda\\\\Orchestration\\\\Api\\\\Model\\\\[^$]*\$' . $param . '\b|\|\s*null\s+\$' . $param . '\b|\$' . $param . '\s*=\s*null\b/', $rawParams) === 1;
+    $nullGuard = $nullable ? "\${$param} !== null && " : '';
 
     $value = static fn (bool $isString): string => $isString
         ? '$this->config->defaultTenantId()'
@@ -367,7 +401,7 @@ function tenant_injection(string $operationName, string $rawParams, array $tenan
         $valueExpr = $value(reset($variants));
 
         return <<<PHP
-        if (\${$param}->getTenantId() === null) {
+        if ({$nullGuard}\${$param}->getTenantId() === null) {
             \${$param} = clone \${$param};
             \${$param}->setTenantId({$valueExpr});
         }
@@ -379,7 +413,7 @@ PHP;
     foreach ($variants as $variant => $isString) {
         $valueExpr = $value($isString);
         $out .= <<<PHP
-        if (\${$param} instanceof \\Camunda\\Orchestration\\Api\\Model\\{$variant} && \${$param}->getTenantId() === null) {
+        if ({$nullGuard}\${$param} instanceof \\Camunda\\Orchestration\\Api\\Model\\{$variant} && \${$param}->getTenantId() === null) {
             \${$param} = clone \${$param};
             \${$param}->setTenantId({$valueExpr});
         }
