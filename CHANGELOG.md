@@ -1,3 +1,10 @@
+# [10.1.0](https://github.com/camunda/orchestration-cluster-api-php/compare/v10.0.3...v10.1.0) (2026-11-21)
+
+
+### Features
+
+* send the default tenant on tenant-scoped commands (backport [#139](https://github.com/camunda/orchestration-cluster-api-php/issues/139) to stable/10) ([#181](https://github.com/camunda/orchestration-cluster-api-php/issues/181)) ([50f4d9b](https://github.com/camunda/orchestration-cluster-api-php/commit/50f4d9b95b3ec8c669e2bf0c7485117b36a1d2cb)), closes [#138](https://github.com/camunda/orchestration-cluster-api-php/issues/138) [#180](https://github.com/camunda/orchestration-cluster-api-php/issues/180)
+
 ## [10.0.3](https://github.com/camunda/orchestration-cluster-api-php/compare/v10.0.2...v10.0.3) (2026-11-20)
 
 
