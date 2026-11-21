@@ -41,33 +41,39 @@ final class TenantInjectionSpecCoverageTest extends TestCase
                 $resolved = $this->resolve($schema, $schemas);
                 $union = $resolved['oneOf'] ?? $resolved['anyOf'] ?? null;
                 $variants = is_array($union) ? $union : [$schema];
+                $eligible = [];
                 foreach ($variants as $variant) {
-                    if (!is_array($variant) || !$this->hasOptionalTenantId($variant, $schemas)) {
+                    if (is_array($variant) && $this->hasOptionalTenantId($variant, $schemas)) {
+                        $eligible[] = $this->refName($variant);
+                    }
+                }
+                if ($eligible === []) {
+                    continue;
+                }
+                $operationId = $op['operationId'];
+                $allEligible = count($eligible) === count($variants);
+                foreach (['sync' => $sync, 'async' => $async] as $flavour => $trait) {
+                    $body = $this->methodBody($trait, $operationId);
+                    self::assertNotNull($body, "{$operationId} missing from {$flavour} facade");
+                    $unguarded = $this->injectionBlock(null);
+                    if ($allEligible && preg_match($unguarded, $body) === 1) {
                         continue;
                     }
-                    $operationId = $op['operationId'];
-                    foreach (['sync' => $sync, 'async' => $async] as $flavour => $trait) {
-                        $body = $this->methodBody($trait, $operationId);
-                        self::assertNotNull($body, "{$operationId} missing from {$flavour} facade");
+                    self::assertDoesNotMatchRegularExpression(
+                        $unguarded,
+                        $body,
+                        "{$operationId} ({$flavour}) injects on variants that carry no optional tenantId",
+                    );
+                    foreach ($eligible as $name) {
+                        self::assertNotNull($name, "{$operationId} has an inline union variant; cannot verify its guard");
                         self::assertMatchesRegularExpression(
-                            '/->setTenantId\(.*defaultTenantId\(\)/',
+                            $this->injectionBlock($name),
                             $body,
-                            "{$operationId} ({$flavour}) does not inject the default tenant",
+                            "{$operationId} ({$flavour}) does not inject the default tenant on variant {$name} inside a null guard",
                         );
-                        if (is_array($union) && isset($variant['$ref']) && is_string($variant['$ref'])) {
-                            $name = substr($variant['$ref'], strrpos($variant['$ref'], '/') + 1);
-                            $guarded = str_contains($body, 'instanceof');
-                            if ($guarded) {
-                                self::assertStringContainsString(
-                                    "instanceof \\Camunda\\Orchestration\\Api\\Model\\{$name} ",
-                                    $body,
-                                    "{$operationId} ({$flavour}) does not inject on variant {$name}",
-                                );
-                            }
-                        }
                     }
-                    $checked[$operationId] = true;
                 }
+                $checked[$operationId] = true;
             }
         }
 
@@ -96,18 +102,56 @@ final class TenantInjectionSpecCoverageTest extends TestCase
      */
     private function hasOptionalTenantId(array $schema, array $schemas): bool
     {
+        [$props, $required] = $this->collect($schema, $schemas);
+
+        return isset($props['tenantId']) && !in_array('tenantId', $required, true);
+    }
+
+    /**
+     * Properties and required names merged across the whole allOf composition.
+     *
+     * @param array<mixed> $schema
+     * @param array<string, array<string, mixed>> $schemas
+     * @return array{0: array<mixed>, 1: list<mixed>}
+     */
+    private function collect(array $schema, array $schemas): array
+    {
         $schema = $this->resolve($schema, $schemas);
-        $required = is_array($schema['required'] ?? null) ? $schema['required'] : [];
-        if (is_array($schema['properties'] ?? null) && isset($schema['properties']['tenantId'])) {
-            return !in_array('tenantId', $required, true);
-        }
+        $props = is_array($schema['properties'] ?? null) ? $schema['properties'] : [];
+        $required = is_array($schema['required'] ?? null) ? array_values($schema['required']) : [];
         foreach (is_array($schema['allOf'] ?? null) ? $schema['allOf'] : [] as $part) {
-            if (is_array($part) && $this->hasOptionalTenantId($part, $schemas)) {
-                return true;
+            if (is_array($part)) {
+                [$p, $r] = $this->collect($part, $schemas);
+                $props += $p;
+                $required = array_merge($required, $r);
             }
         }
 
-        return false;
+        return [$props, $required];
+    }
+
+    /**
+     * @param array<mixed> $schema
+     */
+    private function refName(array $schema): ?string
+    {
+        if (!isset($schema['$ref']) || !is_string($schema['$ref'])) {
+            return null;
+        }
+
+        return substr($schema['$ref'], strrpos($schema['$ref'], '/') + 1);
+    }
+
+    /**
+     * Regex for an `if (<guard> getTenantId() === null) { clone; setTenantId(default) }` block.
+     */
+    private function injectionBlock(?string $variant): string
+    {
+        $guard = $variant === null
+            ? '\\$(\\w+)->getTenantId\\(\\) === null'
+            : '\\$(\\w+) instanceof \\\\Camunda\\\\Orchestration\\\\Api\\\\Model\\\\' . preg_quote($variant, '/') . ' && \\$\\1->getTenantId\\(\\) === null';
+
+        return '/if \\(' . $guard . '\\) \\{\\n\\s*\\$\\1 = clone \\$\\1;\\n\\s*\\$\\1->setTenantId\\([^\\n]*defaultTenantId\\(\\)\\)?\\);\\n\\s*\\}/';
     }
 
     private function methodBody(string $trait, string $operationId): ?string
