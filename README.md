@@ -265,7 +265,7 @@ Do not pass a configuration or client object to either, and keep their output ou
 | `CAMUNDA_TOKEN_AUDIENCE` | `zeebe.camunda.io` | OAuth token audience. |
 | `CAMUNDA_BASIC_AUTH_USERNAME` | — | Basic-auth username. |
 | `CAMUNDA_BASIC_AUTH_PASSWORD` | — | Basic-auth password. |
-| `CAMUNDA_TENANT_ID` | — | Default tenant id applied to tenant-aware operations. |
+| `CAMUNDA_TENANT_ID` | — | Default tenant id applied to tenant-scoped commands when the caller passes none (`<default>` when unset). |
 | `CAMUNDA_TENANT_IDS` | — | Comma-separated default tenant ids (e.g. for job activation). |
 | `CAMUNDA_SDK_LOG_LEVEL` | `warn` | SDK log level (`error`, `warn`, `info`, `debug`). |
 | `CAMUNDA_WORKER_MAX_CONCURRENT_JOBS` | `32` | Default maximum number of jobs a worker activates at once. |

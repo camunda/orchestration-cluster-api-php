@@ -294,7 +294,7 @@ final class TenantIdInjectionTest extends TestCase
         self::assertStringContainsString("\r\nglobex\r\n", $body);
     }
 
-    public function testNoInjectionWhenNoDefaultTenantConfigured(): void
+    public function testInjectsBuiltInDefaultTenantWhenNoneConfigured(): void
     {
         $client = CamundaClient::fromConfiguration(
             ConfigResolver::resolve(
@@ -319,7 +319,7 @@ final class TenantIdInjectionTest extends TestCase
 
         self::assertCount(1, $this->requests);
         $payload = $this->decodeBody($this->requests[0]);
-        self::assertArrayNotHasKey('tenantId', $payload);
+        self::assertSame('<default>', $payload['tenantId']);
     }
 
     public function testAsyncCreateProcessInstanceInjectsDefaultTenantId(): void

@@ -17,6 +17,12 @@ final class CamundaConfiguration implements \JsonSerializable
     private const REDACTED = '***';
 
     /**
+     * The server's built-in tenant identifier, used when no tenant is configured.
+     * Matches the Camunda Java client's `CommandWithTenantStep.DEFAULT_TENANT_IDENTIFIER`.
+     */
+    public const DEFAULT_TENANT_ID = '<default>';
+
+    /**
      * @param 'NONE'|'OAUTH'|'BASIC' $authStrategy
      * @param list<string> $tenantIds
      */
@@ -91,5 +97,26 @@ final class CamundaConfiguration implements \JsonSerializable
     private static function redact(?string $value): ?string
     {
         return $value === null ? null : self::REDACTED;
+    }
+
+    /**
+     * The effective default tenant: the first configured tenant id
+     * (`CAMUNDA_TENANT_ID` / `CAMUNDA_TENANT_IDS`), or `<default>` when none is configured.
+     * Sent on tenant-scoped commands when the caller passes no tenant.
+     */
+    public function defaultTenantId(): string
+    {
+        return $this->tenantIds[0] ?? self::DEFAULT_TENANT_ID;
+    }
+
+    /**
+     * The tenant ids job activation uses when the caller passes none: the configured
+     * tenant ids, or `['<default>']` when none are configured.
+     *
+     * @return non-empty-list<string>
+     */
+    public function defaultJobTenantIds(): array
+    {
+        return $this->tenantIds !== [] ? $this->tenantIds : [self::DEFAULT_TENANT_ID];
     }
 }

@@ -25,8 +25,10 @@ return static function (array $ctx): void {
     $reserved = ['api', 'configuration'];
 
     // Tenant-aware operations: when the caller omits tenantId, inject the
-    // configured default (CAMUNDA_TENANT_ID) so the request is scoped to the
-    // default tenant. This matches the behaviour of the JS, Python and C# SDKs.
+    // effective default tenant (CAMUNDA_TENANT_ID, or `<default>` when nothing is
+    // configured) so the request is scoped to the default tenant. This matches the
+    // Camunda Java client, and makes a zero-config client work on multi-tenant
+    // clusters (issue #138, backported as #180).
     //
     // Map: operation name => [body parameter variable name (without $), whether
     // the model's setTenantId() takes a plain string rather than a TenantId].
@@ -83,8 +85,22 @@ return static function (array $ctx): void {
             // than inside a body model; default it when the caller omits it.
             if ($name === 'createDeployment') {
                 $tenantInjection = <<<'PHP'
-        if ($tenantId === null && $this->config->tenantIds !== []) {
-            $tenantId = $this->config->tenantIds[0];
+        if ($tenantId === null) {
+            $tenantId = $this->config->defaultTenantId();
+        }
+
+PHP;
+            }
+            // activateJobs: with tenantFilter PROVIDED (or unset) and no tenant ids,
+            // activate for the default tenant(s). ASSIGNED is left alone — the
+            // server ignores tenantIds there.
+            if ($name === 'activateJobs') {
+                $tenantInjection = <<<'PHP'
+        $tenantFilter = $jobActivationRequest->getTenantFilter();
+        if (($tenantFilter === null || $tenantFilter === \Camunda\Orchestration\Api\Model\TenantFilterEnum::PROVIDED)
+            && ($jobActivationRequest->getTenantIds() ?? []) === []) {
+            $jobActivationRequest = clone $jobActivationRequest;
+            $jobActivationRequest->setTenantIds($this->config->defaultJobTenantIds());
         }
 
 PHP;
@@ -191,7 +207,7 @@ function normalize_return(string $return): string
  * Emit the tenant-default injection prelude for tenant-aware operations.
  *
  * When the caller leaves tenantId null on the body model, forward a clone
- * carrying the configured default tenant (from CAMUNDA_TENANT_ID). The model
+ * carrying the effective default tenant (CAMUNDA_TENANT_ID, else `<default>`). The model
  * is cloned before the default is applied so the caller-owned instance is
  * never mutated: reusing one tenantless model across clients with different
  * configured defaults must not leak the first client's tenant into the next
@@ -208,11 +224,11 @@ function tenant_injection(string $operationName, array $tenantAwareBodyOps): str
     [$param, $isStringTenant] = $tenantAwareBodyOps[$operationName];
 
     $valueExpr = $isStringTenant
-        ? '$this->config->tenantIds[0]'
-        : 'new \\Camunda\\Orchestration\\Semantic\\TenantId($this->config->tenantIds[0])';
+        ? '$this->config->defaultTenantId()'
+        : 'new \\Camunda\\Orchestration\\Semantic\\TenantId($this->config->defaultTenantId())';
 
     return <<<PHP
-        if (\$this->config->tenantIds !== [] && \${$param}->getTenantId() === null) {
+        if (\${$param}->getTenantId() === null) {
             \${$param} = clone \${$param};
             \${$param}->setTenantId({$valueExpr});
         }
