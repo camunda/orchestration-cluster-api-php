@@ -28,28 +28,25 @@ return static function (array $ctx): void {
     // effective default tenant (CAMUNDA_TENANT_ID, or `<default>` when nothing is
     // configured) so the request is scoped to the default tenant. This matches the
     // Camunda Java client, and makes a zero-config client work on multi-tenant
-    // clusters (issue #138).
+    // clusters (issues #138, #178).
     //
-    // Map: operation name => body parameter variable name (without $). The body
-    // model (class name = ucfirst of the variable) must expose
-    // getTenantId()/setTenantId(). Whether the setter takes a plain string or
-    // the semantic TenantId is detected from the generated model, so upstream
-    // schema changes (e.g. a string becoming a TenantId ref) don't break the build.
-    $tenantAwareParams = [
-        'createProcessInstance' => 'processInstanceCreationInstruction',
-        'evaluateDecision' => 'decisionEvaluationInstruction',
-        'publishMessage' => 'messagePublicationRequest',
-        'correlateMessage' => 'messageCorrelationRequest',
-        'broadcastSignal' => 'signalBroadcastRequest',
-        'evaluateConditionals' => 'conditionalEvaluationInstruction',
-        'evaluateExpression' => 'expressionEvaluationRequest',
-    ];
+    // Which operations get the default is derived from the spec, not a list: an
+    // operation's JSON request body (or each oneOf variant of it) that declares
+    // an optional top-level `tenantId` is tenant-aware. Union bodies where only
+    // some variants carry tenantId (e.g. suspendProcessDefinitions by id vs by
+    // key) inject only on those variants. Whether a setter takes a plain string
+    // or the semantic TenantId is detected from the generated model.
+    $spec = json_decode((string) file_get_contents($ctx['spec_path']), true);
+    if (!is_array($spec)) {
+        throw new \RuntimeException('Cannot read bundled spec at ' . $ctx['spec_path']);
+    }
     $tenantAwareBodyOps = [];
-    foreach ($tenantAwareParams as $op => $param) {
-        $tenantAwareBodyOps[$op] = [
-            $param,
-            tenant_setter_takes_string($ctx['out_dir'] . '/src/Model/' . ucfirst($param) . '.php'),
-        ];
+    foreach (tenant_aware_body_schemas($spec) as $op => [$variants, $allVariants]) {
+        $withSetter = [];
+        foreach ($variants as $variant) {
+            $withSetter[$variant] = tenant_setter_takes_string($ctx['out_dir'] . '/src/Model/' . $variant . '.php');
+        }
+        $tenantAwareBodyOps[$op] = [$withSetter, $allVariants];
     }
 
     $syncMethods = '';
@@ -89,7 +86,7 @@ return static function (array $ctx): void {
             $isVoid = in_array($return, ['void', 'never'], true);
             $call = "\$this->api({$fqcn}::class)->{$name}({$args})";
 
-            $tenantInjection = tenant_injection($name, $tenantAwareBodyOps);
+            $tenantInjection = tenant_injection($name, $m[3], $tenantAwareBodyOps);
             // createDeployment takes tenantId as a direct query parameter rather
             // than inside a body model; default it when the caller omits it.
             if ($name === 'createDeployment') {
@@ -233,6 +230,206 @@ function tenant_setter_takes_string(string $modelFile): bool
 }
 
 /**
+ * Walk the spec for operations whose JSON request body carries an optional
+ * top-level `tenantId`, per oneOf/anyOf variant.
+ *
+ * Returns operationId => [list of variant schema names with an optional
+ * tenantId, whether every variant of the body has it]. A non-union body is a
+ * single "variant" named after its schema.
+ *
+ * @param array<mixed> $spec
+ * @return array<string, array{0: list<string>, 1: bool}>
+ */
+function tenant_aware_body_schemas(array $spec): array
+{
+    $schemas = $spec['components']['schemas'] ?? [];
+    $requestBodies = $spec['components']['requestBodies'] ?? [];
+    $result = [];
+    foreach ($spec['paths'] ?? [] as $pathItem) {
+        if (!is_array($pathItem)) {
+            continue;
+        }
+        foreach ($pathItem as $op) {
+            if (!is_array($op) || !isset($op['operationId'], $op['requestBody']) || !is_array($op['requestBody'])) {
+                continue;
+            }
+            $operationId = (string) $op['operationId'];
+            // A requestBody may be a component reference: resolve it first.
+            $body = $op['requestBody'];
+            $guard = 0;
+            while (($bodyRef = schema_ref_name($body)) !== null && ++$guard < 50) {
+                $body = is_array($requestBodies) && is_array($requestBodies[$bodyRef] ?? null) ? $requestBodies[$bodyRef] : [];
+            }
+            if (!isset($body['content']['application/json']['schema']) || !is_array($body['content']['application/json']['schema'])) {
+                continue;
+            }
+            $schema = $body['content']['application/json']['schema'];
+            $fail = static function (string $why) use ($operationId): never {
+                throw new \RuntimeException("Unsupported composed request body for {$operationId}: {$why}; extend tenant_aware_body_schemas()");
+            };
+            $name = schema_ref_name($schema);
+            $resolved = resolve_schema($schema, $schemas);
+            $union = $resolved['oneOf'] ?? $resolved['anyOf'] ?? null;
+            // Fail closed on shapes this walk cannot model faithfully: a union
+            // nested under allOf, or a union with enclosing properties/required
+            // that would constrain every variant.
+            if (schema_has_nested_union($resolved, $schemas)
+                || (is_array($union) && (isset($resolved['properties']) || isset($resolved['required']) || isset($resolved['allOf'])))) {
+                $fail('union combined with allOf/properties/required');
+            }
+            $variants = [];
+            $skippedVariants = 0;
+            if (is_array($union)) {
+                foreach ($union as $v) {
+                    if (!is_array($v)) {
+                        continue;
+                    }
+                    $vn = schema_ref_name($v);
+                    if ($vn === null) {
+                        // Inline variant: no generated model to target. Only
+                        // safe to skip when it cannot carry a tenantId.
+                        if (schema_may_carry_tenant_id($v, $schemas)) {
+                            $fail('inline union variant with a tenantId');
+                        }
+                        // It still counts against "every variant is eligible":
+                        // an unguarded injection would call getTenantId() on
+                        // this tenantless inline shape and fail at runtime.
+                        $skippedVariants++;
+                        continue;
+                    }
+                    $variants[$vn] = $v;
+                }
+            } elseif ($name !== null) {
+                $variants[$name] = $schema;
+            } elseif (schema_may_carry_tenant_id($schema, $schemas)) {
+                $fail('inline body schema with a tenantId');
+            }
+            foreach ($variants as $v) {
+                $rv = resolve_schema($v, $schemas);
+                if (isset($rv['oneOf']) || isset($rv['anyOf']) || schema_has_nested_union($rv, $schemas)) {
+                    $fail('nested union inside a variant');
+                }
+            }
+            $tenantVariants = [];
+            foreach ($variants as $vn => $v) {
+                [$props, $required] = schema_properties($v, $schemas);
+                if (isset($props['tenantId']) && !in_array('tenantId', $required, true)) {
+                    $tenantVariants[] = $vn;
+                }
+            }
+            if ($tenantVariants !== []) {
+                // all-eligible only when every variant of the full union —
+                // including skipped tenantless inline ones — carries an
+                // optional tenantId. Otherwise the injection must be guarded
+                // per variant.
+                $result[(string) $op['operationId']] = [$tenantVariants, count($tenantVariants) === count($variants) + $skippedVariants];
+            }
+        }
+    }
+
+    return $result;
+}
+
+/**
+ * True when any allOf part (recursively) of the schema is itself a union.
+ *
+ * @param array<mixed> $schema
+ * @param array<mixed> $schemas
+ */
+function schema_has_nested_union(array $schema, array $schemas, int $depth = 0): bool
+{
+    if ($depth > 50) {
+        return false;
+    }
+    foreach ($schema['allOf'] ?? [] as $part) {
+        if (!is_array($part)) {
+            continue;
+        }
+        $part = resolve_schema($part, $schemas);
+        if (isset($part['oneOf']) || isset($part['anyOf']) || schema_has_nested_union($part, $schemas, $depth + 1)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * True when the schema (following refs, allOf and nested unions) declares a
+ * top-level tenantId anywhere.
+ *
+ * @param array<mixed> $schema
+ * @param array<mixed> $schemas
+ */
+function schema_may_carry_tenant_id(array $schema, array $schemas, int $depth = 0): bool
+{
+    if ($depth > 50) {
+        return true;
+    }
+    $schema = resolve_schema($schema, $schemas);
+    if (is_array($schema['properties'] ?? null) && array_key_exists('tenantId', $schema['properties'])) {
+        return true;
+    }
+    foreach (['allOf', 'oneOf', 'anyOf'] as $k) {
+        foreach (is_array($schema[$k] ?? null) ? $schema[$k] : [] as $part) {
+            if (is_array($part) && schema_may_carry_tenant_id($part, $schemas, $depth + 1)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+/** @param mixed $schema */
+function schema_ref_name($schema): ?string
+{
+    if (is_array($schema) && isset($schema['$ref']) && is_string($schema['$ref'])) {
+        return substr($schema['$ref'], strrpos($schema['$ref'], '/') + 1);
+    }
+
+    return null;
+}
+
+/**
+ * @param array<mixed> $schema
+ * @param array<mixed> $schemas
+ * @return array<mixed>
+ */
+function resolve_schema(array $schema, array $schemas): array
+{
+    $guard = 0;
+    while (($ref = schema_ref_name($schema)) !== null && ++$guard < 50) {
+        $schema = $schemas[$ref] ?? [];
+    }
+
+    return $schema;
+}
+
+/**
+ * Top-level properties and required names of a schema, following allOf.
+ *
+ * @param array<mixed> $schema
+ * @param array<mixed> $schemas
+ * @return array{0: array<string, mixed>, 1: list<string>}
+ */
+function schema_properties(array $schema, array $schemas): array
+{
+    $schema = resolve_schema($schema, $schemas);
+    $props = is_array($schema['properties'] ?? null) ? $schema['properties'] : [];
+    $required = is_array($schema['required'] ?? null) ? array_values($schema['required']) : [];
+    foreach ($schema['allOf'] ?? [] as $part) {
+        if (is_array($part)) {
+            [$p, $r] = schema_properties($part, $schemas);
+            $props += $p;
+            $required = array_merge($required, $r);
+        }
+    }
+
+    return [$props, $required];
+}
+
+/**
  * Emit the tenant-default injection prelude for tenant-aware operations.
  *
  * When the caller leaves tenantId null on the body model, forward a clone
@@ -240,29 +437,57 @@ function tenant_setter_takes_string(string $modelFile): bool
  * is cloned before the default is applied so the caller-owned instance is
  * never mutated: reusing one tenantless model across clients with different
  * configured defaults must not leak the first client's tenant into the next
- * call.
+ * call. For union bodies where only some variants carry tenantId, the
+ * injection is guarded by an instanceof check per variant.
  *
- * @param array<string, array{0: string, 1: bool}> $tenantAwareBodyOps
+ * @param array<string, array{0: array<string, bool>, 1: bool}> $tenantAwareBodyOps
  */
-function tenant_injection(string $operationName, array $tenantAwareBodyOps): string
+function tenant_injection(string $operationName, string $rawParams, array $tenantAwareBodyOps): string
 {
     if (!isset($tenantAwareBodyOps[$operationName])) {
         return '';
     }
 
-    [$param, $isStringTenant] = $tenantAwareBodyOps[$operationName];
+    [$variants, $allVariants] = $tenantAwareBodyOps[$operationName];
+    $first = array_key_first($variants);
+    if (preg_match('/Model\\\\' . preg_quote((string) $first, '/') . '\b[^$]*\$(\w+)/', $rawParams, $pm) !== 1) {
+        throw new \RuntimeException("Cannot locate the {$first} body parameter of {$operationName}");
+    }
+    $param = $pm[1];
+    // An optional body parameter (`?Model $x = null`) may be omitted: guard it.
+    $nullable = preg_match('/\?\s*\\\\?Camunda\\\\Orchestration\\\\Api\\\\Model\\\\[^$]*\$' . $param . '\b|\|\s*null\s+\$' . $param . '\b|\$' . $param . '\s*=\s*null\b/', $rawParams) === 1;
+    $nullGuard = $nullable ? "\${$param} !== null && " : '';
 
-    $valueExpr = $isStringTenant
+    $value = static fn (bool $isString): string => $isString
         ? '$this->config->defaultTenantId()'
         : 'new \\Camunda\\Orchestration\\Semantic\\TenantId($this->config->defaultTenantId())';
 
-    return <<<PHP
-        if (\${$param}->getTenantId() === null) {
+    $distinctTypes = array_unique(array_values($variants));
+    if ($allVariants && count($distinctTypes) === 1) {
+        $valueExpr = $value(reset($variants));
+
+        return <<<PHP
+        if ({$nullGuard}\${$param}->getTenantId() === null) {
             \${$param} = clone \${$param};
             \${$param}->setTenantId({$valueExpr});
         }
 
 PHP;
+    }
+
+    $out = '';
+    foreach ($variants as $variant => $isString) {
+        $valueExpr = $value($isString);
+        $out .= <<<PHP
+        if ({$nullGuard}\${$param} instanceof \\Camunda\\Orchestration\\Api\\Model\\{$variant} && \${$param}->getTenantId() === null) {
+            \${$param} = clone \${$param};
+            \${$param}->setTenantId({$valueExpr});
+        }
+
+PHP;
+    }
+
+    return $out;
 }
 
 /**

@@ -17,7 +17,7 @@ final class FlatFacadeTenantHookTest extends TestCase
     private const STRING_INJECTION = '$expressionEvaluationRequest->setTenantId($this->config->defaultTenantId());';
     private const SEMANTIC_INJECTION = '$expressionEvaluationRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));';
 
-    /** @var (Closure(array{out_dir: string, root: string}): void)|null */
+    /** @var (Closure(array{out_dir: string, root: string, spec_path: string}): void)|null */
     private static ?Closure $hook = null;
 
     public function testStringSetterInjectsPlainStringInBothTraits(): void
@@ -57,10 +57,103 @@ final class FlatFacadeTenantHookTest extends TestCase
         $this->runHook('public function setTenantId($tenant_id)');
     }
 
+    public function testOptionalBodyIsNullGuardedBeforeInjection(): void
+    {
+        $param = '?\Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest $expressionEvaluationRequest = null';
+        [$sync, $async] = $this->runHook('public function setTenantId(?string $tenant_id)', $param);
+
+        foreach ([$sync, $async] as $trait) {
+            self::assertStringContainsString('if ($expressionEvaluationRequest !== null && $expressionEvaluationRequest->getTenantId() === null) {', $trait);
+        }
+    }
+
+    public function testRequiredBodyIsNotNullGuarded(): void
+    {
+        [$sync] = $this->runHook('public function setTenantId(?string $tenant_id)');
+
+        self::assertStringContainsString('if ($expressionEvaluationRequest->getTenantId() === null) {', $sync);
+    }
+
+    public function testUnionNestedUnderAllOfFailsClosed(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported composed request body for evaluateExpression');
+
+        $this->runHook(null, null, ['allOf' => [['oneOf' => [['$ref' => '#/components/schemas/Other']]]]]);
+    }
+
+    public function testUnionWithEnclosingConstraintsFailsClosed(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported composed request body for evaluateExpression');
+
+        $this->runHook(null, null, ['required' => ['tenantId'], 'oneOf' => [['$ref' => '#/components/schemas/Other']]]);
+    }
+
+    public function testRequestBodyComponentReferenceIsResolved(): void
+    {
+        [$sync, $async] = $this->runHook('public function setTenantId(?string $tenant_id): self', null, null, ['$ref' => '#/components/requestBodies/EvalBody']);
+
+        self::assertStringContainsString(self::STRING_INJECTION, $sync);
+        self::assertStringContainsString(self::STRING_INJECTION, $async);
+    }
+
+    public function testInlineBodyWithTenantIdFailsClosed(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported composed request body for evaluateExpression');
+
+        $this->runHook(null, null, null, ['content' => ['application/json' => ['schema' => ['type' => 'object', 'properties' => ['tenantId' => ['type' => 'string']]]]]]);
+    }
+
+    public function testInlineUnionVariantWithTenantIdFailsClosed(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported composed request body for evaluateExpression');
+
+        $this->runHook(null, null, ['oneOf' => [['$ref' => '#/components/schemas/Other'], ['type' => 'object', 'properties' => ['tenantId' => ['type' => 'string']]]]]);
+    }
+
+    public function testNestedUnionInsideVariantFailsClosed(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported composed request body for evaluateExpression');
+
+        $this->runHook(null, null, ['oneOf' => [['$ref' => '#/components/schemas/Nested']]]);
+    }
+
+    public function testMixedUnionWithTenantlessInlineVariantEmitsGuardedInjection(): void
+    {
+        // A oneOf of a tenant-aware referenced model and a tenantless inline
+        // model must not be marked all-eligible: an unguarded injection would
+        // call getTenantId() on the inline shape and fail at runtime.
+        [$sync, $async] = $this->runHook(null, null, null, [
+            'content' => ['application/json' => ['schema' => [
+                'oneOf' => [
+                    ['$ref' => '#/components/schemas/ExpressionEvaluationRequest'],
+                    ['type' => 'object', 'properties' => ['expression' => ['type' => 'string']]],
+                ],
+            ]]],
+        ]);
+
+        foreach ([$sync, $async] as $trait) {
+            self::assertStringContainsString(
+                'if ($expressionEvaluationRequest instanceof \Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest && $expressionEvaluationRequest->getTenantId() === null) {',
+                $trait,
+            );
+            self::assertStringNotContainsString(
+                'if ($expressionEvaluationRequest->getTenantId() === null) {',
+                $trait,
+            );
+        }
+    }
+
     /**
+     * @param array<string, mixed>|null $bodySchema
+     * @param array<string, mixed>|null $requestBody
      * @return array{0: string, 1: string}
      */
-    private function runHook(?string $setterSignature): array
+    private function runHook(?string $setterSignature, ?string $param = null, ?array $bodySchema = null, ?array $requestBody = null): array
     {
         $dir = dirname(__DIR__, 2) . '/.flat-facade-hook-' . bin2hex(random_bytes(8));
         self::assertTrue(mkdir($dir . '/out/src/Api', 0777, true));
@@ -68,28 +161,46 @@ final class FlatFacadeTenantHookTest extends TestCase
         self::assertTrue(mkdir($dir . '/root/src', 0777, true));
 
         try {
-            self::assertNotFalse(file_put_contents($dir . '/out/src/Api/ExpressionApi.php', <<<'PHP'
+            self::assertNotFalse(file_put_contents($dir . '/out/src/Api/ExpressionApi.php', str_replace('__PARAM__', $param ?? '\Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest $expressionEvaluationRequest', <<<'PHP'
 <?php
 
 final class ExpressionApi
 {
-    public function evaluateExpression(\Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest $expressionEvaluationRequest): object
+    public function evaluateExpression(__PARAM__): object
     {
     }
 
-    public function evaluateExpressionAsync(\Camunda\Orchestration\Api\Model\ExpressionEvaluationRequest $expressionEvaluationRequest): object
+    public function evaluateExpressionAsync(__PARAM__): object
     {
     }
 }
-PHP));
+PHP)));
             $model = "<?php\n\nfinal class ExpressionEvaluationRequest\n{\n"
                 . ($setterSignature !== null ? "    {$setterSignature}\n    {\n    }\n" : '')
                 . "}\n";
             self::assertNotFalse(file_put_contents($dir . '/out/src/Model/ExpressionEvaluationRequest.php', $model));
 
+            $spec = [
+                'paths' => ['/expression/evaluation' => ['post' => [
+                    'operationId' => 'evaluateExpression',
+                    'requestBody' => $requestBody ?? ['content' => ['application/json' => ['schema' => ['$ref' => '#/components/schemas/ExpressionEvaluationRequest']]]],
+                ]]],
+                'components' => ['requestBodies' => [
+                    'EvalBody' => ['content' => ['application/json' => ['schema' => ['$ref' => '#/components/schemas/ExpressionEvaluationRequest']]]],
+                ], 'schemas' => [
+                    'ExpressionEvaluationRequest' => $bodySchema ?? [
+                        'type' => 'object',
+                        'properties' => ['tenantId' => ['type' => 'string']],
+                    ],
+                    'Other' => ['type' => 'object', 'properties' => ['tenantId' => ['type' => 'string']]],
+                    'Nested' => ['oneOf' => [['$ref' => '#/components/schemas/Other']]],
+                ]],
+            ];
+            self::assertNotFalse(file_put_contents($dir . '/spec.json', (string) json_encode($spec)));
+
             ob_start();
             try {
-                self::hook()(['out_dir' => $dir . '/out', 'root' => $dir . '/root']);
+                self::hook()(['out_dir' => $dir . '/out', 'root' => $dir . '/root', 'spec_path' => $dir . '/spec.json']);
             } finally {
                 ob_end_clean();
             }
@@ -106,13 +217,13 @@ PHP));
     }
 
     /**
-     * @return Closure(array{out_dir: string, root: string}): void
+     * @return Closure(array{out_dir: string, root: string, spec_path: string}): void
      */
     private static function hook(): Closure
     {
         if (self::$hook === null) {
             // The hook file declares global helper functions, so it can only be loaded once.
-            /** @var Closure(array{out_dir: string, root: string}): void $hook */
+            /** @var Closure(array{out_dir: string, root: string, spec_path: string}): void $hook */
             $hook = require dirname(__DIR__, 2) . '/hooks/post_gen/0500_flat_facade.php';
             self::$hook = $hook;
         }
