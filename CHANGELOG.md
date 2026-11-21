@@ -1,3 +1,10 @@
+# [11.0.0-alpha.4](https://github.com/camunda/orchestration-cluster-api-php/compare/v11.0.0-alpha.3...v11.0.0-alpha.4) (2026-11-21)
+
+
+### Bug Fixes
+
+* derive default-tenant injection from the request body shape ([#179](https://github.com/camunda/orchestration-cluster-api-php/issues/179)) ([7beba21](https://github.com/camunda/orchestration-cluster-api-php/commit/7beba21ce337eeaec85f78cb3f9d55a1fbfb49d9)), closes [#178](https://github.com/camunda/orchestration-cluster-api-php/issues/178) [#178](https://github.com/camunda/orchestration-cluster-api-php/issues/178) [#178](https://github.com/camunda/orchestration-cluster-api-php/issues/178) [#178](https://github.com/camunda/orchestration-cluster-api-php/issues/178) [#178](https://github.com/camunda/orchestration-cluster-api-php/issues/178)
+
 # [11.0.0-alpha.3](https://github.com/camunda/orchestration-cluster-api-php/compare/v11.0.0-alpha.2...v11.0.0-alpha.3) (2026-11-20)
 
 
