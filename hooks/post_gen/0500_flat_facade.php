@@ -243,16 +243,30 @@ function tenant_setter_takes_string(string $modelFile): bool
 function tenant_aware_body_schemas(array $spec): array
 {
     $schemas = $spec['components']['schemas'] ?? [];
+    $requestBodies = $spec['components']['requestBodies'] ?? [];
     $result = [];
     foreach ($spec['paths'] ?? [] as $pathItem) {
         if (!is_array($pathItem)) {
             continue;
         }
         foreach ($pathItem as $op) {
-            if (!is_array($op) || !isset($op['operationId'], $op['requestBody']['content']['application/json']['schema'])) {
+            if (!is_array($op) || !isset($op['operationId'], $op['requestBody']) || !is_array($op['requestBody'])) {
                 continue;
             }
-            $schema = $op['requestBody']['content']['application/json']['schema'];
+            $operationId = (string) $op['operationId'];
+            // A requestBody may be a component reference: resolve it first.
+            $body = $op['requestBody'];
+            $guard = 0;
+            while (($bodyRef = schema_ref_name($body)) !== null && ++$guard < 50) {
+                $body = is_array($requestBodies) && is_array($requestBodies[$bodyRef] ?? null) ? $requestBodies[$bodyRef] : [];
+            }
+            if (!isset($body['content']['application/json']['schema']) || !is_array($body['content']['application/json']['schema'])) {
+                continue;
+            }
+            $schema = $body['content']['application/json']['schema'];
+            $fail = static function (string $why) use ($operationId): never {
+                throw new \RuntimeException("Unsupported composed request body for {$operationId}: {$why}; extend tenant_aware_body_schemas()");
+            };
             $name = schema_ref_name($schema);
             $resolved = resolve_schema($schema, $schemas);
             $union = $resolved['oneOf'] ?? $resolved['anyOf'] ?? null;
@@ -261,19 +275,35 @@ function tenant_aware_body_schemas(array $spec): array
             // that would constrain every variant.
             if (schema_has_nested_union($resolved, $schemas)
                 || (is_array($union) && (isset($resolved['properties']) || isset($resolved['required']) || isset($resolved['allOf'])))) {
-                throw new \RuntimeException('Unsupported composed request body for ' . $op['operationId'] . ': extend tenant_aware_body_schemas()');
+                $fail('union combined with allOf/properties/required');
             }
             $variants = [];
             if (is_array($union)) {
                 foreach ($union as $v) {
+                    if (!is_array($v)) {
+                        continue;
+                    }
                     $vn = schema_ref_name($v);
                     if ($vn === null) {
-                        continue 2; // inline variant: no generated model to target
+                        // Inline variant: no generated model to target. Only
+                        // safe to skip when it cannot carry a tenantId.
+                        if (schema_may_carry_tenant_id($v, $schemas)) {
+                            $fail('inline union variant with a tenantId');
+                        }
+                        continue;
                     }
                     $variants[$vn] = $v;
                 }
             } elseif ($name !== null) {
                 $variants[$name] = $schema;
+            } elseif (schema_may_carry_tenant_id($schema, $schemas)) {
+                $fail('inline body schema with a tenantId');
+            }
+            foreach ($variants as $v) {
+                $rv = resolve_schema($v, $schemas);
+                if (isset($rv['oneOf']) || isset($rv['anyOf']) || schema_has_nested_union($rv, $schemas)) {
+                    $fail('nested union inside a variant');
+                }
             }
             $tenantVariants = [];
             foreach ($variants as $vn => $v) {
@@ -309,6 +339,33 @@ function schema_has_nested_union(array $schema, array $schemas, int $depth = 0):
         $part = resolve_schema($part, $schemas);
         if (isset($part['oneOf']) || isset($part['anyOf']) || schema_has_nested_union($part, $schemas, $depth + 1)) {
             return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * True when the schema (following refs, allOf and nested unions) declares a
+ * top-level tenantId anywhere.
+ *
+ * @param array<mixed> $schema
+ * @param array<mixed> $schemas
+ */
+function schema_may_carry_tenant_id(array $schema, array $schemas, int $depth = 0): bool
+{
+    if ($depth > 50) {
+        return true;
+    }
+    $schema = resolve_schema($schema, $schemas);
+    if (is_array($schema['properties'] ?? null) && array_key_exists('tenantId', $schema['properties'])) {
+        return true;
+    }
+    foreach (['allOf', 'oneOf', 'anyOf'] as $k) {
+        foreach (is_array($schema[$k] ?? null) ? $schema[$k] : [] as $part) {
+            if (is_array($part) && schema_may_carry_tenant_id($part, $schemas, $depth + 1)) {
+                return true;
+            }
         }
     }
 

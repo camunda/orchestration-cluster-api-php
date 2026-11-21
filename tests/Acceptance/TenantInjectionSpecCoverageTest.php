@@ -22,6 +22,8 @@ final class TenantInjectionSpecCoverageTest extends TestCase
         /** @var array{paths?: array<string, array<string, mixed>>, components?: array{schemas?: array<string, array<string, mixed>>}} $spec */
         /** @var array<string, array<string, mixed>> $schemas */
         $schemas = $spec['components']['schemas'] ?? [];
+        /** @var array<string, mixed> $requestBodies */
+        $requestBodies = $spec['components']['requestBodies'] ?? [];
         $sync = (string) file_get_contents($root . '/src/GeneratedOperations.php');
         $async = (string) file_get_contents($root . '/src/GeneratedAsyncOperations.php');
 
@@ -33,14 +35,23 @@ final class TenantInjectionSpecCoverageTest extends TestCase
                 if (!is_array($op) || !isset($op['operationId']) || !is_string($op['operationId'])) {
                     continue;
                 }
-                /** @var array{operationId: string, requestBody?: array{content?: array<string, array{schema?: mixed}>}} $op */
-                $schema = $op['requestBody']['content']['application/json']['schema'] ?? null;
+                $body = $op['requestBody'] ?? null;
+                while (is_array($body) && isset($body['$ref']) && is_string($body['$ref'])) {
+                    $body = $requestBodies[substr($body['$ref'], strrpos($body['$ref'], '/') + 1)] ?? null;
+                }
+                $schema = is_array($body) && is_array($body['content'] ?? null) && is_array($body['content']['application/json'] ?? null)
+                    ? ($body['content']['application/json']['schema'] ?? null)
+                    : null;
                 if (!is_array($schema)) {
                     continue;
                 }
                 $resolved = $this->resolve($schema, $schemas);
                 $union = $resolved['oneOf'] ?? $resolved['anyOf'] ?? null;
                 $variants = is_array($union) ? $union : [$schema];
+                foreach ($variants as $variant) {
+                    $rv = is_array($variant) ? $this->resolve($variant, $schemas) : [];
+                    self::assertFalse(isset($rv['oneOf']) || isset($rv['anyOf']), "{$op['operationId']} has a nested union variant; cannot verify it");
+                }
                 $eligible = [];
                 foreach ($variants as $variant) {
                     if (is_array($variant) && $this->hasOptionalTenantId($variant, $schemas)) {

@@ -90,11 +90,44 @@ final class FlatFacadeTenantHookTest extends TestCase
         $this->runHook(null, null, ['required' => ['tenantId'], 'oneOf' => [['$ref' => '#/components/schemas/Other']]]);
     }
 
+    public function testRequestBodyComponentReferenceIsResolved(): void
+    {
+        [$sync, $async] = $this->runHook('public function setTenantId(?string $tenant_id): self', null, null, ['$ref' => '#/components/requestBodies/EvalBody']);
+
+        self::assertStringContainsString(self::STRING_INJECTION, $sync);
+        self::assertStringContainsString(self::STRING_INJECTION, $async);
+    }
+
+    public function testInlineBodyWithTenantIdFailsClosed(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported composed request body for evaluateExpression');
+
+        $this->runHook(null, null, null, ['content' => ['application/json' => ['schema' => ['type' => 'object', 'properties' => ['tenantId' => ['type' => 'string']]]]]]);
+    }
+
+    public function testInlineUnionVariantWithTenantIdFailsClosed(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported composed request body for evaluateExpression');
+
+        $this->runHook(null, null, ['oneOf' => [['$ref' => '#/components/schemas/Other'], ['type' => 'object', 'properties' => ['tenantId' => ['type' => 'string']]]]]);
+    }
+
+    public function testNestedUnionInsideVariantFailsClosed(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported composed request body for evaluateExpression');
+
+        $this->runHook(null, null, ['oneOf' => [['$ref' => '#/components/schemas/Nested']]]);
+    }
+
     /**
      * @param array<string, mixed>|null $bodySchema
+     * @param array<string, mixed>|null $requestBody
      * @return array{0: string, 1: string}
      */
-    private function runHook(?string $setterSignature, ?string $param = null, ?array $bodySchema = null): array
+    private function runHook(?string $setterSignature, ?string $param = null, ?array $bodySchema = null, ?array $requestBody = null): array
     {
         $dir = dirname(__DIR__, 2) . '/.flat-facade-hook-' . bin2hex(random_bytes(8));
         self::assertTrue(mkdir($dir . '/out/src/Api', 0777, true));
@@ -124,14 +157,17 @@ PHP)));
             $spec = [
                 'paths' => ['/expression/evaluation' => ['post' => [
                     'operationId' => 'evaluateExpression',
-                    'requestBody' => ['content' => ['application/json' => ['schema' => ['$ref' => '#/components/schemas/ExpressionEvaluationRequest']]]],
+                    'requestBody' => $requestBody ?? ['content' => ['application/json' => ['schema' => ['$ref' => '#/components/schemas/ExpressionEvaluationRequest']]]],
                 ]]],
-                'components' => ['schemas' => [
+                'components' => ['requestBodies' => [
+                    'EvalBody' => ['content' => ['application/json' => ['schema' => ['$ref' => '#/components/schemas/ExpressionEvaluationRequest']]]],
+                ], 'schemas' => [
                     'ExpressionEvaluationRequest' => $bodySchema ?? [
                         'type' => 'object',
                         'properties' => ['tenantId' => ['type' => 'string']],
                     ],
                     'Other' => ['type' => 'object', 'properties' => ['tenantId' => ['type' => 'string']]],
+                    'Nested' => ['oneOf' => [['$ref' => '#/components/schemas/Other']]],
                 ]],
             ];
             self::assertNotFalse(file_put_contents($dir . '/spec.json', (string) json_encode($spec)));
