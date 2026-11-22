@@ -61,6 +61,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
     protected static array $openAPITypes = [
         'isMultiTenancyEnabled' => 'bool',
         'isTenantsApiEnabled' => 'bool',
+        'isWaitStatesEnabled' => 'bool',
         'maxRequestSize' => 'int'
     ];
 
@@ -72,6 +73,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
     protected static array $openAPIFormats = [
         'isMultiTenancyEnabled' => null,
         'isTenantsApiEnabled' => null,
+        'isWaitStatesEnabled' => null,
         'maxRequestSize' => 'int64'
     ];
 
@@ -83,6 +85,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
     protected static array $openAPINullables = [
         'isMultiTenancyEnabled' => false,
         'isTenantsApiEnabled' => false,
+        'isWaitStatesEnabled' => false,
         'maxRequestSize' => false
     ];
 
@@ -187,6 +190,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
     protected static array $attributeMap = [
         'isMultiTenancyEnabled' => 'isMultiTenancyEnabled',
         'isTenantsApiEnabled' => 'isTenantsApiEnabled',
+        'isWaitStatesEnabled' => 'isWaitStatesEnabled',
         'maxRequestSize' => 'maxRequestSize'
     ];
 
@@ -198,6 +202,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
     protected static array $setters = [
         'isMultiTenancyEnabled' => 'setIsMultiTenancyEnabled',
         'isTenantsApiEnabled' => 'setIsTenantsApiEnabled',
+        'isWaitStatesEnabled' => 'setIsWaitStatesEnabled',
         'maxRequestSize' => 'setMaxRequestSize'
     ];
 
@@ -209,6 +214,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
     protected static array $getters = [
         'isMultiTenancyEnabled' => 'getIsMultiTenancyEnabled',
         'isTenantsApiEnabled' => 'getIsTenantsApiEnabled',
+        'isWaitStatesEnabled' => 'getIsWaitStatesEnabled',
         'maxRequestSize' => 'getMaxRequestSize'
     ];
 
@@ -261,6 +267,7 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
     {
         $this->setIfExists('isMultiTenancyEnabled', $data ?? [], null);
         $this->setIfExists('isTenantsApiEnabled', $data ?? [], null);
+        $this->setIfExists('isWaitStatesEnabled', $data ?? [], null);
         $this->setIfExists('maxRequestSize', $data ?? [], null);
     }
 
@@ -298,6 +305,9 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
         }
         if ($this->container['isTenantsApiEnabled'] === null) {
             $invalidProperties[] = "'isTenantsApiEnabled' can't be null";
+        }
+        if ($this->container['isWaitStatesEnabled'] === null) {
+            $invalidProperties[] = "'isWaitStatesEnabled' can't be null";
         }
         if ($this->container['maxRequestSize'] === null) {
             $invalidProperties[] = "'maxRequestSize' can't be null";
@@ -373,6 +383,38 @@ class DeploymentConfigurationResponse implements ModelInterface, ArrayAccess, Js
             unset($this->openAPIFieldsSet['isTenantsApiEnabled']);
         } else {
             $this->openAPIFieldsSet['isTenantsApiEnabled'] = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets isWaitStatesEnabled
+     *
+     * @return bool
+     */
+    public function getIsWaitStatesEnabled(): bool
+    {
+        return $this->container['isWaitStatesEnabled'] ?? null;
+    }
+
+    /**
+     * Sets isWaitStatesEnabled
+     *
+     * @param bool $isWaitStatesEnabled Whether wait-state tracking is enabled.
+     *
+     * @return $this
+     */
+    public function setIsWaitStatesEnabled(bool $isWaitStatesEnabled): static
+    {
+        if (is_null($isWaitStatesEnabled)) {
+            throw new InvalidArgumentException('non-nullable isWaitStatesEnabled cannot be null');
+        }
+        $this->container['isWaitStatesEnabled'] = $isWaitStatesEnabled;
+        if ($isWaitStatesEnabled === null) {
+            unset($this->openAPIFieldsSet['isWaitStatesEnabled']);
+        } else {
+            $this->openAPIFieldsSet['isWaitStatesEnabled'] = true;
         }
 
         return $this;

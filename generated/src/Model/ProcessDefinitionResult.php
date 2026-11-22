@@ -282,6 +282,7 @@ class ProcessDefinitionResult implements ModelInterface, ArrayAccess, JsonSerial
     public const STATE_ACTIVE = 'ACTIVE';
     public const STATE_DRAINING = 'DRAINING';
     public const STATE_DELETED = 'DELETED';
+    public const STATE_SUSPENDED = 'SUSPENDED';
 
     /**
      * Gets allowable values of the enum
@@ -294,6 +295,7 @@ class ProcessDefinitionResult implements ModelInterface, ArrayAccess, JsonSerial
             self::STATE_ACTIVE,
             self::STATE_DRAINING,
             self::STATE_DELETED,
+            self::STATE_SUSPENDED,
         ];
     }
 
@@ -702,7 +704,7 @@ class ProcessDefinitionResult implements ModelInterface, ArrayAccess, JsonSerial
     /**
      * Sets state
      *
-     * @param string $state The state of this process definition. `DRAINING` indicates the definition is being deleted but still has active process instances draining before it is removed.
+     * @param string $state The state of this process definition. `DRAINING` indicates the definition is being deleted but still has active process instances draining before it is removed. `SUSPENDED` indicates no new process instances can be created from this definition; it returns to `ACTIVE` when resumed.
      *
      * @return $this
      */

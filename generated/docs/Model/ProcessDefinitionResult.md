@@ -12,6 +12,6 @@ Name | Type | Description | Notes
 **tenantId** | **string** | Tenant ID of this process definition. |
 **processDefinitionKey** | **string** | The key for this process definition. |
 **hasStartForm** | **bool** | Indicates whether the start event of the process has an associated Form Key. |
-**state** | **string** | The state of this process definition. &#x60;DRAINING&#x60; indicates the definition is being deleted but still has active process instances draining before it is removed. |
+**state** | **string** | The state of this process definition. &#x60;DRAINING&#x60; indicates the definition is being deleted but still has active process instances draining before it is removed. &#x60;SUSPENDED&#x60; indicates no new process instances can be created from this definition; it returns to &#x60;ACTIVE&#x60; when resumed. |
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)

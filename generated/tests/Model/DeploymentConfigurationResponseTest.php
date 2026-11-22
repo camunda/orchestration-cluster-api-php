@@ -96,6 +96,15 @@ class DeploymentConfigurationResponseTest extends TestCase
     }
 
     /**
+     * Test attribute "isWaitStatesEnabled"
+     */
+    public function testPropertyIsWaitStatesEnabled()
+    {
+        // TODO: implement
+        self::markTestIncomplete('Not implemented');
+    }
+
+    /**
      * Test attribute "maxRequestSize"
      */
     public function testPropertyMaxRequestSize()
