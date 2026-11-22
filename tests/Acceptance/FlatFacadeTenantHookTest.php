@@ -17,7 +17,7 @@ final class FlatFacadeTenantHookTest extends TestCase
     private const STRING_INJECTION = '$expressionEvaluationRequest->setTenantId($this->config->defaultTenantId());';
     private const SEMANTIC_INJECTION = '$expressionEvaluationRequest->setTenantId(new \Camunda\Orchestration\Semantic\TenantId($this->config->defaultTenantId()));';
 
-    /** @var (Closure(array{out_dir: string, root: string, spec_path: string}): void)|null */
+    /** @var (Closure(array{out_dir: string, root: string, spec_path: string, metadata_path?: string}): void)|null */
     private static ?Closure $hook = null;
 
     public function testStringSetterInjectsPlainStringInBothTraits(): void
@@ -46,6 +46,15 @@ final class FlatFacadeTenantHookTest extends TestCase
 
         foreach ([$sync, $async] as $trait) {
             self::assertStringContainsString(self::SEMANTIC_INJECTION, $trait);
+        }
+    }
+
+    public function testConfiguredMetadataPathIsHonoured(): void
+    {
+        [$sync, $async] = $this->runHook('public function setTenantId(?string $tenant_id)', null, [], true);
+
+        foreach ([$sync, $async] as $trait) {
+            self::assertStringContainsString(self::STRING_INJECTION, $trait);
         }
     }
 
@@ -150,7 +159,7 @@ final class FlatFacadeTenantHookTest extends TestCase
      * @param array<string, mixed> $metadata overrides for the operation's spec-metadata entry
      * @return array{0: string, 1: string}
      */
-    private function runHook(?string $setterSignature, ?string $param = null, array $metadata = []): array
+    private function runHook(?string $setterSignature, ?string $param = null, array $metadata = [], bool $externalMetadata = false): array
     {
         $dir = dirname(__DIR__, 2) . '/.flat-facade-hook-' . bin2hex(random_bytes(8));
         self::assertTrue(mkdir($dir . '/out/src/Api', 0777, true));
@@ -187,11 +196,22 @@ PHP)));
             // A null override drops the field, simulating pre-2.5 metadata.
             $operation = array_filter($operation, static fn ($v): bool => $v !== null);
             self::assertNotFalse(file_put_contents($dir . '/spec.json', '{}'));
-            self::assertNotFalse(file_put_contents($dir . '/spec-metadata.json', (string) json_encode(['operations' => [$operation]])));
+            $metadataJson = (string) json_encode(['operations' => [$operation]]);
+            $ctx = ['out_dir' => $dir . '/out', 'root' => $dir . '/root', 'spec_path' => $dir . '/spec.json'];
+            if ($externalMetadata) {
+                // Configured --metadata path outside the spec directory, plus a
+                // conflicting sibling file that must be ignored.
+                self::assertTrue(mkdir($dir . '/meta', 0777, true));
+                self::assertNotFalse(file_put_contents($dir . '/meta/custom-metadata.json', $metadataJson));
+                self::assertNotFalse(file_put_contents($dir . '/spec-metadata.json', (string) json_encode(['operations' => []])));
+                $ctx['metadata_path'] = $dir . '/meta/custom-metadata.json';
+            } else {
+                self::assertNotFalse(file_put_contents($dir . '/spec-metadata.json', $metadataJson));
+            }
 
             ob_start();
             try {
-                self::hook()(['out_dir' => $dir . '/out', 'root' => $dir . '/root', 'spec_path' => $dir . '/spec.json']);
+                self::hook()($ctx);
             } finally {
                 ob_end_clean();
             }
@@ -208,13 +228,13 @@ PHP)));
     }
 
     /**
-     * @return Closure(array{out_dir: string, root: string, spec_path: string}): void
+     * @return Closure(array{out_dir: string, root: string, spec_path: string, metadata_path?: string}): void
      */
     private static function hook(): Closure
     {
         if (self::$hook === null) {
             // The hook file declares global helper functions, so it can only be loaded once.
-            /** @var Closure(array{out_dir: string, root: string, spec_path: string}): void $hook */
+            /** @var Closure(array{out_dir: string, root: string, spec_path: string, metadata_path?: string}): void $hook */
             $hook = require dirname(__DIR__, 2) . '/hooks/post_gen/0500_flat_facade.php';
             self::$hook = $hook;
         }

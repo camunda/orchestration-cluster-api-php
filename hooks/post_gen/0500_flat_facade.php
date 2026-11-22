@@ -41,7 +41,13 @@ return static function (array $ctx): void {
     // - optionalTenantIdsInBody: an optional tenantIds array (activateJobs).
     // Whether a setter takes a plain string or the semantic TenantId is
     // detected from the generated model.
-    $tenantMetadata = tenant_metadata(dirname($ctx['spec_path']) . '/spec-metadata.json');
+    // Honour generate.php's --metadata (ctx metadata_path) like the other hooks;
+    // fall back to the file next to the bundled spec when none is supplied.
+    $metadataPath = $ctx['metadata_path'] ?? null;
+    if (!is_string($metadataPath) || $metadataPath === '') {
+        $metadataPath = dirname($ctx['spec_path']) . '/spec-metadata.json';
+    }
+    $tenantMetadata = tenant_metadata($metadataPath);
     $tenantAwareBodyOps = [];
     foreach ($tenantMetadata as $op => $meta) {
         if ($meta['variants'] === []) {
