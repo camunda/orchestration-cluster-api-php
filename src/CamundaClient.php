@@ -143,6 +143,13 @@ final class CamundaClient
     /**
      * Return the lazily-constructed, shared instance of a generated API group.
      *
+     * When this client was built with an HTTP client factory (e.g. via {@see self::fromEnvironment()}
+     * or {@see self::fromConfiguration()} without a custom HTTP client), calling it from a different
+     * process than the one that constructed it raises one {@see \E_USER_WARNING} per process so
+     * forked children sharing the parent's connection are caught early. Clients built around a
+     * caller-supplied HTTP client with no factory are excluded because {@see self::forChildProcess()}
+     * returns `$this` for them.
+     *
      * @template T of object
      * @param class-string<T> $apiClass
      * @return T

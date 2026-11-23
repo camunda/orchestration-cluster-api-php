@@ -132,6 +132,34 @@ final class ForeignProcessWarningTest extends TestCase
         self::assertSame(0, $warnings);
     }
 
+    public function testNoWarningForClientWithoutFactoryInAForkedChild(): void
+    {
+        $client = new CamundaClient(
+            ConfigResolver::resolve(overrides: ['CAMUNDA_AUTH_STRATEGY' => 'NONE'], environment: []),
+            self::guzzle([new Response(204)]),
+        );
+        $log = $this->log;
+
+        $this->inChild(static function () use ($client, $log): void {
+            $warnings = 0;
+            set_error_handler(static function () use (&$warnings): bool {
+                $warnings++;
+                return true;
+            });
+            $result = $client->completeJob('1');
+            restore_error_handler();
+            file_put_contents($log, json_encode([
+                'warnings' => $warnings,
+                'sent' => $result === null,
+            ], \JSON_THROW_ON_ERROR));
+        });
+
+        $result = json_decode((string) file_get_contents($this->log), true, 512, \JSON_THROW_ON_ERROR);
+        self::assertIsArray($result);
+        self::assertTrue($result['sent']);
+        self::assertSame(0, $result['warnings']);
+    }
+
     /**
      * @param list<\Psr\Http\Message\ResponseInterface> $queue
      */
