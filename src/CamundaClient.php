@@ -10,6 +10,7 @@ use Camunda\Orchestration\Api\Model\DeploymentResult;
 use Camunda\Orchestration\Api\Model\ProblemDetail;
 use Camunda\Orchestration\Auth\AuthProvider;
 use Camunda\Orchestration\Auth\AuthProviderFactory;
+use Camunda\Orchestration\Auth\OAuthClientCredentialsProvider;
 use Camunda\Orchestration\Config\CamundaConfiguration;
 use Camunda\Orchestration\Config\ConfigResolver;
 use Camunda\Orchestration\Exception\ConfigurationException;
@@ -18,7 +19,11 @@ use Camunda\Orchestration\Worker\JobWorker;
 use Camunda\Orchestration\Worker\JobWorkerOptions;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface;
+<<<<<<< HEAD
 use GuzzleHttp\HandlerStack;
+=======
+use Http\Discovery\Psr18ClientDiscovery;
+>>>>>>> 3985e6c (fix(worker): forked children use their own HTTP client and exit without destructors (#188))
 
 /**
  * The Camunda 8 Orchestration Cluster SDK — synchronous client.
@@ -41,14 +46,21 @@ final class CamundaClient
     use ApiAccessors;
     use GeneratedOperations;
 
-    private readonly ApiConfiguration $apiConfig;
+    private ApiConfiguration $apiConfig;
 
     /** @var array<class-string, object> */
     private array $apiCache = [];
 
+    /**
+     * @param (\Closure(): ClientInterface)|null $httpClientFactory Builds a new, independent HTTP
+     *   client equivalent to `$httpClient`. Forked job workers call it in each child process so
+     *   that the child never reuses the parent's connections (issue #187). When omitted, a child
+     *   keeps using `$httpClient`.
+     */
     public function __construct(
         private readonly CamundaConfiguration $config,
         private readonly ClientInterface $httpClient,
+        private readonly ?\Closure $httpClientFactory = null,
     ) {
         $this->apiConfig = (new ApiConfiguration())
             ->setHost($config->restAddress)
@@ -78,9 +90,57 @@ final class CamundaClient
         CamundaConfiguration $config,
         ?ClientInterface $httpClient = null,
     ): self {
+        if ($httpClient !== null) {
+            return new self($config, $httpClient);
+        }
+
         $auth = AuthProviderFactory::fromConfiguration($config);
+<<<<<<< HEAD
         $client = $httpClient ?? self::buildHttpClient($config, $auth);
         return new self($config, $client);
+=======
+        return new self(
+            $config,
+            HttpClientFactory::create($config, $auth),
+            static fn (): ClientInterface => HttpClientFactory::create($config, self::childAuth($auth)),
+        );
+    }
+
+    /**
+     * A client for use in a forked child process (issue #187).
+     *
+     * A forked child inherits the parent's HTTP client, including its open keep-alive
+     * connections. Using them from several processes interleaves requests and responses on one
+     * socket. The returned client has the same configuration but its own HTTP transport and so
+     * its own connections, and a copy of the current API configuration. If this client was built around a caller-supplied HTTP client and no
+     * factory, there is nothing to rebuild from and `$this` is returned.
+     *
+     * Call it in the child, after `pcntl_fork()`.
+     */
+    public function forChildProcess(): self
+    {
+        if ($this->httpClientFactory === null) {
+            return $this;
+        }
+
+        $child = new self($this->config, ($this->httpClientFactory)(), $this->httpClientFactory);
+        // Keep changes made through api(...)->getConfig() (e.g. an overridden host).
+        $child->apiConfig = clone $this->apiConfig;
+
+        return $child;
+    }
+
+    /**
+     * The auth provider a child process uses: the OAuth provider keeps its cached token but
+     * gets a new token HTTP client, so a refresh in the child does not reuse the parent's
+     * connection either.
+     */
+    private static function childAuth(AuthProvider $auth): AuthProvider
+    {
+        return $auth instanceof OAuthClientCredentialsProvider
+            ? $auth->withTokenHttpClient(Psr18ClientDiscovery::find())
+            : $auth;
+>>>>>>> 3985e6c (fix(worker): forked children use their own HTTP client and exit without destructors (#188))
     }
 
     private static function buildHttpClient(CamundaConfiguration $config, AuthProvider $auth): ClientInterface

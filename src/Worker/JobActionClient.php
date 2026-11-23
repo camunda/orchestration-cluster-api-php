@@ -10,7 +10,11 @@ use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\Api\Model\JobCompletionRequest;
 use Camunda\Orchestration\Api\Model\JobErrorRequest;
 use Camunda\Orchestration\Api\Model\JobFailRequest;
+<<<<<<< HEAD
 use Camunda\Orchestration\Exception\AuthenticationException;
+=======
+use Camunda\Orchestration\CamundaClient;
+>>>>>>> 3985e6c (fix(worker): forked children use their own HTTP client and exit without destructors (#188))
 
 /**
  * The action surface handed to a job handler: complete, fail, or raise a BPMN error
@@ -29,7 +33,26 @@ final class JobActionClient
     public function __construct(
         private readonly JobApi $jobApi,
         private readonly ActivatedJobResult $job,
+        private readonly ?CamundaClient $client = null,
     ) {
+    }
+
+    /**
+     * The client the worker uses for this job, for any further API calls the handler makes.
+     *
+     * In forked mode this is a client with its own HTTP connections, built in the child
+     * process. Use it rather than a `CamundaClient` captured from the parent: the parent's
+     * connections must not be shared between processes (issue #187).
+     *
+     * @throws \LogicException When this action client was built without one.
+     */
+    public function client(): CamundaClient
+    {
+        if ($this->client === null) {
+            throw new \LogicException('This JobActionClient was created without a CamundaClient.');
+        }
+
+        return $this->client;
     }
 
     /**

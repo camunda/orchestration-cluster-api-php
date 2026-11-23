@@ -37,7 +37,8 @@
     "suggest": {
         "vlucas/phpdotenv": "Load Camunda configuration from a .env file (CAMUNDA_LOAD_ENVFILE)",
         "php-http/httplug": "Enable the asynchronous CamundaAsyncClient via any HTTPlug HttpAsyncClient",
-        "ext-pcntl": "Enable forked concurrency for job workers"
+        "ext-pcntl": "Enable forked concurrency for job workers",
+        "ext-posix": "End forked job-worker children without running destructors (use with ext-pcntl)"
     },
     "autoload": {
         "psr-4": {
