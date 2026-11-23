@@ -1,3 +1,10 @@
+# [11.0.0-alpha.5](https://github.com/camunda/orchestration-cluster-api-php/compare/v11.0.0-alpha.4...v11.0.0-alpha.5) (2026-11-23)
+
+
+### Bug Fixes
+
+* **worker:** forked children use their own HTTP client and exit without destructors ([#188](https://github.com/camunda/orchestration-cluster-api-php/issues/188)) ([3985e6c](https://github.com/camunda/orchestration-cluster-api-php/commit/3985e6c5352af153a3efda79952ec191c44a9469)), closes [#187](https://github.com/camunda/orchestration-cluster-api-php/issues/187) [#187](https://github.com/camunda/orchestration-cluster-api-php/issues/187) [#187](https://github.com/camunda/orchestration-cluster-api-php/issues/187) [#187](https://github.com/camunda/orchestration-cluster-api-php/issues/187) [#187](https://github.com/camunda/orchestration-cluster-api-php/issues/187)
+
 # [11.0.0-alpha.4](https://github.com/camunda/orchestration-cluster-api-php/compare/v11.0.0-alpha.3...v11.0.0-alpha.4) (2026-11-21)
 
 

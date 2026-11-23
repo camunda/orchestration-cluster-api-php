@@ -11,5 +11,5 @@ namespace Camunda\Orchestration;
  */
 final class Version
 {
-    public const VALUE = '11.0.0-alpha.4';
+    public const VALUE = '11.0.0-alpha.5';
 }
