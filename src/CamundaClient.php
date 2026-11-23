@@ -15,6 +15,7 @@ use Camunda\Orchestration\Config\CamundaConfiguration;
 use Camunda\Orchestration\Config\ConfigResolver;
 use Camunda\Orchestration\Exception\ConfigurationException;
 use Camunda\Orchestration\Http\HttpClientFactory;
+use Camunda\Orchestration\Http\ProcessGuardedClient;
 use Camunda\Orchestration\Worker\JobWorker;
 use Camunda\Orchestration\Worker\JobWorkerOptions;
 use GuzzleHttp\ClientInterface;
@@ -46,6 +47,12 @@ final class CamundaClient
     /** @var array<class-string, object> */
     private array $apiCache = [];
 
+    /** PID of the process that built this client (issue #190). */
+    private readonly int $ownerPid;
+
+    /** PID of the process that last got the cross-process warning, so it warns once per process. */
+    private ?int $warnedPid = null;
+
     /**
      * @param (\Closure(): ClientInterface)|null $httpClientFactory Builds a new, independent HTTP
      *   client equivalent to `$httpClient`. Forked job workers call it in each child process so
@@ -57,6 +64,7 @@ final class CamundaClient
         private readonly ClientInterface $httpClient,
         private readonly ?\Closure $httpClientFactory = null,
     ) {
+        $this->ownerPid = (int) getmypid();
         $this->apiConfig = (new ApiConfiguration())
             ->setHost($config->restAddress)
             ->setUserAgent('camunda-orchestration-php/' . Version::VALUE)
@@ -136,6 +144,14 @@ final class CamundaClient
     /**
      * Return the lazily-constructed, shared instance of a generated API group.
      *
+     * When this client was built with an HTTP client factory (e.g. via {@see self::fromEnvironment()}
+     * or {@see self::fromConfiguration()} without a custom HTTP client), sending a request through it
+     * (including through an API group retrieved before a fork) from a different
+     * process than the one that constructed it raises one {@see \E_USER_WARNING} per process so
+     * forked children sharing the parent's connection are caught early. Clients built around a
+     * caller-supplied HTTP client with no factory are excluded because {@see self::forChildProcess()}
+     * returns `$this` for them.
+     *
      * @template T of object
      * @param class-string<T> $apiClass
      * @return T
@@ -143,12 +159,43 @@ final class CamundaClient
     public function api(string $apiClass): object
     {
         if (!isset($this->apiCache[$apiClass])) {
+            $transport = $this->httpClientFactory === null
+                ? $this->httpClient
+                : new ProcessGuardedClient($this->httpClient, $this->checkOwningProcess(...));
             /** @var object $instance */
-            $instance = new $apiClass($this->httpClient, $this->apiConfig);
+            $instance = new $apiClass($transport, $this->apiConfig);
             $this->apiCache[$apiClass] = $instance;
         }
         /** @var T */
         return $this->apiCache[$apiClass];
+    }
+
+    /** Warn once per process when a request is sent from a process other than the owner. */
+    private function checkOwningProcess(): void
+    {
+        $pid = (int) getmypid();
+        if ($this->ownerPid !== $pid && $this->warnedPid !== $pid) {
+            $this->warnForeignProcess($pid);
+        }
+    }
+
+    /**
+     * Warn that this client is used in a process other than the one that built it, typically a
+     * forked job-worker child using a client captured from the parent (issue #190). Its HTTP
+     * transport, and its keep-alive connections, are the parent's, so concurrent children can
+     * read each other's responses. Raised once per client per process; the request still goes on.
+     */
+    private function warnForeignProcess(int $pid): void
+    {
+        $this->warnedPid = $pid;
+        trigger_error(sprintf(
+            'A CamundaClient built in process %d is being used in process %d (a forked child?). '
+            . 'It sends requests over the HTTP connections inherited from the parent, so concurrent '
+            . 'children can read each other\'s responses (e.g. spurious 404s). In a job handler use '
+            . '$action->client(); elsewhere call $client->forChildProcess() in the child.',
+            $this->ownerPid,
+            $pid,
+        ), \E_USER_WARNING);
     }
 
     /** The resolved configuration backing this client. */
