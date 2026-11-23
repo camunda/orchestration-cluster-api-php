@@ -14,12 +14,8 @@ use Camunda\Orchestration\Auth\OAuthClientCredentialsProvider;
 use Camunda\Orchestration\Config\CamundaConfiguration;
 use Camunda\Orchestration\Config\ConfigResolver;
 use Camunda\Orchestration\Exception\ConfigurationException;
-<<<<<<< HEAD
 use Camunda\Orchestration\Http\AuthMiddleware;
-=======
-use Camunda\Orchestration\Http\HttpClientFactory;
 use Camunda\Orchestration\Http\ProcessGuardedClient;
->>>>>>> 1ba1cbb (feat: warn when a parent's CamundaClient is used in a forked child (#191))
 use Camunda\Orchestration\Worker\JobWorker;
 use Camunda\Orchestration\Worker\JobWorkerOptions;
 use GuzzleHttp\Client as GuzzleClient;
