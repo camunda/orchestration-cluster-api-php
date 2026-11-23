@@ -41,7 +41,7 @@ final class CamundaClient
     use ApiAccessors;
     use GeneratedOperations;
 
-    private readonly ApiConfiguration $apiConfig;
+    private ApiConfiguration $apiConfig;
 
     /** @var array<class-string, object> */
     private array $apiCache = [];
@@ -103,7 +103,7 @@ final class CamundaClient
      * A forked child inherits the parent's HTTP client, including its open keep-alive
      * connections. Using them from several processes interleaves requests and responses on one
      * socket. The returned client has the same configuration but its own HTTP transport and so
-     * its own connections. If this client was built around a caller-supplied HTTP client and no
+     * its own connections, and a copy of the current API configuration. If this client was built around a caller-supplied HTTP client and no
      * factory, there is nothing to rebuild from and `$this` is returned.
      *
      * Call it in the child, after `pcntl_fork()`.
@@ -114,7 +114,11 @@ final class CamundaClient
             return $this;
         }
 
-        return new self($this->config, ($this->httpClientFactory)(), $this->httpClientFactory);
+        $child = new self($this->config, ($this->httpClientFactory)(), $this->httpClientFactory);
+        // Keep changes made through api(...)->getConfig() (e.g. an overridden host).
+        $child->apiConfig = clone $this->apiConfig;
+
+        return $child;
     }
 
     /**

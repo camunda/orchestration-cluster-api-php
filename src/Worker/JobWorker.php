@@ -279,15 +279,21 @@ final class JobWorker
 
     private static function terminateChild(int $status): never
     {
-        self::drainOutputBuffers();
-        fflush(\STDOUT);
-        fflush(\STDERR);
-        if (\function_exists('posix_kill') && \function_exists('posix_getpid')) {
-            // SIGKILL skips shutdown functions and destructors, which is the point.
-            posix_kill(posix_getpid(), \SIGKILL);
+        try {
+            self::drainOutputBuffers();
+            fflush(\STDOUT);
+            fflush(\STDERR);
+        } catch (\Throwable) {
+            // An output handler threw; termination must still happen.
+            $status = 1;
+        } finally {
+            if (\function_exists('posix_kill') && \function_exists('posix_getpid')) {
+                // SIGKILL skips shutdown functions and destructors, which is the point.
+                posix_kill(posix_getpid(), \SIGKILL);
+            }
+            // Without ext-posix this is the best plain PHP offers.
+            exit($status);
         }
-        // Without ext-posix this is the best plain PHP offers.
-        exit($status);
     }
 
     private function reap(int $count): void

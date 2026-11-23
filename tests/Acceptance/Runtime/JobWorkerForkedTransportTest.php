@@ -103,6 +103,20 @@ final class JobWorkerForkedTransportTest extends TestCase
         self::assertSame($client->configuration(), $child->configuration());
     }
 
+    public function testAChildClientKeepsAMutatedApiConfiguration(): void
+    {
+        $client = CamundaClient::fromConfiguration(
+            ConfigResolver::resolve(overrides: ['CAMUNDA_AUTH_STRATEGY' => 'NONE'], environment: []),
+        );
+        $client->api(\Camunda\Orchestration\Api\Api\JobApi::class)->getConfig()->setHost('https://override.example.test/v2');
+
+        $child = $client->forChildProcess();
+        $childConfig = $child->api(\Camunda\Orchestration\Api\Api\JobApi::class)->getConfig();
+
+        self::assertSame('https://override.example.test/v2', $childConfig->getHost());
+        self::assertNotSame($client->api(\Camunda\Orchestration\Api\Api\JobApi::class)->getConfig(), $childConfig);
+    }
+
     /**
      * @param list<\Psr\Http\Message\ResponseInterface> $queue
      */
