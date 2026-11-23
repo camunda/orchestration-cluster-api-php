@@ -1,3 +1,10 @@
+# [10.2.0](https://github.com/camunda/orchestration-cluster-api-php/compare/v10.1.1...v10.2.0) (2026-11-23)
+
+
+### Features
+
+* warn when a parent's CamundaClient is used in a forked child (backport [#191](https://github.com/camunda/orchestration-cluster-api-php/issues/191) to stable/10) ([#192](https://github.com/camunda/orchestration-cluster-api-php/issues/192)) ([b339582](https://github.com/camunda/orchestration-cluster-api-php/commit/b339582efbf6d6a1a079718d835d261703ac87f6))
+
 ## [10.1.1](https://github.com/camunda/orchestration-cluster-api-php/compare/v10.1.0...v10.1.1) (2026-11-23)
 
 
