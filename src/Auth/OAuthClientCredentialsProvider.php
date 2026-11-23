@@ -40,6 +40,31 @@ final class OAuthClientCredentialsProvider implements AuthProvider
     ) {
     }
 
+    /**
+     * A copy of this provider that sends token requests through `$httpClient` and starts with
+     * this provider's cached token. Forked job workers use it so a child process never reuses
+     * the parent's token connection (issue #187).
+     *
+     * @internal
+     */
+    public function withTokenHttpClient(ClientInterface $httpClient): self
+    {
+        $copy = new self(
+            $httpClient,
+            $this->requestFactory,
+            $this->streamFactory,
+            $this->tokenUrl,
+            $this->clientId,
+            $this->clientSecret,
+            $this->audience,
+        );
+        $copy->accessToken = $this->accessToken;
+        $copy->expiresAtEpoch = $this->expiresAtEpoch;
+
+        return $copy;
+    }
+
+    /** @return array{Authorization: string} */
     public function getHeaders(): array
     {
         return ['Authorization' => 'Bearer ' . $this->token()];

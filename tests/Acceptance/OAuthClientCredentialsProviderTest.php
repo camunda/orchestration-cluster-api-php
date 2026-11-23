@@ -54,6 +54,39 @@ final class OAuthClientCredentialsProviderTest extends TestCase
             (string) $httpClient->requests[0]->getBody(),
         );
     }
+
+    public function testACopyWithANewTokenClientKeepsTheCachedTokenAndRefreshesThroughTheNewClient(): void
+    {
+        // Issue #187: a forked child keeps the parent's token but never its token connection.
+        $token = static fn (string $t): Response => new Response(
+            200,
+            ['Content-Type' => 'application/json'],
+            '{"access_token":"' . $t . '","expires_in":30}',
+        );
+        $parentHttp = new RecordingTokenClient($token('token-1'));
+        $factories = new Psr17Factory();
+        $parent = new OAuthClientCredentialsProvider(
+            httpClient: $parentHttp,
+            requestFactory: $factories,
+            streamFactory: $factories,
+            tokenUrl: 'https://login.example.test/oauth/token',
+            clientId: 'id',
+            clientSecret: 'secret',
+            audience: 'zeebe-api',
+        );
+        self::assertSame(['Authorization' => 'Bearer token-1'], $parent->getHeaders());
+
+        $childHttp = new RecordingTokenClient($token('token-2'));
+        $child = $parent->withTokenHttpClient($childHttp);
+        self::assertSame(['Authorization' => 'Bearer token-1'], $child->getHeaders());
+        self::assertCount(0, $childHttp->requests);
+
+        usleep(1_100_000);
+
+        self::assertSame(['Authorization' => 'Bearer token-2'], $child->getHeaders());
+        self::assertCount(1, $parentHttp->requests);
+        self::assertCount(1, $childHttp->requests);
+    }
 }
 
 final class RecordingTokenClient implements ClientInterface
