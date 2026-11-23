@@ -289,6 +289,15 @@ final class JobWorker
     {
         try {
             self::drainOutputBuffers();
+            $remaining = ob_get_level();
+            if ($remaining > 0) {
+                // A non-removable buffer stopped the drain; whatever it and the
+                // buffers below it hold is lost when the child is killed. Say so.
+                fwrite(\STDERR, \sprintf(
+                    "[camunda job worker] forked child exiting with %d output buffer(s) that could not be removed; their content is discarded\n",
+                    $remaining,
+                ));
+            }
             fflush(\STDOUT);
             fflush(\STDERR);
         } catch (\Throwable) {

@@ -41,6 +41,19 @@ final class JobWorkerOutputBufferTest extends TestCase
         self::assertSame('before', $stdout);
     }
 
+    public function testTerminateWarnsWhenABufferCannotBeRemoved(): void
+    {
+        self::requirePosix();
+        $code = self::prelude()
+            . 'ob_start(null, 0, PHP_OUTPUT_HANDLER_CLEANABLE);'
+            . 'echo "lost";'
+            . '\Camunda\Orchestration\Worker\JobWorker::terminateChild(0);';
+        [$stdout, $stderr, $timedOut] = self::runPhp($code);
+        self::assertFalse($timedOut);
+        self::assertSame('', $stdout);
+        self::assertStringContainsString('1 output buffer(s) that could not be removed', $stderr);
+    }
+
     public function testTerminateSurvivesThrowingOutputHandler(): void
     {
         self::requirePosix();
