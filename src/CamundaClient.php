@@ -15,6 +15,7 @@ use Camunda\Orchestration\Config\CamundaConfiguration;
 use Camunda\Orchestration\Config\ConfigResolver;
 use Camunda\Orchestration\Exception\ConfigurationException;
 use Camunda\Orchestration\Http\HttpClientFactory;
+use Camunda\Orchestration\Http\ProcessGuardedClient;
 use Camunda\Orchestration\Worker\JobWorker;
 use Camunda\Orchestration\Worker\JobWorkerOptions;
 use GuzzleHttp\ClientInterface;
@@ -144,7 +145,8 @@ final class CamundaClient
      * Return the lazily-constructed, shared instance of a generated API group.
      *
      * When this client was built with an HTTP client factory (e.g. via {@see self::fromEnvironment()}
-     * or {@see self::fromConfiguration()} without a custom HTTP client), calling it from a different
+     * or {@see self::fromConfiguration()} without a custom HTTP client), sending a request through it
+     * (including through an API group retrieved before a fork) from a different
      * process than the one that constructed it raises one {@see \E_USER_WARNING} per process so
      * forked children sharing the parent's connection are caught early. Clients built around a
      * caller-supplied HTTP client with no factory are excluded because {@see self::forChildProcess()}
@@ -156,16 +158,25 @@ final class CamundaClient
      */
     public function api(string $apiClass): object
     {
-        if ($this->httpClientFactory !== null && $this->ownerPid !== ($pid = (int) getmypid()) && $this->warnedPid !== $pid) {
-            $this->warnForeignProcess($pid);
-        }
         if (!isset($this->apiCache[$apiClass])) {
+            $transport = $this->httpClientFactory === null
+                ? $this->httpClient
+                : new ProcessGuardedClient($this->httpClient, $this->checkOwningProcess(...));
             /** @var object $instance */
-            $instance = new $apiClass($this->httpClient, $this->apiConfig);
+            $instance = new $apiClass($transport, $this->apiConfig);
             $this->apiCache[$apiClass] = $instance;
         }
         /** @var T */
         return $this->apiCache[$apiClass];
+    }
+
+    /** Warn once per process when a request is sent from a process other than the owner. */
+    private function checkOwningProcess(): void
+    {
+        $pid = (int) getmypid();
+        if ($this->ownerPid !== $pid && $this->warnedPid !== $pid) {
+            $this->warnForeignProcess($pid);
+        }
     }
 
     /**

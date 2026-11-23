@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Tests\Acceptance\Runtime;
 
+use Camunda\Orchestration\Api\Api\JobApi;
 use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\CamundaClient;
 use Camunda\Orchestration\Config\ConfigResolver;
@@ -94,24 +95,52 @@ final class ForeignProcessWarningTest extends TestCase
         self::assertSame('0', file_get_contents($this->log));
     }
 
+    public function testAnApiGroupRetrievedBeforeTheForkStillWarnsInTheChild(): void
+    {
+        $client = self::client([new Response(204)]);
+        /** @var JobApi $jobs */
+        $jobs = $client->api(JobApi::class);
+        $log = $this->log;
+
+        $this->inChild(static function () use ($jobs, $log): void {
+            $warnings = 0;
+            set_error_handler(static function () use (&$warnings): bool {
+                $warnings++;
+                return true;
+            });
+            $jobs->completeJob('1');
+            restore_error_handler();
+            file_put_contents($log, (string) $warnings);
+        });
+
+        self::assertSame('1', file_get_contents($this->log));
+    }
+
     public function testNoWarningForActionClientInAForkedWorker(): void
     {
         $log = $this->log;
         $client = self::client([JobFixtures::activation('1')]);
         $worker = $client->createJobWorker(new JobWorkerOptions(type: 'greet', maxJobs: 1, forked: true));
 
-        $processed = $worker->pollOnce(static function (ActivatedJobResult $job, JobActionClient $action) use ($log): null {
-            set_error_handler(static function (int $level, string $message) use ($log): bool {
-                file_put_contents($log, $message, FILE_APPEND);
-                return true;
-            });
-            $action->client()->completeJob('9');
-
-            return null;
+        // Installed before polling so the child inherits it and any warning raised while the
+        // worker dispatches the job is recorded too.
+        set_error_handler(static function (int $level, string $message) use ($log): bool {
+            file_put_contents($log, 'warning: ' . $message . "\n", FILE_APPEND);
+            return true;
         });
+        try {
+            $processed = $worker->pollOnce(static function (ActivatedJobResult $job, JobActionClient $action) use ($log): null {
+                $action->client()->completeJob('9');
+                file_put_contents($log, "completed\n", FILE_APPEND);
+
+                return null;
+            });
+        } finally {
+            restore_error_handler();
+        }
 
         self::assertSame(1, $processed);
-        self::assertSame('', file_get_contents($this->log));
+        self::assertSame("completed\n", file_get_contents($this->log));
     }
 
     public function testNoWarningInTheOwningProcess(): void
