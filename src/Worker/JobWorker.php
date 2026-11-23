@@ -88,8 +88,7 @@ final class JobWorker
                 if ($pid === -1) {
                     $this->dispatch($handler, $job);
                 } elseif ($pid === 0) {
-                    $this->dispatch($handler, $job);
-                    exit(0);
+                    $this->runChild($handler, $job);
                 } else {
                     ++$children;
                     if ($children >= $this->options->maxJobs) {
@@ -168,9 +167,12 @@ final class JobWorker
      *
      * @param callable(ActivatedJobResult, JobActionClient): (array<string,mixed>|null|void)|JobHandler $handler
      */
-    private function dispatch(callable|JobHandler $handler, ActivatedJobResult $job): void
+    private function dispatch(callable|JobHandler $handler, ActivatedJobResult $job, ?CamundaClient $client = null): void
     {
-        $action = new JobActionClient($this->jobApi(), $job);
+        $client ??= $this->client;
+        /** @var JobApi $jobApi */
+        $jobApi = $client->api(JobApi::class);
+        $action = new JobActionClient($jobApi, $job, $client);
 
         try {
             $result = $handler instanceof JobHandler
@@ -218,6 +220,49 @@ final class JobWorker
     private static function failureMessage(\Throwable $throwable): string
     {
         return mb_convert_encoding($throwable::class . ': ' . $throwable->getMessage(), 'UTF-8', 'UTF-8');
+    }
+
+    /**
+     * Process one job in a forked child and end the child (issue #187).
+     *
+     * The child builds its own client, so its requests never travel over the keep-alive
+     * connection it inherited from the parent. It then ends without running destructors: the
+     * inherited curl handles belong to the parent, and cleaning them up in the child can
+     * deadlock (curl's resolver thread pool does not exist after a fork).
+     *
+     * @param callable(ActivatedJobResult, JobActionClient): (array<string,mixed>|null|void)|JobHandler $handler
+     */
+    private function runChild(callable|JobHandler $handler, ActivatedJobResult $job): never
+    {
+        $status = 0;
+        try {
+            $this->dispatch($handler, $job, $this->client->forChildProcess());
+        } catch (\Throwable $throwable) {
+            // Nothing crosses the process boundary; report and end the child.
+            $status = 1;
+            fwrite(\STDERR, sprintf(
+                "Job %s: %s\n",
+                (string) $job->getJobKey(),
+                self::failureMessage($throwable),
+            ));
+        }
+
+        self::terminateChild($status);
+    }
+
+    private static function terminateChild(int $status): never
+    {
+        while (ob_get_level() > 0) {
+            ob_end_flush();
+        }
+        fflush(\STDOUT);
+        fflush(\STDERR);
+        if (\function_exists('posix_kill') && \function_exists('posix_getpid')) {
+            // SIGKILL skips shutdown functions and destructors, which is the point.
+            posix_kill(posix_getpid(), \SIGKILL);
+        }
+        // Without ext-posix this is the best plain PHP offers.
+        exit($status);
     }
 
     private function reap(int $count): void
