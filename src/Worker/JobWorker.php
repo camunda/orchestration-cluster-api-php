@@ -260,12 +260,20 @@ final class JobWorker
     public static function drainOutputBuffers(): void
     {
         while (ob_get_level() > 0) {
-            $level = ob_get_level();
-            if (@ob_end_flush() && ob_get_level() < $level) {
-                continue;
+            $status = ob_get_status();
+            $flags = \is_int($status['flags'] ?? null) ? $status['flags'] : 0;
+            if (0 === ($flags & \PHP_OUTPUT_HANDLER_REMOVABLE)) {
+                // Checking flags first avoids notices that error handlers may
+                // turn into exceptions, and a double callback invocation.
+                if (0 !== ($flags & \PHP_OUTPUT_HANDLER_FLUSHABLE)) {
+                    ob_flush();
+                }
+                break;
             }
-            @ob_flush();
-            break;
+            $level = ob_get_level();
+            if (!@ob_end_flush() || ob_get_level() >= $level) {
+                break;
+            }
         }
     }
 
