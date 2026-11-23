@@ -19,11 +19,8 @@ use Camunda\Orchestration\Worker\JobWorker;
 use Camunda\Orchestration\Worker\JobWorkerOptions;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface;
-<<<<<<< HEAD
 use GuzzleHttp\HandlerStack;
-=======
 use Http\Discovery\Psr18ClientDiscovery;
->>>>>>> 3985e6c (fix(worker): forked children use their own HTTP client and exit without destructors (#188))
 
 /**
  * The Camunda 8 Orchestration Cluster SDK — synchronous client.
@@ -95,14 +92,10 @@ final class CamundaClient
         }
 
         $auth = AuthProviderFactory::fromConfiguration($config);
-<<<<<<< HEAD
-        $client = $httpClient ?? self::buildHttpClient($config, $auth);
-        return new self($config, $client);
-=======
         return new self(
             $config,
-            HttpClientFactory::create($config, $auth),
-            static fn (): ClientInterface => HttpClientFactory::create($config, self::childAuth($auth)),
+            self::buildHttpClient($config, $auth),
+            static fn (): ClientInterface => self::buildHttpClient($config, self::childAuth($auth)),
         );
     }
 
@@ -140,7 +133,6 @@ final class CamundaClient
         return $auth instanceof OAuthClientCredentialsProvider
             ? $auth->withTokenHttpClient(Psr18ClientDiscovery::find())
             : $auth;
->>>>>>> 3985e6c (fix(worker): forked children use their own HTTP client and exit without destructors (#188))
     }
 
     private static function buildHttpClient(CamundaConfiguration $config, AuthProvider $auth): ClientInterface

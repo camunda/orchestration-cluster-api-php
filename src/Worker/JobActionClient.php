@@ -10,11 +10,8 @@ use Camunda\Orchestration\Api\Model\ActivatedJobResult;
 use Camunda\Orchestration\Api\Model\JobCompletionRequest;
 use Camunda\Orchestration\Api\Model\JobErrorRequest;
 use Camunda\Orchestration\Api\Model\JobFailRequest;
-<<<<<<< HEAD
-use Camunda\Orchestration\Exception\AuthenticationException;
-=======
 use Camunda\Orchestration\CamundaClient;
->>>>>>> 3985e6c (fix(worker): forked children use their own HTTP client and exit without destructors (#188))
+use Camunda\Orchestration\Exception\AuthenticationException;
 
 /**
  * The action surface handed to a job handler: complete, fail, or raise a BPMN error
