@@ -250,11 +250,28 @@ final class JobWorker
         self::terminateChild($status);
     }
 
-    private static function terminateChild(int $status): never
+    /**
+     * Flush and close every output buffer. Stops at a buffer that cannot be
+     * removed (ob_end_flush() fails without lowering the level), flushing it
+     * if it allows that, so the loop always terminates.
+     *
+     * @internal
+     */
+    public static function drainOutputBuffers(): void
     {
         while (ob_get_level() > 0) {
-            ob_end_flush();
+            $level = ob_get_level();
+            if (@ob_end_flush() && ob_get_level() < $level) {
+                continue;
+            }
+            @ob_flush();
+            break;
         }
+    }
+
+    private static function terminateChild(int $status): never
+    {
+        self::drainOutputBuffers();
         fflush(\STDOUT);
         fflush(\STDERR);
         if (\function_exists('posix_kill') && \function_exists('posix_getpid')) {
