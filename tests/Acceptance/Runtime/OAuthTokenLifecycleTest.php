@@ -59,6 +59,24 @@ final class OAuthTokenLifecycleTest extends TestCase
         self::assertCount(2, $http->requests);
     }
 
+    public function testACopyWithANewTokenClientKeepsTheCachedTokenAndRefreshesThroughTheNewClient(): void
+    {
+        // Issue #187: a forked child keeps the parent's token but never its token connection.
+        $parentHttp = new QueueHttpClient($this->tokenResponse('token-1', 100));
+        $parent = $this->provider($parentHttp);
+        self::assertSame('Bearer token-1', $this->bearer($parent));
+
+        $childHttp = new QueueHttpClient($this->tokenResponse('token-2', 100));
+        $child = $parent->withTokenHttpClient($childHttp);
+        self::assertSame('Bearer token-1', $this->bearer($child));
+        self::assertCount(0, $childHttp->requests);
+
+        $this->clock->set(self::START + 70.0);
+        self::assertSame('Bearer token-2', $this->bearer($child));
+        self::assertCount(1, $parentHttp->requests);
+        self::assertCount(1, $childHttp->requests);
+    }
+
     #[DataProvider('lifetimesShorterThanTheLeeway')]
     public function testTokensWithLifetimeWithinTheLeewayAreCachedForOneSecond(int|string $expiresIn): void
     {

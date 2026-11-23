@@ -401,6 +401,8 @@ function readme_job_worker(): void
 
 When `ext-pcntl` is available and `forked: true` is set, each job is processed in its own child process, bounded to `maxJobs` concurrent children.
 
+Each child builds its own HTTP client before it runs the handler, so children never share the parent's keep-alive connections. With `ext-posix` also loaded, a child ends without running the parent's destructors; without it the child falls back to `exit()`, which runs them, so install `ext-posix` alongside `ext-pcntl` for forked mode. If your handler makes further API calls, use `$action->client()`: in forked mode that is the child's own client. A `CamundaClient` captured from the parent would send its requests over the parent's connection, where concurrent children read each other's responses. A client built with `CamundaClient::fromEnvironment()` or `fromConfiguration()` without a custom HTTP client rebuilds its transport in each child; if you pass your own Guzzle client, also pass a factory as the third constructor argument (`new CamundaClient($config, $guzzle, fn () => new GuzzleClient(...))`), otherwise children keep using the client you passed.
+
 ### When a handler throws
 
 If your handler throws, the worker catches the `Throwable` and fails the job for you, then carries on: the remaining jobs of the batch are still dispatched and the poll loop keeps running, so one bad job never stops the worker.
@@ -416,7 +418,7 @@ To choose the retry count, the back-off, or the message yourself, catch the erro
 
 Note that a transport error raised while reporting the failure — for example broker backpressure on the fail call itself — still surfaces to the caller of `run()` or `pollOnce()`, exactly as a failing auto-completion does. The same holds when your handler calls `$action->complete()`, `fail()` or `error()` itself and that request fails: the worker surfaces the error rather than replacing the terminal action you asked for with one of its own.
 
-In forked mode that last point works differently, because nothing crosses the process boundary. A handler exception is still turned into a job failure, in the child, before it exits. But a transport error while reporting the terminal action ends the child instead of reaching the parent: the parent reaps it and polls on, so the job is left to its lease timeout and you do not see the error. If your handler needs to observe its own transport failures, handle them inside the handler.
+In forked mode that last point works differently, because nothing crosses the process boundary. A handler exception is still turned into a job failure, in the child, before it exits. But a transport error while reporting the terminal action ends the child instead of reaching the parent: the child writes it to `STDERR`, the parent reaps it and polls on, and the job is left to its lease timeout. If your handler needs to observe its own transport failures, handle them inside the handler.
 
 ### Object-oriented handlers
 
