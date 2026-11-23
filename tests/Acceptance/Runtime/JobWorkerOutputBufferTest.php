@@ -21,6 +21,60 @@ final class JobWorkerOutputBufferTest extends TestCase
             . 'ob_start(); echo "inner";'
             . '\Camunda\Orchestration\Worker\JobWorker::drainOutputBuffers();'
             . 'fwrite(STDERR, "level=" . ob_get_level());';
+        [$stdout, $stderr, $timedOut] = self::runPhp($code);
+        self::assertFalse($timedOut, 'drainOutputBuffers() did not return within 10s');
+        self::assertSame('level=1', $stderr);
+        self::assertSame('keptinner', $stdout);
+    }
+
+    public function testTerminateSkipsDestructorsAndShutdownFunctions(): void
+    {
+        self::requirePosix();
+        $code = self::prelude()
+            . 'register_shutdown_function(function () { echo "shutdown"; });'
+            . '$o = new class { public function __destruct() { echo "destruct"; } };'
+            . 'echo "before";'
+            . '\Camunda\Orchestration\Worker\JobWorker::terminateChild(0);'
+            . 'echo "after";';
+        [$stdout, , $timedOut] = self::runPhp($code);
+        self::assertFalse($timedOut);
+        self::assertSame('before', $stdout);
+    }
+
+    public function testTerminateSurvivesThrowingOutputHandler(): void
+    {
+        self::requirePosix();
+        $code = self::prelude()
+            . 'register_shutdown_function(function () { fwrite(STDERR, "shutdown"); });'
+            . 'ob_start(function () { throw new \RuntimeException("boom"); });'
+            . 'echo "x";'
+            . 'try { \Camunda\Orchestration\Worker\JobWorker::terminateChild(0); }'
+            . ' catch (\Throwable $e) { fwrite(STDERR, "escaped"); }'
+            . 'fwrite(STDERR, "after");';
+        [, $stderr, $timedOut] = self::runPhp($code);
+        self::assertFalse($timedOut);
+        self::assertStringNotContainsString('escaped', $stderr);
+        self::assertStringNotContainsString('after', $stderr);
+        self::assertStringNotContainsString('shutdown', $stderr);
+    }
+
+    private static function requirePosix(): void
+    {
+        if (!\function_exists('posix_kill') || !\defined('SIGKILL')) {
+            self::markTestSkipped('ext-posix and ext-pcntl required');
+        }
+    }
+
+    private static function prelude(): string
+    {
+        return 'require ' . var_export(\dirname(__DIR__, 3) . '/vendor/autoload.php', true) . ';';
+    }
+
+    /**
+     * @return array{string, string, bool}
+     */
+    private static function runPhp(string $code): array
+    {
         $proc = proc_open([\PHP_BINARY, '-r', $code], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
         self::assertIsResource($proc);
         stream_set_blocking($pipes[1], false);
@@ -52,8 +106,7 @@ final class JobWorkerOutputBufferTest extends TestCase
         fclose($pipes[1]);
         fclose($pipes[2]);
         proc_close($proc);
-        self::assertFalse($timedOut, 'drainOutputBuffers() did not return within 10s');
-        self::assertSame('level=1', $stderr);
-        self::assertSame('keptinner', $stdout);
+
+        return [$stdout, $stderr, $timedOut];
     }
 }

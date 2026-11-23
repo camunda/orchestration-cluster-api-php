@@ -240,14 +240,19 @@ final class JobWorker
         } catch (\Throwable $throwable) {
             // Nothing crosses the process boundary; report and end the child.
             $status = 1;
-            fwrite(\STDERR, sprintf(
-                "Job %s: %s\n",
-                (string) $job->getJobKey(),
-                self::failureMessage($throwable),
-            ));
+            try {
+                fwrite(\STDERR, sprintf(
+                    "Job %s: %s\n",
+                    (string) $job->getJobKey(),
+                    self::failureMessage($throwable),
+                ));
+            } catch (\Throwable) {
+                // Reporting failed (e.g. closed STDERR); the child must still end.
+            }
+        } finally {
+            // Always end the child here: it must never return into the parent's loop.
+            self::terminateChild($status);
         }
-
-        self::terminateChild($status);
     }
 
     /**
@@ -277,7 +282,10 @@ final class JobWorker
         }
     }
 
-    private static function terminateChild(int $status): never
+    /**
+     * @internal
+     */
+    public static function terminateChild(int $status): never
     {
         try {
             self::drainOutputBuffers();
