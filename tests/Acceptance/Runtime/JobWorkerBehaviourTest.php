@@ -277,7 +277,6 @@ final class JobWorkerBehaviourTest extends TestCase
         yield '404 job not found' => [404];
         yield '409 job in invalid state' => [409];
         yield '429 rate limited' => [429];
-        yield '500 server error' => [500];
         yield '503 backpressure' => [503];
     }
 

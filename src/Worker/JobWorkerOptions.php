@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Camunda\Orchestration\Worker;
 
+use Psr\Log\LoggerInterface;
+
 /**
  * Immutable configuration for a {@see JobWorker}.
  */
@@ -20,6 +22,8 @@ final class JobWorkerOptions
      * @param bool $forked Fork a child process per job (requires ext-pcntl).
      * @param string|null $workerName Worker name reported to the broker.
      * @param list<string> $tenantIds Tenants to activate jobs for (empty = default).
+     * @param LoggerInterface|null $logger Receives worker warnings, e.g. a job command whose
+     *        outcome is unknown (default: PHP's `error_log()`).
      */
     public function __construct(
         public readonly string $type,
@@ -32,6 +36,7 @@ final class JobWorkerOptions
         public readonly bool $forked = false,
         public readonly ?string $workerName = null,
         public readonly array $tenantIds = [],
+        public readonly ?LoggerInterface $logger = null,
     ) {
     }
 }
