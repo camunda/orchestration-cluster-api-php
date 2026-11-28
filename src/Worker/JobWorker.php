@@ -11,6 +11,7 @@ use Camunda\Orchestration\Api\Model\JobActivationRequest;
 use Camunda\Orchestration\Api\Model\ProblemDetail;
 use Camunda\Orchestration\Api\Model\TenantFilterEnum;
 use Camunda\Orchestration\CamundaClient;
+use Camunda\Orchestration\Exception\RetryExhaustedException;
 
 /**
  * A long-polling job worker.
@@ -179,6 +180,9 @@ final class JobWorker
                 ? $handler->handle($job, $action)
                 : $handler($job, $action);
         } catch (\Throwable $throwable) {
+            if ($action->hasInterruptedAction() && $this->absorbJobCommandFailure($throwable, $job)) {
+                return;
+            }
             if ($action->hasInterruptedAction()) {
                 // The handler asked for a terminal action and the request for it
                 // failed. Substituting our own failure would discard the retries,
@@ -194,17 +198,89 @@ final class JobWorker
             // with the batch and keep polling. The message carries the exception class
             // and message only — never the stack trace, which can hold unrelated data.
             if (!$action->wasHandled()) {
-                $action->fail(
-                    retries: max(0, $job->getRetries() - 1),
-                    errorMessage: self::failureMessage($throwable),
-                );
+                try {
+                    $action->fail(
+                        retries: max(0, $job->getRetries() - 1),
+                        errorMessage: self::failureMessage($throwable),
+                    );
+                } catch (\Throwable $failure) {
+                    if (!$this->absorbJobCommandFailure($failure, $job)) {
+                        throw $failure;
+                    }
+                }
             }
 
             return;
         }
 
+        if (!$action->wasHandled() && $action->hasInterruptedAction()) {
+            // The handler asked for a terminal action, caught its failure and returned.
+            // That action's outcome may be unknown (e.g. a 504), so auto-completing would
+            // replay or replace it. Leave the job to the lease timeout instead.
+            $this->warn(sprintf(
+                'Job %s: handler returned after its job command failed; not auto-completing (the job may have completed, otherwise it will time out and be re-activated)',
+                (string) $job->getJobKey(),
+            ));
+
+            return;
+        }
+
         if (!$action->wasHandled() && $this->options->autoComplete) {
-            $action->complete(\is_array($result) ? $result : []);
+            try {
+                $action->complete(\is_array($result) ? $result : []);
+            } catch (\Throwable $failure) {
+                if (!$this->absorbJobCommandFailure($failure, $job)) {
+                    throw $failure;
+                }
+            }
+        }
+    }
+
+    /**
+     * Handle a failed job command (complete, fail, throw error) whose failure must not stop
+     * the worker (issue #193), and report whether it was absorbed.
+     *
+     * - `404`: the job is gone (already completed, failed or timed out). Logged as a warning
+     *   without a stack trace, then still propagated as a failed action (not absorbed).
+     * - Unknown outcome (`500`, `502`, `504`, or no response after the request may have been
+     *   sent): the command may have been applied, so no follow-up `failJob` is sent. Logged
+     *   as a warning; if the command was not applied, the job's lease timeout re-activates it.
+     *
+     * Any other failure (e.g. retries exhausted on `429`/`503`: the command was not applied)
+     * is not handled here and keeps propagating.
+     */
+    private function absorbJobCommandFailure(\Throwable $failure, ActivatedJobResult $job): bool
+    {
+        if (!$failure instanceof ApiException || $failure instanceof RetryExhaustedException) {
+            return false;
+        }
+        $status = $failure->getCode();
+        $key = (string) $job->getJobKey();
+        if ($status === 404) {
+            // Still reported as a failed action: it propagates, as before.
+            $this->warn(sprintf('Job %s: job not found (already completed, failed or timed out)', $key));
+
+            return false;
+        }
+        if (\in_array($status, [0, 500, 502, 504], true)) {
+            $this->warn(sprintf(
+                'Job %s: job command outcome unknown (%s); the job may have completed, otherwise it will time out and be re-activated',
+                $key,
+                $status === 0 ? 'no response' : 'HTTP ' . $status,
+            ));
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private function warn(string $message): void
+    {
+        if ($this->options->logger !== null) {
+            $this->options->logger->warning($message);
+        } else {
+            error_log('[camunda job worker] ' . $message);
         }
     }
 

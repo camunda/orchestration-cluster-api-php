@@ -261,8 +261,12 @@ function retry_config_client(): CamundaClient
 What is retried:
 
 - **HTTP 429**, always.
-- **HTTP 503 and 500 that signal broker backpressure** (problem `title` or, for 500, `detail` containing `RESOURCE_EXHAUSTED`). Any other 500 or 503 is returned after a single request, as before.
+- **HTTP 503 and 500 that signal broker backpressure** (problem `title` or, for 500, `detail` containing `RESOURCE_EXHAUSTED`). Any other 500 or 503 is returned after a single request, as before (job commands differ: see below).
 - **Connection failures** (no response received), for idempotent methods only (`GET`, `HEAD`, `PUT`, `DELETE`, `OPTIONS`). A transport failure on a `POST` may have happened after the cluster accepted the command, so it is never replayed.
+
+**Job commands** (`completeJob`, `failJob`, `throwJobError`) are not idempotent: if a command was applied but its response was lost, a retry gets `404 Job not found`. They follow one rule, shared by all Camunda SDKs: they are retried only when the server says the command was **not** applied — HTTP 429, any HTTP 503, or a connection failure before the request was sent (connection refused, DNS, TLS handshake). They are never retried on 504, 502, 500, a read timeout or a connection reset after the request was sent, because the outcome is unknown.
+
+When a job command's outcome is unknown, `JobWorker` does not send a follow-up `failJob`. It logs a warning ("outcome unknown; the job may have completed, otherwise it will time out and be re-activated") and carries on with the next job; if the command was not applied, the job's lease timeout makes it available again. A `404` on a job command is logged as a warning ("job not found (already completed, failed or timed out)"), without a stack trace, and is still reported as a failed action. Warnings go to the `logger` (a PSR-3 `LoggerInterface`) passed in `JobWorkerOptions`, or to `error_log()` when none is set.
 
 The wait before retry `n + 1` is a random value between 0 and `min(CAMUNDA_SDK_HTTP_RETRY_BASE_DELAY_MS * 2^(n-1), CAMUNDA_SDK_HTTP_RETRY_MAX_DELAY_MS)`. When the response carries a usable `Retry-After` header the wait is raised to at least that value (bounded at 60 seconds). Set `CAMUNDA_SDK_HTTP_RETRY_MAX_ATTEMPTS=1` to disable retry.
 
@@ -416,7 +420,7 @@ What you can rely on:
 
 To choose the retry count, the back-off, or the message yourself, catch the error inside your handler and call `$action->fail(...)` explicitly.
 
-Note that a transport error raised while reporting the failure — for example broker backpressure on the fail call itself — still surfaces to the caller of `run()` or `pollOnce()`, exactly as a failing auto-completion does. The same holds when your handler calls `$action->complete()`, `fail()` or `error()` itself and that request fails: the worker surfaces the error rather than replacing the terminal action you asked for with one of its own.
+Note that a job command whose outcome is unknown (500, 502, 504, or no response after the request was sent) is the exception: it is logged and the worker carries on, without a follow-up `failJob` (see [Retry and backoff](#retry-and-backoff)). Any other transport error raised while reporting the failure — for example broker backpressure on the fail call itself that outlasts the retries — still surfaces to the caller of `run()` or `pollOnce()`, exactly as a failing auto-completion does. The same holds when your handler calls `$action->complete()`, `fail()` or `error()` itself and that request fails: the worker surfaces the error rather than replacing the terminal action you asked for with one of its own.
 
 In forked mode that last point works differently, because nothing crosses the process boundary. A handler exception is still turned into a job failure, in the child, before it exits. But a transport error while reporting the terminal action ends the child instead of reaching the parent: the child writes it to `STDERR`, the parent reaps it and polls on, and the job is left to its lease timeout. If your handler needs to observe its own transport failures, handle them inside the handler.
 

@@ -31,6 +31,13 @@ use Psr\Http\Message\ResponseInterface;
  *    (`GET`, `HEAD`, `PUT`, `DELETE`, `OPTIONS`). A transport failure on a `POST` may have
  *    happened after the broker accepted the command, so it is never replayed.
  *
+ * Job commands (`POST …/jobs/{key}/completion`, `…/failure`, `…/error`) are not idempotent:
+ * a command that was applied but whose response was lost gets `404` on a retry. They are
+ * therefore retried only when the server says the command was **not** applied: HTTP 429,
+ * any HTTP 503, or a connection failure before the request was sent (connection refused,
+ * DNS, TLS handshake). A 500, 502, 504, read timeout or connection reset is never retried
+ * for them (issue #193).
+ *
  * What is never retried: the job-activation long poll (`POST …/jobs/activation`; the worker
  * loop owns re-polling), requests whose body cannot be rewound, and everything else.
  *
@@ -50,6 +57,12 @@ final class RetryMiddleware
     private const IDEMPOTENT_METHODS = ['GET', 'HEAD', 'PUT', 'DELETE', 'OPTIONS'];
     private const BACKPRESSURE_MARKER = 'RESOURCE_EXHAUSTED';
     private const MAX_CLASSIFIED_BODY_BYTES = 1_048_576;
+
+    /**
+     * curl error numbers raised before any request byte is sent: couldn't resolve proxy,
+     * couldn't resolve host, couldn't connect, TLS handshake failure.
+     */
+    private const PRE_SEND_CURL_ERRORS = [5, 6, 7, 35];
 
     /** @var callable(): float */
     private $random;
@@ -105,7 +118,7 @@ final class RetryMiddleware
     ): PromiseInterface {
         return $handler($request, $options)->then(
             function (ResponseInterface $response) use ($handler, $request, $options, $attempt, $bodyStart) {
-                [$response, $retryable] = $this->classify($response);
+                [$response, $retryable] = $this->classify($response, self::isJobCommand($request));
                 if (!$retryable) {
                     return $response;
                 }
@@ -143,11 +156,15 @@ final class RetryMiddleware
     /**
      * @return array{ResponseInterface, bool} The response (body restored) and whether to retry.
      */
-    private function classify(ResponseInterface $response): array
+    private function classify(ResponseInterface $response, bool $jobCommand = false): array
     {
         $status = $response->getStatusCode();
         if ($status === 429) {
             return [$response, true];
+        }
+        if ($jobCommand) {
+            // 503 means the command was not applied; anything else may have been.
+            return [$response, $status === 503];
         }
         if ($status !== 500 && $status !== 503) {
             return [$response, false];
@@ -321,8 +338,39 @@ final class RetryMiddleware
             && str_ends_with(rtrim($request->getUri()->getPath(), '/'), '/jobs/activation');
     }
 
+    /**
+     * Whether the request is a job command (complete, fail, throw error), which must not be
+     * replayed unless the server confirms it was not applied.
+     */
+    public static function isJobCommand(RequestInterface $request): bool
+    {
+        return strtoupper($request->getMethod()) === 'POST'
+            && preg_match('#/jobs/[^/]+/(completion|failure|error)$#', rtrim($request->getUri()->getPath(), '/')) === 1;
+    }
+
+    /**
+     * Whether a transport failure certainly happened before the request was sent, judged
+     * by the curl error number. A failure without one (e.g. a timeout) is not assumed to be.
+     */
+    private static function failedBeforeSending(\Throwable $failure): bool
+    {
+        // Guzzle reports some pre-send failures (e.g. proxy DNS, errno 5) as a plain
+        // response-less RequestException rather than a ConnectException.
+        $responseless = $failure instanceof ConnectException
+            || ($failure instanceof RequestException && !$failure->hasResponse());
+        if (!$responseless) {
+            return false;
+        }
+        $errno = $failure->getHandlerContext()['errno'] ?? null;
+
+        return \is_int($errno) && \in_array($errno, self::PRE_SEND_CURL_ERRORS, true);
+    }
+
     private static function isRetryableTransportFailure(\Throwable $failure, RequestInterface $request): bool
     {
+        if (self::isJobCommand($request)) {
+            return self::failedBeforeSending($failure);
+        }
         if (!in_array(strtoupper($request->getMethod()), self::IDEMPOTENT_METHODS, true)) {
             return false;
         }
