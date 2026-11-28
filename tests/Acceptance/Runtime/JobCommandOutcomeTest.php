@@ -15,6 +15,7 @@ use Camunda\Orchestration\Worker\JobActionClient;
 use Camunda\Orchestration\Worker\JobWorkerOptions;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
@@ -93,6 +94,29 @@ final class JobCommandOutcomeTest extends TestCase
 
         self::assertSame(['/jobs/activation', '/jobs/7/completion'], $this->paths());
         self::assertCount(1, $this->warnings);
+    }
+
+    public function testCaughtUnknownOutcomeOfAnExplicitActionIsNotAutoCompleted(): void
+    {
+        foreach (['complete', 'error'] as $method) {
+            $this->requests = [];
+            $this->warnings = [];
+            $this->client([JobFixtures::activation('7'), JobFixtures::problem(504, 'GATEWAY_TIMEOUT')])
+                ->createJobWorker($this->options())
+                ->pollOnce(static function (ActivatedJobResult $job, JobActionClient $action) use ($method): null {
+                    try {
+                        $method === 'complete' ? $action->complete() : $action->error('E');
+                    } catch (ApiException) {
+                    }
+
+                    return null;
+                });
+
+            $path = $method === 'complete' ? '/jobs/7/completion' : '/jobs/7/error';
+            self::assertSame(['/jobs/activation', $path], $this->paths(), $method);
+            self::assertCount(1, $this->warnings, $method);
+            self::assertStringContainsString('not auto-completing', implode("\n", $this->warnings));
+        }
     }
 
     public function testUnknownOutcomeOfTheWorkersOwnFailJobIsNotRepeated(): void
@@ -176,6 +200,27 @@ final class JobCommandOutcomeTest extends TestCase
             try {
                 $middleware($handler)($request, [])->wait();
             } catch (ConnectException) {
+            }
+            self::assertSame($expected, $calls, "curl errno $errno");
+        }
+    }
+
+    public function testMiddlewareRetriesJobCommandOnResponselessRequestExceptionPreSendFailure(): void
+    {
+        $request = new Request('POST', 'http://localhost/v2/jobs/7/completion', [], '{}');
+        foreach ([5 => 2, 6 => 2, 28 => 1] as $errno => $expected) {
+            $calls = 0;
+            $handler = static function (RequestInterface $r) use (&$calls, $errno): \GuzzleHttp\Promise\PromiseInterface {
+                ++$calls;
+
+                return $calls === 1
+                    ? \GuzzleHttp\Promise\Create::rejectionFor(new RequestException('x', $r, null, null, ['errno' => $errno]))
+                    : \GuzzleHttp\Promise\Create::promiseFor(new Response(204));
+            };
+            $middleware = new RetryMiddleware(3, 0, 0, static fn (): float => 0.0);
+            try {
+                $middleware($handler)($request, [])->wait();
+            } catch (RequestException) {
             }
             self::assertSame($expected, $calls, "curl errno $errno");
         }

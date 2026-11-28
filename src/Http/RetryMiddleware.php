@@ -354,7 +354,11 @@ final class RetryMiddleware
      */
     private static function failedBeforeSending(\Throwable $failure): bool
     {
-        if (!$failure instanceof ConnectException) {
+        // Guzzle reports some pre-send failures (e.g. proxy DNS, errno 5) as a plain
+        // response-less RequestException rather than a ConnectException.
+        $responseless = $failure instanceof ConnectException
+            || ($failure instanceof RequestException && !$failure->hasResponse());
+        if (!$responseless) {
             return false;
         }
         $errno = $failure->getHandlerContext()['errno'] ?? null;

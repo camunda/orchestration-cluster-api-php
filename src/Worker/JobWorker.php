@@ -213,6 +213,18 @@ final class JobWorker
             return;
         }
 
+        if (!$action->wasHandled() && $action->hasInterruptedAction()) {
+            // The handler asked for a terminal action, caught its failure and returned.
+            // That action's outcome may be unknown (e.g. a 504), so auto-completing would
+            // replay or replace it. Leave the job to the lease timeout instead.
+            $this->warn(sprintf(
+                'Job %s: handler returned after its job command failed; not auto-completing (the job may have completed, otherwise it will time out and be re-activated)',
+                (string) $job->getJobKey(),
+            ));
+
+            return;
+        }
+
         if (!$action->wasHandled() && $this->options->autoComplete) {
             try {
                 $action->complete(\is_array($result) ? $result : []);
